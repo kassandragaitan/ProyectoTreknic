@@ -78,3 +78,13 @@
     -fx-background-color: #3874b4;
     -fx-text-fill: white;
 }
+.button {
+    -fx-background-color: #3079ab;
+    -fx-text-fill: white;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+}
+
+.button:hover {
+    -fx-background-color: #1481e3;
+}

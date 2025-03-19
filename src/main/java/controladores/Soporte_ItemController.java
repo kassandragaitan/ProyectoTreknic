@@ -30,13 +30,24 @@ public class Soporte_ItemController implements Initializable {
     /**
      * Initializes the controller class.
      */
+    
+      public void setItem(Object item) {
+        if (item instanceof FAQItem) {
+            FAQItem faqItem = (FAQItem) item;
+            titleLabel.setText(faqItem.getTitle());
+            descriptionLabel.setText(faqItem.getDescription());
+            iconImageView.setImage(new Image(getClass().getResourceAsStream("/img/documento.png")));
+        } else if (item instanceof String) {
+            // Manejar el caso de String, ajusta según sea necesario
+            titleLabel.setText((String) item);
+            descriptionLabel.setText(""); // Puedes dejarlo vacío o poner un texto por defecto
+            iconImageView.setImage(new Image(getClass().getResourceAsStream("/img/documento.png"))); // Ajusta la imagen si es necesario
+        }
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
     
     }    
-       public void setItem(FAQItem item) {
-        titleLabel.setText(item.getTitle());
-        descriptionLabel.setText(item.getDescription());
-        iconImageView.setImage(new Image(getClass().getResourceAsStream("/img/documento.png")));
-    }
+ 
 }
