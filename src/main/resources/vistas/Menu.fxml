@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+
+<BorderPane fx:id="panel" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controladores.MenuController">
+   <top>
+      <AnchorPane id="AnchorPane" prefHeight="50.0" prefWidth="1470.0" styleClass="mainFxmlClass" BorderPane.alignment="CENTER">
+          <stylesheets>
+              <URL value="@menu.css" />
+          </stylesheets>
+          <HBox fx:id="menuHBox" alignment="CENTER_LEFT" fillHeight="true" spacing="10.0" styleClass="menu-hbox">
+              <children>
+                  <Button fx:id="botonPrincipal" onAction="#irAPrincipal" styleClass="menu-button" text="Dashboard" />
+                  <Button fx:id="botonItinerarios" onAction="#irAItinerarios" styleClass="menu-button" text="Itinerarios" />
+                  <Button fx:id="botonDestinos" onAction="#irADestinos" styleClass="menu-button" text="Destinos" />
+                  <Button fx:id="botonUsuarios" onAction="#irAGestionUsuarios" styleClass="menu-button" text="Usuarios" />
+                  <Button fx:id="botonReportes" onAction="#irAReportes" styleClass="menu-button" text="Reportes" />
+                  <Button fx:id="botonNotificaciones" onAction="#irANotificaciones" styleClass="menu-button" text="Notificaciones" />
+                  <Button fx:id="botonSoporte" onAction="#irASoporte" styleClass="menu-button" text="Soporte " />
+                  <Button fx:id="botonContenido" onAction="#irAContenido" styleClass="menu-button" text="Contenido" />
+                  <Button fx:id="botonConfiguracion" onAction="#irAConfiguracion" styleClass="menu-button" text="Configuración" />
+              </children>
+          </HBox>
+      </AnchorPane>
+   </top>
+</BorderPane>

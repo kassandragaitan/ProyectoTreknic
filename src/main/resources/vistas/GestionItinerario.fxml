@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+
+<HBox alignment="CENTER" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controladores.GestionItinerarioController">
+   <children>
+   <AnchorPane id="AnchorPane" styleClass="mainFxmlClass">
+          <stylesheets>
+              <URL value="@gestionitinerario.css" />
+          </stylesheets>
+         <children>
+            <ListView fx:id="listaItinerario" prefHeight="400.0" prefWidth="600.0" styleClass="custom-list" />
+         </children>
+      </AnchorPane>
+   </children>
+</HBox>

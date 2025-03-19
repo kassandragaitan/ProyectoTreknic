@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<HBox alignment="CENTER" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controladores.Soporte_ItemController">
+   <children>
+      <AnchorPane id="AnchorPane" prefHeight="142.0" prefWidth="600.0" styleClass="mainFxmlClass">
+          <stylesheets>
+              <URL value="@soporte_item.css" />
+          </stylesheets>
+         <children>
+            <VBox prefHeight="154.0" prefWidth="158.0">
+               <children>
+                  <Pane prefHeight="155.0" prefWidth="158.0">
+                     <children>
+                        <Label layoutX="46.0" layoutY="14.0" prefHeight="67.0" prefWidth="67.0" styleClass="label-style" stylesheets="@soporte_item.css" />
+                        <ImageView fx:id="iconImageView" fitHeight="74.0" fitWidth="59.0" layoutX="50.0" layoutY="18.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../img/documento.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </Pane>
+               </children>
+            </VBox>
+            <HBox layoutX="164.0" prefHeight="147.0" prefWidth="435.0">
+               <children>
+                  <Pane prefHeight="162.0" prefWidth="435.0">
+                     <children>
+                        <Label fx:id="titleLabel" layoutX="33.0" layoutY="14.0" text="Label">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font></Label>
+                        <Label layoutX="33.0" layoutY="49.0" prefHeight="26.0" prefWidth="105.0" styleClass="label-rounded" stylesheets="@soporte_item.css" />
+                        <Label layoutX="47.0" layoutY="57.0" text="Label" />
+                        <Label fx:id="descriptionLabel" layoutX="33.0" layoutY="101.0" text="Label" />
+                     </children>
+                  </Pane>
+               </children>
+            </HBox>
+         </children>
+      </AnchorPane>
+   </children>
+</HBox>

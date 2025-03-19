@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.TilePane?>
+<?import javafx.scene.layout.VBox?>
+
+<HBox alignment="CENTER" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controladores.GestionDestinosController">
+   <children>
+      <AnchorPane id="AnchorPane" styleClass="mainFxmlClass">
+          <stylesheets>
+              <URL value="@gestiondestinos.css" />
+          </stylesheets>
+          <children>
+              <VBox alignment="TOP_CENTER" spacing="20" style="-fx-padding: 10;">
+                  <HBox spacing="10">
+                      <TextField fx:id="searchField" promptText="Buscar destinos..." HBox.hgrow="ALWAYS" />
+                      <Button styleClass="primary" stylesheets="@gestiondestinos.css" text="Nuevo Destino" />
+                  </HBox>
+                  <TilePane fx:id="destinationsPane" hgap="10" prefColumns="3" vgap="10">
+                      <VBox spacing="5" styleClass="destination-card">
+                          <ImageView fitHeight="75" fitWidth="130.0" pickOnBounds="true" preserveRatio="true" />
+                          <Label text="Barcelona" />
+                          <Label text="España - Europa" />
+                          <Label text="Popularidad: Alta" />
+                          <HBox spacing="10">
+                              <Button text="Editar" />
+                              <Button text="Desactivar" />
+                          </HBox>
+                      </VBox>
+                      <VBox spacing="5" styleClass="destination-card">
+                          <ImageView fitHeight="75" fitWidth="131.0" pickOnBounds="true" preserveRatio="true" />
+                          <Label text="Barcelona" />
+                          <Label text="España - Europa" />
+                          <Label text="Popularidad: Alta" />
+                          <HBox spacing="10">
+                              <Button stylesheets="@gestiondestinos.css" text="Editar" />
+                              <Button text="Desactivar" />
+                          </HBox>
+                      </VBox>
+                      <VBox spacing="5" styleClass="destination-card">
+                          <ImageView fitHeight="75" fitWidth="130.0" pickOnBounds="true" preserveRatio="true" />
+                          <Label text="Barcelona" />
+                          <Label text="España - Europa" />
+                          <Label text="Popularidad: Alta" />
+                          <HBox spacing="10">
+                              <Button text="Editar" />
+                              <Button stylesheets="@gestiondestinos.css" text="Desactivar" />
+                          </HBox>
+                      </VBox>
+                      <!-- Repite el VBox para cada destino -->
+                  </TilePane>
+              </VBox>
+          </children>
+      </AnchorPane>
+   </children>
+</HBox>

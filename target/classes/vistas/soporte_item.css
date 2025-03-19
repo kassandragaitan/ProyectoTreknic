@@ -1,0 +1,22 @@
+/*
+ * Empty Stylesheet file.
+ */
+
+.mainFxmlClass {
+
+}
+.label-style {
+    -fx-background-color: #4285F4; /* Blue color; adjust the color code as needed */
+    -fx-background-radius: 10; /* Rounded corners */
+    -fx-padding: 5 10 5 10; /* Top, right, bottom, left padding */
+    -fx-text-fill: white; /* White text color */
+    -fx-font-weight: bold; /* Bold font */
+    -fx-font-size: 14px; /* Font size */
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 5, 0, 0, 1); /* Shadow effect */
+}
+.label-rounded {
+    -fx-background-color: #f0f0f0; /* Light grey background; adjust as needed */
+    -fx-background-radius: 15; /* Rounded corners */
+    -fx-padding: 8 10 8 10; /* Top, right, bottom, left padding */
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5); /* Soft shadow effect */
+}

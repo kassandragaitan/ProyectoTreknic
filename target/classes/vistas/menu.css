@@ -1,0 +1,28 @@
+/*
+ * Empty Stylesheet file.
+ */
+
+.mainFxmlClass {
+
+}
+.menu-hbox {
+    -fx-background-color: #3874b4;
+    -fx-padding: 10px 20px; /* top/bottom left/right padding */
+}
+
+.menu-button {
+    -fx-background-color: #3477b5;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-border: none;
+    -fx-pref-width: 150px;
+    -fx-pref-height: 30px;
+}
+
+.menu-button:hover {
+    -fx-background-color: #145da0;
+}
+
+.menu-button:pressed{
+    -fx-background-color:#daeafe;
+}

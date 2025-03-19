@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<HBox alignment="CENTER" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controladores.Itinerario_ItemController">
+   <children>
+      <AnchorPane id="AnchorPane" prefHeight="0.0" prefWidth="600.0" styleClass="mainFxmlClass">
+          <stylesheets>
+              <URL value="@itinerario_item.css" />
+          </stylesheets>
+          <children>
+                <VBox styleClass="list-cell">
+                    <children>
+                        <Label fx:id="lblNombre" text="Label" styleClass="label" />
+                        <Label fx:id="lblRol" text="Label" styleClass="label" />
+                        <ImageView fx:id="imgUsuario" fitHeight="53.0" fitWidth="58.0" pickOnBounds="true" preserveRatio="true" />
+                    </children>
+                </VBox>
+            </children>
+        </AnchorPane>
+    </children>
+</HBox>

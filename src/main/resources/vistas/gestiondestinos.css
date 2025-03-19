@@ -1,0 +1,50 @@
+.root {
+    -fx-font-family: 'Arial'; /* Fuente predeterminada */
+}
+
+.button {
+    -fx-background-color: #3874b4; /* Azul suave para botones */
+    -fx-text-fill: white; /* Texto en blanco para contraste */
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 5, 0, 0, 1); /* Sombra ligera para botones */
+}
+
+.text-field {
+    -fx-border-color: #B0BEC5; /* Color de borde gris */
+    -fx-border-radius: 5;
+}
+
+.image-view {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0); /* Sombra para imágenes */
+}
+
+.label {
+    -fx-font-size: 14px; /* Tamaño de la fuente para etiquetas */
+}
+
+.tile-pane {
+    -fx-hgap: 20; /* Espacio horizontal entre elementos */
+    -fx-vgap: 20; /* Espacio vertical entre elementos */
+}
+
+.destination-card {
+    -fx-padding: 10;
+    -fx-border-color: #3477b5; /* Cambia a un color de borde que combina con los botones */
+    -fx-border-width: 2; /* Hace el borde un poco más grueso para destacar */
+    -fx-border-radius: 5;
+    -fx-background-color: #daeafe; /* Fondo claro para destacar el contenido */
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 10, 0.5, 0, 5); /* Sombra suave para dar profundidad */
+}
+
+.primary {
+    -fx-background-color: #3874b4; /* Azul intenso para elementos primarios */
+    -fx-text-fill: white; /* Texto en blanco */
+}
+
+.background-pane {
+    -fx-background-image: url("../img/background.jpg");
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center center;
+    -fx-background-size: cover;
+}
