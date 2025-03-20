@@ -6,12 +6,11 @@
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Circle?>
-
 
 <HBox alignment="CENTER" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controladores.NotificacionesController">
    <children>
@@ -22,9 +21,9 @@
               <TableView prefHeight="200.0" prefWidth="800.0">
                   <columns>
                       <TableColumn prefWidth="200.0" text="Nombre" />
-                      <TableColumn prefWidth="100.0" text="Tipo" />
+                      <TableColumn prefWidth="100.0" text="Descripción" />
                       <TableColumn prefWidth="200.0" text="Destinatarios" />
-                      <TableColumn prefWidth="100.0" text="Estado" />
+                      <TableColumn prefWidth="100.0" text="Fecha" />
                       <TableColumn prefWidth="200.0" text="Acciones" />
                   </columns>
               </TableView>
@@ -34,7 +33,7 @@
                      <children>
                         <Pane prefHeight="54.0" prefWidth="422.0">
                            <children>
-                              <Label layoutX="14.0" layoutY="32.0" styleClass="sub-title" text="Horarios de Notificación" />
+                              <Label layoutY="32.0" styleClass="sub-title" text="Configuración de notificaciones" />
                            </children>
                         </Pane>
                      </children>
@@ -42,7 +41,7 @@
                     <HBox prefHeight="54.0" prefWidth="356.0" spacing="15.0">
                      <Pane prefHeight="54.0" prefWidth="374.0">
                         <children>
-                              <Label layoutX="6.0" layoutY="32.0" styleClass="sub-title" text="Horarios de Notificación" />
+                              <Label layoutY="32.0" styleClass="sub-title" text="Horarios de Notificación" />
                         </children>
                      </Pane>
                     </HBox>
@@ -52,21 +51,23 @@
                <children>
                   <Pane prefHeight="170.0" prefWidth="446.0">
                      <children>
-                        <Label layoutX="14.0" layoutY="14.0" text="Label" />
-                        <Label layoutX="14.0" layoutY="39.0" text="Label" />
-                        <Label layoutX="14.0" layoutY="73.0" text="Label" />
-                        <Label layoutX="14.0" layoutY="106.0" text="Label" />
+                        <Label layoutY="5.0" text="Preferencias generales" />
+                        <Label layoutX="14.0" layoutY="41.0" text="Notificaciones por correo" />
+                        <Label layoutX="14.0" layoutY="73.0" text="Resumen diario" />
+                        <Label layoutX="14.0" layoutY="106.0" />
                      </children>
                   </Pane>
                   <Pane prefHeight="162.0" prefWidth="442.0">
                      <children>
-                           <Label layoutX="14.0" layoutY="6.0" text="Hora de inicio:" />
-                           <DatePicker layoutX="12.0" layoutY="30.0" prefHeight="25.0" prefWidth="405.0" />
-                           <Label layoutX="14.0" layoutY="61.0" text="Hora de fin:" />
+                           <Label layoutX="14.0" layoutY="6.0" text="Fecha de inicio:" />
+                           <DatePicker layoutX="12.0" layoutY="30.0" prefHeight="25.0" prefWidth="391.0" />
+                           <Label layoutX="14.0" layoutY="61.0" text="Fecha de fin:" />
                            <DatePicker layoutX="14.0" layoutY="81.0" />
-                           <Button layoutX="307.0" layoutY="136.0" styleClass="save-button" text="Guardar Cambios" />
+                           <Button layoutX="295.0" layoutY="136.0" styleClass="save-button" text="Guardar Cambios" />
                         <Label layoutX="14.0" layoutY="113.0" text="Días de noificación" />
-                        <Circle fill="DODGERBLUE" layoutX="27.0" layoutY="148.0" radius="13.0" stroke="BLACK" strokeType="INSIDE" />
+                        <ToggleButton layoutX="14.0" layoutY="135.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="26.0" text="L" />
+                        <ToggleButton layoutX="55.0" layoutY="135.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="26.0" text="M" />
+                        <ToggleButton layoutX="95.0" layoutY="135.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="26.0" text="X" />
                      </children>
                   </Pane>
                </children>

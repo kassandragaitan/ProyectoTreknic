@@ -5,3 +5,14 @@
 .mainFxmlClass {
 
 }
+.toggle-button {
+    -fx-padding: 5;
+    -fx-background-radius: 50; /* Hace el fondo completamente redondo */
+    -fx-border-radius: 50; /* Asegura que el borde sea redondo */
+    -fx-background-color: #b0c4de; /* Color de fondo por defecto (gris azulado) */
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 10, 0, 0, 0); /* Sombra opcional */
+}
+
+.toggle-button:selected {
+    -fx-background-color: #4169e1; /* Color de fondo cuando está seleccionado (azul real) */
+}

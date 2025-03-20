@@ -20,7 +20,7 @@
                 <VBox alignment="TOP_CENTER" spacing="20" style="-fx-padding: 10;">
                     <HBox spacing="10">
                         <TextField fx:id="campoBuscarDestino" promptText="Buscar destinos..." HBox.hgrow="ALWAYS" />
-                        <Button fx:id="botonNuevoDestino" styleClass="primary" stylesheets="@gestiondestinos.css" text="Nuevo Destino" />
+                        <Button fx:id="botonNuevoDestino" onAction="#irANuevoDestino" styleClass="primary" stylesheets="@gestiondestinos.css" text="Nuevo Destino" />
                     </HBox>
                     <TilePane fx:id="destinationsPane" hgap="10" prefColumns="3" vgap="10">
                         <VBox spacing="5" styleClass="destination-card">

@@ -11,6 +11,7 @@ com\kgr\proyectotreknic\App.class
 controladores\AdministracionUsuarioController$1.class
 controladores\GestionUsuariosController.class
 modelo\Destino.class
+controladores\AgregarDestinoController.class
 Utilidades\Alertas.class
 controladores\SoporteController.class
 modelo\Usuario.class

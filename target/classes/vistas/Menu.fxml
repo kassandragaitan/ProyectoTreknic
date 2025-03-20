@@ -21,9 +21,9 @@
                   <Button fx:id="botonReportes" onAction="#irAReportes" styleClass="menu-button" text="Reportes" />
                   <Button fx:id="botonNotificaciones" onAction="#irANotificaciones" styleClass="menu-button" text="Notificaciones" />
                   <Button fx:id="botonSoporte" onAction="#irASoporte" styleClass="menu-button" text="Soporte " />
-                  <Button fx:id="botonContenido" onAction="#irAContenido" styleClass="menu-button" text="Contenido" />
+                  <Button fx:id="botonResenas" onAction="#irAResenas" styleClass="menu-button" text="Reseñas" />
                   <Button fx:id="botonConfiguracion" onAction="#irAConfiguracion" styleClass="menu-button" text="Configuración" />
-               <Button fx:id="botonCerrarSesion" onAction="#irAConfiguracion" styleClass="menu-button" text="Cerrar Sesion" />
+               <Button fx:id="botonCerrarSesion" onAction="#CerrarSesion" styleClass="menu-button" text="Cerrar Sesion" />
               </children>
           </HBox>
       </AnchorPane>

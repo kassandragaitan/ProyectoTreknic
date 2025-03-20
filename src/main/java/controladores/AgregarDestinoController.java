@@ -6,7 +6,10 @@ package controladores;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 
 /**
  * FXML Controller class
@@ -14,6 +17,11 @@ import javafx.fxml.Initializable;
  * @author k0343
  */
 public class AgregarDestinoController implements Initializable {
+
+    @FXML
+    private TextField campoRutaArchivo;
+    @FXML
+    private Button botonSelccionarImagen;
 
     /**
      * Initializes the controller class.
