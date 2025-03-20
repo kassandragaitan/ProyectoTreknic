@@ -74,7 +74,6 @@ public class MenuController implements Initializable {
     @FXML
     private void irAItinerarios(ActionEvent event) {
         cargarEcena("/vistas/GestionItinerario.fxml");
-
     }
 
     @FXML

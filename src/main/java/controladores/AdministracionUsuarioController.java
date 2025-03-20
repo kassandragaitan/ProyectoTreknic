@@ -24,7 +24,14 @@ import java.util.ResourceBundle;
 import modelo.User;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 public class AdministracionUsuarioController implements Initializable {
 
@@ -40,10 +47,14 @@ public class AdministracionUsuarioController implements Initializable {
     private TableColumn<User, String> columnUltimoAcceso;
     @FXML
     private TableColumn<User, Boolean> columnAcciones;
+    @FXML
+    private TextField searchField1;
+    @FXML
+    private Button botonNuevoUsuario;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-  
+
         // Setup columns
         columnUsuario.setCellValueFactory(new PropertyValueFactory<>("username"));
         columnRol.setCellValueFactory(new PropertyValueFactory<>("role"));
@@ -60,11 +71,11 @@ public class AdministracionUsuarioController implements Initializable {
 
     private ObservableList<User> generateDummyData() {
         return FXCollections.observableArrayList(
-            new User("Ana Martínez", "ana.martinez@example.com", "Administrador", "Activo", "30/9/2023, 14:32:15", true),
-            new User("Carlos Rodríguez", "carlos.rodriguez@example.com", "Editor", "Activo", "1/10/2023, 9:15:22", true),
-            new User("María López", "maria.lopez@example.com", "Visualizador", "Inactivo", "15/9/2023, 11:42:08", false),
-            new User("Javier Fernández", "javier.fernandez@example.com", "Editor", "Activo", "2/10/2023, 16:05:33", true),
-            new User("Laura Gómez", "laura.gomez@example.com", "Visualizador", "Activo", "28/9/2023, 10:24:45", true)
+                new User("Ana Martínez", "ana.martinez@example.com", "Administrador", "Activo", "30/9/2023, 14:32:15", true),
+                new User("Carlos Rodríguez", "carlos.rodriguez@example.com", "Editor", "Activo", "1/10/2023, 9:15:22", true),
+                new User("María López", "maria.lopez@example.com", "Visualizador", "Inactivo", "15/9/2023, 11:42:08", false),
+                new User("Javier Fernández", "javier.fernandez@example.com", "Editor", "Activo", "2/10/2023, 16:05:33", true),
+                new User("Laura Gómez", "laura.gomez@example.com", "Visualizador", "Activo", "28/9/2023, 10:24:45", true)
         );
     }
 
@@ -108,5 +119,29 @@ public class AdministracionUsuarioController implements Initializable {
         System.out.println("Toggling active status for: " + user.getUsername());
         user.setIsActive(!user.getIsActive());
         userTable.refresh(); // Refresh the table to show updated status
+    }
+
+    @FXML
+    private void irAnuevoUsuario(ActionEvent event) {
+        try {
+            // Cargar el FXML de la nueva ventana
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/GestionUsuarios.fxml"));
+            Parent root = loader.load();
+
+            // Crear una nueva ventana (Stage)
+            Stage stage = new Stage();
+            stage.setTitle("Agregar usuario");
+            stage.setScene(new Scene(root));
+
+            // Hacer que la ventana sea modal (bloquea la principal hasta que se cierre)
+            stage.initModality(Modality.APPLICATION_MODAL);
+
+            // Mostrar la ventana y esperar hasta que se cierre
+            stage.showAndWait();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 }

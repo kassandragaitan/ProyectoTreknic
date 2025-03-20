@@ -35,7 +35,7 @@
                <ComboBox prefWidth="150.0" />
             </children>
          </HBox>
-         <Button layoutX="769.0" layoutY="25.0" styleClass="primary" stylesheets="@gestiondestinos.css" text="Nuevo Usuario" />
+         <Button fx:id="botonNuevoUsuario" layoutX="769.0" layoutY="25.0" onAction="#irAnuevoUsuario" styleClass="primary" stylesheets="@gestiondestinos.css" text="Nuevo Usuario" />
       </AnchorPane>
    </children>
 </HBox>

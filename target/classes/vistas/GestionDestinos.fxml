@@ -11,52 +11,52 @@
 <?import javafx.scene.layout.VBox?>
 
 <HBox alignment="CENTER" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controladores.GestionDestinosController">
-   <children>
-      <AnchorPane id="AnchorPane" styleClass="mainFxmlClass">
-          <stylesheets>
-              <URL value="@gestiondestinos.css" />
-          </stylesheets>
-          <children>
-              <VBox alignment="TOP_CENTER" spacing="20" style="-fx-padding: 10;">
-                  <HBox spacing="10">
-                      <TextField fx:id="searchField" promptText="Buscar destinos..." HBox.hgrow="ALWAYS" />
-                      <Button styleClass="primary" stylesheets="@gestiondestinos.css" text="Nuevo Destino" />
-                  </HBox>
-                  <TilePane fx:id="destinationsPane" hgap="10" prefColumns="3" vgap="10">
-                      <VBox spacing="5" styleClass="destination-card">
-                          <ImageView fitHeight="75" fitWidth="130.0" pickOnBounds="true" preserveRatio="true" />
-                          <Label text="Barcelona" />
-                          <Label text="España - Europa" />
-                          <Label text="Popularidad: Alta" />
-                          <HBox spacing="10">
-                              <Button text="Editar" />
-                              <Button text="Desactivar" />
-                          </HBox>
-                      </VBox>
-                      <VBox spacing="5" styleClass="destination-card">
-                          <ImageView fitHeight="75" fitWidth="131.0" pickOnBounds="true" preserveRatio="true" />
-                          <Label text="Barcelona" />
-                          <Label text="España - Europa" />
-                          <Label text="Popularidad: Alta" />
-                          <HBox spacing="10">
-                              <Button stylesheets="@gestiondestinos.css" text="Editar" />
-                              <Button text="Desactivar" />
-                          </HBox>
-                      </VBox>
-                      <VBox spacing="5" styleClass="destination-card">
-                          <ImageView fitHeight="75" fitWidth="130.0" pickOnBounds="true" preserveRatio="true" />
-                          <Label text="Barcelona" />
-                          <Label text="España - Europa" />
-                          <Label text="Popularidad: Alta" />
-                          <HBox spacing="10">
-                              <Button text="Editar" />
-                              <Button stylesheets="@gestiondestinos.css" text="Desactivar" />
-                          </HBox>
-                      </VBox>
-                      <!-- Repite el VBox para cada destino -->
-                  </TilePane>
-              </VBox>
-          </children>
-      </AnchorPane>
-   </children>
+    <children>
+        <AnchorPane id="AnchorPane" styleClass="mainFxmlClass">
+            <stylesheets>
+                <URL value="@gestiondestinos.css" />
+            </stylesheets>
+            <children>
+                <VBox alignment="TOP_CENTER" spacing="20" style="-fx-padding: 10;">
+                    <HBox spacing="10">
+                        <TextField fx:id="campoBuscarDestino" promptText="Buscar destinos..." HBox.hgrow="ALWAYS" />
+                        <Button fx:id="botonNuevoDestino" styleClass="primary" stylesheets="@gestiondestinos.css" text="Nuevo Destino" />
+                    </HBox>
+                    <TilePane fx:id="destinationsPane" hgap="10" prefColumns="3" vgap="10">
+                        <VBox spacing="5" styleClass="destination-card">
+                            <ImageView fitHeight="75" fitWidth="130.0" pickOnBounds="true" preserveRatio="true" />
+                            <Label fx:id="labelNombre" text="Barcelona" />
+                            <Label fx:id="labelDescripcion" text="España - Europa" />
+                            <Label fx:id="labelFechaCreacion" text="Popularidad: Alta" />
+                            <HBox spacing="10">
+                                <Button fx:id="botonEditar" text="Editar" />
+                                <Button fx:id="botonDesactivar" text="Desactivar" />
+                            </HBox>
+                        </VBox>
+                        <VBox spacing="5" styleClass="destination-card">
+                            <ImageView fitHeight="75" fitWidth="131.0" pickOnBounds="true" preserveRatio="true" />
+                            <Label fx:id="labelNombr" text="Barcelona" />
+                            <Label fx:id="labelDescripcio" text="España - Europa" />
+                            <Label fx:id="labelFechaCreacio" text="Popularidad: Alta" />
+                            <HBox spacing="10">
+                                <Button stylesheets="@gestiondestinos.css" text="Editar" />
+                                <Button text="Desactivar" />
+                            </HBox>
+                        </VBox>
+                        <VBox spacing="5" styleClass="destination-card">
+                            <ImageView fitHeight="75" fitWidth="130.0" pickOnBounds="true" preserveRatio="true" />
+                            <Label fx:id="labelNombreDestino" text="Barcelona" />
+                            <Label fx:id="labelDescripcionDestino" text="España - Europa" />
+                            <Label fx:id="labelFechaCreacionDestino" text="Popularidad: Alta" />
+                            <HBox spacing="10">
+                                <Button text="Editar" />
+                                <Button stylesheets="@gestiondestinos.css" text="Desactivar" />
+                            </HBox>
+                        </VBox>
+                        <!-- Repite el VBox para cada destino -->
+                    </TilePane>
+                </VBox>
+            </children>
+        </AnchorPane>
+    </children>
 </HBox>

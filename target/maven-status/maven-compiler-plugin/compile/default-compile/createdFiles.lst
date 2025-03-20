@@ -23,6 +23,7 @@ controladores\PrincipalController.class
 controladores\GestionDestinosController.class
 bbdd\Conexion.class
 controladores\ConfiguracionController.class
+controladores\AgregarItinerarioController.class
 Utilidades\compruebaCampo.class
 controladores\GestionItinerarioController.class
 controladores\Soporte_ItemController.class
