@@ -23,6 +23,7 @@
                   <Button fx:id="botonSoporte" onAction="#irASoporte" styleClass="menu-button" text="Soporte " />
                   <Button fx:id="botonContenido" onAction="#irAContenido" styleClass="menu-button" text="Contenido" />
                   <Button fx:id="botonConfiguracion" onAction="#irAConfiguracion" styleClass="menu-button" text="Configuración" />
+               <Button fx:id="botonCerrarSesion" onAction="#irAConfiguracion" styleClass="menu-button" text="Cerrar Sesion" />
               </children>
           </HBox>
       </AnchorPane>

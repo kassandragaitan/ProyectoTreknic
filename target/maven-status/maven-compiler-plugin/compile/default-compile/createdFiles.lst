@@ -17,7 +17,6 @@ modelo\Usuario.class
 controladores\MenuController.class
 Utilidades\Animacion.class
 controladores\SoporteController$1.class
-controladores\Itinerario_ItemController.class
 controladores\GestionItinerarioController$1.class
 module-info.class
 controladores\PrincipalController.class

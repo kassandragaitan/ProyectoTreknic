@@ -30,8 +30,7 @@ public class Soporte_ItemController implements Initializable {
     /**
      * Initializes the controller class.
      */
-    
-      public void setItem(Object item) {
+    public void setItem(Object item) {
         if (item instanceof FAQItem) {
             FAQItem faqItem = (FAQItem) item;
             titleLabel.setText(faqItem.getTitle());
@@ -47,7 +46,7 @@ public class Soporte_ItemController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-    
-    }    
- 
+
+    }
+
 }

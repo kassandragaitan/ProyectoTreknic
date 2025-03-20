@@ -6,9 +6,12 @@ package controladores;
 
 import java.io.IOException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -26,7 +29,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import modelo.Itinerario;
-import modelo.User;
+
 
 /**
  * FXML Controller class
@@ -39,55 +42,56 @@ public class GestionItinerarioController implements Initializable {
      * Initializes the controller class.
      */
     @FXML
-    private TableView<User> userTable;
+    private TableColumn<Itinerario, Boolean> columnAcciones;
     @FXML
-    private TableColumn<User, String> columnUsuario;
+    private TableColumn<Itinerario, Integer> columnaIdItinerario;
     @FXML
-    private TableColumn<User, String> columnRol;
+    private TableColumn<Itinerario, String> columnaNombre;
     @FXML
-    private TableColumn<User, String> columnEstado;
+    private TableColumn<Itinerario, String> columaDescripcion;
     @FXML
-    private TableColumn<User, String> columnUltimoAcceso;
+    private TableColumn<Itinerario, Integer> columnaDuracion;
     @FXML
-    private TableColumn<User, Boolean> columnAcciones;
+    private TableColumn<Itinerario, Date> columnaFechaCreacion;
     @FXML
-    private TextField searchField1;
+    private TextField campoBuscarItinerario;
+    @FXML
+    private Button botonNuevoItinerario;
+    @FXML
+    private TableView<Itinerario> tablaItinerario;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-      columnUsuario.setCellValueFactory(new PropertyValueFactory<>("username"));
-        columnRol.setCellValueFactory(new PropertyValueFactory<>("role"));
-        columnEstado.setCellValueFactory(new PropertyValueFactory<>("status"));
-        columnUltimoAcceso.setCellValueFactory(new PropertyValueFactory<>("lastAccess"));
+       columnaIdItinerario.setCellValueFactory(new PropertyValueFactory<>("id_itinerario"));
+        columnaNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+        columaDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
+        columnaDuracion.setCellValueFactory(new PropertyValueFactory<>("duracion"));
+        columnaFechaCreacion.setCellValueFactory(new PropertyValueFactory<>("fecha_creacion"));
         columnAcciones.setCellValueFactory(new PropertyValueFactory<>("isActive"));
 
-        // Populate the table with dummy data
-        userTable.setItems(generateDummyData());
-
-        // Initialize buttons in the actions column
+        tablaItinerario.setItems(generateDummyData());
         initializeActionButtons();
     }
 
-    private ObservableList<User> generateDummyData() {
-        return FXCollections.observableArrayList(
-            new User("Ana Martínez", "ana.martinez@example.com", "Administrador", "Activo", "30/9/2023, 14:32:15", true),
-            new User("Carlos Rodríguez", "carlos.rodriguez@example.com", "Editor", "Activo", "1/10/2023, 9:15:22", true),
-            new User("María López", "maria.lopez@example.com", "Visualizador", "Inactivo", "15/9/2023, 11:42:08", false),
-            new User("Javier Fernández", "javier.fernandez@example.com", "Editor", "Activo", "2/10/2023, 16:05:33", true),
-            new User("Laura Gómez", "laura.gomez@example.com", "Visualizador", "Activo", "28/9/2023, 10:24:45", true)
+    private ObservableList<Itinerario> generateDummyData() {
+        ObservableList<Itinerario> itinerarios = FXCollections.observableArrayList(
+            new Itinerario(1, "Ruta de Montaña", "Explorar las alturas", 5, new Date(), true),
+            new Itinerario(2, "Paseo por la Costa", "Disfrute de la playa", 3, new Date(), false)
         );
+        return itinerarios;
     }
 
+
     private void initializeActionButtons() {
-        columnAcciones.setCellFactory(col -> new TableCell<User, Boolean>() {
+        columnAcciones.setCellFactory(col -> new TableCell<Itinerario, Boolean>() {
             private final HBox hbox = new HBox(10);
             private final Button viewButton = new Button("Ver");
             private final Button editButton = new Button("Editar");
             private final Button toggleActiveButton = new Button();
 
             { // initializer block for setting button actions
-                viewButton.setOnAction(e -> viewUserDetails(getTableRow().getItem()));
-                editButton.setOnAction(e -> editUser(getTableRow().getItem()));
+                viewButton.setOnAction(e -> viewItinerarioDetails(getTableRow().getItem()));
+                editButton.setOnAction(e -> editItinerario(getTableRow().getItem()));
                 toggleActiveButton.setOnAction(e -> toggleActiveStatus(getTableRow().getItem()));
                 hbox.getChildren().addAll(viewButton, editButton, toggleActiveButton);
                 hbox.setAlignment(Pos.CENTER);
@@ -106,17 +110,24 @@ public class GestionItinerarioController implements Initializable {
         });
     }
 
-    private void viewUserDetails(User user) {
-        System.out.println("Viewing details for: " + user.getUsername());
+    private void viewItinerarioDetails(Itinerario itinerario) {
     }
 
-    private void editUser(User user) {
-        System.out.println("Editing user: " + user.getUsername());
+    private void editItinerario(Itinerario itinerario) {
     }
 
-    private void toggleActiveStatus(User user) {
-        System.out.println("Toggling active status for: " + user.getUsername());
-        user.setIsActive(!user.getIsActive());
-        userTable.refresh(); // Refresh the table to show updated status
+    private void toggleActiveStatus(Itinerario itinerario) {
+        itinerario.setIsActive(!itinerario.getIsActive());
+        tablaItinerario.refresh(); // Refresh the table to show updated status
+    }
+
+    @FXML
+    private void NuevoItinerario(ActionEvent event) {
+          SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date fechaActual = new Date();
+        Itinerario nuevoItinerario = new Itinerario(0, "Nuevo Itinerario", "Descripción breve", 3, fechaActual, true);
+        
+        // Agregar a la tabla (simulación de inserción en BD)
+        tablaItinerario.getItems().add(nuevoItinerario);
     }
 }
