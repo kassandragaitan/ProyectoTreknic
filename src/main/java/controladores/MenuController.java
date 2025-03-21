@@ -15,6 +15,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.SplitMenuButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 //
@@ -29,10 +31,6 @@ public class MenuController implements Initializable {
     @FXML
     private HBox menuHBox;
     @FXML
-    private Button botonItinerarios;
-    @FXML
-    private Button botonDestinos;
-    @FXML
     private Button botonUsuarios;
     @FXML
     private Button botonReportes;
@@ -45,9 +43,17 @@ public class MenuController implements Initializable {
     @FXML
     private Button botonSoporte;
     @FXML
-    private Button botonContenido;
-    @FXML
     private Button botonConfiguracion;
+    @FXML
+    private Button botonResenas;
+    @FXML
+    private Button botonCerrarSesion;
+    @FXML
+    private SplitMenuButton botonGestionViajes;
+    @FXML
+    private MenuItem menuItinerarios;
+    @FXML
+    private MenuItem menuDestinos;
 
     /**
      * Initializes the controller class.
@@ -109,13 +115,19 @@ public class MenuController implements Initializable {
 
     }
 
-    @FXML
-    private void irAContenido(ActionEvent event) {
-    }
 
     @FXML
     private void irAConfiguracion(ActionEvent event) {
         cargarEcena("/vistas/Configuracion.fxml");
 
+    }
+
+    @FXML
+    private void irAResenas(ActionEvent event) {
+                cargarEcena("/vistas/GestionResenas.fxml");//resenas
+    }
+
+    @FXML
+    private void CerrarSesion(ActionEvent event) {
     }
 }

@@ -26,3 +26,53 @@
 .menu-button:pressed{
     -fx-background-color:#daeafe;
 }
+
+/* Estilos para el SplitMenuButton */
+.split-menu-button {
+    -fx-background-color: #3874b4; /* Color de fondo, consistente con otros botones */
+    -fx-text-fill: white; /* Color del texto */
+    -fx-font-size: 14px; /* Tamaño del texto */
+    -fx-border: none; /* Sin bordes */
+    -fx-pref-width: 150px; /* Ancho preferido, ajustado si es necesario */
+    -fx-pref-height: 30px; /* Altura consistente con otros botones */
+    -fx-background-radius: 0; /* Sin bordes redondeados para coincidir con otros botones */
+}
+
+/* Estilos para el SplitMenuButton cuando el cursor está sobre él */
+.split-menu-button:hover {
+    -fx-background-color: #145da0; /* Color de fondo más oscuro al pasar el cursor */
+}
+
+/* Estilos para el SplitMenuButton cuando está presionado o mostrando el menú */
+.split-menu-button:pressed, .split-menu-button:showing {
+    -fx-background-color: #daeafe; /* Color de fondo más claro cuando se presiona o se muestra el menú */
+}
+
+/* Estilos para la parte del botón con la flecha */
+.split-menu-button .arrow-button {
+    -fx-background-color: transparent; /* La parte de la flecha tiene el mismo fondo que la parte del botón */
+    -fx-padding: 0;
+}
+
+/* Estilos para la flecha del SplitMenuButton */
+.split-menu-button .arrow {
+    -fx-background-color: white; /* Color de la flecha */
+}
+
+/* Estilos para los MenuItem dentro del SplitMenuButton */
+.menu-item {
+    -fx-background-color: #3477b5; /* Color de fondo coincidente con el botón */
+    -fx-text-fill: white; /* Color del texto */
+    -fx-font-size: 14px; /* Tamaño del texto */
+}
+
+/* Estilos para los MenuItem cuando el cursor está sobre ellos */
+.menu-item:hover {
+    -fx-background-color: #145da0; /* Color de fondo más oscuro al pasar el cursor */
+}
+
+/* Estilos para el menú contextual desplegable */
+.context-menu {
+    -fx-background-color: #3477b5; /* Color de fondo azul para el menú desplegable */
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 10, 0, 0, 0); /* Sombra para el menú desplegable */
+}

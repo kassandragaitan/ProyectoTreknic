@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import java.net.URL?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.text.Font?>
+
+<HBox alignment="CENTER" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controladores.GestionResenasController">
+   <children>
+      <AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" styleClass="mainFxmlClass">
+          <stylesheets>
+              <URL value="@gestionresenas.css" />
+          </stylesheets>
+        <TabPane fx:id="tabPane" prefHeight="600.0" prefWidth="1102.0" tabClosingPolicy="UNAVAILABLE">
+                <tabs>
+                    <Tab text="Reseñas de Destinos">
+                        <content>
+                            <AnchorPane prefHeight="542.0" prefWidth="1038.0">
+                              <TextField fx:id="searchFieldDestinos" prefHeight="26.0" prefWidth="1102.0" promptText="Buscar reseñas de destinos..." />
+                                <ListView fx:id="destinosList" layoutY="34.0" prefHeight="510.0" prefWidth="1102.0" />
+                            </AnchorPane>
+                        </content>
+                    </Tab>
+                 
+                    <Tab text="Reseñas por Usuario">
+                        <content>
+                            <AnchorPane>
+                              <TextField fx:id="searchFieldUsuarios" prefHeight="26.0" prefWidth="1102.0" promptText="Buscar reseñas por usuario..." />
+                                <ListView fx:id="usuariosList" layoutX="-2.0" layoutY="31.0" prefHeight="513.0" prefWidth="1110.0" />
+                            </AnchorPane>
+                        </content>
+                    </Tab>
+                </tabs>
+            </TabPane>
+            </AnchorPane>
+   </children>
+</HBox>
+

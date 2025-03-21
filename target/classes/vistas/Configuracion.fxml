@@ -7,7 +7,6 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 
-
 <HBox alignment="CENTER" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controladores.ConfiguracionController">
    <children>
       <AnchorPane id="AnchorPane">
@@ -15,7 +14,7 @@
               <URL value="@configuracion.css" />
           </stylesheets>
           <children>
-              <TabPane fx:id="tabPane" layoutX="14.0" layoutY="14.0" prefHeight="570.0" prefWidth="772.0" tabClosingPolicy="UNAVAILABLE">
+              <TabPane fx:id="tabPane" layoutY="-1.0" prefHeight="585.0" prefWidth="786.0" tabClosingPolicy="UNAVAILABLE">
                   <tabs>
                       <Tab text="General">
                           <content>

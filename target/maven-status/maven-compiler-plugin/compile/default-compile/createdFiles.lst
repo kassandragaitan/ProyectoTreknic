@@ -7,6 +7,8 @@ controladores\SoporteController$2.class
 modelo\FAQItem.class
 controladores\ReportesController.class
 controladores\AdministracionUsuarioController.class
+controladores\Resenas_ItemController.class
+controladores\GestionResenasController.class
 com\kgr\proyectotreknic\App.class
 controladores\AdministracionUsuarioController$1.class
 controladores\GestionUsuariosController.class
