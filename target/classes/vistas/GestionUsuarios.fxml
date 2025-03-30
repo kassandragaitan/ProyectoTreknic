@@ -12,28 +12,28 @@
 
 <HBox alignment="CENTER" prefHeight="600.0" prefWidth="900.0" styleClass="hbox-style" stylesheets="@estilos.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controladores.GestionUsuariosController">
    <children>
-      <AnchorPane id="AnchorPane" prefHeight="617.0" prefWidth="464.0" styleClass="anchorpane-style">
+      <AnchorPane id="AnchorPane" prefHeight="583.0" prefWidth="857.0" styleClass="anchorpane-style">
           <stylesheets>
               <URL value="@estilos.css" />
           </stylesheets>
          <children>
-            <Pane layoutY="90.0" prefHeight="416.0" prefWidth="464.0" styleClass="root" stylesheets="@estilos.css">
+            <Pane layoutX="197.0" layoutY="72.0" prefHeight="416.0" prefWidth="464.0" styleClass="root" stylesheets="@estilos.css">
                <children>
                   <Label layoutX="78.0" layoutY="76.0" text="Nombre" />
-                  <TextField layoutX="186.0" layoutY="67.0" />
+                  <TextField fx:id="campoNombre" layoutX="186.0" layoutY="67.0" />
                   <Label layoutX="80.0" layoutY="156.0" prefWidth="59.0" text="Email" />
                   <Label layoutX="80.0" layoutY="194.0" prefHeight="17.0" prefWidth="73.0" text="Contrasena" />
-                  <Label layoutX="80.0" layoutY="234.0" prefWidth="59.0" text="Tipo" />
+                  <Label layoutX="80.0" layoutY="234.0" prefHeight="17.0" prefWidth="73.0" text="Tipo usuario" />
                   <Label layoutX="78.0" layoutY="273.0" text="Idioma preferido" />
                   <Label layoutX="74.0" layoutY="315.0" text="Tipo de compañia" />
                   <Label layoutX="76.0" layoutY="114.0" text="Teléfono" />
-                  <TextField layoutX="186.0" layoutY="105.0" />
-                  <TextField layoutX="186.0" layoutY="147.0" />
-                  <TextField layoutX="186.0" layoutY="185.0" />
-                  <ComboBox layoutX="185.0" layoutY="225.0" prefWidth="150.0" />
-                  <ComboBox layoutX="185.0" layoutY="269.0" prefWidth="150.0" />
-                  <ComboBox layoutX="185.0" layoutY="311.0" prefWidth="150.0" />
-                  <Button layoutX="188.0" layoutY="359.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="89.0" styleClass="button-icon" stylesheets="@estilos.css" text="Registrar" />
+                  <TextField fx:id="campoTelefono" layoutX="186.0" layoutY="105.0" />
+                  <TextField fx:id="campoEmail" layoutX="186.0" layoutY="147.0" />
+                  <TextField fx:id="campoContrasena" layoutX="186.0" layoutY="185.0" />
+                  <ComboBox fx:id="campoTipoUsuario" layoutX="185.0" layoutY="225.0" prefWidth="150.0" />
+                  <ComboBox fx:id="campoIdioma" layoutX="185.0" layoutY="269.0" prefWidth="150.0" />
+                  <ComboBox fx:id="campoTipoCompania" layoutX="185.0" layoutY="311.0" prefWidth="150.0" />
+                  <Button fx:id="botonRegistrar" layoutX="188.0" layoutY="359.0" mnemonicParsing="false" onAction="#registrar" prefHeight="36.0" prefWidth="89.0" styleClass="button-icon" stylesheets="@estilos.css" text="Registrar" />
                   <Label layoutX="161.0" layoutY="22.0" text="Gestión Usuarios">
                      <font>
                         <Font size="18.0" />

@@ -5,7 +5,6 @@
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -15,78 +14,74 @@
 
 <HBox alignment="CENTER" prefHeight="910.0" prefWidth="1290.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controladores.PrincipalController">
     <children>
-        <AnchorPane styleClass="anchorpane-style">
+        <AnchorPane prefHeight="950.0" prefWidth="1263.0" styleClass="anchorpane-style">
       
             <stylesheets>
                 <URL value="@estilos.css" />
             </stylesheets>
-<ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="AS_NEEDED" layoutX="66.0" layoutY="66.0" pannable="true" prefHeight="886.0" prefWidth="1255.0" vbarPolicy="AS_NEEDED">
-    <content>
-        <VBox fillWidth="true" prefHeight="2000.0" prefWidth="1221.0" spacing="20" style="-fx-padding: 20;"> <!-- Aumentado el prefHeight para forzar el desplazamiento -->
-            <HBox prefHeight="120.0" prefWidth="1206.0" spacing="10" style="-fx-alignment: center;">
-                <!-- Paneles de Datos -->
-                            <Pane styleClass="data-panel">
-                                <Label layoutX="14.0" layoutY="54.0" styleClass="data-title" text="Usuarios Registrados" />
-                                <Label layoutX="14.0" layoutY="74.0" styleClass="data-value" text="1,254" />
-                                <Label layoutX="119.0" prefHeight="49.0" prefWidth="38.0" styleClass="data-change-positive" text="+12%" />
-                            </Pane>
-                            <Pane styleClass="data-panel">
-                                <Label layoutX="14.0" layoutY="54.0" styleClass="data-title" text="Itinerarios Activos" />
-                                <Label layoutX="14.0" layoutY="74.0" prefHeight="0.0" prefWidth="17.0" styleClass="data-value" text="86" />
-                                <Label layoutX="133.0" layoutY="14.0" styleClass="data-change-positive" text="+5%" />
-                            </Pane>
-                            <Pane styleClass="data-panel">
-                                <Label layoutX="14.0" layoutY="54.0" prefHeight="18.0" prefWidth="126.0" styleClass="data-title" text="Destinos Populares" />
-                                <Label layoutX="14.0" layoutY="74.0" styleClass="data-value" text="32" />
-                                <Label layoutX="114.0" layoutY="14.0" styleClass="data-change-negative" text="-3%" />
-                            </Pane>
-                            <Pane styleClass="data-panel">
-                                <Label layoutX="14.0" layoutY="51.0" styleClass="data-title" text="Reservas Mensuales" />
-                                <Label layoutX="14.0" layoutY="74.0" styleClass="data-value" text="543" />
-                                <Label layoutX="114.0" layoutY="14.0" styleClass="data-change-positive" text="+18%" />
-                            </Pane>
-                        </HBox>
-                        <!-- Actividad Reciente y Gráfico de Barras -->
-                        <HBox spacing="10">
-                            <Pane prefHeight="394.0" prefWidth="535.0" styleClass="chart-panel">
-                                <Label styleClass="chart-title" text="Actividad Reciente" textFill="#cc4040" />
-                                <!-- Añade aquí tu gráfico de barras -->
-                                <BarChart layoutX="14.0" layoutY="51.0" prefHeight="309.0" prefWidth="500.0">
-                                    <xAxis>
-                                        <CategoryAxis label="Día" />
-                                    </xAxis>
-                                    <yAxis>
-                                        <NumberAxis label="Actividad" />
-                                    </yAxis>
-                                </BarChart>
-                            </Pane>
-                            <Pane prefHeight="366.0" prefWidth="686.0" styleClass="table-panel">
-                                <Label styleClass="chart-title" text="Destinos Más Visitados" textFill="#ef4f4f" />
-                                <TableView fx:id="tablaDestinos" layoutX="26.0" layoutY="41.0" prefHeight="311.0" prefWidth="634.0">
-                                    <columns>
-                                        <TableColumn fx:id="columnaDestino" prefWidth="200" text="DESTINO" />
-                                        <TableColumn fx:id="columnaVisitas" prefWidth="200.0" text="VISITAS" />
-                                        <TableColumn fx:id="columnaValoracion" prefWidth="380.0" text="VALORACIÓN" />
-                                    </columns>
-                                </TableView>
-                            </Pane>
-                        </HBox>
-                        <HBox prefHeight="354.0" prefWidth="1206.0" spacing="10" style="-fx-alignment: center;">
-                            <Pane layoutX="49.0" layoutY="564.0" prefHeight="175.0" prefWidth="1206.0" styleClass="data-panel" stylesheets="@estilos.css">
-                                <children>
-                                    <TableView layoutX="59.0" layoutY="40.0" prefHeight="278.0" prefWidth="1141.0">
-                                        <columns>
-                                            <TableColumn prefWidth="75.0" text="C1" />
-                                            <TableColumn prefWidth="75.0" text="C2" />
-                                        </columns>
-                                    </TableView>
-                                    <Label layoutX="31.0" layoutY="14.0" text="Label" />
-                                </children>
-                            </Pane>
-                        </HBox>
-                    </VBox>
-                </content>
-            </ScrollPane>
+  <VBox fillWidth="true" layoutX="66.0" prefHeight="950.0" prefWidth="1222.0" spacing="20" style="-fx-padding: 20;"> <!-- Aumentado el prefHeight para forzar el desplazamiento -->
+      <HBox prefHeight="120.0" prefWidth="1206.0" spacing="10" style="-fx-alignment: center;">
+          <!-- Paneles de Datos -->
+                      <Pane styleClass="data-panel">
+                          <Label layoutX="14.0" layoutY="54.0" styleClass="data-title" text="Usuarios Registrados" />
+                          <Label layoutX="14.0" layoutY="74.0" styleClass="data-value" text="1,254" />
+                          <Label layoutX="119.0" prefHeight="49.0" prefWidth="38.0" styleClass="data-change-positive" text="+12%" />
+                      </Pane>
+                      <Pane styleClass="data-panel">
+                          <Label layoutX="14.0" layoutY="54.0" styleClass="data-title" text="Itinerarios Activos" />
+                          <Label layoutX="14.0" layoutY="74.0" prefHeight="0.0" prefWidth="17.0" styleClass="data-value" text="86" />
+                          <Label layoutX="133.0" layoutY="14.0" styleClass="data-change-positive" text="+5%" />
+                      </Pane>
+                      <Pane styleClass="data-panel">
+                          <Label layoutX="14.0" layoutY="54.0" prefHeight="18.0" prefWidth="126.0" styleClass="data-title" text="Destinos Populares" />
+                          <Label layoutX="14.0" layoutY="74.0" styleClass="data-value" text="32" />
+                          <Label layoutX="114.0" layoutY="14.0" styleClass="data-change-negative" text="-3%" />
+                      </Pane>
+                      <Pane styleClass="data-panel">
+                          <Label layoutX="14.0" layoutY="51.0" styleClass="data-title" text="Reservas Mensuales" />
+                          <Label layoutX="14.0" layoutY="74.0" styleClass="data-value" text="543" />
+                          <Label layoutX="114.0" layoutY="14.0" styleClass="data-change-positive" text="+18%" />
+                      </Pane>
+                  </HBox>
+                  <!-- Actividad Reciente y Gráfico de Barras -->
+                  <HBox spacing="10">
+                      <Pane prefHeight="394.0" prefWidth="535.0" styleClass="chart-panel">
+                          <Label styleClass="chart-title" text="Actividad Reciente" textFill="#cc4040" />
+                          <!-- Añade aquí tu gráfico de barras -->
+                          <BarChart layoutX="14.0" layoutY="51.0" prefHeight="309.0" prefWidth="500.0">
+                              <xAxis>
+                                  <CategoryAxis label="Día" />
+                              </xAxis>
+                              <yAxis>
+                                  <NumberAxis label="Actividad" />
+                              </yAxis>
+                          </BarChart>
+                      </Pane>
+                      <Pane prefHeight="366.0" prefWidth="686.0" styleClass="table-panel">
+                          <Label styleClass="chart-title" text="Destinos Más Visitados" textFill="#ef4f4f" />
+                          <TableView fx:id="tablaDestinos" layoutX="26.0" layoutY="41.0" prefHeight="311.0" prefWidth="612.0">
+                              <columns>
+                                  <TableColumn fx:id="columnaDestino" prefWidth="144.79998397827148" text="DESTINO" />
+                                  <TableColumn fx:id="columnaVisitas" prefWidth="194.40003967285156" text="VISITAS" />
+                                  <TableColumn fx:id="columnaValoracion" prefWidth="440.7999267578125" text="VALORACIÓN" />
+                              </columns>
+                          </TableView>
+                      </Pane>
+                  </HBox>
+                  <HBox prefHeight="354.0" prefWidth="1206.0" spacing="10" style="-fx-alignment: center;">
+                      <Pane layoutX="49.0" layoutY="564.0" prefHeight="330.0" prefWidth="1182.0" styleClass="data-panel" stylesheets="@estilos.css">
+                          <children>
+                              <TableView layoutX="21.0" layoutY="39.0" prefHeight="301.0" prefWidth="1141.0">
+                                  <columns>
+                                      <TableColumn prefWidth="75.0" text="C1" />
+                                      <TableColumn prefWidth="75.0" text="C2" />
+                                  </columns>
+                              </TableView>
+                              <Label layoutX="32.0" layoutY="6.0" text="Label" />
+                          </children>
+                      </Pane>
+                  </HBox>
+              </VBox>
         </AnchorPane>
     </children>
 </HBox>

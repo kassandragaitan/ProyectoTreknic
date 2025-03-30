@@ -4,6 +4,7 @@
  */
 package controladores;
 
+import bbdd.Conexion;
 import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -32,8 +33,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import modelo.Itinerario;
 
+import modelo.ItinerarioTabla;
 
 /**
  * FXML Controller class
@@ -46,112 +47,100 @@ public class GestionItinerarioController implements Initializable {
      * Initializes the controller class.
      */
     @FXML
-    private TableColumn<Itinerario, Boolean> columnAcciones;
+    private TableColumn<ItinerarioTabla, Boolean> columnAcciones;
     @FXML
-    private TableColumn<Itinerario, Integer> columnaIdItinerario;
+    private TableColumn<ItinerarioTabla, Integer> columnaIdItinerario;
     @FXML
-    private TableColumn<Itinerario, String> columnaNombre;
+    private TableColumn<ItinerarioTabla, String> columnaNombre;
     @FXML
-    private TableColumn<Itinerario, String> columaDescripcion;
+    private TableColumn<ItinerarioTabla, String> columaDescripcion;
     @FXML
-    private TableColumn<Itinerario, Integer> columnaDuracion;
+    private TableColumn<ItinerarioTabla, Integer> columnaDuracion;
     @FXML
-    private TableColumn<Itinerario, Date> columnaFechaCreacion;
+    private TableColumn<ItinerarioTabla, java.util.Date> columnaFechaCreacion; // o Date sin mas 
     @FXML
     private TextField campoBuscarItinerario;
     @FXML
     private Button botonNuevoItinerario;
     @FXML
-    private TableView<Itinerario> tablaItinerario;
+    private TableView<ItinerarioTabla> tablaItinerario;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-       columnaIdItinerario.setCellValueFactory(new PropertyValueFactory<>("id_itinerario"));
+    cargarItinerarios();
+        inicializarAccionesColumna();
+    }
+
+    public void cargarItinerarios() {
+        ObservableList<ItinerarioTabla> listaItinerarios = FXCollections.observableArrayList();
+        Conexion.conectar();
+        Conexion.cargarDatosItinerarios(listaItinerarios);
+        Conexion.cerrarConexion();
+
+        tablaItinerario.setItems(listaItinerarios);
+        columnaIdItinerario.setCellValueFactory(new PropertyValueFactory<>("idItinerario"));
         columnaNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         columaDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
         columnaDuracion.setCellValueFactory(new PropertyValueFactory<>("duracion"));
-        columnaFechaCreacion.setCellValueFactory(new PropertyValueFactory<>("fecha_creacion"));
-        columnAcciones.setCellValueFactory(new PropertyValueFactory<>("isActive"));
-
-        tablaItinerario.setItems(generateDummyData());
-        initializeActionButtons();
+        columnaFechaCreacion.setCellValueFactory(new PropertyValueFactory<>("fechaCreacion"));
     }
 
-    private ObservableList<Itinerario> generateDummyData() {
-        ObservableList<Itinerario> itinerarios = FXCollections.observableArrayList(
-            new Itinerario(1, "Ruta de Montaña", "Explorar las alturas", 5, new Date(), true),
-            new Itinerario(2, "Paseo por la Costa", "Disfrute de la playa", 3, new Date(), false)
-        );
-        return itinerarios;
-    }
+private void inicializarAccionesColumna() {
+    columnAcciones.setCellFactory(col -> new TableCell<ItinerarioTabla, Boolean>() {
+        private final HBox hbox = new HBox(10);
+        private final Button viewButton = new Button("Ver");
+        private final Button editButton = new Button("Editar");
+        private final Button toggleActiveButton = new Button();
 
+        {
+            viewButton.setOnAction(e -> viewItinerarioDetails(getTableRow().getItem()));
+            editButton.setOnAction(e -> editItinerario(getTableRow().getItem()));
+            toggleActiveButton.setOnAction(e -> toggleActiveStatus(getTableRow().getItem()));
+            hbox.getChildren().addAll(viewButton, editButton, toggleActiveButton);
+            hbox.setAlignment(Pos.CENTER);
+        }
 
-    private void initializeActionButtons() {
-        columnAcciones.setCellFactory(col -> new TableCell<Itinerario, Boolean>() {
-            private final HBox hbox = new HBox(10);
-            private final Button viewButton = new Button("Ver");
-            private final Button editButton = new Button("Editar");
-            private final Button toggleActiveButton = new Button();
-
-            { // initializer block for setting button actions
-                viewButton.setOnAction(e -> viewItinerarioDetails(getTableRow().getItem()));
-                editButton.setOnAction(e -> editItinerario(getTableRow().getItem()));
-                toggleActiveButton.setOnAction(e -> toggleActiveStatus(getTableRow().getItem()));
-                hbox.getChildren().addAll(viewButton, editButton, toggleActiveButton);
-                hbox.setAlignment(Pos.CENTER);
+        @Override
+        protected void updateItem(Boolean isActive, boolean empty) {
+            super.updateItem(isActive, empty);
+            if (empty || getTableRow() == null || getTableRow().getItem() == null || isActive == null) {
+                setGraphic(null);
+            } else {
+                toggleActiveButton.setText(isActive ? "Desactivar" : "Activar");
+                setGraphic(hbox);
             }
+        }
+    });
+}
 
-            @Override
-            protected void updateItem(Boolean isActive, boolean empty) {
-                super.updateItem(isActive, empty);
-                if (empty || getTableRow() == null || getTableRow().getItem() == null || isActive == null) {
-                    setGraphic(null);
-                } else {
-                    toggleActiveButton.setText(isActive ? "Desactivar" : "Activar");
-                    setGraphic(hbox);
-                }
-            }
-        });
+    private void viewItinerarioDetails(ItinerarioTabla itinerario) {
+        // Implementación de la visualización de detalles
     }
 
-    private void viewItinerarioDetails(Itinerario itinerario) {
+    private void editItinerario(ItinerarioTabla itinerario) {
+        // Implementación de la edición de itinerarios
     }
 
-    private void editItinerario(Itinerario itinerario) {
-    }
-
-    private void toggleActiveStatus(Itinerario itinerario) {
+    private void toggleActiveStatus(ItinerarioTabla itinerario) {
         itinerario.setIsActive(!itinerario.getIsActive());
         tablaItinerario.refresh(); // Refresh the table to show updated status
     }
 
+
     @FXML
     private void NuevoItinerario(ActionEvent event) {
-          try {
-            // Cargar el FXML de la nueva ventana
+         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/AgregarItinerario.fxml"));
             Parent root = loader.load();
-
-            // Crear una nueva ventana (Stage)
             Stage stage = new Stage();
-            stage.setTitle("Agregar usuario");
+            stage.setTitle("Agregar itinerario");
             stage.setScene(new Scene(root));
-
-            // Hacer que la ventana sea modal (bloquea la principal hasta que se cierre)
             stage.initModality(Modality.APPLICATION_MODAL);
-
-            // Mostrar la ventana y esperar hasta que se cierre
             stage.showAndWait();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-//          SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-//        Date fechaActual = new Date();
-//        Itinerario nuevoItinerario = new Itinerario(0, "Nuevo Itinerario", "Descripción breve", 3, fechaActual, true);
-//        
-//        // Agregar a la tabla (simulación de inserción en BD)
-//        tablaItinerario.getItems().add(nuevoItinerario);
+
     }
 }
