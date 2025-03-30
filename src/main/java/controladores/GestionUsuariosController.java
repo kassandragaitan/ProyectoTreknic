@@ -79,11 +79,13 @@ public class GestionUsuariosController implements Initializable {
             usuario.setContrasena(campoContrasena.getText());
             usuario.setTipoViajero(campoTipoCompania.getValue());
             usuario.setIdioma(campoIdioma.getValue());//.getSelectedItem().toString(), 
+            usuario.setTipoUsuario(campoTipoUsuario.getValue());
 
             if (Conexion.registrarUsuario(usuario)) {
                 Alertas.informacion("Usuario registrado exitosamente.");
                 limpiarFormulario();
             } else {
+
                 Alertas.error("Error en el registro", "Ocurrió un error al registrar el usuario.");
             }
         }

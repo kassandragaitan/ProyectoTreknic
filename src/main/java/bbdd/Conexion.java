@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.ObservableList;
@@ -53,30 +54,11 @@ public class Conexion {
         }
     }
 
-//    public static boolean registrarUsuario(UsuarioRegistro usuarioRegistro) {
-//        conectar();
-//        try {
-//            String consulta = "INSERT INTO usuarios(nombre, email, contrasena, tipo_usuario, idioma_preferido, tipo_viajero, telefono) VALUES (?, ?, ?, ?, ?, ?, ?)";
-//            PreparedStatement pst = conn.prepareStatement(consulta);
-//            pst.setString(1, usuarioRegistro.getNombre());
-//            pst.setString(2, usuarioRegistro.getEmail());
-//            pst.setString(3, usuarioRegistro.getContrasena());
-//            pst.setString(4, usuarioRegistro.getTipoUsuario());
-//            pst.setString(5, usuarioRegistro.getIdioma());
-//            pst.setString(6, usuarioRegistro.getTipoViajero());
-//            pst.setString(7, usuarioRegistro.getTelefono());
-//            int resultado = pst.executeUpdate();
-//            return resultado > 0;
-//        } catch (SQLException ex) {
-//            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
-//            return false;
-//        } finally {
-//            cerrarConexion();
-//        }
-//    }
     public static boolean registrarUsuario(UsuarioRegistro usuarioRegistro) {
-        String consulta = "INSERT INTO usuarios(nombre, email, contrasena, tipo_usuario, idioma_preferido, tipo_viajero, telefono) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        try (Connection conn = conectar(); PreparedStatement pst = conn.prepareStatement(consulta)) {
+        conectar();
+        try {
+            String consulta = "INSERT INTO usuarios (nombre, email, contrasena, tipo_usuario, idioma_preferido, tipo_viajero, telefono, fecha_registro) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            PreparedStatement pst = conn.prepareStatement(consulta);
             pst.setString(1, usuarioRegistro.getNombre());
             pst.setString(2, usuarioRegistro.getEmail());
             pst.setString(3, usuarioRegistro.getContrasena());
@@ -84,55 +66,73 @@ public class Conexion {
             pst.setString(5, usuarioRegistro.getIdioma());
             pst.setString(6, usuarioRegistro.getTipoViajero());
             pst.setString(7, usuarioRegistro.getTelefono());
+            pst.setTimestamp(8, new Timestamp(System.currentTimeMillis())); // Establecer la fecha y hora actuales como fecha_registro
             int resultado = pst.executeUpdate();
             return resultado > 0;
         } catch (SQLException ex) {
             Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
             return false;
+        } finally {
+            cerrarConexion();
         }
     }
 
+     
+
     public static void cargarComboTipoUsuario(ComboBox comboTipoUsuario) {
         try {
-            String consulta = "SELECT tipo_usuario FROM usuarios";
+            String consulta = "SHOW COLUMNS FROM usuarios LIKE 'tipo_usuario'";
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery(consulta);
 
-            while (rs.next()) {
-                comboTipoUsuario.getItems().add(rs.getString("tipo_usuario"));
+            if (rs.next()) {
+                String enumValues = rs.getString("Type");
+                enumValues = enumValues.substring(5, enumValues.length() - 1);
+                String[] values = enumValues.split("','");
+                for (String value : values) {
+                    comboTipoUsuario.getItems().add(value.replace("'", ""));
+                }
             }
         } catch (SQLException ex) {
-
             Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     public static void cargarComboTipoCompania(ComboBox comboTipoCompania) {
         try {
-            String consulta = "SELECT tipo_compania FROM usuarios";
+            String consulta = "SHOW COLUMNS FROM usuarios LIKE 'tipo_viajero'";
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery(consulta);
 
-            while (rs.next()) {
-                comboTipoCompania.getItems().add(rs.getString("tipo_compania"));
+            if (rs.next()) {
+                String tipoCompania = rs.getString("Type");
+                tipoCompania = tipoCompania.substring(5, tipoCompania.length() - 1).replace("'", "");
+                String[] valoresEnum = tipoCompania.split(",");
+                for (String valor : valoresEnum) {
+                    comboTipoCompania.getItems().add(valor);
+                }
             }
         } catch (SQLException ex) {
-
             Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     public static void cargarComboIdioma(ComboBox comboIdioma) {
         try {
-            String consulta = "SELECT idioma_preferido FROM usuarios";
+            String consulta = "SHOW COLUMNS FROM usuarios WHERE Field = 'idioma_preferido'";
+
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery(consulta);
 
-            while (rs.next()) {
-                comboIdioma.getItems().add(rs.getString("idioma_preferido"));
+            if (rs.next()) {
+                String idiomaPreferido = rs.getString("Type");
+                idiomaPreferido = idiomaPreferido.substring(5, idiomaPreferido.length() - 1).replace("'", "");
+                String[] valoresEnum = idiomaPreferido.split(",");
+                for (String valor : valoresEnum) {
+                    comboIdioma.getItems().add(valor);
+                }
             }
         } catch (SQLException ex) {
-
             Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -142,37 +142,25 @@ public class Conexion {
         conectar();
         try {
             String consultaCarga = "SELECT id_itinerario, nombre, fecha_creacion, descripcion, duracion, id_usuario FROM itinerario";
-            Statement st = conn.createStatement();
-            ResultSet rs = st.executeQuery(consultaCarga);
-
-            while (rs.next()) {
-                int duracion = mapEnumDurations(rs.getString("duracion"));  // Convertir ENUM a int
-                listado.add(new ItinerarioTabla(
-                        rs.getInt("id_itinerario"),
-                        rs.getString("nombre"),
-                        rs.getDate("fecha_creacion"),
-                        rs.getString("descripcion"),
-                        duracion,
-                        rs.getInt("id_usuario")
-                ));
+            try (Statement st = conn.createStatement(); ResultSet rs = st.executeQuery(consultaCarga)) {
+                while (rs.next()) {
+                    listado.add(new ItinerarioTabla(
+                            rs.getInt("id_itinerario"),
+                            rs.getString("nombre"),
+                            rs.getDate("fecha_creacion"),
+                            rs.getString("descripcion"),
+                            mapEnumDurations(rs.getString("duracion")),
+                            rs.getInt("id_usuario")
+                    ));
+                }
             }
-            rs.close();
         } catch (SQLException ex) {
             Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     private static int mapEnumDurations(String duration) {
-        switch (duration) {
-            case "3":
-                return 3;
-            case "5":
-                return 5;
-            case "7":
-                return 7;
-            default:
-                return 0;  // Valor predeterminado en caso de datos no válidos
-        }
+        return duration.equals("3") ? 3 : duration.equals("5") ? 5 : duration.equals("7") ? 7 : 0;
     }
 
 }
