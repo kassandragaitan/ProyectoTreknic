@@ -13,6 +13,10 @@ public class TipoAlojamiento {
     private int idTipo;
     private String tipo;
 
+    public TipoAlojamiento(String tipo) {
+        this.tipo = tipo;
+    }
+
     public TipoAlojamiento(int idTipo, String tipo) {
         this.idTipo = idTipo;
         this.tipo = tipo;

@@ -4,14 +4,20 @@
  */
 package controladores;
 
+import Utilidades.Alertas;
+import Utilidades.compruebaCampo;
+import bbdd.Conexion;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import modelo.Actividad;
 
 /**
  * FXML Controller class
@@ -25,7 +31,7 @@ public class AgregarActividadController implements Initializable {
     @FXML
     private TextField campoDescripcion;
     @FXML
-    private ComboBox<?> comboDestino;
+    private ComboBox<Integer> comboDestino;
     @FXML
     private Button botonRegistrar;
 
@@ -34,11 +40,41 @@ public class AgregarActividadController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }    
+        Conexion.conectar();
+        ObservableList<Integer> destinos = FXCollections.observableArrayList();
+        Conexion.cargarComboDestino(comboDestino);
+        comboDestino.setItems(destinos);
+        Conexion.cerrarConexion();
+    }
 
     @FXML
     private void RegistrarActividad(ActionEvent event) {
+        if (compruebaCampo.compruebaVacio(campoNombre)) {
+            Alertas.aviso("Campo vacío", "El nombre no puede estar vacío.");
+        } else if (compruebaCampo.compruebaVacio(campoDescripcion)) {
+            Alertas.aviso("Campo vacío", "La descripción no puede estar vacía.");
+        } else if (comboDestino.getValue() == null) {
+            Alertas.aviso("Campo vacío", "Debe seleccionar un destino.");
+        } else {
+            Actividad actividad = new Actividad(
+                    0, 
+                    campoNombre.getText(),
+                    campoDescripcion.getText(),
+                    comboDestino.getValue()
+            );
+
+            if (Conexion.registrarActividad(actividad)) {
+                Alertas.informacion("Actividad registrada exitosamente.");
+                limpiarFormulario();
+            } else {
+                Alertas.error("Error en el registro", "No se pudo registrar la actividad.");
+            }
+        }
     }
-    
+
+    private void limpiarFormulario() {
+        campoNombre.clear();
+        campoDescripcion.clear();
+        comboDestino.getSelectionModel().clearSelection();
+    }
 }

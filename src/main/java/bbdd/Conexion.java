@@ -234,6 +234,42 @@ public class Conexion {
         }
     }
 
+    ////////////////////////////////////////////
+    public static boolean registrarActividad(Actividad actividad) {
+        conectar();
+        try {
+            String consulta = "INSERT INTO actividades (nombre, descripcion, id_destino) VALUES (?, ?, ?)";
+            PreparedStatement pst = conn.prepareStatement(consulta);
+            pst.setString(1, actividad.getNombre());
+            pst.setString(2, actividad.getDescripcion());
+            pst.setInt(3, actividad.getIdDestino());
+
+            int resultado = pst.executeUpdate();
+            return resultado > 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        } finally {
+            cerrarConexion();
+        }
+    }
+
+    public static void cargarComboDestino(ComboBox<Integer> comboDestino) {
+        conectar();
+        try {
+            String consulta = "SELECT id_destino FROM destinos";
+            Statement st = conn.createStatement();
+            ResultSet rs = st.executeQuery(consulta);
+            while (rs.next()) {
+                comboDestino.getItems().add(rs.getInt("id_destino"));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            cerrarConexion();
+        }
+    }
+
     public static void cargarDatosActividades(ObservableList<Actividad> listado) {
         try {
             String consultaCarga = "SELECT id_actividad, nombre, descripcion, id_destino FROM actividades";
@@ -279,6 +315,24 @@ public class Conexion {
         }
     }
 
+    //////////////////////////////
+    public static boolean registrarTipoAlojamiento(TipoAlojamiento tipo) {
+        conectar();
+        try {
+            String consulta = "INSERT INTO tipoalojamiento (tipo) VALUES (?)";
+            PreparedStatement pst = conn.prepareStatement(consulta);
+            pst.setString(1, tipo.getTipo());
+
+            int resultado = pst.executeUpdate();
+            return resultado > 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        } finally {
+            cerrarConexion();
+        }
+    }
+
     public static void cargarDatosTiposAlojamiento(ObservableList<TipoAlojamiento> listado) {
         conectar();
         try {
@@ -297,7 +351,25 @@ public class Conexion {
             cerrarConexion();
         }
     }
-    
+
+    ///////////////////////////////
+    public static boolean registrarCategoria(Categoria categoria) {
+        conectar();
+        try {
+            String consulta = "INSERT INTO categoria (nombre, descripcion) VALUES (?, ?)";
+            PreparedStatement pst = conn.prepareStatement(consulta);
+            pst.setString(1, categoria.getNombre());
+            pst.setString(2, categoria.getDescripcion());
+            int resultado = pst.executeUpdate();
+            return resultado > 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        } finally {
+            cerrarConexion();
+        }
+    }
+
     public static void cargarDatosCategorias(ObservableList<Categoria> listado) {
         conectar();
         try {
@@ -305,9 +377,9 @@ public class Conexion {
             try (Statement st = conn.createStatement(); ResultSet rs = st.executeQuery(consultaCarga)) {
                 while (rs.next()) {
                     listado.add(new Categoria(
-                        rs.getInt("id_categoria"),
-                        rs.getString("nombre"),
-                        rs.getString("descripcion")
+                            rs.getInt("id_categoria"),
+                            rs.getString("nombre"),
+                            rs.getString("descripcion")
                     ));
                 }
             }
