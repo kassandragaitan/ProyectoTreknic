@@ -5,6 +5,7 @@ C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\GestionItinerarioCont
 C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\UsuarioRegistro.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\Utilidades\Animacion.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\Soporte_ItemController.java
+C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\Actividad.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\AgregarActividadController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\AgregarTipoAlojamientoController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\Notificacion.java
@@ -18,14 +19,17 @@ C:\Users\k0343\ProyectoTreknic\src\main\java\Utilidades\validarTelefonoGlobal.ja
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\AgregarItinerarioController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\Itinerario.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\GestionTipoDeAlojamientoController.java
+C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\Alojamiento.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\Ticket.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\GestionDestinosController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\LoginController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\com\kgr\proyectotreknic\App.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\ReportesController.java
+C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\TipoAlojamiento.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\GestionActividadesController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\AgregarAlojamientoController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\GestionCategoriaController.java
+C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\Categoria.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\AdministracionUsuarioController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\GestionUsuariosController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\Usuario.java

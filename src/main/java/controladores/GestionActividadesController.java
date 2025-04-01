@@ -4,8 +4,11 @@
  */
 package controladores;
 
+import bbdd.Conexion;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,8 +19,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import modelo.Actividad;
 
 /**
  * FXML Controller class
@@ -27,17 +32,17 @@ import javafx.stage.Stage;
 public class GestionActividadesController implements Initializable {
 
     @FXML
-    private TableView<?> tablaActividades;
+    private TableView<Actividad> tablaActividades;
     @FXML
-    private TableColumn<?, ?> columnaIdActividad;
+    private TableColumn<Actividad, Integer> columnaIdActividad;
     @FXML
-    private TableColumn<?, ?> columnaNombre;
+    private TableColumn<Actividad, String> columnaNombre;
     @FXML
-    private TableColumn<?, ?> columnaDescripcion;
+    private TableColumn<Actividad, String> columnaDescripcion;
     @FXML
-    private TableColumn<?, ?> columnaIdDestino;
+    private TableColumn<Actividad, Integer> columnaIdDestino;
     @FXML
-    private TableColumn<?, ?> columnAcciones;
+    private TableColumn<Actividad, Boolean> columnAcciones;
     @FXML
     private TextField campoBuscarActividad;
     @FXML
@@ -48,7 +53,20 @@ public class GestionActividadesController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        cargarActividades();
+    }
+
+    private void cargarActividades() {
+        ObservableList<Actividad> listaActividades = FXCollections.observableArrayList();
+        Conexion.conectar();
+        Conexion.cargarDatosActividades(listaActividades);
+        Conexion.cerrarConexion();
+
+        tablaActividades.setItems(listaActividades);
+        columnaIdActividad.setCellValueFactory(new PropertyValueFactory<>("idActividad"));
+        columnaNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+        columnaDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
+        columnaIdDestino.setCellValueFactory(new PropertyValueFactory<>("idDestino"));
     }
 
     @FXML

@@ -4,8 +4,11 @@
  */
 package controladores;
 
+import bbdd.Conexion;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,8 +19,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import modelo.Alojamiento;
+import modelo.ItinerarioTabla;
 
 /**
  * FXML Controller class
@@ -27,21 +33,21 @@ import javafx.stage.Stage;
 public class GestionAlojamientoController implements Initializable {
 
     @FXML
-    private TableView<?> tablaAlojamientos;
+    private TableView<Alojamiento> tablaAlojamientos;
     @FXML
-    private TableColumn<?, ?> columnaIdAlojamiento;
+    private TableColumn<Alojamiento, Integer> columnaIdAlojamiento;
     @FXML
-    private TableColumn<?, ?> columnaNombre;
+    private TableColumn<Alojamiento, String> columnaNombre;
     @FXML
-    private TableColumn<?, ?> columnaTipo;
+    private TableColumn<Alojamiento, Integer> columnaTipo;
     @FXML
-    private TableColumn<?, ?> columnaContacto;
+    private TableColumn<Alojamiento, String> columnaContacto;
     @FXML
-    private TableColumn<?, ?> columnaImagen;
+    private TableColumn<Alojamiento, String> columnaImagen;
     @FXML
-    private TableColumn<?, ?> columnaIdDestino;
+    private TableColumn<Alojamiento, Integer> columnaIdDestino;
     @FXML
-    private TableColumn<?, ?> columnAcciones;
+    private TableColumn<Alojamiento, Boolean> columnAcciones;
     @FXML
     private TextField campoBuscarAlojamiento;
     @FXML
@@ -52,7 +58,22 @@ public class GestionAlojamientoController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        cargarAlojamientos();
+    }
+
+    private void cargarAlojamientos() {
+        ObservableList<Alojamiento> listaAlojamientos = FXCollections.observableArrayList();
+        Conexion.conectar();
+        Conexion.cargarDatosAlojamientos(listaAlojamientos);
+        Conexion.cerrarConexion();
+
+        tablaAlojamientos.setItems(listaAlojamientos);
+        columnaIdAlojamiento.setCellValueFactory(new PropertyValueFactory<>("idAlojamiento"));
+        columnaNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+        columnaTipo.setCellValueFactory(new PropertyValueFactory<>("idTipo"));
+        columnaContacto.setCellValueFactory(new PropertyValueFactory<>("contacto"));
+        columnaImagen.setCellValueFactory(new PropertyValueFactory<>("imagen"));
+        columnaIdDestino.setCellValueFactory(new PropertyValueFactory<>("idDestino"));
     }
 
     @FXML

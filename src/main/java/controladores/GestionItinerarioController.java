@@ -67,7 +67,7 @@ public class GestionItinerarioController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-    cargarItinerarios();
+        cargarItinerarios();
         inicializarAccionesColumna();
     }
 
@@ -85,33 +85,33 @@ public class GestionItinerarioController implements Initializable {
         columnaFechaCreacion.setCellValueFactory(new PropertyValueFactory<>("fechaCreacion"));
     }
 
-private void inicializarAccionesColumna() {
-    columnAcciones.setCellFactory(col -> new TableCell<ItinerarioTabla, Boolean>() {
-        private final HBox hbox = new HBox(10);
-        private final Button viewButton = new Button("Ver");
-        private final Button editButton = new Button("Editar");
-        private final Button toggleActiveButton = new Button();
+    private void inicializarAccionesColumna() {
+        columnAcciones.setCellFactory(col -> new TableCell<ItinerarioTabla, Boolean>() {
+            private final HBox hbox = new HBox(10);
+            private final Button viewButton = new Button("Ver");
+            private final Button editButton = new Button("Editar");
+            private final Button toggleActiveButton = new Button();
 
-        {
-            viewButton.setOnAction(e -> viewItinerarioDetails(getTableRow().getItem()));
-            editButton.setOnAction(e -> editItinerario(getTableRow().getItem()));
-            toggleActiveButton.setOnAction(e -> toggleActiveStatus(getTableRow().getItem()));
-            hbox.getChildren().addAll(viewButton, editButton, toggleActiveButton);
-            hbox.setAlignment(Pos.CENTER);
-        }
-
-        @Override
-        protected void updateItem(Boolean isActive, boolean empty) {
-            super.updateItem(isActive, empty);
-            if (empty || getTableRow() == null || getTableRow().getItem() == null || isActive == null) {
-                setGraphic(null);
-            } else {
-                toggleActiveButton.setText(isActive ? "Desactivar" : "Activar");
-                setGraphic(hbox);
+            {
+                viewButton.setOnAction(e -> viewItinerarioDetails(getTableRow().getItem()));
+                editButton.setOnAction(e -> editItinerario(getTableRow().getItem()));
+                toggleActiveButton.setOnAction(e -> toggleActiveStatus(getTableRow().getItem()));
+                hbox.getChildren().addAll(viewButton, editButton, toggleActiveButton);
+                hbox.setAlignment(Pos.CENTER);
             }
-        }
-    });
-}
+
+            @Override
+            protected void updateItem(Boolean isActive, boolean empty) {
+                super.updateItem(isActive, empty);
+                if (empty || getTableRow() == null || getTableRow().getItem() == null || isActive == null) {
+                    setGraphic(null);
+                } else {
+                    toggleActiveButton.setText(isActive ? "Desactivar" : "Activar");
+                    setGraphic(hbox);
+                }
+            }
+        });
+    }
 
     private void viewItinerarioDetails(ItinerarioTabla itinerario) {
         // Implementación de la visualización de detalles
@@ -126,10 +126,9 @@ private void inicializarAccionesColumna() {
         tablaItinerario.refresh(); // Refresh the table to show updated status
     }
 
-
     @FXML
     private void NuevoItinerario(ActionEvent event) {
-         try {
+        try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/AgregarItinerario.fxml"));
             Parent root = loader.load();
             Stage stage = new Stage();
@@ -140,7 +139,6 @@ private void inicializarAccionesColumna() {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
 
     }
 }

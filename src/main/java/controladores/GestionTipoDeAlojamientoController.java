@@ -4,8 +4,11 @@
  */
 package controladores;
 
+import bbdd.Conexion;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,8 +19,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import modelo.Alojamiento;
+import modelo.TipoAlojamiento;
 
 /**
  * FXML Controller class
@@ -27,11 +33,11 @@ import javafx.stage.Stage;
 public class GestionTipoDeAlojamientoController implements Initializable {
 
     @FXML
-    private TableView<?> tablaTipoAlojamiento;
+    private TableView<TipoAlojamiento> tablaTipoAlojamiento;
     @FXML
-    private TableColumn<?, ?> columnaIdTipo;
+    private TableColumn<TipoAlojamiento, Integer> columnaIdTipo;
     @FXML
-    private TableColumn<?, ?> columnaTipo;
+    private TableColumn<TipoAlojamiento, String> columnaTipo;
     @FXML
     private TextField campoBuscarTipoAlojamiento;
     @FXML
@@ -42,7 +48,15 @@ public class GestionTipoDeAlojamientoController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        ObservableList<TipoAlojamiento> listaTipos = FXCollections.observableArrayList();
+
+        Conexion.conectar();
+        Conexion.cargarDatosTiposAlojamiento(listaTipos);
+        Conexion.cerrarConexion();
+
+        tablaTipoAlojamiento.setItems(listaTipos);
+        columnaIdTipo.setCellValueFactory(new PropertyValueFactory<>("idTipo"));
+        columnaTipo.setCellValueFactory(new PropertyValueFactory<>("tipo"));
     }
 
     @FXML

@@ -15,9 +15,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ComboBox;
+import modelo.Actividad;
+import modelo.Alojamiento;
+import modelo.Categoria;
 import modelo.Itinerario;
 import modelo.ItinerarioTabla;
 import modelo.Notificacion;
+import modelo.TipoAlojamiento;
 import modelo.UsuarioRegistro;
 
 /**
@@ -144,7 +148,7 @@ public class Conexion {
             PreparedStatement pst = conn.prepareStatement(consulta);
             pst.setString(1, itinerario.getNombre());
             pst.setString(2, itinerario.getDescripcion());
-            pst.setTimestamp(3, new java.sql.Timestamp(itinerario.getFechaCreacion().getTime())); 
+            pst.setTimestamp(3, new java.sql.Timestamp(itinerario.getFechaCreacion().getTime()));
             pst.setInt(4, itinerario.getDuracion());
             pst.setInt(5, itinerario.getIdUsuario());
 
@@ -229,4 +233,89 @@ public class Conexion {
             cerrarConexion();
         }
     }
+
+    public static void cargarDatosActividades(ObservableList<Actividad> listado) {
+        try {
+            String consultaCarga = "SELECT id_actividad, nombre, descripcion, id_destino FROM actividades";
+            try (Statement st = conn.createStatement(); ResultSet rs = st.executeQuery(consultaCarga)) {
+                while (rs.next()) {
+                    listado.add(new Actividad(
+                            rs.getInt("id_actividad"),
+                            rs.getString("nombre"),
+                            rs.getString("descripcion"),
+                            rs.getInt("id_destino")
+                    ));
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            cerrarConexion();
+        }
+    }
+
+    public static void cargarDatosAlojamientos(ObservableList<Alojamiento> listado) {
+        conectar();
+        try {
+            String consultaCarga = "SELECT id_alojamiento, nombre, id_tipo_fk as id_tipo, contacto, imagen, id_destino_fk as id_destino FROM alojamiento";
+
+            try (Statement st = conn.createStatement(); ResultSet rs = st.executeQuery(consultaCarga)) {
+                while (rs.next()) {
+                    System.out.println("Loading: " + rs.getString("nombre"));
+                    listado.add(new Alojamiento(
+                            rs.getInt("id_alojamiento"),
+                            rs.getString("nombre"),
+                            rs.getInt("id_tipo"),
+                            rs.getString("contacto"),
+                            rs.getString("imagen"),
+                            rs.getInt("id_destino")
+                    ));
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            cerrarConexion();
+        }
+    }
+
+    public static void cargarDatosTiposAlojamiento(ObservableList<TipoAlojamiento> listado) {
+        conectar();
+        try {
+            String consultaCarga = "SELECT id_tipo, tipo FROM tipoalojamiento";
+            try (Statement st = conn.createStatement(); ResultSet rs = st.executeQuery(consultaCarga)) {
+                while (rs.next()) {
+                    listado.add(new TipoAlojamiento(
+                            rs.getInt("id_tipo"),
+                            rs.getString("tipo")
+                    ));
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            cerrarConexion();
+        }
+    }
+    
+    public static void cargarDatosCategorias(ObservableList<Categoria> listado) {
+        conectar();
+        try {
+            String consultaCarga = "SELECT id_categoria, nombre, descripcion FROM categoria";
+            try (Statement st = conn.createStatement(); ResultSet rs = st.executeQuery(consultaCarga)) {
+                while (rs.next()) {
+                    listado.add(new Categoria(
+                        rs.getInt("id_categoria"),
+                        rs.getString("nombre"),
+                        rs.getString("descripcion")
+                    ));
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            cerrarConexion();
+        }
+    }
+
 }
