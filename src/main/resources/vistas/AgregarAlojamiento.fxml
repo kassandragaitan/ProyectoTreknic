@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="449.0" prefWidth="600.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controladores.AgregarAlojamientoController">
+    <stylesheets>
+        <URL value="@agregaralojamiento.css" />
+    </stylesheets>
+    <children>
+        <Pane layoutX="68.0" layoutY="17.0" prefHeight="416.0" prefWidth="464.0" styleClass="root" stylesheets="@agregaralojamiento.css">
+            <children>
+                <Label layoutX="78.0" layoutY="76.0" text="Nombre" />
+                <TextField fx:id="campoNombre" layoutX="186.0" layoutY="67.0" />
+                <Label layoutX="78.0" layoutY="116.0" text="Tipo" />
+                <ComboBox fx:id="comboTipo" layoutX="186.0" layoutY="110.0" prefWidth="150.0" />
+                <Label layoutX="78.0" layoutY="156.0" text="Contacto" />
+                <TextField fx:id="campoContacto" layoutX="186.0" layoutY="150.0" />
+                <Label layoutX="78.0" layoutY="196.0" text="Imagen" />
+                <TextField fx:id="campoImagen" layoutX="186.0" layoutY="190.0" />
+                <Label layoutX="78.0" layoutY="236.0" text="Destino" />
+                <ComboBox fx:id="comboDestino" layoutX="186.0" layoutY="230.0" prefWidth="150.0" />
+                <Button fx:id="botonRegistrar" layoutX="188.0" layoutY="280.0" mnemonicParsing="false" onAction="#RegistrarAlojamiento" prefHeight="36.0" prefWidth="89.0" styleClass="button-icon" stylesheets="@agregaralojamiento.css" text="Registrar" />
+                <Label layoutX="161.0" layoutY="22.0" text="Agregar Alojamiento">
+                    <font>
+                        <Font size="18.0" />
+                    </font>
+                </Label>
+            </children>
+        </Pane>
+    </children>
+</AnchorPane>

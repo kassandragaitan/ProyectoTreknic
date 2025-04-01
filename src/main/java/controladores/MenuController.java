@@ -125,7 +125,6 @@ public class MenuController implements Initializable {
 
     }
 
-
     @FXML
     private void irAConfiguracion(ActionEvent event) {
         cargarEcena("/vistas/Configuracion.fxml");
@@ -134,31 +133,46 @@ public class MenuController implements Initializable {
 
     @FXML
     private void irAResenas(ActionEvent event) {
-                cargarEcena("/vistas/GestionResenas.fxml");//resenas
+        cargarEcena("/vistas/GestionResenas.fxml");//resenas
     }
 
     @FXML
     private void CerrarSesion(ActionEvent event) {
-           try {
-            // Cargar la pantalla de Login
+        try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/Login.fxml"));
             Parent root = loader.load();
 
-            // Crear una nueva ventana para el Login
             Stage loginStage = new Stage();
             loginStage.setTitle("Inicio de Sesión");
             loginStage.setScene(new Scene(root));
             loginStage.show();
 
-            // Cerrar la ventana actual (la principal)
             Stage stageActual = (Stage) botonCerrarSesion.getScene().getWindow();
             stageActual.close();
-
-            // Limpiar datos de sesión (si es necesario)
-            //UsuarioSesion.limpiar();
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    private void irA_Actividades(ActionEvent event) {
+        cargarEcena("/vistas/GestionActividades.fxml");
+    }
+
+    @FXML
+    private void irA_Alojamiento(ActionEvent event) {
+        cargarEcena("/vistas/GestionAlojamiento.fxml");
+    }
+
+    @FXML
+    private void irATipodeAlojamiento(ActionEvent event) {
+        cargarEcena("/vistas/GestionTipoDeAlojamiento.fxml");
+    }
+
+    @FXML
+    private void irACategoria(ActionEvent event) {
+        cargarEcena("/vistas/GestionCategoria.fxml");
+
     }
 }

@@ -5,7 +5,10 @@ C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\GestionItinerarioCont
 C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\UsuarioRegistro.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\Utilidades\Animacion.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\Soporte_ItemController.java
+C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\AgregarActividadController.java
+C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\AgregarTipoAlojamientoController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\Notificacion.java
+C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\GestionAlojamientoController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\Destino.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\ItinerarioTabla.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\GestionResenasController.java
@@ -14,11 +17,15 @@ C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\FAQItem.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\Utilidades\validarTelefonoGlobal.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\AgregarItinerarioController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\Itinerario.java
+C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\GestionTipoDeAlojamientoController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\Ticket.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\GestionDestinosController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\LoginController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\com\kgr\proyectotreknic\App.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\ReportesController.java
+C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\GestionActividadesController.java
+C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\AgregarAlojamientoController.java
+C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\GestionCategoriaController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\AdministracionUsuarioController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\GestionUsuariosController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\Usuario.java
@@ -26,6 +33,7 @@ C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\ConfiguracionControll
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\MenuController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\PrincipalController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\Utilidades\Alertas.java
+C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\AgregarCategoriaController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\NotificacionesController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\SoporteController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\bbdd\Conexion.java

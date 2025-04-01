@@ -28,7 +28,7 @@
                   <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="71.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" styleClass="imagen-login" />
                   <Pane layoutX="-3.0" layoutY="393.0" prefHeight="46.0" prefWidth="349.0" styleClass="root" stylesheets="@estilos.css">
                      <children>
-                        <Button fx:id="botonAcceder" layoutX="140.0" layoutY="11.0" mnemonicParsing="false" onAction="#Acceder" stylesheets="@estilos.css" text="Button">
+                        <Button fx:id="botonAcceder" layoutX="140.0" layoutY="11.0" mnemonicParsing="false" onAction="#Acceder" stylesheets="@estilos.css" text="Acceder">
                            <styleClass>
                               <String fx:value="boton" />
                               <String fx:value="boton" />

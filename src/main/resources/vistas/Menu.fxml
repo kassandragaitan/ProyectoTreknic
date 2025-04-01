@@ -19,13 +19,13 @@
                     <Button fx:id="botonPrincipal" onAction="#irAPrincipal" styleClass="menu-button" text="Inicio" />
                     <SplitMenuButton fx:id="botonGestionViajes" prefWidth="137.0" styleClass="menu-button" text="Gestión de Viajes">
                         <items>
-                            <MenuItem fx:id="menuItinerarios" onAction="#irAItinerarios" text="Itinerarios" style="-fx-background-color: #3477b5; -fx-text-fill: white;"/>
-                            <MenuItem fx:id="menuDestinos" onAction="#irADestinos" text="Destinos" style="-fx-background-color: #3477b5; -fx-text-fill: white;"/>
+                            <MenuItem fx:id="menuItinerarios" onAction="#irAItinerarios" style="-fx-background-color: #3477b5; -fx-text-fill: white;" text="Itinerarios" />
+                            <MenuItem fx:id="menuDestinos" onAction="#irADestinos" style="-fx-background-color: #3477b5; -fx-text-fill: white;" text="Destinos" />
                       
-                            <MenuItem fx:id="menuActividades" text="Actividades" style="-fx-background-color: #3477b5; -fx-text-fill: white;"/>
-                            <MenuItem fx:id="menuAlojamientos"  text="Alojamientos" style="-fx-background-color: #3477b5; -fx-text-fill: white;"/>
-                            <MenuItem fx:id="menuTipoAlojamientos"  text="Tipo de Alojamiento" style="-fx-background-color: #3477b5; -fx-text-fill: white;"/>
-                            <MenuItem fx:id="menuCategoria"  text="Categoría" style="-fx-background-color: #3477b5; -fx-text-fill: white;"/>
+                            <MenuItem fx:id="menuActividades" onAction="#irA_Actividades" style="-fx-background-color: #3477b5; -fx-text-fill: white;" text="Actividades" />
+                            <MenuItem fx:id="menuAlojamientos" onAction="#irA_Alojamiento" style="-fx-background-color: #3477b5; -fx-text-fill: white;" text="Alojamientos" />
+                            <MenuItem fx:id="menuTipoAlojamientos" onAction="#irATipodeAlojamiento" style="-fx-background-color: #3477b5; -fx-text-fill: white;" text="Tipo de Alojamiento" />
+                            <MenuItem fx:id="menuCategoria" onAction="#irACategoria" style="-fx-background-color: #3477b5; -fx-text-fill: white;" text="Categoría" />
                         </items>
                     </SplitMenuButton>
                     <Button fx:id="botonUsuarios" onAction="#irAGestionUsuarios" styleClass="menu-button" text="Usuarios" />

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<HBox alignment="CENTER" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controladores.GestionAlojamientoController">
+    <children>
+        <AnchorPane id="AnchorPane" styleClass="mainFxmlClass">
+            <stylesheets>
+                <URL value="@gestionalojamiento.css"/>
+            </stylesheets>
+            <VBox layoutX="30.0" layoutY="69.0" prefHeight="53.0" prefWidth="698.0" />
+            <TableView fx:id="tablaAlojamientos" layoutX="34.0" layoutY="140.0" prefHeight="400.0" prefWidth="848.0">
+                <columns>
+                    <TableColumn fx:id="columnaIdAlojamiento" prefWidth="75.0" text="ID" />
+                    <TableColumn fx:id="columnaNombre" prefWidth="150.0" text="Nombre" />
+                    <TableColumn fx:id="columnaTipo" prefWidth="75.0" text="Tipo ID" />
+                    <TableColumn fx:id="columnaContacto" prefWidth="150.0" text="Contacto" />
+                    <TableColumn fx:id="columnaImagen" prefWidth="150.0" text="Imagen" />
+                    <TableColumn fx:id="columnaIdDestino" prefWidth="75.0" text="Destino ID" />
+                    <TableColumn fx:id="columnAcciones" prefWidth="150.0" text="Acciones" />
+                </columns>
+            </TableView>
+            <Label layoutX="30.0" layoutY="30.0" styleClass="labelTitulo" stylesheets="@administracionalojamientos.css" text="Gestión de Alojamientos" />
+            <HBox layoutX="29.0" layoutY="73.0" prefHeight="42.0" prefWidth="857.0">
+                <children>
+                    <TextField fx:id="campoBuscarAlojamiento" promptText="Buscar alojamiento..." HBox.hgrow="ALWAYS" />
+                    <Button fx:id="botonNuevoAlojamiento" layoutX="769.0" layoutY="25.0" onAction="#nuevoAlojamiento" styleClass="primary" stylesheets="@gestionalojamientos.css" text="Nuevo Alojamiento" />
+                </children>
+            </HBox>
+        </AnchorPane>
+    </children>
+</HBox>

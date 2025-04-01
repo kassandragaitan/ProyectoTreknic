@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<HBox alignment="CENTER" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controladores.GestionActividadesController">
+    <children>
+        <AnchorPane id="AnchorPane" styleClass="mainFxmlClass">
+            <stylesheets>
+                <URL value="@gestionactividades.css" />
+            </stylesheets>
+            <VBox layoutX="30.0" layoutY="69.0" prefHeight="53.0" prefWidth="698.0" />
+            <TableView fx:id="tablaActividades" layoutX="34.0" layoutY="140.0" prefHeight="400.0" prefWidth="848.0">
+                <columns>
+                    <TableColumn fx:id="columnaIdActividad" prefWidth="79.19998168945312" text="ID Actividad" />
+                    <TableColumn fx:id="columnaNombre" prefWidth="95.20001220703125" text="Nombre" />
+                    <TableColumn fx:id="columnaDescripcion" prefWidth="197.5999755859375" text="Descripción" />
+                    <TableColumn fx:id="columnaIdDestino" prefWidth="122.39996337890625" text="ID Destino" />
+                    <TableColumn fx:id="columnAcciones" prefWidth="203.99993896484375" text="Acciones" />
+                </columns>
+            </TableView>
+            <Label layoutX="30.0" layoutY="30.0" styleClass="labelTitulo" stylesheets="@administracionusuario.css" text="Gestión de Actividades" />
+            <HBox layoutX="29.0" layoutY="73.0" prefHeight="42.0" prefWidth="857.0">
+                <children>
+                    <TextField fx:id="campoBuscarActividad" promptText="Buscar actividad..." HBox.hgrow="ALWAYS" />
+                    <ComboBox prefWidth="150.0" />
+                    <ComboBox prefWidth="150.0" />
+                </children>
+            </HBox>
+            <Button fx:id="botonNuevaActividad" layoutX="769.0" layoutY="25.0" onAction="#RegistrarNuevaActividad" styleClass="primary" stylesheets="@gestionactividades.css" text="Nueva Actividad" />
+        </AnchorPane>
+    </children>
+</HBox>
