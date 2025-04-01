@@ -17,6 +17,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.ComboBox;
 import modelo.Itinerario;
 import modelo.ItinerarioTabla;
+import modelo.Notificacion;
 import modelo.UsuarioRegistro;
 
 /**
@@ -77,8 +78,6 @@ public class Conexion {
         }
     }
 
-     
-
     public static void cargarComboTipoUsuario(ComboBox comboTipoUsuario) {
         try {
             String consulta = "SHOW COLUMNS FROM usuarios LIKE 'tipo_usuario'";
@@ -138,6 +137,27 @@ public class Conexion {
     }
 
     ///////////////////
+    public static boolean registrarItinerario(ItinerarioTabla itinerario) {
+        conectar();
+        try {
+            String consulta = "INSERT INTO itinerario (nombre, descripcion, fecha_creacion, duracion, id_usuario) VALUES (?, ?, ?, ?, ?)";
+            PreparedStatement pst = conn.prepareStatement(consulta);
+            pst.setString(1, itinerario.getNombre());
+            pst.setString(2, itinerario.getDescripcion());
+            pst.setTimestamp(3, new java.sql.Timestamp(itinerario.getFechaCreacion().getTime())); 
+            pst.setInt(4, itinerario.getDuracion());
+            pst.setInt(5, itinerario.getIdUsuario());
+
+            int resultado = pst.executeUpdate();
+            return resultado > 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        } finally {
+            cerrarConexion();
+        }
+    }
+
     public static void cargarDatosItinerarios(ObservableList<ItinerarioTabla> listado) {
         conectar();
         try {
@@ -163,4 +183,50 @@ public class Conexion {
         return duration.equals("3") ? 3 : duration.equals("5") ? 5 : duration.equals("7") ? 7 : 0;
     }
 
+    public static void cargarComboDuracionItinerario(ComboBox comboDuracion) {
+        try {
+            String consulta = "SHOW COLUMNS FROM itinerario WHERE Field = 'duracion'";
+
+            Statement st = conn.createStatement();
+            ResultSet rs = st.executeQuery(consulta);
+            if (rs.next()) {
+                String duracionStr = rs.getString("Type");
+                duracionStr = duracionStr.substring(5, duracionStr.length() - 1).replace("'", "");
+                String[] valoresEnum = duracionStr.split(",");
+                for (String valor : valoresEnum) {
+                    comboDuracion.getItems().add(Integer.parseInt(valor.trim())); // Convierte el valor a Integer y lo añade
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    //////////////////////////////
+    public static void cargarDatosNotificaciones(ObservableList<Notificacion> listado) {
+        conectar();
+        try {
+            String consultaCarga = "SELECT n.id_notificacion, n.descripcion, n.fecha, n.notificacion, n.id_usuario, u.nombre as nombreDestinatario "
+                    + "FROM notificaciones n "
+                    + "JOIN usuarios u ON n.id_usuario = u.id_usuario";
+            PreparedStatement pst = conn.prepareStatement(consultaCarga);
+            ResultSet rs = pst.executeQuery();
+
+            while (rs.next()) {
+                listado.add(new Notificacion(
+                        rs.getInt("id_notificacion"),
+                        rs.getString("descripcion"),
+                        rs.getDate("fecha"),
+                        rs.getString("notificacion"),
+                        rs.getInt("id_usuario"),
+                        rs.getString("nombreDestinatario")
+                ));
+            }
+            rs.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            cerrarConexion();
+        }
+    }
 }

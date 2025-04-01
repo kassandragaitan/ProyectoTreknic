@@ -3,14 +3,13 @@
 <?import java.net.URL?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="449.0" prefWidth="600.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1" fx:controller="controladores.AgregarItinerarioController">
+<AnchorPane id="AnchorPane" prefHeight="449.0" prefWidth="600.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controladores.AgregarItinerarioController">
     <stylesheets>
         <URL value="@agregaritinerario.css" />
     </stylesheets>
@@ -18,19 +17,17 @@
         <Pane layoutX="68.0" layoutY="17.0" prefHeight="416.0" prefWidth="464.0" styleClass="root" stylesheets="@agregaritinerario.css">
             <children>
                 <Label layoutX="78.0" layoutY="76.0" text="Nombre" />
-                <TextField layoutX="186.0" layoutY="67.0" />
+                <TextField fx:id="campoNombre" layoutX="186.0" layoutY="67.0" />
                 <Label layoutX="78.0" layoutY="116.0" prefHeight="17.0" prefWidth="80.0" text="Descripcion" />
                 <Label layoutX="78.0" layoutY="154.0" prefHeight="17.0" prefWidth="73.0" text="Duración" />
-                <TextField layoutX="186.0" layoutY="110.0" />             
-                <Label layoutX="78.0" layoutY="194.0" prefHeight="17.0" prefWidth="89.0" text="Fecha creación" />             
-                <Button layoutX="188.0" layoutY="359.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="89.0" styleClass="button-icon" stylesheets="@agregaritinerario.css" text="Registrar" />
+                <TextField fx:id="campoDescripcion" layoutX="186.0" layoutY="110.0" />             
+                <Button fx:id="botonRegistrar" layoutX="188.0" layoutY="359.0" mnemonicParsing="false" onAction="#RegistrarItinerario" prefHeight="36.0" prefWidth="89.0" styleClass="button-icon" stylesheets="@agregaritinerario.css" text="Registrar" />
                 <Label layoutX="161.0" layoutY="22.0" text="Gestión Itinerarios">
                     <font>
                         <Font size="18.0" />
                     </font>
                 </Label>
-            <DatePicker layoutX="188.0" layoutY="188.0" prefHeight="30.0" prefWidth="200.0" />
-            <ComboBox layoutX="186.0" layoutY="148.0" prefWidth="150.0" />
+            <ComboBox fx:id="comboDuracion" layoutX="186.0" layoutY="148.0" prefWidth="150.0" />
             </children>
         </Pane>
     </children>

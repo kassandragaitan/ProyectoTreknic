@@ -99,6 +99,6 @@ public class GestionUsuariosController implements Initializable {
         campoTipoUsuario.getSelectionModel().clearSelection();
         campoTipoCompania.getSelectionModel().clearSelection();
         campoIdioma.getSelectionModel().clearSelection();
-        // Restablecer también los ComboBox si es necesario
+      
     }
 }

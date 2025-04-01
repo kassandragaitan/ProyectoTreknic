@@ -12,15 +12,20 @@ import java.util.Date;
  * @author k0343
  */
 public class ItinerarioTabla {
-    
-  private int idItinerario;
+
+    private int idItinerario;
     private String nombre;
     private Date fechaCreacion;
     private String descripcion;
     private int duracion;
     private int idUsuario;
-        private Boolean isActive;
+    private Boolean isActive;
     private String foto;
+
+    public ItinerarioTabla() {
+    }
+    
+    
 
     public ItinerarioTabla(int idItinerario, String nombre, Date fechaCreacion, String descripcion, int duracion, int idUsuario) {
         this.idItinerario = idItinerario;
@@ -43,12 +48,29 @@ public class ItinerarioTabla {
     }
 
     // Getters y Setters
-    public int getIdItinerario() { return idItinerario; }
-    public String getNombre() { return nombre; }
-    public Date getFechaCreacion() { return fechaCreacion; }
-    public String getDescripcion() { return descripcion; }
-    public int getDuracion() { return duracion; }
-    public int getIdUsuario() { return idUsuario; }
+    public int getIdItinerario() {
+        return idItinerario;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public Date getFechaCreacion() {
+        return fechaCreacion;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public int getDuracion() {
+        return duracion;
+    }
+
+    public int getIdUsuario() {
+        return idUsuario;
+    }
 
     public Boolean getIsActive() {
         return isActive;
@@ -65,6 +87,29 @@ public class ItinerarioTabla {
     public void setFoto(String foto) {
         this.foto = foto;
     }
-    
-    
+
+    public void setIdItinerario(int idItinerario) {
+        this.idItinerario = idItinerario;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public void setFechaCreacion(Date fechaCreacion) {
+        this.fechaCreacion = fechaCreacion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public void setDuracion(int duracion) {
+        this.duracion = duracion;
+    }
+
+    public void setIdUsuario(int idUsuario) {
+        this.idUsuario = idUsuario;
+    }
+
 }

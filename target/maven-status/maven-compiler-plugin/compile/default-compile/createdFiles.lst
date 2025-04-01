@@ -1,6 +1,5 @@
 modelo\Ticket.class
 controladores\LoginController.class
-modelo\User.class
 controladores\SoporteController$ButtonTableCell.class
 modelo\Itinerario.class
 controladores\SoporteController$2.class
@@ -26,6 +25,7 @@ controladores\GestionItinerarioController$1.class
 module-info.class
 controladores\PrincipalController.class
 controladores\GestionDestinosController.class
+modelo\Notificacion.class
 modelo\UsuarioRegistro.class
 bbdd\Conexion.class
 controladores\ConfiguracionController.class

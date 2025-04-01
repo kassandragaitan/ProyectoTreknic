@@ -14,11 +14,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitMenuButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
 //
 
 /**
@@ -54,6 +56,14 @@ public class MenuController implements Initializable {
     private MenuItem menuItinerarios;
     @FXML
     private MenuItem menuDestinos;
+    @FXML
+    private MenuItem menuActividades;
+    @FXML
+    private MenuItem menuAlojamientos;
+    @FXML
+    private MenuItem menuTipoAlojamientos;
+    @FXML
+    private MenuItem menuCategoria;
 
     /**
      * Initializes the controller class.
@@ -129,5 +139,26 @@ public class MenuController implements Initializable {
 
     @FXML
     private void CerrarSesion(ActionEvent event) {
+           try {
+            // Cargar la pantalla de Login
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/Login.fxml"));
+            Parent root = loader.load();
+
+            // Crear una nueva ventana para el Login
+            Stage loginStage = new Stage();
+            loginStage.setTitle("Inicio de Sesión");
+            loginStage.setScene(new Scene(root));
+            loginStage.show();
+
+            // Cerrar la ventana actual (la principal)
+            Stage stageActual = (Stage) botonCerrarSesion.getScene().getWindow();
+            stageActual.close();
+
+            // Limpiar datos de sesión (si es necesario)
+            //UsuarioSesion.limpiar();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

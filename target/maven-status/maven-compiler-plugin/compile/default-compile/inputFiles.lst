@@ -5,6 +5,7 @@ C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\GestionItinerarioCont
 C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\UsuarioRegistro.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\Utilidades\Animacion.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\Soporte_ItemController.java
+C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\Notificacion.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\Destino.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\ItinerarioTabla.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\GestionResenasController.java
@@ -13,7 +14,6 @@ C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\FAQItem.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\Utilidades\validarTelefonoGlobal.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\AgregarItinerarioController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\Itinerario.java
-C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\User.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\Ticket.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\GestionDestinosController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\LoginController.java
