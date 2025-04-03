@@ -43,12 +43,13 @@ public class GestionTipoDeAlojamientoController implements Initializable {
     @FXML
     private Button botonNuevoTipo;
 
+    private ObservableList<TipoAlojamiento> listaTipos = FXCollections.observableArrayList();
+
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        ObservableList<TipoAlojamiento> listaTipos = FXCollections.observableArrayList();
 
         Conexion.conectar();
         Conexion.cargarDatosTiposAlojamiento(listaTipos);

@@ -25,8 +25,8 @@
                     <TilePane fx:id="destinationsPane" hgap="10" prefColumns="3" vgap="10">
                         <VBox spacing="5" styleClass="destination-card">
                             <ImageView fitHeight="75" fitWidth="130.0" pickOnBounds="true" preserveRatio="true" />
-                            <Label fx:id="labelNombre" text="Barcelona" />
-                            <Label fx:id="labelDescripcion" text="España - Europa" />
+                            <Label fx:id="labelNombre" text="Managua" />
+                            <Label fx:id="labelDescripcion" text="Nicaragua - Centro America" />
                             <Label fx:id="labelFechaCreacion" text="Popularidad: Alta" />
                             <HBox spacing="10">
                                 <Button fx:id="botonEditar" text="Editar" />
@@ -35,8 +35,8 @@
                         </VBox>
                         <VBox spacing="5" styleClass="destination-card">
                             <ImageView fitHeight="75" fitWidth="131.0" pickOnBounds="true" preserveRatio="true" />
-                            <Label fx:id="labelNombr" text="Barcelona" />
-                            <Label fx:id="labelDescripcio" text="España - Europa" />
+                            <Label fx:id="labelNombr" text="Esteli" />
+                            <Label fx:id="labelDescripcio" text="Nicaragua - Centro America" />
                             <Label fx:id="labelFechaCreacio" text="Popularidad: Alta" />
                             <HBox spacing="10">
                                 <Button stylesheets="@gestiondestinos.css" text="Editar" />
@@ -45,8 +45,8 @@
                         </VBox>
                         <VBox spacing="5" styleClass="destination-card">
                             <ImageView fitHeight="75" fitWidth="130.0" pickOnBounds="true" preserveRatio="true" />
-                            <Label fx:id="labelNombreDestino" text="Barcelona" />
-                            <Label fx:id="labelDescripcionDestino" text="España - Europa" />
+                            <Label fx:id="labelNombreDestino" text="Granada" />
+                            <Label fx:id="labelDescripcionDestino" text="Nicaragua - Centro America" />
                             <Label fx:id="labelFechaCreacionDestino" text="Popularidad: Alta" />
                             <HBox spacing="10">
                                 <Button text="Editar" />

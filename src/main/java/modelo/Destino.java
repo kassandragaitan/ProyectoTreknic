@@ -24,10 +24,19 @@ public class Destino {
     }
 
     //constructor para principal
-    public Destino(String nombre, int visitas, double valoracion) {
+    public Destino(int id_destino, String nombre, String descripcion, Date fecha_creacion, int visitas, double valoracion) {
+        this.id_destino = id_destino;
         this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.fecha_creacion = fecha_creacion;
         this.visitas = visitas;
         this.valoracion = valoracion;
+    }
+
+    //constructor para actividades 
+    public Destino(int id_destino, String nombre) {
+        this.id_destino = id_destino;
+        this.nombre = nombre;
     }
 
     public Destino(int id_destino, String nombre, String descripcion, Date fecha_creacion) {
@@ -84,5 +93,10 @@ public class Destino {
 
     public void setValoracion(double valoracion) {
         this.valoracion = valoracion;
+    }
+
+    @Override
+    public String toString() {
+        return nombre;
     }
 }

@@ -15,6 +15,8 @@ public class Actividad {
     private String descripcion;
     private int idDestino;
 
+    public Actividad() {
+    }
 
     public Actividad(int idActividad, String nombre, String descripcion, int idDestino) {
         this.idActividad = idActividad;
@@ -54,4 +56,5 @@ public class Actividad {
     public void setIdDestino(int idDestino) {
         this.idDestino = idDestino;
     }
+
 }

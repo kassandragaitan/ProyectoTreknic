@@ -4,13 +4,21 @@
  */
 package controladores;
 
+import bbdd.Conexion;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
+import modelo.Resena;
 
 /**
  * FXML Controller class
@@ -19,23 +27,36 @@ import javafx.scene.control.TextField;
  */
 public class GestionResenasController implements Initializable {
 
+     @FXML
+    private TableView<Resena> destinosTable;
     @FXML
-    private TabPane tabPane;
+    private TableColumn<Resena, String> destinoColumn;
     @FXML
-    private TextField searchField2;
+    private TableColumn<Resena, String> comentarioDestinoColumn;
     @FXML
-    private ListView<?> faqList;
-    @FXML
-    private TextField searchField1;
-    @FXML
-    private ListView<?> guidesList;
+    private TableColumn<Resena, Integer> clasificacionDestinoColumn;
 
-    /**
-     * Initializes the controller class.
-     */
+    @FXML
+    private TableView<Resena> usuariosTable;
+    @FXML
+    private TableColumn<Resena, String> usuarioColumn;
+    @FXML
+    private TableColumn<Resena, String> comentarioUsuarioColumn;
+    @FXML
+    private TableColumn<Resena, Integer> clasificacionUsuarioColumn;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }    
-    
+        destinoColumn.setCellValueFactory(new PropertyValueFactory<>("nombreDestino"));
+        comentarioDestinoColumn.setCellValueFactory(new PropertyValueFactory<>("comentario"));
+        clasificacionDestinoColumn.setCellValueFactory(new PropertyValueFactory<>("clasificacion"));
+
+        usuarioColumn.setCellValueFactory(new PropertyValueFactory<>("nombreUsuario"));
+        comentarioUsuarioColumn.setCellValueFactory(new PropertyValueFactory<>("comentario"));
+        clasificacionUsuarioColumn.setCellValueFactory(new PropertyValueFactory<>("clasificacion"));
+
+        List<Resena> resenas = Conexion.obtenerResenas();
+        destinosTable.setItems(FXCollections.observableArrayList(resenas));
+        usuariosTable.setItems(FXCollections.observableArrayList(resenas));
+    }
 }

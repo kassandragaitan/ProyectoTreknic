@@ -4,11 +4,15 @@
  */
 package controladores;
 
+import bbdd.Conexion;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -29,30 +33,55 @@ public class PrincipalController implements Initializable {
     private TableColumn<Destino, String> columnaValoracion;
     @FXML
     private TableView<Destino> tablaDestinos;
+    @FXML
+    private Label labelUsuarioReg;
+    @FXML
+    private Label labelItinerarioActivo;
+    @FXML
+    private Label labelDestinosPopulares;
+    @FXML
+    private Label labelActividadesMen;
 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+
         columnaDestino.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         columnaVisitas.setCellValueFactory(new PropertyValueFactory<>("visitas"));
         columnaValoracion.setCellValueFactory(cellData -> {
-            double valoracion = cellData.getValue().getValoracion();
-            String estrellas = "";
-            for (int i = 0; i < 5; i++) {
-                estrellas += i < valoracion ? "★" : "☆";
-            }
-            return new ReadOnlyStringWrapper(estrellas);
+            return new ReadOnlyStringWrapper(generarEstrellas(cellData.getValue().getValoracion()));
         });
 
-        // Añade datos de ejemplo
-        tablaDestinos.getItems().addAll(
-                new Destino("Barcelona, España", 1245, 4.8),
-                new Destino("París, Francia", 1120, 4.7),
-                new Destino("Roma, Italia", 980, 4.6),
-                new Destino("Nueva York, EEUU", 875, 4.5),
-                new Destino("Tokio, Japón", 740, 4.9)
-        );
+        cargarDatosDestinos();
+        cargarDatosPanel();
     }
+
+    private String generarEstrellas(double valoracion) {
+        String estrellas = "";
+        for (int i = 0; i < 5; i++) {
+            estrellas += i < valoracion ? "★" : "☆";
+        }
+        return estrellas;
+    }
+
+    private void cargarDatosDestinos() {
+        ObservableList<Destino> listadoDestinos = FXCollections.observableArrayList();
+        Conexion.cargarDatosDestinos(listadoDestinos);
+        tablaDestinos.setItems(listadoDestinos);
+    }
+
+    private void cargarDatosPanel() {
+        int totalUsuarios = Conexion.contar("usuarios");
+        int totalItinerarios = Conexion.contar("itinerario");
+        int totalDestinosP = Conexion.contar("destinos");
+        int totalActividadesMen = Conexion.contar("actividades");
+
+        labelUsuarioReg.setText(String.valueOf(totalUsuarios) + " Usuarios");
+        labelItinerarioActivo.setText(String.valueOf(totalItinerarios) + " Itinerarios");
+        labelDestinosPopulares.setText(String.valueOf(totalDestinosP) + " Destinos");
+        labelActividadesMen.setText(String.valueOf(totalActividadesMen) + " Actividades");
+    }
+
 }

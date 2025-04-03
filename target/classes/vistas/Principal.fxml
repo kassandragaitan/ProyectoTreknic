@@ -24,29 +24,29 @@
           <!-- Paneles de Datos -->
                       <Pane styleClass="data-panel">
                           <Label layoutX="14.0" layoutY="54.0" styleClass="data-title" text="Usuarios Registrados" />
-                          <Label layoutX="14.0" layoutY="74.0" styleClass="data-value" text="1,254" />
+                          <Label fx:id="labelUsuarioReg" layoutX="14.0" layoutY="74.0" prefHeight="20.0" prefWidth="138.0" styleClass="data-value" text="1,254" />
                           <Label layoutX="119.0" prefHeight="49.0" prefWidth="38.0" styleClass="data-change-positive" text="+12%" />
                       </Pane>
                       <Pane styleClass="data-panel">
                           <Label layoutX="14.0" layoutY="54.0" styleClass="data-title" text="Itinerarios Activos" />
-                          <Label layoutX="14.0" layoutY="74.0" prefHeight="0.0" prefWidth="17.0" styleClass="data-value" text="86" />
+                          <Label fx:id="labelItinerarioActivo" layoutX="14.0" layoutY="74.0" prefHeight="20.0" prefWidth="119.0" styleClass="data-value" text="86" />
                           <Label layoutX="133.0" layoutY="14.0" styleClass="data-change-positive" text="+5%" />
                       </Pane>
                       <Pane styleClass="data-panel">
                           <Label layoutX="14.0" layoutY="54.0" prefHeight="18.0" prefWidth="126.0" styleClass="data-title" text="Destinos Populares" />
-                          <Label layoutX="14.0" layoutY="74.0" styleClass="data-value" text="32" />
+                          <Label fx:id="labelDestinosPopulares" layoutX="14.0" layoutY="74.0" prefHeight="20.0" prefWidth="126.0" styleClass="data-value" text="32" />
                           <Label layoutX="114.0" layoutY="14.0" styleClass="data-change-negative" text="-3%" />
                       </Pane>
                       <Pane styleClass="data-panel">
-                          <Label layoutX="14.0" layoutY="51.0" styleClass="data-title" text="Reservas Mensuales" />
-                          <Label layoutX="14.0" layoutY="74.0" styleClass="data-value" text="543" />
+                          <Label layoutX="14.0" layoutY="51.0" styleClass="data-title" text="Actividades Mensuales" />
+                          <Label fx:id="labelActividadesMen" layoutX="14.0" layoutY="74.0" prefHeight="20.0" prefWidth="149.0" styleClass="data-value" text="543" />
                           <Label layoutX="114.0" layoutY="14.0" styleClass="data-change-positive" text="+18%" />
                       </Pane>
                   </HBox>
                   <!-- Actividad Reciente y Gráfico de Barras -->
                   <HBox spacing="10">
                       <Pane prefHeight="394.0" prefWidth="535.0" styleClass="chart-panel">
-                          <Label styleClass="chart-title" text="Actividad Reciente" textFill="#cc4040" />
+                          <Label style="-fx-background-color: lightblue;" styleClass="chart-title" text="Actividad Reciente" textFill="#cc4040" />
                           <!-- Añade aquí tu gráfico de barras -->
                           <BarChart layoutX="14.0" layoutY="51.0" prefHeight="309.0" prefWidth="500.0">
                               <xAxis>
@@ -58,7 +58,7 @@
                           </BarChart>
                       </Pane>
                       <Pane prefHeight="366.0" prefWidth="686.0" styleClass="table-panel">
-                          <Label styleClass="chart-title" text="Destinos Más Visitados" textFill="#ef4f4f" />
+                          <Label style="-fx-background-color: lightblue;" styleClass="chart-title" text="Destinos Más Visitados" textFill="#ef4f4f" />
                           <TableView fx:id="tablaDestinos" layoutX="26.0" layoutY="41.0" prefHeight="311.0" prefWidth="612.0">
                               <columns>
                                   <TableColumn fx:id="columnaDestino" prefWidth="144.79998397827148" text="DESTINO" />
@@ -77,7 +77,7 @@
                                       <TableColumn prefWidth="75.0" text="C2" />
                                   </columns>
                               </TableView>
-                              <Label layoutX="32.0" layoutY="6.0" text="Label" />
+                              <Label layoutX="32.0" layoutY="6.0" style="-fx-background-color: lightblue;" text="Label" />
                           </children>
                       </Pane>
                   </HBox>

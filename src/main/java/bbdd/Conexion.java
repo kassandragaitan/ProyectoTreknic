@@ -11,16 +11,21 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ComboBox;
 import modelo.Actividad;
 import modelo.Alojamiento;
 import modelo.Categoria;
+import modelo.Destino;
 import modelo.Itinerario;
 import modelo.ItinerarioTabla;
 import modelo.Notificacion;
+import modelo.Resena;
 import modelo.TipoAlojamiento;
 import modelo.UsuarioRegistro;
 
@@ -57,6 +62,24 @@ public class Conexion {
         } catch (SQLException ex) {
             Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public static boolean acceder(String user, String pass) {
+        try {
+            // identificador de usuario es 'nombre' o podría ser 'email' si se usa el correo electrónico para iniciar sesión
+            String consulta = "SELECT * FROM usuarios WHERE nombre = ? AND contrasena = ?";
+
+            PreparedStatement pst = conn.prepareStatement(consulta);
+            pst.setString(1, user);
+            pst.setString(2, pass);
+
+            ResultSet rs = pst.executeQuery();
+
+            return rs.next();
+        } catch (SQLException ex) {
+            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
     }
 
     public static boolean registrarUsuario(UsuarioRegistro usuarioRegistro) {
@@ -254,14 +277,15 @@ public class Conexion {
         }
     }
 
-    public static void cargarComboDestino(ComboBox<Integer> comboDestino) {
+    public static void cargarComboDestino(ComboBox<Destino> comboDestino) {
         conectar();
         try {
-            String consulta = "SELECT id_destino FROM destinos";
+            String consulta = "SELECT id_destino, nombre FROM destinos";
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery(consulta);
             while (rs.next()) {
-                comboDestino.getItems().add(rs.getInt("id_destino"));
+                Destino destino = new Destino(rs.getInt("id_destino"), rs.getString("nombre"));
+                comboDestino.getItems().add(destino);
             }
         } catch (SQLException ex) {
             Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
@@ -282,6 +306,44 @@ public class Conexion {
                             rs.getInt("id_destino")
                     ));
                 }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            cerrarConexion();
+        }
+    }
+////////////////////////
+
+    public static boolean registrarAlojamiento(Alojamiento alojamiento) {
+        conectar();
+        try {
+            String consulta = "INSERT INTO alojamiento (nombre, id_tipo_fk, contacto, imagen, id_destino_fk) VALUES (?, ?, ?, ?, ?)";
+            PreparedStatement pst = conn.prepareStatement(consulta);
+            pst.setString(1, alojamiento.getNombre());
+            pst.setInt(2, alojamiento.getIdTipo());
+            pst.setString(3, alojamiento.getContacto());
+            pst.setString(4, alojamiento.getImagen());
+            pst.setInt(5, alojamiento.getIdDestino());
+            int resultado = pst.executeUpdate();
+            return resultado > 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        } finally {
+            cerrarConexion();
+        }
+    }
+
+    public static void cargarComboTipoAlojamiento(ComboBox<TipoAlojamiento> comboTipo) {
+        conectar();
+        try {
+            String consulta = "SELECT id_tipo, tipo FROM tipoalojamiento";
+            Statement st = conn.createStatement();
+            ResultSet rs = st.executeQuery(consulta);
+            while (rs.next()) {
+                TipoAlojamiento tipo = new TipoAlojamiento(rs.getInt("id_tipo"), rs.getString("tipo"));
+                comboTipo.getItems().add(tipo);
             }
         } catch (SQLException ex) {
             Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
@@ -328,6 +390,23 @@ public class Conexion {
         } catch (SQLException ex) {
             Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
             return false;
+        } finally {
+            cerrarConexion();
+        }
+    }
+
+    public static void cargarDatosTiposAlojamientoRegistrar(ComboBox<TipoAlojamiento> comboTipo) {
+        conectar();
+        try {
+            String consultaCarga = "SELECT id_tipo, tipo FROM tipoalojamiento";
+            Statement st = conn.createStatement();
+            ResultSet rs = st.executeQuery(consultaCarga);
+            while (rs.next()) {
+                TipoAlojamiento tipo = new TipoAlojamiento(rs.getInt("id_tipo"), rs.getString("tipo"));
+                comboTipo.getItems().add(tipo);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             cerrarConexion();
         }
@@ -389,5 +468,75 @@ public class Conexion {
             cerrarConexion();
         }
     }
+
+public static List<Resena> obtenerResenas() {
+    List<Resena> resenas = new ArrayList<>();
+    conectar();
+    try (Statement stmt = conn.createStatement();
+         ResultSet rs = stmt.executeQuery("SELECT r.id_resena, d.nombre as destino_nombre, r.comentario, r.clasificacion, u.nombre as usuario_nombre FROM resenas r JOIN destinos d ON r.id_destino = d.id_destino JOIN usuarios u ON r.id_usuario = u.id_usuario")) {
+        while (rs.next()) {
+            resenas.add(new Resena(
+                rs.getInt("id_resena"),
+                rs.getString("destino_nombre"),
+                rs.getString("comentario"),
+                rs.getInt("clasificacion"),
+                rs.getString("usuario_nombre")
+            ));
+        }
+    } catch (SQLException e) {
+        System.err.println("Error al obtener reseñas: " + e.getMessage());
+        e.printStackTrace();
+    } finally {
+        cerrarConexion();
+    }
+    return resenas;
+}
+
+
+
+public static void cargarDatosDestinos(ObservableList<Destino> listado) {
+    conectar();
+    try {
+        // Asumiendo que el número de 'visitas' es el conteo de reseñas para cada destino.
+        String consulta = "SELECT d.id_destino, d.nombre, d.descripcion, d.fecha_creacion, d.imagen, " +
+                          "COUNT(r.id_resena) as visitas, " +
+                          "COALESCE(AVG(r.clasificacion), 0) as valoracion " +
+                          "FROM destinos d " +
+                          "LEFT JOIN resenas r ON d.id_destino = r.id_destino " +
+                          "GROUP BY d.id_destino";
+        try (Statement st = conn.createStatement(); ResultSet rs = st.executeQuery(consulta)) {
+            while (rs.next()) {
+                listado.add(new Destino(
+                    rs.getInt("id_destino"),
+                    rs.getString("nombre"),
+                    rs.getString("descripcion"),
+                    rs.getDate("fecha_creacion"),
+                    rs.getInt("visitas"),
+                    rs.getDouble("valoracion")
+                ));
+            }
+        }
+    } catch (SQLException ex) {
+        Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+    } finally {
+        cerrarConexion();
+    }
+}
+public static int contar(String tabla) {
+    int total = 0;
+    conectar(); // Asegúrate de que la conexión se abre
+    String query = "SELECT COUNT(*) FROM " + tabla;
+    try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
+        if (rs.next()) {
+            total = rs.getInt(1);
+        }
+    } catch (SQLException ex) {
+        Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+    } finally {
+        cerrarConexion(); // Asegúrate de cerrar la conexión
+    }
+    return total;
+}
+
 
 }

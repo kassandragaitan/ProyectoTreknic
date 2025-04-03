@@ -18,6 +18,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import modelo.Actividad;
+import modelo.Destino;
 
 /**
  * FXML Controller class
@@ -31,7 +32,7 @@ public class AgregarActividadController implements Initializable {
     @FXML
     private TextField campoDescripcion;
     @FXML
-    private ComboBox<Integer> comboDestino;
+    private ComboBox<Destino> comboDestino;
     @FXML
     private Button botonRegistrar;
 
@@ -41,9 +42,7 @@ public class AgregarActividadController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         Conexion.conectar();
-        ObservableList<Integer> destinos = FXCollections.observableArrayList();
         Conexion.cargarComboDestino(comboDestino);
-        comboDestino.setItems(destinos);
         Conexion.cerrarConexion();
     }
 
@@ -56,11 +55,12 @@ public class AgregarActividadController implements Initializable {
         } else if (comboDestino.getValue() == null) {
             Alertas.aviso("Campo vacío", "Debe seleccionar un destino.");
         } else {
+            Destino destinoSeleccionado = comboDestino.getValue();
             Actividad actividad = new Actividad(
-                    0, 
+                    0,
                     campoNombre.getText(),
                     campoDescripcion.getText(),
-                    comboDestino.getValue()
+                    destinoSeleccionado.getId_destino()
             );
 
             if (Conexion.registrarActividad(actividad)) {

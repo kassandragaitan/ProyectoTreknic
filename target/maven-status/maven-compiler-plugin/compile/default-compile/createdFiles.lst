@@ -41,6 +41,7 @@ controladores\GestionCategoriaController.class
 controladores\PrincipalController.class
 controladores\GestionDestinosController.class
 controladores\GestionActividadesController.class
+modelo\Resena.class
 modelo\Notificacion.class
 Utilidades\compruebaCampo.class
 controladores\GestionItinerarioController.class
