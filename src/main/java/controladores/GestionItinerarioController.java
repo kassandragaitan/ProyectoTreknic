@@ -64,11 +64,26 @@ public class GestionItinerarioController implements Initializable {
     private Button botonNuevoItinerario;
     @FXML
     private TableView<ItinerarioTabla> tablaItinerario;
+    @FXML
+    private Button botonBuscar;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         cargarItinerarios();
         inicializarAccionesColumna();
+
+        ///
+        campoBuscarItinerario.textProperty().addListener((observable, oldValue, newValue) -> {
+            buscarItinerariosEnTiempoReal(newValue);
+        });
+    }
+
+    private void buscarItinerariosEnTiempoReal(String texto) {
+        ObservableList<ItinerarioTabla> listaItinerarios = FXCollections.observableArrayList();
+        Conexion.conectar();
+        Conexion.cargarDatosItinerariosFiltrados(listaItinerarios, texto);
+        Conexion.cerrarConexion();
+        tablaItinerario.setItems(listaItinerarios);
     }
 
     public void cargarItinerarios() {
@@ -114,11 +129,31 @@ public class GestionItinerarioController implements Initializable {
     }
 
     private void viewItinerarioDetails(ItinerarioTabla itinerario) {
-        // Implementación de la visualización de detalles
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/AgregarItinerario.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Agregar itinerario");
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void editItinerario(ItinerarioTabla itinerario) {
-        // Implementación de la edición de itinerarios
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/AgregarItinerario.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Agregar itinerario");
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void toggleActiveStatus(ItinerarioTabla itinerario) {
@@ -140,5 +175,24 @@ public class GestionItinerarioController implements Initializable {
             e.printStackTrace();
         }
 
+    }
+
+    @FXML
+    private void buscarItinerarios(ActionEvent event) {
+        String textoBusqueda = campoBuscarItinerario.getText().trim();
+
+        // Si el campo está vacío, recargamos todo:
+        if (textoBusqueda.isEmpty()) {
+            cargarItinerarios(); // método que muestra todos los registros
+            return;
+        }
+
+        // Si el campo no está vacío, usamos la consulta filtrada
+        ObservableList<ItinerarioTabla> listaItinerarios = FXCollections.observableArrayList();
+        Conexion.conectar();
+        Conexion.cargarDatosItinerariosFiltrados(listaItinerarios, textoBusqueda);
+        Conexion.cerrarConexion();
+
+        tablaItinerario.setItems(listaItinerarios);
     }
 }

@@ -185,6 +185,42 @@ public class Conexion {
         }
     }
 
+    public static void cargarDatosItinerariosFiltrados(ObservableList<ItinerarioTabla> listaItinerarios, String busqueda) {
+        Connection conn = Conexion.conn;
+
+        if (conn == null) {
+            System.err.println("Error: La conexión a la base de datos no está abierta.");
+            return;
+        }
+
+        String sql = "SELECT id_itinerario, nombre, fecha_creacion, descripcion, duracion "
+                + "FROM itinerario "
+                + "WHERE nombre LIKE ? OR descripcion LIKE ? OR CAST(duracion AS CHAR) LIKE ?";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            String wildcard = "%" + busqueda + "%";
+            ps.setString(1, wildcard);
+            ps.setString(2, wildcard);
+            ps.setString(3, wildcard);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    ItinerarioTabla it = new ItinerarioTabla();
+                    it.setIdItinerario(rs.getInt("id_itinerario"));
+                    it.setNombre(rs.getString("nombre"));
+                    it.setFechaCreacion(rs.getDate("fecha_creacion"));
+                    it.setDescripcion(rs.getString("descripcion"));
+                    it.setDuracion(rs.getInt("duracion"));
+
+                    listaItinerarios.add(it);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al cargar itinerarios filtrados:");
+            e.printStackTrace();
+        }
+    }
+
     public static void cargarDatosItinerarios(ObservableList<ItinerarioTabla> listado) {
         conectar();
         try {
@@ -469,74 +505,71 @@ public class Conexion {
         }
     }
 
-public static List<Resena> obtenerResenas() {
-    List<Resena> resenas = new ArrayList<>();
-    conectar();
-    try (Statement stmt = conn.createStatement();
-         ResultSet rs = stmt.executeQuery("SELECT r.id_resena, d.nombre as destino_nombre, r.comentario, r.clasificacion, u.nombre as usuario_nombre FROM resenas r JOIN destinos d ON r.id_destino = d.id_destino JOIN usuarios u ON r.id_usuario = u.id_usuario")) {
-        while (rs.next()) {
-            resenas.add(new Resena(
-                rs.getInt("id_resena"),
-                rs.getString("destino_nombre"),
-                rs.getString("comentario"),
-                rs.getInt("clasificacion"),
-                rs.getString("usuario_nombre")
-            ));
-        }
-    } catch (SQLException e) {
-        System.err.println("Error al obtener reseñas: " + e.getMessage());
-        e.printStackTrace();
-    } finally {
-        cerrarConexion();
-    }
-    return resenas;
-}
-
-
-
-public static void cargarDatosDestinos(ObservableList<Destino> listado) {
-    conectar();
-    try {
-        // Asumiendo que el número de 'visitas' es el conteo de reseñas para cada destino.
-        String consulta = "SELECT d.id_destino, d.nombre, d.descripcion, d.fecha_creacion, d.imagen, " +
-                          "COUNT(r.id_resena) as visitas, " +
-                          "COALESCE(AVG(r.clasificacion), 0) as valoracion " +
-                          "FROM destinos d " +
-                          "LEFT JOIN resenas r ON d.id_destino = r.id_destino " +
-                          "GROUP BY d.id_destino";
-        try (Statement st = conn.createStatement(); ResultSet rs = st.executeQuery(consulta)) {
+    public static List<Resena> obtenerResenas() {
+        List<Resena> resenas = new ArrayList<>();
+        conectar();
+        try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery("SELECT r.id_resena, d.nombre as destino_nombre, r.comentario, r.clasificacion, u.nombre as usuario_nombre FROM resenas r JOIN destinos d ON r.id_destino = d.id_destino JOIN usuarios u ON r.id_usuario = u.id_usuario")) {
             while (rs.next()) {
-                listado.add(new Destino(
-                    rs.getInt("id_destino"),
-                    rs.getString("nombre"),
-                    rs.getString("descripcion"),
-                    rs.getDate("fecha_creacion"),
-                    rs.getInt("visitas"),
-                    rs.getDouble("valoracion")
+                resenas.add(new Resena(
+                        rs.getInt("id_resena"),
+                        rs.getString("destino_nombre"),
+                        rs.getString("comentario"),
+                        rs.getInt("clasificacion"),
+                        rs.getString("usuario_nombre")
                 ));
             }
+        } catch (SQLException e) {
+            System.err.println("Error al obtener reseñas: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            cerrarConexion();
         }
-    } catch (SQLException ex) {
-        Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
-    } finally {
-        cerrarConexion();
+        return resenas;
     }
-}
-public static int contar(String tabla) {
-    int total = 0;
-    conectar(); // Asegúrate de que la conexión se abre
-    String query = "SELECT COUNT(*) FROM " + tabla;
-    try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
-        if (rs.next()) {
-            total = rs.getInt(1);
-        }
-    } catch (SQLException ex) {
-        Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
-    } finally {
-        cerrarConexion(); // Asegúrate de cerrar la conexión
-    }
-    return total;
-}
 
+    public static void cargarDatosDestinos(ObservableList<Destino> listado) {
+        conectar();
+        try {
+            // Asumiendo que el número de 'visitas' es el conteo de reseñas para cada destino.
+            String consulta = "SELECT d.id_destino, d.nombre, d.descripcion, d.fecha_creacion, d.imagen, "
+                    + "COUNT(r.id_resena) as visitas, "
+                    + "COALESCE(AVG(r.clasificacion), 0) as valoracion "
+                    + "FROM destinos d "
+                    + "LEFT JOIN resenas r ON d.id_destino = r.id_destino "
+                    + "GROUP BY d.id_destino";
+            try (Statement st = conn.createStatement(); ResultSet rs = st.executeQuery(consulta)) {
+                while (rs.next()) {
+                    listado.add(new Destino(
+                            rs.getInt("id_destino"),
+                            rs.getString("nombre"),
+                            rs.getString("descripcion"),
+                            rs.getDate("fecha_creacion"),
+                            rs.getInt("visitas"),
+                            rs.getDouble("valoracion")
+                    ));
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            cerrarConexion();
+        }
+    }
+
+    public static int contar(String tabla) {
+        int total = 0;
+        conectar(); // Asegúrate de que la conexión se abre
+        String query = "SELECT COUNT(*) FROM " + tabla;
+        try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
+            if (rs.next()) {
+                total = rs.getInt(1);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            cerrarConexion(); // Asegúrate de cerrar la conexión
+        }
+        return total;
+    }
 
 }
