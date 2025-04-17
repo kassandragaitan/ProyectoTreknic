@@ -14,6 +14,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import modelo.TipoAlojamiento;
 
 /**
@@ -27,22 +29,25 @@ public class AgregarTipoAlojamientoController implements Initializable {
     private TextField campoTipo;
     @FXML
     private Button botonRegistrar;
+    @FXML
+    private ImageView imagenTrekNic;
 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }    
+        Image imagen = new Image(getClass().getResourceAsStream("/img/Encabezado.png"));
+        imagenTrekNic.setImage(imagen);
+    }
 
     @FXML
     private void RegistrarTipoAlojamiento(ActionEvent event) {
-         if (compruebaCampo.compruebaVacio(campoTipo)) {
+        if (compruebaCampo.compruebaVacio(campoTipo)) {
             Alertas.aviso("Campo vacío", "El tipo de alojamiento no puede estar vacío.");
         } else {
             TipoAlojamiento tipo = new TipoAlojamiento(campoTipo.getText());
-            
+
             if (Conexion.registrarTipoAlojamiento(tipo)) {
                 Alertas.informacion("Tipo de Alojamiento registrado exitosamente.");
                 campoTipo.clear();
@@ -50,7 +55,8 @@ public class AgregarTipoAlojamientoController implements Initializable {
                 Alertas.error("Error en el registro", "Ocurrió un error al registrar el tipo de alojamiento.");
             }
         }
-        
+
     }
-    
+
+
 }

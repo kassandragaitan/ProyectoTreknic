@@ -23,7 +23,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import modelo.Alojamiento;
-import modelo.ItinerarioTabla;
+
 
 /**
  * FXML Controller class
@@ -59,6 +59,18 @@ public class GestionAlojamientoController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         cargarAlojamientos();
+        campoBuscarAlojamiento.textProperty().addListener((observable, oldValue, newValue) -> {
+            buscarAlojamientosEnTiempoReal(newValue);
+        });
+
+    }
+
+    private void buscarAlojamientosEnTiempoReal(String texto) {
+        ObservableList<Alojamiento> listaAlojamientos = FXCollections.observableArrayList();
+        Conexion.conectar();
+        Conexion.cargarDatosAlojamientosFiltrados(listaAlojamientos, texto);
+        Conexion.cerrarConexion();
+        tablaAlojamientos.setItems(listaAlojamientos);
     }
 
     private void cargarAlojamientos() {

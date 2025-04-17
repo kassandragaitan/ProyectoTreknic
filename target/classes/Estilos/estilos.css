@@ -1,0 +1,126 @@
+.anchorpane-style {
+    -fx-background-color: #75b6fa;
+}
+
+.rootDos {
+    -fx-background-color: #2574a9;
+    -fx-background-radius: 30px;
+    -fx-padding: 20px;
+}
+
+.label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.labelDos {
+    -fx-text-fill: #0c2461;
+    -fx-font-size: 13px;
+    -fx-underline: true;
+}
+
+.text-field, .password-field {
+    -fx-background-color: white;
+    -fx-background-radius: 18px;
+    -fx-border-radius: 18px;
+    -fx-padding: 0 10 0 10;
+    -fx-pref-width: 220px;
+    -fx-font-size: 13px;
+}
+
+.footer-pane {
+    -fx-background-color: #165a98;
+    -fx-background-radius: 30px;
+}
+
+.boton-login {
+    -fx-background-color: transparent;
+    -fx-border-color: white;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-border-radius: 20px;
+    -fx-background-radius: 20px;
+    -fx-padding: 4 14;
+}
+
+/* registro-usuario.css */
+.fondo-registro {
+    -fx-background-color: #dbeeff;
+}
+
+.panel-registro {
+    -fx-background-color: #003d7a;
+          -fx-background-radius: 20;
+    -fx-padding: 15 15 15 20;
+
+}
+
+.titulo-registro {
+    -fx-font-size: 20px;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.label-campo {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 11px;
+}
+
+.campo-registro {
+    -fx-text-fill: #003d7a;
+
+    -fx-background-color: #f5f5f5;
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-border-color: transparent;
+    -fx-padding: 6px;
+    -fx-pref-width: 220px;
+}
+
+/* Botón con animación y efecto hover */
+.boton-registro {
+    -fx-background-color: white;
+    -fx-text-fill: #003d7a;
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-border-color: white;
+    -fx-font-weight: bold;
+/*    o 4*/
+    -fx-padding: 6px 14px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(one-pass-box, rgba(0,0,0,0.2), 2, 0, 0, 1);
+}
+.boton-registro:hover {
+    -fx-background-color: #e2eaff;
+    -fx-text-fill: #002c5f;
+    -fx-scale-x: 1.03;
+    -fx-scale-y: 1.03;
+    -fx-effect: dropshadow(one-pass-box, rgba(0,0,0,0.3), 4, 0.3, 0, 2);
+}
+
+.link-signin {
+    -fx-text-fill: white;
+    -fx-font-size: 10px;
+    -fx-alignment: center;
+}
+
+.combo-registro {
+    -fx-text-fill: #003d7a;
+
+    -fx-background-color: #f5f5f5;
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-border-color: transparent;
+
+    /* 🔽 Ajustamos altura visual */
+    -fx-pref-width: 220px;
+    -fx-pref-height: 28px;  /* 👉 Esta línea reduce el alto */
+    -fx-padding: 2 10 2 10; /* 👉 Margen interno más delgado */
+    
+    -fx-font-size: 13px;
+}
+
+
+

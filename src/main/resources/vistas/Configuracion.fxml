@@ -1,50 +1,157 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.net.URL?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TabPane?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<HBox alignment="CENTER" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controladores.ConfiguracionController">
-   <children>
-      <AnchorPane id="AnchorPane">
-          <stylesheets>
-              <URL value="@configuracion.css" />
-          </stylesheets>
-          <children>
-              <TabPane fx:id="tabPane" layoutY="-1.0" prefHeight="585.0" prefWidth="786.0" tabClosingPolicy="UNAVAILABLE">
-                  <tabs>
-                      <Tab text="General">
-                          <content>
-                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                            <!-- Inserta aquí los controles para la configuración General -->
-                        </AnchorPane>
-                          </content>
-                      </Tab>
-                      <Tab text="Seguridad">
-                          <content>
-                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                            <!-- Inserta aquí los controles para la configuración de Seguridad -->
-                        </AnchorPane>
-                          </content>
-                      </Tab>
-                      <Tab text="Apariencia">
-                          <content>
-                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                           <children>
-                              <Label layoutX="14.0" layoutY="30.0" text="Tema" />
-                              <Label layoutX="386.0" layoutY="30.0" text="Color" />
-                              <Label layoutX="15.0" layoutY="170.0" text="CSS Personalizado" />
-                           </children>
-                        </AnchorPane>
-                          </content>
-                      </Tab>
-                      <!-- Agrega más tabs si es necesario -->
-                  </tabs>
-              </TabPane>
-          </children>
-      </AnchorPane>
-   </children>
+<HBox xmlns="http://javafx.com/javafx/23.0.1"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controladores.ConfiguracionController"
+      alignment="TOP_CENTER">
+
+    <children>
+        <AnchorPane>
+            <VBox alignment="TOP_CENTER"
+                  spacing="20.0"
+                  AnchorPane.topAnchor="20.0"
+                  AnchorPane.leftAnchor="20.0"
+                  AnchorPane.rightAnchor="20.0"
+                  AnchorPane.bottomAnchor="20.0">
+
+                <Label text="Configuraciones del Sistema"
+                       style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2d3436;" />
+
+                <Separator prefWidth="850.0" />
+
+                <TabPane fx:id="tabPane"
+                         tabClosingPolicy="UNAVAILABLE"
+                         prefWidth="850.0"
+                         prefHeight="500.0">
+
+                    <tabs>
+                        <Tab text="General">
+                            <AnchorPane>
+                                <GridPane layoutX="30.0" layoutY="30.0"
+                                          hgap="20.0" vgap="15.0"
+                                          AnchorPane.topAnchor="10.0"
+                                          AnchorPane.leftAnchor="10.0"
+                                          AnchorPane.rightAnchor="10.0"
+                                          AnchorPane.bottomAnchor="10.0">
+                                    <columnConstraints>
+                                        <ColumnConstraints percentWidth="50"/>
+                                        <ColumnConstraints percentWidth="50"/>
+                                    </columnConstraints>
+                                    <rowConstraints>
+                                        <RowConstraints minHeight="40.0"/>
+                                        <RowConstraints minHeight="40.0"/>
+                                        <RowConstraints minHeight="40.0"/>
+                                        <RowConstraints minHeight="40.0"/>
+                                        <RowConstraints minHeight="80.0"/>
+                                    </rowConstraints>
+
+                                    <children>
+                                        <Label text="Nombre del Sitio" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                                        <TextField fx:id="nombreSitioField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                                        <Label text="Email de Contacto" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                                        <TextField fx:id="emailContactoField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                                        <Label text="Teléfono de Soporte" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                                        <TextField fx:id="telefonoSoporteField" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                                        <Label text="Idioma Predeterminado" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                                        <ComboBox fx:id="idiomaComboBox" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+                                        <Label text="Descripción del Sitio" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+                                        <TextArea fx:id="descripcionField" GridPane.rowIndex="4" GridPane.columnIndex="1" wrapText="true"/>
+                                    </children>
+                                </GridPane>
+                            </AnchorPane>
+                        </Tab>
+
+                        <Tab text="Seguridad">
+                            <AnchorPane>
+                                <VBox spacing="10.0" layoutX="30.0" layoutY="30.0"
+                                      AnchorPane.topAnchor="10.0"
+                                      AnchorPane.leftAnchor="10.0"
+                                      AnchorPane.rightAnchor="10.0"
+                                      AnchorPane.bottomAnchor="10.0">
+                                    <children>
+                                        <HBox spacing="10.0">
+                                            <Label text="Política de Contraseñas"/>
+                                            <ComboBox fx:id="politicaPasswordComboBox" prefWidth="400.0"/>
+                                        </HBox>
+
+                                        <HBox spacing="10.0">
+                                            <Label text="Tiempo de Expiración de Sesión (minutos)"/>
+                                            <TextField fx:id="expiracionSesionField"/>
+                                        </HBox>
+
+                                        <HBox spacing="10.0">
+                                            <Label text="Intentos de Inicio de Sesión Fallidos"/>
+                                            <TextField fx:id="intentosFallidosField"/>
+                                        </HBox>
+
+                                        <CheckBox fx:id="dosFactoresCheckBox" text="Habilitar autenticación de dos factores" selected="true"/>
+
+                                        <VBox spacing="5.0">
+                                            <Label text="Lista Blanca de IPs (separadas por comas)"/>
+                                            <TextField fx:id="listaBlancaIPsField" promptText="192.168.1.1, 10.0.0.1"/>
+                                            <Label text="Deje en blanco para permitir todas las IPs"
+                                                   style="-fx-font-size: 11px; -fx-text-fill: #888;"/>
+                                        </VBox>
+
+                                        <Pane style="-fx-background-color: #fff8e1; -fx-padding: 10; -fx-border-color: #fdd835;">
+                                            <VBox spacing="5.0">
+                                                <Label text="Nota de seguridad"
+                                                       style="-fx-font-weight: bold; -fx-text-fill: #e65100;"/>
+                                                <Label text="Recuerde que las configuraciones de seguridad pueden afectar la experiencia del usuario. Encuentre un equilibrio entre seguridad y usabilidad."
+                                                       wrapText="true"/>
+                                            </VBox>
+                                        </Pane>
+                                    </children>
+                                </VBox>
+                            </AnchorPane>
+                        </Tab>
+
+                        <Tab text="Apariencia">
+                            <AnchorPane>
+                                <VBox spacing="10.0" layoutX="30.0" layoutY="30.0"
+                                      AnchorPane.topAnchor="10.0"
+                                      AnchorPane.leftAnchor="10.0"
+                                      AnchorPane.rightAnchor="10.0"
+                                      AnchorPane.bottomAnchor="10.0">
+                                    <children>
+                                        <HBox spacing="10.0">
+                                            <Label text="Tema"/>
+                                            <ComboBox fx:id="temaComboBox"/>
+                                        </HBox>
+
+                                        <HBox spacing="10.0">
+                                            <Label text="Color Primario"/>
+                                            <TextField fx:id="colorPrimarioField"/>
+                                        </HBox>
+
+                                        <HBox spacing="10.0">
+                                            <Label text="URL del Logo"/>
+                                            <TextField fx:id="urlLogoField"/>
+                                        </HBox>
+
+                                        <HBox spacing="10.0">
+                                            <Label text="URL del Favicon"/>
+                                            <TextField fx:id="urlFaviconField"/>
+                                        </HBox>
+
+                                        <VBox spacing="5.0">
+                                            <Label text="CSS Personalizado"/>
+                                            <TextArea fx:id="cssPersonalizadoField" wrapText="true"/>
+                                        </VBox>
+                                    </children>
+                                </VBox>
+                            </AnchorPane>
+                        </Tab>
+                    </tabs>
+                </TabPane>
+            </VBox>
+        </AnchorPane>
+    </children>
 </HBox>

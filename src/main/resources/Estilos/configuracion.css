@@ -1,0 +1,98 @@
+/*
+ * Empty Stylesheet file.
+ */
+
+/* Estilo del fondo general */
+.root, .mainFxmlClass {
+    -fx-background-color: #f4f6f8;
+    -fx-padding: 20;
+    -fx-font-family: 'Segoe UI', sans-serif;
+}
+
+/* Título principal */
+.title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2d3436;
+    -fx-alignment: center;
+}
+
+/* Subtítulo o secciones */
+.sub-title {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #546e7a;
+}
+
+/* Separadores */
+.separator {
+    -fx-background-color: #cfd8dc;
+}
+
+/* Estilo de las tablas */
+.table-view {
+    -fx-background-color: white;
+    -fx-border-color: #e0e0e0;
+    -fx-table-cell-border-color: transparent;
+    -fx-padding: 10;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0.1, 0, 1);
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #f0f0f0;
+}
+
+.table-view .column-header {
+    -fx-font-weight: bold;
+    -fx-text-fill: #455a64;
+    -fx-font-size: 13px;
+    -fx-alignment: CENTER;
+}
+
+.table-view .table-row-cell {
+    -fx-background-color: white;
+    -fx-cell-size: 40px;
+}
+
+.table-view .table-row-cell:odd {
+    -fx-background-color: #f9f9f9;
+}
+
+.table-view .table-row-cell:selected {
+    -fx-background-color: #e3f2fd;
+}
+
+/* Estilo para campos de búsqueda */
+.text-field {
+    -fx-border-color: #ccc;
+    -fx-border-width: 1px;
+    -fx-background-color: #fff;
+    -fx-padding: 6px 10px;
+    -fx-background-radius: 4;
+    -fx-border-radius: 4;
+    -fx-font-size: 13px;
+}
+
+/* Botones estándar */
+.button {
+    -fx-background-color: #1976d2;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 6 14;
+    -fx-background-radius: 5;
+}
+
+.button:hover {
+    -fx-background-color: #1565c0;
+}
+
+/* Toggle buttons para días */
+.toggle-button {
+    -fx-background-color: #e3f2fd;
+    -fx-text-fill: #1976d2;
+    -fx-font-weight: bold;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+}

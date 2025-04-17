@@ -31,7 +31,7 @@ public class LoginController implements Initializable {
     @FXML
     private TextField campoUsuario;
     @FXML
-    private PasswordField campoContrasena; 
+    private PasswordField campoContrasena;
 
     /**
      * Initializes the controller class.
@@ -44,8 +44,8 @@ public class LoginController implements Initializable {
     @FXML
     private void Acceder(ActionEvent event) {
 
-         String miUsuario = campoUsuario.getText();
-        String mipass = campoContrasena.getText();  
+        String miUsuario = campoUsuario.getText();
+        String mipass = campoContrasena.getText();
 
         Conexion.conectar();
 
@@ -67,10 +67,15 @@ public class LoginController implements Initializable {
             Stage stage = new Stage();
             stage.setTitle("Treknic");
             stage.setScene(new Scene(root));
+            
+            stage.setMinWidth(1000);
+            stage.setMinHeight(700);
+
+         
             stage.setMaximized(true);
             stage.show();
 
-            // Cerrar la ventana de login
+        
             Stage loginStage = (Stage) campoUsuario.getScene().getWindow();
             loginStage.close();
 

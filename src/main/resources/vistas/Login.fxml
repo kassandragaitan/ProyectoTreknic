@@ -1,46 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.String?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
-<?import javafx.scene.text.Font?>
 
 <HBox alignment="CENTER" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controladores.LoginController">
     <children>
-        <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" styleClass="anchorpane-style" stylesheets="@estilos.css">
+        <AnchorPane layoutX="10.0" layoutY="10.0" prefHeight="600.0" prefWidth="900.0" styleClass="anchorpane-style" stylesheets="@/Estilos/estilos.css">
+
             <children>
-                <Pane layoutX="279.0" layoutY="80.0" prefHeight="439.0" prefWidth="342.0" styleClass="rootDos" stylesheets="@estilos.css">
+                <!-- Títulos superiores -->
+                <Label layoutX="355.0" layoutY="20.0" style="-fx-font-size: 16px; -fx-text-fill: #2d3436;" text="Inicia sesión para continuar" />
+                <Label layoutX="405.0" layoutY="50.0" style="-fx-font-size: 28px; -fx-text-fill: #0c2461; -fx-font-weight: bold;" text="Trek" />
+                <Label layoutX="460.0" layoutY="50.0" style="-fx-font-size: 28px; -fx-text-fill: #0984e3; -fx-font-weight: bold;" text="nic" />
+
+                <!-- Panel principal -->
+                <Pane layoutX="279.0" layoutY="100.0" prefHeight="439.0" prefWidth="342.0" styleClass="rootDos">
                     <children>
-                        <TextField fx:id="campoUsuario" layoutX="61.0" layoutY="240.0" prefHeight="36.0" />
-                        <PasswordField fx:id="campoContrasena" layoutX="61.0" layoutY="328.0" prefHeight="36.0" prefWidth="240.0" />
-                        <Label layoutX="39.0" layoutY="203.0" text="Usuario" />
-                        <Label layoutX="39.0" layoutY="289.0" text="Contraseña" />
-                        <Label layoutX="34.0" layoutY="164.0" text="Log in">
-                            <font>
-                                <Font size="18.0" />
-                            </font>
-                        </Label>
-                        <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="71.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" styleClass="imagen-login" />
-                        <Pane layoutX="-3.0" layoutY="393.0" prefHeight="46.0" prefWidth="349.0" styleClass="root" stylesheets="@estilos.css">
+                        <ImageView fitHeight="170.0" fitWidth="237.0" layoutX="62.0" layoutY="7.0" pickOnBounds="true" preserveRatio="true" styleClass="imagen-login">
+                            <image>
+                                <Image url="@../img/montanita.png" />
+                            </image>
+                        </ImageView>
+
+                        <!-- Título "Log in" corregido -->
+                        <Label fx:id="loginlabel" layoutX="39.0" layoutY="157.0" prefHeight="40.0" prefWidth="200.0" style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: white;" text="Iniciar sesión" />
+
+                        <!-- Campo Email -->
+                        <Label layoutX="39.0" layoutY="213.0" styleClass="label" text="Usuario" />
+                        <TextField fx:id="campoUsuario" layoutX="61.0" layoutY="240.0" prefHeight="36.0" styleClass="text-field" />
+
+                        <!-- Campo Password -->
+                        <Label layoutX="39.0" layoutY="289.0" styleClass="label" text="Contraseña" />
+                        <PasswordField fx:id="campoContrasena" layoutX="61.0" layoutY="316.0" prefHeight="36.0" styleClass="password-field" />
+
+                        <!-- Botón Login en pie -->
+                        <Pane layoutX="-3.0" layoutY="380.0" prefHeight="60.0" prefWidth="349.0" styleClass="footer-pane">
                             <children>
-                                <Button fx:id="botonAcceder" layoutX="140.0" layoutY="11.0" mnemonicParsing="false" onAction="#Acceder" stylesheets="@estilos.css" text="Acceder">
-                                    <styleClass>
-                                        <String fx:value="boton" />
-                                        <String fx:value="boton" />
-                                    </styleClass>
-                                </Button>
+                                <Button fx:id="botonAcceder" layoutX="132.0" layoutY="12.0" mnemonicParsing="false" onAction="#Acceder" prefHeight="36.0" prefWidth="86.0" styleClass="boton-login" text="Entrar" />
                             </children>
                         </Pane>
                     </children>
                 </Pane>
-                <Label layoutX="341.0" layoutY="545.0" styleClass="labelDos" stylesheets="@estilos.css" text="Forgot Password?" />
-                <Label layoutX="485.0" layoutY="545.0" styleClass="labelDos" stylesheets="@estilos.css" text="Registrese" />
+
+                <!-- Links inferiores -->
+                <Label layoutX="330.0" layoutY="555.0" styleClass="labelDos" text="¿Olvidaste tu contraseña?" />
+                <Label layoutX="500.0" layoutY="555.0" styleClass="labelDos" text="Regístrate" />
             </children>
         </AnchorPane>
     </children>

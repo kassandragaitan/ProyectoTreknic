@@ -1,61 +1,92 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import java.net.URL?>
-<?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
 
-<HBox alignment="CENTER" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controladores.SoporteController">
-   <children>
-      <AnchorPane id="AnchorPane">
-          <stylesheets>
-              <URL value="@soporte.css" />
-          </stylesheets>
-       
-      <TabPane fx:id="tabPane" prefHeight="600.0" prefWidth="1102.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
-          <tabs>
-              <Tab text="Preguntas Frecuentes">
-                  <content>
-                      <AnchorPane prefHeight="542.0" prefWidth="1038.0" stylesheets="@soporte.css">
-                        <TextField fx:id="searchField2" prefHeight="26.0" prefWidth="1102.0" promptText="Buscar tickets..." />
-                          <ListView fx:id="faqList" layoutY="34.0" prefHeight="510.0" prefWidth="1102.0" />
-                      </AnchorPane>
-                  </content>
-              </Tab>
-             <Tab text="Mis Tickets">
-                        <content>
+<HBox alignment="TOP_CENTER" xmlns="http://javafx.com/javafx/23.0.1"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controladores.SoporteController">
+    <children>
+          <AnchorPane stylesheets="@/Estilos/configuracion.css">
+            <VBox alignment="TOP_CENTER" spacing="20.0" AnchorPane.topAnchor="20.0"
+                  AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.bottomAnchor="20.0">
+
+                <!-- TÍTULO UNIFICADO -->
+                <Label text="Gestión de Soporte" styleClass="title"/>
+
+                <!-- LÍNEA DIVISORIA -->
+                <Separator />
+
+                <!-- TABPANE CENTRAL -->
+                <TabPane fx:id="tabPane"
+                         prefHeight="300.0"
+                         prefWidth="800.0"
+                         tabClosingPolicy="UNAVAILABLE">
+                    <tabs>
+                        <!-- TAB 1: FAQ -->
+                        <Tab text="Preguntas Frecuentes">
                             <AnchorPane>
-                                <TextField fx:id="searchField" layoutY="38.0" prefHeight="26.0" prefWidth="1092.0" promptText="Buscar tickets..." />
-                                <TableView fx:id="ticketsTable" layoutX="8.0" layoutY="107.0" prefHeight="431.0" prefWidth="1086.0">
+                                <TextField fx:id="searchField2"
+                                           promptText="Buscar tickets..."
+                                           AnchorPane.topAnchor="0.0"
+                                           AnchorPane.leftAnchor="0.0"
+                                           AnchorPane.rightAnchor="0.0"
+                                           prefHeight="26" />
+                                <ListView fx:id="faqList"
+                                          AnchorPane.topAnchor="30.0"
+                                          AnchorPane.leftAnchor="0.0"
+                                          AnchorPane.rightAnchor="0.0"
+                                          AnchorPane.bottomAnchor="0.0" />
+                            </AnchorPane>
+                        </Tab>
+
+                        <!-- TAB 2: Mis Tickets -->
+                        <Tab text="Mis Tickets">
+                            <AnchorPane>
+                                <TextField fx:id="searchField"
+                                           promptText="Buscar tickets..."
+                                           AnchorPane.topAnchor="0.0"
+                                           AnchorPane.leftAnchor="0.0"
+                                           AnchorPane.rightAnchor="0.0"
+                                           prefHeight="26" />
+                                <TableView fx:id="ticketsTable"
+                                           AnchorPane.topAnchor="40.0"
+                                           AnchorPane.leftAnchor="0.0"
+                                           AnchorPane.rightAnchor="0.0"
+                                           AnchorPane.bottomAnchor="0.0">
                                     <columns>
-                                        <TableColumn fx:id="columnID" text="ID" />
-                                        <TableColumn fx:id="columnAsunto" text="Asunto" />
-                                        <TableColumn fx:id="columnEstado" text="ESTADO" />
-                                        <TableColumn fx:id="columnPrioridad" text="PRIORIDAD" />
-                                        <TableColumn fx:id="columnCreado" text="CREADO" />
-                                        <TableColumn fx:id="columnUltimaActualizacion" text="ÚLTIMA ACTUALIZACIÓN" />
-                                        <TableColumn fx:id="columnAcciones" text="ACCIONES" minWidth="150.0" />
+                                        <TableColumn fx:id="columnID" text="ID" prefWidth="50.0"/>
+                                        <TableColumn fx:id="columnAsunto" text="Asunto" prefWidth="180.0"/>
+                                        <TableColumn fx:id="columnEstado" text="Estado" prefWidth="100.0"/>
+                                        <TableColumn fx:id="columnPrioridad" text="Prioridad" prefWidth="100.0"/>
+                                        <TableColumn fx:id="columnCreado" text="Creado" prefWidth="120.0"/>
+                                        <TableColumn fx:id="columnUltimaActualizacion" text="Última Actualización" prefWidth="150.0"/>
+                                        <TableColumn fx:id="columnAcciones" text="Acciones" prefWidth="100.0"/>
                                     </columns>
                                 </TableView>
                             </AnchorPane>
-                        </content>
-                    </Tab>
-              <Tab text="Guías de Usuario">
-                  <content>
-                      <AnchorPane>
-                        <TextField fx:id="searchField1" prefHeight="26.0" prefWidth="1102.0" promptText="Buscar tickets..." />
-                          <ListView fx:id="guidesList" layoutX="-2.0" layoutY="31.0" prefHeight="513.0" prefWidth="1110.0" />
-                      </AnchorPane>
-                  </content>
-              </Tab>
-          </tabs>
-      </TabPane>
-      
-      </AnchorPane>
-   </children>
+                        </Tab>
+
+                        <!-- TAB 3: Guías -->
+                        <Tab text="Guías de Usuario">
+                            <AnchorPane>
+                                <TextField fx:id="searchField1"
+                                           promptText="Buscar guías..."
+                                           AnchorPane.topAnchor="0.0"
+                                           AnchorPane.leftAnchor="0.0"
+                                           AnchorPane.rightAnchor="0.0"
+                                           prefHeight="26" />
+                                <ListView fx:id="guidesList"
+                                          AnchorPane.topAnchor="30.0"
+                                          AnchorPane.leftAnchor="0.0"
+                                          AnchorPane.rightAnchor="0.0"
+                                          AnchorPane.bottomAnchor="0.0" />
+                            </AnchorPane>
+                        </Tab>
+                    </tabs>
+                </TabPane>
+            </VBox>
+        </AnchorPane>
+    </children>
 </HBox>

@@ -15,6 +15,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import modelo.Categoria;
 
 /**
@@ -30,13 +32,16 @@ public class AgregarCategoriaController implements Initializable {
     private TextArea campoDescripcion;
     @FXML
     private Button botonRegistrar;
+    @FXML
+    private ImageView imagenTrekNic;
 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+         Image imagen = new Image(getClass().getResourceAsStream("/img/Encabezado.png"));
+        imagenTrekNic.setImage(imagen);
     }
 
     @FXML

@@ -4,25 +4,62 @@
  */
 package modelo;
 
+import java.util.Date;
+
 /**
  *
  * @author k0343
  */
 public class Usuario {
+
+    private int idUsuario;
     private String nombre;
-    private String apellidos;
-    private int edad;
-    private String direccion;
-    private String ciudad;
-    private String ciclo;
-    
-    public Usuario(String nombre, String apellidos, int edad, String direccion, String ciudad, String ciclo) {
+    private String email;
+    private String contrasena;
+    private String tipoUsuario;
+    private Date fechaRegistro;
+    private String tipoViajero;
+    private String idioma;
+    private String telefono;
+    private boolean activo;
+
+    public Usuario() {
+    }
+
+    // Constructor sin ID (para insertar nuevo usuario)
+    public Usuario(String nombre, String email, String contrasena, String tipoUsuario,
+            Date fechaRegistro, String tipoViajero, String idioma, String telefono) {
         this.nombre = nombre;
-        this.apellidos = apellidos;
-        this.edad = edad;
-        this.direccion = direccion;
-        this.ciudad = ciudad;
-        this.ciclo = ciclo;
+        this.email = email;
+        this.contrasena = contrasena;
+        this.tipoUsuario = tipoUsuario;
+        this.fechaRegistro = fechaRegistro;
+        this.tipoViajero = tipoViajero;
+        this.idioma = idioma;
+        this.telefono = telefono;
+    }
+
+    public Usuario(int idUsuario, String nombre, String email, String contrasena,
+            String tipoUsuario, Date fechaRegistro, String tipoViajero,
+            String idioma, String telefono) {
+        this.idUsuario = idUsuario;
+        this.nombre = nombre;
+        this.email = email;
+        this.contrasena = contrasena;
+        this.tipoUsuario = tipoUsuario;
+        this.fechaRegistro = fechaRegistro;
+        this.tipoViajero = tipoViajero;
+        this.idioma = idioma;
+        this.telefono = telefono;
+        this.activo = true;
+    }
+
+    public int getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(int idUsuario) {
+        this.idUsuario = idUsuario;
     }
 
     public String getNombre() {
@@ -33,46 +70,67 @@ public class Usuario {
         this.nombre = nombre;
     }
 
-    public String getApellidos() {
-        return apellidos;
+    public String getEmail() {
+        return email;
     }
 
-    public void setApellidos(String apellidos) {
-        this.apellidos = apellidos;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public int getEdad() {
-        return edad;
+    public String getContrasena() {
+        return contrasena;
     }
 
-    public void setEdad(int edad) {
-        this.edad = edad;
+    public void setContrasena(String contrasena) {
+        this.contrasena = contrasena;
     }
 
-    public String getDireccion() {
-        return direccion;
+    public String getTipoUsuario() {
+        return tipoUsuario;
     }
 
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
+    public void setTipoUsuario(String tipoUsuario) {
+        this.tipoUsuario = tipoUsuario;
     }
 
-    public String getCiudad() {
-        return ciudad;
+    public Date getFechaRegistro() {
+        return fechaRegistro;
     }
 
-    public void setCiudad(String ciudad) {
-        this.ciudad = ciudad;
+    public void setFechaRegistro(Date fechaRegistro) {
+        this.fechaRegistro = fechaRegistro;
     }
 
-    public String getCiclo() {
-        return ciclo;
+    public String getTipoViajero() {
+        return tipoViajero;
     }
 
-    public void setCiclo(String ciclo) {
-        this.ciclo = ciclo;
+    public void setTipoViajero(String tipoViajero) {
+        this.tipoViajero = tipoViajero;
     }
 
-    
-    
+    public String getIdioma() {
+        return idioma;
+    }
+
+    public void setIdioma(String idioma) {
+        this.idioma = idioma;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
+    public boolean getActivo() {
+        return activo;
+    }
+
+    public void setActivo(boolean activo) {
+        this.activo = activo;
+    }
 }

@@ -1,0 +1,226 @@
+/*
+ * Empty Stylesheet file.
+ */
+
+.mainFxmlClass {
+
+}
+.root {
+    -fx-font-family: 'Segoe UI', sans-serif;
+}
+
+.label {
+    -fx-font-size: 16px;
+    -fx-text-fill: #78909c; /* color para el titulo de encabezado */
+}
+.labelTitulo {
+    -fx-font-size: 16px;
+    -fx-text-fill: #333;
+}
+/*diseños para la tabla de gestion usuario*/
+
+.button {
+    -fx-background-color: #f0f0f0;
+    -fx-text-fill: #333;
+    -fx-font-weight: normal;
+    -fx-border-radius: 4;
+    -fx-padding: 6 12;
+    -fx-effect: none;
+    -fx-border-color: #ccc;
+    -fx-font-size: 13px;
+}
+
+.button:hover {
+    -fx-background-color: #e4e4e4;
+    -fx-text-fill: #145da0;
+    -fx-font-weight: bold;
+     -fx-border-color: #145da0;
+}
+.button:pressed {
+    -fx-background-color: #62a7e7;
+}
+
+.text-field{
+    -fx-border-color: #cfd8dc;
+    -fx-border-width: 2;
+    -fx-padding: 5px;
+    -fx-background-color: #eceff1;
+}
+.combo-box-base {
+    -fx-border-color: #cfd8dc;
+    -fx-border-width: 2;
+    -fx-padding: 1px;
+    -fx-background-color: #eceff1;
+}
+
+.combo-box .arrow-button {
+    -fx-background-color: #78909c;
+    -fx-padding: 10;
+}
+
+.combo-box .arrow {
+    -fx-shape: "M0 0 L1 0 L0.5 1 z"; /* Triangular arrow */
+    -fx-fill: white;
+    -fx-effect: dropshadow( one-pass-box , black , 2 , 0.0 , 1 , 1 );
+}
+
+.combo-box-popup .list-cell {
+    -fx-padding: 4px;
+    -fx-background-color: white;
+    -fx-text-fill: black;
+}
+
+.combo-box-popup .list-cell:filled:selected, .combo-box-popup .list-cell:filled:selected:hover {
+    -fx-background-color: #78909c; /* Darker blue for selected item */
+    -fx-text-fill: white;
+}
+
+/*diseño de la tablaaaa */
+
+
+.table-view {
+    -fx-background-color: white;
+    -fx-border-color: transparent;
+    -fx-table-cell-border-color: transparent;
+    -fx-font-family: 'Segoe UI', sans-serif;
+    -fx-font-size: 13px;
+    -fx-text-fill: #343a40;
+    -fx-padding: 0;
+    /*    -fx-background-radius: 8;*/
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0.1, 0, 2);
+}
+
+.table-view .column-header-background {
+    -fx-background-color: white;
+}
+
+.table-view .column-header {
+    -fx-text-fill: #6c757d;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-alignment: CENTER;
+    -fx-padding: 10 6;
+}
+
+.table-view .table-row-cell {
+    -fx-background-color: white;
+    -fx-cell-size: 48px;
+    -fx-padding: 0;
+
+}
+
+.table-view .table-row-cell:odd {
+    -fx-background-color: #f9f9f9;
+}
+
+.table-view .table-row-cell:selected {
+    -fx-background-color: #e8f0fe;
+}
+/* Forzar color del texto en filas seleccionadas */
+.table-row-cell:selected .table-cell {
+    -fx-text-fill: #212121; /* negro o gris oscuro */
+}
+
+/* Opcional: también en hover (por si agregas efectos de hover en filas más adelante) */
+.table-row-cell:hover .table-cell {
+    -fx-text-fill: #212121;
+}
+
+.table-view .table-cell {
+    -fx-padding: 4 8;
+    -fx-alignment: CENTER;
+}
+
+/* Avatar estilo */
+.user-avatar {
+    -fx-background-color: #dee2e6;
+    -fx-background-radius: 50%;
+    -fx-padding: 12;
+    -fx-min-width: 40px;
+    -fx-min-height: 40px;
+    -fx-font-size: 16px;
+    -fx-alignment: center;
+}
+
+/* Nombre y email */
+.user-name {
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+    -fx-text-fill: #78909c;
+}
+
+.user-email {
+    -fx-text-fill: #6c757d;
+    -fx-font-size: 11px;
+}
+
+/* Roles como badge */
+.rol-admin {
+    -fx-background-color: #f3e8ff;
+    -fx-text-fill: #6f42c1;
+    -fx-padding: 3 12;
+    -fx-background-radius: 20;
+    -fx-font-size: 12px;
+}
+.rol-editor {
+    -fx-background-color: #e3f2fd;
+    -fx-text-fill: #1a73e8;
+    -fx-padding: 3 12;
+    -fx-background-radius: 20;
+    -fx-font-size: 12px;
+}
+.rol-visualizador {
+    -fx-background-color: #e2e3e5;
+    -fx-text-fill: #343a40;
+    -fx-padding: 3 12;
+    -fx-background-radius: 20;
+    -fx-font-size: 12px;
+}
+
+/* Estado badge */
+.estado-activo {
+    -fx-background-color: #d1f7d6;
+    -fx-text-fill: #2e7d32;
+    -fx-padding: 3 12;
+    -fx-background-radius: 20;
+    -fx-font-size: 12px;
+}
+.estado-inactivo {
+    -fx-background-color: #ffe1e1;
+    -fx-text-fill: #c62828;
+    -fx-padding: 3 12;
+    -fx-background-radius: 20;
+    -fx-font-size: 12px;
+}
+
+/* Botones tipo texto */
+.table-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #1a73e8;
+    -fx-font-size: 12px;
+    -fx-font-weight: normal;
+    -fx-padding: 2 6;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+    -fx-effect: none;
+}
+.table-button:hover {
+    -fx-text-fill: #0c57d6;
+    -fx-underline: true;
+}
+
+.table-button.red {
+    -fx-text-fill: red;
+}
+.table-button.red:hover {
+    -fx-text-fill: darkred;
+    -fx-background-color: transparent;
+    -fx-underline: true;
+}
+.button:disabled {
+    -fx-opacity: 0.6;
+    -fx-background-color: #f0f0f0;
+    -fx-text-fill: #999;
+}

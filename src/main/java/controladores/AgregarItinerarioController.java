@@ -18,7 +18,10 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
-import modelo.ItinerarioTabla;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import modelo.Itinerario;
+
 
 /**
  * FXML Controller class
@@ -35,6 +38,8 @@ public class AgregarItinerarioController implements Initializable {
     private Button botonRegistrar;
     @FXML
     private ComboBox<Integer> comboDuracion;
+    @FXML
+    private ImageView imagenTrekNic;
 
     /**
      * Initializes the controller class.
@@ -46,7 +51,8 @@ public class AgregarItinerarioController implements Initializable {
         comboDuracion.setItems(duraciones);
         Conexion.cargarComboDuracionItinerario(comboDuracion);
         Conexion.cerrarConexion();
-
+        Image imagen = new Image(getClass().getResourceAsStream("/img/Encabezado.png"));
+        imagenTrekNic.setImage(imagen);
     }
 
     @FXML
@@ -60,7 +66,7 @@ public class AgregarItinerarioController implements Initializable {
         } else if (comboDuracion.getValue() == null) {
             Alertas.aviso("Campo vacío", "Debe seleccionar una duración.");
         } else {
-            ItinerarioTabla itinerario = new ItinerarioTabla();
+            Itinerario itinerario = new Itinerario();
             itinerario.setNombre(campoNombre.getText());
             itinerario.setDescripcion(campoDescripcion.getText());
             itinerario.setDuracion(comboDuracion.getValue());

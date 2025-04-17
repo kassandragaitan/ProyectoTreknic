@@ -4,14 +4,8 @@
  */
 package controladores;
 
+import Utilidades.Animacion;
 import bbdd.Conexion;
-import java.net.URL;
-import java.util.ResourceBundle;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -25,138 +19,228 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import modelo.UsuarioRegistro;
+import modelo.CeldaAccionesUsuario;
+import modelo.Usuario;
+import java.text.SimpleDateFormat;
+import javafx.scene.control.ComboBox;
 
 public class AdministracionUsuarioController implements Initializable {
 
     @FXML
-    private TableView<UsuarioRegistro> userTable;
+    private TableColumn<Usuario, String> columnUsuario;
     @FXML
-    private TableColumn<UsuarioRegistro, String> columnUsuario;
+    private TableColumn<Usuario, String> columnCorreo;
     @FXML
-    private TableColumn<UsuarioRegistro, String> columnRol;
+    private TableColumn<Usuario, String> columnRol;
     @FXML
-    private TableColumn<UsuarioRegistro, String> columnEstado;
+    private TableColumn<Usuario, Integer> columnTelefono;
     @FXML
-    private TableColumn<UsuarioRegistro, String> columnUltimoAcceso;
+    private TableColumn<Usuario, Date> columnFechaRegistro;
     @FXML
-    private TableColumn<UsuarioRegistro, Boolean> columnAcciones;
-    @FXML
-    private TextField searchField1;
+    private TableColumn<Usuario, Void> columnAcciones;
     @FXML
     private Button botonNuevoUsuario;
+    @FXML
+    private TableColumn<Usuario, String> columnIdioma;
+    @FXML
+    private TableColumn<Usuario, String> columnViajero;
+    @FXML
+    private TableColumn<Usuario, String> columnContrasena;
+    @FXML
+    private TextField campoBuscarUsuario;
+    @FXML
+    private TableView<Usuario> tablaUsuarios;
+    @FXML
+    private ComboBox<String> comboRoles;
+    @FXML
+    private ComboBox<String> comboEstado;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        columnUsuario.setCellValueFactory(new PropertyValueFactory<>("nombre"));
-        columnRol.setCellValueFactory(new PropertyValueFactory<>("tipoUsuario"));
-        columnEstado.setCellValueFactory(new PropertyValueFactory<>("estado"));
-        columnUltimoAcceso.setCellValueFactory(new PropertyValueFactory<>("fechaRegistro"));
-        columnAcciones.setCellValueFactory(new PropertyValueFactory<>("activo"));
+        columnCorreo.setVisible(false);
+        columnContrasena.setVisible(false);
 
-        userTable.setItems(generateUserData());
-        initializeActionButtons();
+        columnUsuario.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+        columnCorreo.setCellValueFactory(new PropertyValueFactory<>("email"));
+        columnContrasena.setCellValueFactory(new PropertyValueFactory<>("contrasena"));
+        columnRol.setCellValueFactory(new PropertyValueFactory<>("tipoUsuario"));
+        columnTelefono.setCellValueFactory(new PropertyValueFactory<>("telefono"));
+        columnIdioma.setCellValueFactory(new PropertyValueFactory<>("idioma"));
+        columnViajero.setCellValueFactory(new PropertyValueFactory<>("tipoViajero"));
+        columnFechaRegistro.setCellValueFactory(new PropertyValueFactory<>("fechaRegistro"));
+
+        columnFechaRegistro.setStyle("-fx-alignment: CENTER;");
+        columnAcciones.setStyle("-fx-alignment: CENTER;");
+
+        tablaUsuarios.setItems(generarDatosUsuario());
+        tablaUsuarios.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        tablaUsuarios.toFront();
+        initializeCustomCells();
+        campoBuscarUsuario.textProperty().addListener((observable, oldValue, newValue) -> {
+            buscarUsuariosEnTiempoReal(newValue);
+        });
+
+        // Cargar roles desde la BBDD (solo UNA VEZ)
+        Conexion.conectar();
+        ObservableList<String> roles = Conexion.cargarRolesUsuarios();
+        Conexion.cerrarConexion();
+
+        comboRoles.setItems(roles);
+        comboRoles.getSelectionModel().selectFirst();
+
+        comboRoles.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            filtrarUsuariosPorRol(newValue);
+        });
+        Conexion.conectar();
+        ObservableList<String> estados = Conexion.cargarEstadosUsuarios();
+        Conexion.cerrarConexion();
+
+        comboEstado.setItems(estados);
+        comboEstado.getSelectionModel().selectFirst();
+
+        comboEstado.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            filtrarUsuariosPorEstado(newVal);
+        });
+
     }
 
-    private ObservableList<UsuarioRegistro> generateUserData() {
-        ObservableList<UsuarioRegistro> users = FXCollections.observableArrayList();
+    private void filtrarUsuariosPorRol(String rolSeleccionado) {
+        ObservableList<Usuario> listaUsuarios = FXCollections.observableArrayList();
+        Conexion.conectar();
+        Conexion.cargarUsuariosPorRol(listaUsuarios, rolSeleccionado);
+        Conexion.cerrarConexion();
+        tablaUsuarios.setItems(listaUsuarios);
+    }
+
+    private void filtrarUsuariosPorEstado(String estadoSeleccionado) {
+        ObservableList<Usuario> listaUsuarios = FXCollections.observableArrayList();
+        Conexion.conectar();
+        Conexion.cargarUsuariosPorEstado(listaUsuarios, estadoSeleccionado);
+        Conexion.cerrarConexion();
+        tablaUsuarios.setItems(listaUsuarios);
+    }
+
+    private void buscarUsuariosEnTiempoReal(String texto) {
+        ObservableList<Usuario> listaUsuarios = FXCollections.observableArrayList();
+        Conexion.conectar();
+        Conexion.cargarDatosUsuariosFiltrados(listaUsuarios, texto);
+        Conexion.cerrarConexion();
+        tablaUsuarios.setItems(listaUsuarios);
+    }
+
+    private ObservableList<Usuario> generarDatosUsuario() {
+        ObservableList<Usuario> listaUsuarios = FXCollections.observableArrayList();
         try (Connection conn = Conexion.conectar()) {
-            String query = "SELECT id_usuario, nombre, email, tipo_usuario, idioma_preferido, tipo_viajero, telefono, fecha_registro FROM usuarios";
+            String query = "SELECT id_usuario, nombre, email, contrasena, tipo_usuario, idioma_preferido, tipo_viajero, telefono, fecha_registro, activo FROM usuarios";
             PreparedStatement stmt = conn.prepareStatement(query);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                int idUsuario = rs.getInt("id_usuario");
-                String nombre = rs.getString("nombre");
-                String email = rs.getString("email");
-                String tipoUsuario = rs.getString("tipo_usuario");
-                String idioma = rs.getString("idioma_preferido");
-                String tipoViajero = rs.getString("tipo_viajero");
-                String telefono = rs.getString("telefono");
-                Date fechaRegistro = rs.getDate("fecha_registro");
-
-                users.add(new UsuarioRegistro(idUsuario, nombre, email, null, tipoUsuario, fechaRegistro, tipoViajero, idioma, telefono));
+                Usuario usuario = new Usuario(
+                        rs.getInt("id_usuario"),
+                        rs.getString("nombre"),
+                        rs.getString("email"),
+                        rs.getString("contrasena"),
+                        rs.getString("tipo_usuario"),
+                        rs.getDate("fecha_registro"),
+                        rs.getString("tipo_viajero"),
+                        rs.getString("idioma_preferido"),
+                        rs.getString("telefono")
+                );
+                usuario.setActivo(rs.getBoolean("activo"));
+                listaUsuarios.add(usuario); // ✅ nombre correcto
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        return users;
+        return listaUsuarios;
     }
 
-    private void initializeActionButtons() {
-        columnAcciones.setCellFactory(col -> new TableCell<UsuarioRegistro, Boolean>() {
-            private final HBox hbox = new HBox(10);
-            private final Button viewButton = new Button("Ver");
-            private final Button editButton = new Button("Editar");
-            private final Button toggleActiveButton = new Button("Activar/Desactivar");
+    private void initializeCustomCells() {
+        columnAcciones.setCellFactory(col -> new CeldaAccionesUsuario());
 
-            { // initializer block for setting button actions
-                viewButton.setOnAction(e -> viewUserDetails(getTableRow().getItem()));
-                editButton.setOnAction(e -> editUser(getTableRow().getItem()));
-                toggleActiveButton.setOnAction(e -> toggleActiveStatus(getTableRow().getItem()));
-                hbox.getChildren().addAll(viewButton, editButton, toggleActiveButton);
-                hbox.setAlignment(Pos.CENTER);
-            }
-
+        columnUsuario.setCellFactory(col -> new TableCell<Usuario, String>() {
             @Override
-            protected void updateItem(Boolean isActive, boolean empty) {
-                super.updateItem(isActive, empty);
-                if (empty || getTableRow() == null || getTableRow().getItem() == null) {
+            protected void updateItem(String nombre, boolean empty) {
+                super.updateItem(nombre, empty);
+                if (empty || nombre == null || getTableRow().getItem() == null) {
                     setGraphic(null);
                 } else {
-                    setGraphic(hbox);
+                    HBox contenedor = new HBox(10);
+                    contenedor.setAlignment(Pos.CENTER_LEFT);
+
+                    Label avatar = new Label("👤");
+                    avatar.getStyleClass().add("user-avatar");
+
+                    VBox info = new VBox(2);
+                    Label nombreLabel = new Label(nombre);
+                    nombreLabel.getStyleClass().add("user-name");
+
+                    Label correoLabel = new Label(getTableRow().getItem().getEmail());
+                    correoLabel.getStyleClass().add("user-email");
+
+                    info.getChildren().addAll(nombreLabel, correoLabel);
+                    contenedor.getChildren().addAll(avatar, info);
+                    setGraphic(contenedor);
                 }
             }
         });
-    }
 
-    private void viewUserDetails(UsuarioRegistro user) {
-        System.out.println("Viewing details for: " + user.getNombre());
-    }
+        columnRol.setCellFactory(col -> new TableCell<Usuario, String>() {
+            @Override
+            protected void updateItem(String rol, boolean empty) {
+                super.updateItem(rol, empty);
+                if (empty || rol == null) {
+                    setGraphic(null);
+                } else {
+                    Label badge = new Label(rol);
+                    badge.getStyleClass().add(
+                            rol.equalsIgnoreCase("admin") ? "rol-admin" : "rol-visualizador"
+                    );
+                    HBox container = new HBox(badge);
+                    container.setAlignment(Pos.CENTER);
+                    setGraphic(container);
+                }
+            }
+        });
 
-    private void editUser(UsuarioRegistro user) {
-        System.out.println("Editing user: " + user.getNombre());
-    }
+        columnFechaRegistro.setCellFactory(col -> new TableCell<Usuario, Date>() {
+            private final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
-    private void toggleActiveStatus(UsuarioRegistro user) {
-        System.out.println("Toggling active status for: " + user.getNombre());
-        // Aquí deberías tener lógica para cambiar el estado activo/inactivo del usuario
+            @Override
+            protected void updateItem(Date fecha, boolean empty) {
+                super.updateItem(fecha, empty);
+                setText(empty || fecha == null ? null : formatter.format(fecha));
+            }
+        });
     }
 
     @FXML
     private void irAnuevoUsuario(ActionEvent event) {
         try {
-            // Cargar el FXML de la nueva ventana
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/GestionUsuarios.fxml"));
             Parent root = loader.load();
-
-            // Crear una nueva ventana (Stage)
             Stage stage = new Stage();
             stage.setTitle("Agregar usuario");
             stage.setScene(new Scene(root));
-
-            // Hacer que la ventana sea modal (bloquea la principal hasta que se cierre)
             stage.initModality(Modality.APPLICATION_MODAL);
-
-            // Mostrar la ventana y esperar hasta que se cierre
             stage.showAndWait();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 }

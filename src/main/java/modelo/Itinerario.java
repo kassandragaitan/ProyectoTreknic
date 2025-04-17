@@ -1,51 +1,54 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package modelo;
 
 import java.util.Date;
 
-/**
- *
- * @author k0343
- */
 public class Itinerario {
 
-    private int id_itinerario;
+    private int idItinerario;
     private String nombre;
     private String descripcion;
     private int duracion;
-    private Date fecha_creacion;
+    private Date fechaCreacion;
     private Boolean isActive;
     private String foto;
+    private int idUsuario;
 
     public Itinerario() {
     }
 
-    public Itinerario(int id_itinerario, String nombre, String descripcion, int duracion, Date fecha_creacion) {
-        this.id_itinerario = id_itinerario;
+    // Constructor básico
+    public Itinerario(int idItinerario, String nombre, Date fechaCreacion, String descripcion, int duracion) {
+        this.idItinerario = idItinerario;
         this.nombre = nombre;
+        this.fechaCreacion = fechaCreacion;
         this.descripcion = descripcion;
         this.duracion = duracion;
-        this.fecha_creacion = fecha_creacion;
     }
 
-    public Itinerario(int id_itinerario, String nombre, String descripcion, int duracion, Date fecha_creacion, Boolean isActive) {
-        this.id_itinerario = id_itinerario;
+    // Constructor completo
+    public Itinerario(int idItinerario, String nombre, Date fechaCreacion, String descripcion, int duracion, int idUsuario, Boolean isActive, String foto) {
+        this.idItinerario = idItinerario;
         this.nombre = nombre;
+        this.fechaCreacion = fechaCreacion;
         this.descripcion = descripcion;
         this.duracion = duracion;
-        this.fecha_creacion = fecha_creacion;
+        this.idUsuario = idUsuario;
         this.isActive = isActive;
+        this.foto = foto;
     }
 
-    public int getId_itinerario() {
-        return id_itinerario;
+    // Constructor sin isActive ni foto
+    public Itinerario(int idItinerario, String nombre, Date fechaCreacion, String descripcion, int duracion, int idUsuario) {
+        this(idItinerario, nombre, fechaCreacion, descripcion, duracion, idUsuario, null, null);
     }
 
-    public void setId_itinerario(int id_itinerario) {
-        this.id_itinerario = id_itinerario;
+    // Getters y Setters (estilo JavaBeans)
+    public int getIdItinerario() {
+        return idItinerario;
+    }
+
+    public void setIdItinerario(int idItinerario) {
+        this.idItinerario = idItinerario;
     }
 
     public String getNombre() {
@@ -72,20 +75,12 @@ public class Itinerario {
         this.duracion = duracion;
     }
 
-    public Date getFecha_creacion() {
-        return fecha_creacion;
+    public Date getFechaCreacion() {
+        return fechaCreacion;
     }
 
-    public void setFecha_creacion(Date fecha_creacion) {
-        this.fecha_creacion = fecha_creacion;
-    }
-
-    public String getFoto() {
-        return foto;
-    }
-
-    public void setFoto(String foto) {
-        this.foto = foto;
+    public void setFechaCreacion(Date fechaCreacion) {
+        this.fechaCreacion = fechaCreacion;
     }
 
     public Boolean getIsActive() {
@@ -96,4 +91,19 @@ public class Itinerario {
         this.isActive = isActive;
     }
 
+    public String getFoto() {
+        return foto;
+    }
+
+    public void setFoto(String foto) {
+        this.foto = foto;
+    }
+
+    public int getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(int idUsuario) {
+        this.idUsuario = idUsuario;
+    }
 }

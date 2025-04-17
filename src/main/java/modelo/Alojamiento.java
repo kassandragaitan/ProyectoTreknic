@@ -17,6 +17,9 @@ public class Alojamiento {
     private String imagen;
     private int idDestino;
 
+    public Alojamiento() {
+    }
+
     public Alojamiento(int idAlojamiento, String nombre, int idTipo, String contacto, String imagen, int idDestino) {
         this.idAlojamiento = idAlojamiento;
         this.nombre = nombre;

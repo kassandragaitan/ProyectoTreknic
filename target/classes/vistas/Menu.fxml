@@ -8,13 +8,24 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 
-<BorderPane fx:id="panel" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controladores.MenuController">
+<BorderPane fx:id="panel" xmlns="http://javafx.com/javafx/23.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controladores.MenuController">
+
+    <!-- Zona central (contenido dinámico) -->
+    <center>
+        <AnchorPane fx:id="contenido" BorderPane.alignment="CENTER" />
+    </center>
     <top>
         <AnchorPane id="AnchorPane" prefHeight="50.0" prefWidth="1470.0" styleClass="mainFxmlClass" BorderPane.alignment="CENTER">
             <stylesheets>
-                <URL value="@menu.css" />
+                <URL value="@/Estilos/menu.css" />
             </stylesheets>
-            <HBox fx:id="menuHBox" alignment="CENTER_LEFT" fillHeight="true" spacing="10.0" styleClass="menu-hbox">
+            <HBox fx:id="menuHBox" alignment="CENTER_LEFT" fillHeight="true" spacing="10.0" AnchorPane.leftAnchor="0.0"
+                  AnchorPane.rightAnchor="0.0"
+                  AnchorPane.topAnchor="0.0"
+                  AnchorPane.bottomAnchor="0.0"
+                  styleClass="menu-hbox">
                 <children>
                     <Button fx:id="botonPrincipal" onAction="#irAPrincipal" styleClass="menu-button" text="Inicio" />
                     <SplitMenuButton fx:id="botonGestionViajes" prefWidth="137.0" styleClass="menu-button" text="Gestión de Viajes">

@@ -15,7 +15,7 @@
     <children>
         <AnchorPane id="AnchorPane" styleClass="mainFxmlClass">
             <stylesheets>
-                <URL value="@gestionitinerario.css" />
+                <URL value="@Estilos/gestionitinerario.css" />
             </stylesheets>
             <VBox layoutX="30.0" layoutY="69.0" prefHeight="53.0" prefWidth="698.0" />
             <TableView fx:id="tablaItinerario" layoutX="34.0" layoutY="140.0" prefHeight="400.0" prefWidth="848.0">
@@ -32,7 +32,7 @@
             <HBox layoutX="29.0" layoutY="73.0" prefHeight="42.0" prefWidth="857.0">
                 <children>
                     <TextField fx:id="campoBuscarItinerario" promptText="Buscar itinerario..." HBox.hgrow="ALWAYS" />
-                    <Button fx:id="botonBuscar" onAction="#buscarItinerarios" text="Buscar" />
+                    <ComboBox fx:id="comboDuraciones" prefWidth="150.0" />
                     <ComboBox prefWidth="150.0" />
                 </children>
             </HBox>

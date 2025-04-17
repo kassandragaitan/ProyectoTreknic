@@ -58,6 +58,19 @@ public class GestionTipoDeAlojamientoController implements Initializable {
         tablaTipoAlojamiento.setItems(listaTipos);
         columnaIdTipo.setCellValueFactory(new PropertyValueFactory<>("idTipo"));
         columnaTipo.setCellValueFactory(new PropertyValueFactory<>("tipo"));
+
+        campoBuscarTipoAlojamiento.textProperty().addListener((observable, oldValue, newValue) -> {
+            buscarTiposAlojamientoEnTiempoReal(newValue);
+        });
+
+    }
+
+    private void buscarTiposAlojamientoEnTiempoReal(String texto) {
+        ObservableList<TipoAlojamiento> listaTipos = FXCollections.observableArrayList();
+        Conexion.conectar();
+        Conexion.cargarDatosTiposAlojamientoFiltrados(listaTipos, texto);
+        Conexion.cerrarConexion();
+        tablaTipoAlojamiento.setItems(listaTipos);
     }
 
     @FXML

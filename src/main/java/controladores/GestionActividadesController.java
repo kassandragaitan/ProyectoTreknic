@@ -54,6 +54,18 @@ public class GestionActividadesController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         cargarActividades();
+        campoBuscarActividad.textProperty().addListener((observable, oldValue, newValue) -> {
+            buscarActividadesEnTiempoReal(newValue);
+        });
+
+    }
+
+    private void buscarActividadesEnTiempoReal(String texto) {
+        ObservableList<Actividad> listaActividades = FXCollections.observableArrayList();
+        Conexion.conectar();
+        Conexion.cargarDatosActividadesFiltradas(listaActividades, texto);
+        Conexion.cerrarConexion();
+        tablaActividades.setItems(listaActividades);
     }
 
     private void cargarActividades() {

@@ -58,6 +58,19 @@ public class GestionCategoriaController implements Initializable {
         columnaIdCategoria.setCellValueFactory(new PropertyValueFactory<>("idCategoria"));
         columnaNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         columnaDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
+
+        campoBuscarCategoria.textProperty().addListener((observable, oldValue, newValue) -> {
+            buscarCategoriasEnTiempoReal(newValue);
+        });
+
+    }
+
+    private void buscarCategoriasEnTiempoReal(String texto) {
+        ObservableList<Categoria> listaCategorias = FXCollections.observableArrayList();
+        Conexion.conectar();
+        Conexion.cargarDatosCategoriasFiltradas(listaCategorias, texto);
+        Conexion.cerrarConexion();
+        tablaCategoria.setItems(listaCategorias);
     }
 
     @FXML

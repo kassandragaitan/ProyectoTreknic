@@ -15,6 +15,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import modelo.Actividad;
 import modelo.Alojamiento;
 import modelo.Destino;
@@ -39,6 +41,8 @@ public class AgregarAlojamientoController implements Initializable {
     private ComboBox<Destino> comboDestino;
     @FXML
     private Button botonRegistrar;
+    @FXML
+    private ImageView imagenTrekNic;
 
     /**
      * Initializes the controller class.
@@ -49,6 +53,9 @@ public class AgregarAlojamientoController implements Initializable {
         Conexion.cargarDatosTiposAlojamientoRegistrar(comboTipo);
         Conexion.cargarComboDestino(comboDestino);
         Conexion.cerrarConexion();
+
+        Image imagen = new Image(getClass().getResourceAsStream("/img/Encabezado.png"));
+        imagenTrekNic.setImage(imagen);
     }
 
     @FXML

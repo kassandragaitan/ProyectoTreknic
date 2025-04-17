@@ -71,6 +71,7 @@ public class MenuController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         cargarEcena("/vistas/Principal.fxml");
+        
     }
 
     public void cargarEcena(String escena) {
@@ -109,7 +110,7 @@ public class MenuController implements Initializable {
 
     @FXML
     private void irAPrincipal(ActionEvent event) {
-        cargarEcena("/vistas/Principal.fxml");
+        cargarEcena("/vistas/principal.fxml");//
 
     }
 

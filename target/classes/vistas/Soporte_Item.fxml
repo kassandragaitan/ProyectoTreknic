@@ -14,7 +14,7 @@
    <children>
       <AnchorPane id="AnchorPane" prefHeight="142.0" prefWidth="600.0" styleClass="mainFxmlClass">
           <stylesheets>
-              <URL value="@soporte_item.css" />
+              <URL value="@/Estilos/soporte_item.css" />
           </stylesheets>
          <children>
             <VBox prefHeight="154.0" prefWidth="158.0">

@@ -1,37 +1,73 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.net.URL?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1" fx:controller="controladores.AgregarDestinoController">
-    <stylesheets>
-        <URL value="@agregardestino.css" />
-    </stylesheets>
+<AnchorPane prefHeight="620.0" prefWidth="500.0" styleClass="fondo-registro"
+            stylesheets="@/Estilos/estilos.css"
+            xmlns="http://javafx.com/javafx/23.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controladores.AgregarDestinoController">
+
     <children>
-        <Pane layoutX="11.0" prefHeight="430.0" prefWidth="577.0" styleClass="root" stylesheets="@agregardestino.css">
+
+        <!-- Imagen centrada y pegada al panel -->
+   <!-- Imagen centrada y flotando justo encima del panel -->
+<ImageView fx:id="imagenTrekNic"
+           fitHeight="60.0" fitWidth="100.0"
+           preserveRatio="true" pickOnBounds="true"
+           layoutX="210.0" layoutY="15.0"
+           style="-fx-translate-y: 30;" />
+
+
+        <!-- Panel alineado visualmente justo debajo de la imagen -->
+        <VBox layoutX="100.0" layoutY="100.0" spacing="15.0" styleClass="panel-registro"
+              alignment="TOP_LEFT" prefWidth="300.0">
+
             <children>
-                <Label layoutX="78.0" layoutY="76.0" text="Nombre" />
-                <TextField layoutX="186.0" layoutY="67.0" />
-                <Label layoutX="78.0" layoutY="116.0" prefHeight="17.0" prefWidth="80.0" text="Descripcion" />            
-                <TextField layoutX="186.0" layoutY="110.0" />       
-                <Label layoutX="74.0" layoutY="264.0" prefHeight="17.0" prefWidth="89.0" text="Fecha creación" /> 
-                <TextField layoutX="186.0" layoutY="110.0" prefHeight="131.0" prefWidth="380.0" />                   
-                <TextField fx:id="campoRutaArchivo" layoutX="73.0" layoutY="316.0" prefHeight="25.0" prefWidth="292.0" />
-                <Button fx:id="botonSelccionarImagen" layoutX="376.0" layoutY="310.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="187.0" styleClass="botonesNormales" stylesheets="@agregardestino.css" text="Seleccionar imagen" />
-                <Button layoutX="244.0" layoutY="380.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="89.0" styleClass="button-icon" stylesheets="@agregardestino.css" text="Registrar" />
-                <Label layoutX="221.0" layoutY="26.0" text="Gestión Destinos">
-                    <font>
-                        <Font size="18.0" />
-                    </font>
-                </Label>
-                <DatePicker layoutX="186.0" layoutY="257.0" prefHeight="30.0" prefWidth="200.0" />
+                <Label text="Agregar Destino" styleClass="titulo-registro"/>
+
+                <!-- Nombre -->
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="Nombre" styleClass="label-campo" prefWidth="100.0"/>
+                    <TextField fx:id="campoNombre" styleClass="campo-registro" prefWidth="180.0"/>
+                </HBox>
+
+                <!-- Descripción -->
+                <HBox spacing="10" alignment="TOP_LEFT">
+                    <Label text="Descripción" styleClass="label-campo" prefWidth="120.0"/>
+                    <TextArea fx:id="campoDescripcion" styleClass="campo-registro"
+                              wrapText="true" prefWidth="180.0" prefHeight="100.0"/>
+                </HBox>
+
+                <!-- Fecha creación con más espacio -->
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="Fecha creación" styleClass="label-campo" prefWidth="120.0"/>
+                    <DatePicker fx:id="campoFecha" styleClass="combo-registro" prefWidth="200.0"/>
+                </HBox>
+
+                <!-- Imagen + botón más ancho -->
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="Imagen" styleClass="label-campo" prefWidth="120.0"/>
+                    <TextField fx:id="campoRutaArchivo" styleClass="campo-registro" prefWidth="120.0"/>
+                    <Button fx:id="botonSelccionarImagen" text="Seleccionar imagen" onAction="#seleccionarImagen"
+                            styleClass="boton-registro" prefWidth="120.0"/>
+                </HBox>
+
+                <!-- Botón registrar centrado -->
+                <VBox alignment="CENTER" spacing="5.0">
+                    <Button fx:id="botonRegistrar" text="Registrar"
+                            onAction="#RegistrarDestino" styleClass="boton-registro"/>
+                </VBox>
+
             </children>
-        </Pane>
+        </VBox>
     </children>
 </AnchorPane>

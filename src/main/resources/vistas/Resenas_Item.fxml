@@ -12,7 +12,7 @@
 
 <AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controladores.Resenas_ItemController">
     <stylesheets>
-        <URL value="@resenas_item.css"/>
+        <URL value="@/Estilos/resenas_item.css"/>
     </stylesheets>
     <children>
         <VBox prefHeight="154.0" prefWidth="158.0">

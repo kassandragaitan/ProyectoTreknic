@@ -1,53 +1,78 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import java.net.URL?>
-<?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.text.Font?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<HBox alignment="CENTER" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controladores.GestionResenasController">
-   <children>
-      <AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" styleClass="mainFxmlClass">
-          <stylesheets>
-              <URL value="@gestionresenas.css" />
-          </stylesheets>
-<TabPane fx:id="tabPane" prefHeight="600.0" prefWidth="1102.0" tabClosingPolicy="UNAVAILABLE">
-    <tabs>
-        <Tab text="Reseñas de Destinos">
-            <content>
-                <AnchorPane prefHeight="542.0" prefWidth="1038.0">
-                    <TableView fx:id="destinosTable" layoutY="34.0" prefHeight="510.0" prefWidth="1102.0">
-                        <columns>
-                            <TableColumn text="Destino" fx:id="destinoColumn"/>
-                            <TableColumn text="Comentario" fx:id="comentarioDestinoColumn"/>
-                            <TableColumn text="Clasificación" fx:id="clasificacionDestinoColumn"/>
-                        </columns>
-                    </TableView>
-                </AnchorPane>
-            </content>
-        </Tab>
-        <Tab text="Reseñas por Usuario">
-            <content>
-                <AnchorPane>
-                    <TableView fx:id="usuariosTable" layoutY="34.0" prefHeight="510.0" prefWidth="1102.0">
-                        <columns>
-                            <TableColumn text="Usuario" fx:id="usuarioColumn"/>
-                            <TableColumn text="Comentario" fx:id="comentarioUsuarioColumn"/>
-                            <TableColumn text="Clasificación" fx:id="clasificacionUsuarioColumn"/>
-                        </columns>
-                    </TableView>
-                </AnchorPane>
-            </content>
-        </Tab>
-    </tabs>
-</TabPane>
 
-            </AnchorPane>
-   </children>
+<HBox alignment="TOP_CENTER"
+      xmlns="http://javafx.com/javafx/23.0.1"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controladores.GestionResenasController">
+
+    <children>
+        <AnchorPane stylesheets="@Estilos/gestionresenas.css">
+            <VBox alignment="TOP_CENTER"
+                  spacing="20.0"
+                  AnchorPane.topAnchor="20.0"
+                  AnchorPane.leftAnchor="20.0"
+                  AnchorPane.rightAnchor="20.0"
+                  AnchorPane.bottomAnchor="20.0">
+
+                <!-- Título -->
+                <Label text="Gestión de Reseñas"
+                       styleClass="title"
+                       alignment="CENTER" />
+
+                <!-- Línea separadora -->
+                <Separator prefWidth="850.0" />
+
+                <!-- Contenido con pestañas -->
+                <TabPane fx:id="tabPane"
+                         tabClosingPolicy="UNAVAILABLE"
+                         prefWidth="850.0"
+                         prefHeight="300.0">
+
+                    <tabs>
+                        <!-- Tab 1 -->
+                        <Tab text="Reseñas de Destinos">
+                            <AnchorPane>
+                                <TableView fx:id="destinosTable"
+                                           prefWidth="800.0"
+                                           prefHeight="300.0"
+                                           AnchorPane.topAnchor="0.0"
+                                           AnchorPane.leftAnchor="0.0"
+                                           AnchorPane.rightAnchor="0.0"
+                                           AnchorPane.bottomAnchor="0.0">
+                                    <columns>
+                                        <TableColumn fx:id="destinoColumn" text="Destino" prefWidth="200"/>
+                                        <TableColumn fx:id="comentarioDestinoColumn" text="Comentario" prefWidth="400"/>
+                                        <TableColumn fx:id="clasificacionDestinoColumn" text="Clasificación" prefWidth="200"/>
+                                    </columns>
+                                </TableView>
+                            </AnchorPane>
+                        </Tab>
+
+                        <!-- Tab 2 -->
+                        <Tab text="Reseñas por Usuario">
+                            <AnchorPane>
+                                <TableView fx:id="usuariosTable"
+                                           prefWidth="800.0"
+                                           prefHeight="300.0"
+                                           AnchorPane.topAnchor="0.0"
+                                           AnchorPane.leftAnchor="0.0"
+                                           AnchorPane.rightAnchor="0.0"
+                                           AnchorPane.bottomAnchor="0.0">
+                                    <columns>
+                                        <TableColumn fx:id="usuarioColumn" text="Usuario" prefWidth="200"/>
+                                        <TableColumn fx:id="comentarioUsuarioColumn" text="Comentario" prefWidth="400"/>
+                                        <TableColumn fx:id="clasificacionUsuarioColumn" text="Clasificación" prefWidth="200"/>
+                                    </columns>
+                                </TableView>
+                            </AnchorPane>
+                        </Tab>
+                    </tabs>
+                </TabPane>
+            </VBox>
+        </AnchorPane>
+    </children>
 </HBox>
-

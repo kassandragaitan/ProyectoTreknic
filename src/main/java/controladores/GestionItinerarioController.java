@@ -20,6 +20,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -33,8 +34,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-
-import modelo.ItinerarioTabla;
+import modelo.Itinerario;
 
 /**
  * FXML Controller class
@@ -47,25 +47,25 @@ public class GestionItinerarioController implements Initializable {
      * Initializes the controller class.
      */
     @FXML
-    private TableColumn<ItinerarioTabla, Boolean> columnAcciones;
+    private TableColumn<Itinerario, Boolean> columnAcciones;
     @FXML
-    private TableColumn<ItinerarioTabla, Integer> columnaIdItinerario;
+    private TableColumn<Itinerario, Integer> columnaIdItinerario;
     @FXML
-    private TableColumn<ItinerarioTabla, String> columnaNombre;
+    private TableColumn<Itinerario, String> columnaNombre;
     @FXML
-    private TableColumn<ItinerarioTabla, String> columaDescripcion;
+    private TableColumn<Itinerario, String> columaDescripcion;
     @FXML
-    private TableColumn<ItinerarioTabla, Integer> columnaDuracion;
+    private TableColumn<Itinerario, Integer> columnaDuracion;
     @FXML
-    private TableColumn<ItinerarioTabla, java.util.Date> columnaFechaCreacion; // o Date sin mas 
+    private TableColumn<Itinerario, java.util.Date> columnaFechaCreacion; // o Date sin mas 
     @FXML
     private TextField campoBuscarItinerario;
     @FXML
     private Button botonNuevoItinerario;
     @FXML
-    private TableView<ItinerarioTabla> tablaItinerario;
+    private TableView<Itinerario> tablaItinerario;
     @FXML
-    private Button botonBuscar;
+    private ComboBox<String> comboDuraciones;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -76,10 +76,31 @@ public class GestionItinerarioController implements Initializable {
         campoBuscarItinerario.textProperty().addListener((observable, oldValue, newValue) -> {
             buscarItinerariosEnTiempoReal(newValue);
         });
+
+        Conexion.conectar();
+       ObservableList<String> duraciones = Conexion.cargarDuracionesItinerarios();
+
+        Conexion.cerrarConexion();
+
+        comboDuraciones.setItems(duraciones);
+        comboDuraciones.getSelectionModel().selectFirst();
+
+        comboDuraciones.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            filtrarItinerariosPorDuracion(newVal);
+        });
+
+    }
+
+    private void filtrarItinerariosPorDuracion(String duracionSeleccionada) {
+        ObservableList<Itinerario> lista = FXCollections.observableArrayList();
+        Conexion.conectar();
+        Conexion.cargarItinerariosPorDuracion(lista, duracionSeleccionada);
+        Conexion.cerrarConexion();
+        tablaItinerario.setItems(lista); // tu TableView debe llamarse así
     }
 
     private void buscarItinerariosEnTiempoReal(String texto) {
-        ObservableList<ItinerarioTabla> listaItinerarios = FXCollections.observableArrayList();
+        ObservableList<Itinerario> listaItinerarios = FXCollections.observableArrayList();
         Conexion.conectar();
         Conexion.cargarDatosItinerariosFiltrados(listaItinerarios, texto);
         Conexion.cerrarConexion();
@@ -87,7 +108,7 @@ public class GestionItinerarioController implements Initializable {
     }
 
     public void cargarItinerarios() {
-        ObservableList<ItinerarioTabla> listaItinerarios = FXCollections.observableArrayList();
+        ObservableList<Itinerario> listaItinerarios = FXCollections.observableArrayList();
         Conexion.conectar();
         Conexion.cargarDatosItinerarios(listaItinerarios);
         Conexion.cerrarConexion();
@@ -101,7 +122,7 @@ public class GestionItinerarioController implements Initializable {
     }
 
     private void inicializarAccionesColumna() {
-        columnAcciones.setCellFactory(col -> new TableCell<ItinerarioTabla, Boolean>() {
+        columnAcciones.setCellFactory(col -> new TableCell<Itinerario, Boolean>() {
             private final HBox hbox = new HBox(10);
             private final Button viewButton = new Button("Ver");
             private final Button editButton = new Button("Editar");
@@ -128,7 +149,7 @@ public class GestionItinerarioController implements Initializable {
         });
     }
 
-    private void viewItinerarioDetails(ItinerarioTabla itinerario) {
+    private void viewItinerarioDetails(Itinerario itinerario) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/AgregarItinerario.fxml"));
             Parent root = loader.load();
@@ -142,7 +163,7 @@ public class GestionItinerarioController implements Initializable {
         }
     }
 
-    private void editItinerario(ItinerarioTabla itinerario) {
+    private void editItinerario(Itinerario itinerario) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/AgregarItinerario.fxml"));
             Parent root = loader.load();
@@ -156,9 +177,9 @@ public class GestionItinerarioController implements Initializable {
         }
     }
 
-    private void toggleActiveStatus(ItinerarioTabla itinerario) {
+    private void toggleActiveStatus(Itinerario itinerario) {
         itinerario.setIsActive(!itinerario.getIsActive());
-        tablaItinerario.refresh(); // Refresh the table to show updated status
+        tablaItinerario.refresh();
     }
 
     @FXML
@@ -177,22 +198,4 @@ public class GestionItinerarioController implements Initializable {
 
     }
 
-    @FXML
-    private void buscarItinerarios(ActionEvent event) {
-        String textoBusqueda = campoBuscarItinerario.getText().trim();
-
-        // Si el campo está vacío, recargamos todo:
-        if (textoBusqueda.isEmpty()) {
-            cargarItinerarios(); // método que muestra todos los registros
-            return;
-        }
-
-        // Si el campo no está vacío, usamos la consulta filtrada
-        ObservableList<ItinerarioTabla> listaItinerarios = FXCollections.observableArrayList();
-        Conexion.conectar();
-        Conexion.cargarDatosItinerariosFiltrados(listaItinerarios, textoBusqueda);
-        Conexion.cerrarConexion();
-
-        tablaItinerario.setItems(listaItinerarios);
-    }
 }

@@ -22,12 +22,13 @@ import modelo.Actividad;
 import modelo.Alojamiento;
 import modelo.Categoria;
 import modelo.Destino;
+import modelo.InformeActividadDestino;
 import modelo.Itinerario;
-import modelo.ItinerarioTabla;
+
 import modelo.Notificacion;
 import modelo.Resena;
 import modelo.TipoAlojamiento;
-import modelo.UsuarioRegistro;
+import modelo.Usuario;
 
 /**
  *
@@ -82,19 +83,21 @@ public class Conexion {
         return false;
     }
 
-    public static boolean registrarUsuario(UsuarioRegistro usuarioRegistro) {
+    public static boolean registrarUsuario(Usuario usuario) {
         conectar();
         try {
-            String consulta = "INSERT INTO usuarios (nombre, email, contrasena, tipo_usuario, idioma_preferido, tipo_viajero, telefono, fecha_registro) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            String consulta = "INSERT INTO usuarios (nombre, email, contrasena, tipo_usuario, idioma_preferido, tipo_viajero, telefono, fecha_registro, activo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement pst = conn.prepareStatement(consulta);
-            pst.setString(1, usuarioRegistro.getNombre());
-            pst.setString(2, usuarioRegistro.getEmail());
-            pst.setString(3, usuarioRegistro.getContrasena());
-            pst.setString(4, usuarioRegistro.getTipoUsuario());
-            pst.setString(5, usuarioRegistro.getIdioma());
-            pst.setString(6, usuarioRegistro.getTipoViajero());
-            pst.setString(7, usuarioRegistro.getTelefono());
-            pst.setTimestamp(8, new Timestamp(System.currentTimeMillis())); // Establecer la fecha y hora actuales como fecha_registro
+            pst.setString(1, usuario.getNombre());
+            pst.setString(2, usuario.getEmail());
+            pst.setString(3, usuario.getContrasena());
+            pst.setString(4, usuario.getTipoUsuario());
+            pst.setString(5, usuario.getIdioma());
+            pst.setString(6, usuario.getTipoViajero());
+            pst.setString(7, usuario.getTelefono());
+            pst.setTimestamp(8, new Timestamp(System.currentTimeMillis())); // Fecha actual
+            pst.setBoolean(9, usuario.getActivo()); // ✅ nuevo campo "activo"
+
             int resultado = pst.executeUpdate();
             return resultado > 0;
         } catch (SQLException ex) {
@@ -102,6 +105,162 @@ public class Conexion {
             return false;
         } finally {
             cerrarConexion();
+        }
+    }
+
+    public static ObservableList<String> cargarRolesUsuarios() {
+        ObservableList<String> roles = FXCollections.observableArrayList();
+        roles.add("Todos los roles"); // Agregamos esta opción por defecto
+
+        String consulta = "SELECT DISTINCT tipo_usuario FROM usuarios";
+
+        try {
+            PreparedStatement st = conn.prepareStatement(consulta);
+            ResultSet rs = st.executeQuery();
+
+            while (rs.next()) {
+                roles.add(rs.getString("tipo_usuario"));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return roles;
+    }
+
+    public static ObservableList<String> cargarEstadosUsuarios() {
+        ObservableList<String> estados = FXCollections.observableArrayList();
+        estados.add("Todos los estados"); // Opción por defecto
+
+        String consulta = "SELECT DISTINCT activo FROM usuarios";
+
+        try {
+            PreparedStatement st = conn.prepareStatement(consulta);
+            ResultSet rs = st.executeQuery();
+
+            while (rs.next()) {
+                boolean estadoBD = rs.getBoolean("activo");
+                String estado = estadoBD ? "Activo" : "Inactivo";
+                if (!estados.contains(estado)) {
+                    estados.add(estado);
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return estados;
+    }
+
+    public static void cargarUsuariosPorRol(ObservableList<Usuario> listaUsuarios, String rolSeleccionado) {
+        String consulta;
+
+        if (rolSeleccionado.equals("Todos los roles")) {
+            consulta = "SELECT id_usuario, nombre, email, contrasena, tipo_usuario, idioma_preferido, tipo_viajero, telefono, fecha_registro, activo FROM usuarios";
+        } else {
+            consulta = "SELECT id_usuario, nombre, email, contrasena, tipo_usuario, idioma_preferido, tipo_viajero, telefono, fecha_registro, activo FROM usuarios WHERE tipo_usuario = ?";
+        }
+
+        try {
+            PreparedStatement stmt = conn.prepareStatement(consulta);
+
+            if (!rolSeleccionado.equals("Todos los roles")) {
+                stmt.setString(1, rolSeleccionado);
+            }
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Usuario usuario = new Usuario(
+                        rs.getInt("id_usuario"),
+                        rs.getString("nombre"),
+                        rs.getString("email"),
+                        rs.getString("contrasena"),
+                        rs.getString("tipo_usuario"),
+                        rs.getDate("fecha_registro"),
+                        rs.getString("tipo_viajero"),
+                        rs.getString("idioma_preferido"),
+                        rs.getString("telefono")
+                );
+                usuario.setActivo(rs.getBoolean("activo"));
+                listaUsuarios.add(usuario);
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public static void cargarUsuariosPorEstado(ObservableList<Usuario> listaUsuarios, String estadoSeleccionado) {
+        String consulta;
+
+        if (estadoSeleccionado.equals("Todos los estados")) {
+            consulta = "SELECT id_usuario, nombre, email, contrasena, tipo_usuario, idioma_preferido, tipo_viajero, telefono, fecha_registro, activo FROM usuarios";
+        } else {
+            consulta = "SELECT id_usuario, nombre, email, contrasena, tipo_usuario, idioma_preferido, tipo_viajero, telefono, fecha_registro, activo FROM usuarios WHERE activo = ?";
+        }
+
+        try {
+            PreparedStatement stmt = conn.prepareStatement(consulta);
+
+            if (!estadoSeleccionado.equals("Todos los estados")) {
+                boolean valorEstado = estadoSeleccionado.equals("Activo");
+                stmt.setBoolean(1, valorEstado);
+            }
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Usuario usuario = new Usuario(
+                        rs.getInt("id_usuario"),
+                        rs.getString("nombre"),
+                        rs.getString("email"),
+                        rs.getString("contrasena"),
+                        rs.getString("tipo_usuario"),
+                        rs.getDate("fecha_registro"),
+                        rs.getString("tipo_viajero"),
+                        rs.getString("idioma_preferido"),
+                        rs.getString("telefono")
+                );
+                usuario.setActivo(rs.getBoolean("activo"));
+                listaUsuarios.add(usuario);
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public static void cargarDatosUsuariosFiltrados(ObservableList<Usuario> listaUsuarios, String busqueda) {
+        Connection conn = Conexion.conn;
+
+        String consulta = "SELECT id_usuario, nombre, email, tipo_usuario, idioma_preferido, tipo_viajero, telefono, activo "
+                + "FROM usuarios "
+                + "WHERE nombre LIKE ? OR email LIKE ? OR tipo_usuario LIKE ? OR idioma_preferido LIKE ?";
+
+        try (PreparedStatement ps = conn.prepareStatement(consulta)) {
+            String wildcard = "%" + busqueda + "%";
+            for (int i = 1; i <= 4; i++) {
+                ps.setString(i, wildcard);
+            }
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Usuario usuario = new Usuario();
+                    usuario.setIdUsuario(rs.getInt("id_usuario"));
+                    usuario.setNombre(rs.getString("nombre"));
+                    usuario.setEmail(rs.getString("email"));
+                    usuario.setTipoUsuario(rs.getString("tipo_usuario"));
+                    usuario.setIdioma(rs.getString("idioma_preferido"));
+                    usuario.setTipoViajero(rs.getString("tipo_viajero"));
+                    usuario.setTelefono(rs.getString("telefono"));
+                    usuario.setActivo(rs.getBoolean("activo"));
+
+                    listaUsuarios.add(usuario);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al cargar usuarios filtrados:");
+            e.printStackTrace();
         }
     }
 
@@ -164,7 +323,7 @@ public class Conexion {
     }
 
     ///////////////////
-    public static boolean registrarItinerario(ItinerarioTabla itinerario) {
+    public static boolean registrarItinerario(Itinerario itinerario) {
         conectar();
         try {
             String consulta = "INSERT INTO itinerario (nombre, descripcion, fecha_creacion, duracion, id_usuario) VALUES (?, ?, ?, ?, ?)";
@@ -185,19 +344,69 @@ public class Conexion {
         }
     }
 
-    public static void cargarDatosItinerariosFiltrados(ObservableList<ItinerarioTabla> listaItinerarios, String busqueda) {
-        Connection conn = Conexion.conn;
+    public static ObservableList<String> cargarDuracionesItinerarios() {
+        ObservableList<String> duraciones = FXCollections.observableArrayList();
+        duraciones.add("Todas las duraciones"); // Opción por defecto
 
-        if (conn == null) {
-            System.err.println("Error: La conexión a la base de datos no está abierta.");
-            return;
+        String consulta = "SELECT DISTINCT duracion FROM itinerario ORDER BY duracion";
+
+        try {
+            PreparedStatement st = conn.prepareStatement(consulta);
+            ResultSet rs = st.executeQuery();
+
+            while (rs.next()) {
+                duraciones.add(rs.getString("duracion"));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        String sql = "SELECT id_itinerario, nombre, fecha_creacion, descripcion, duracion "
+        return duraciones;
+    }
+
+    public static void cargarItinerariosPorDuracion(ObservableList<Itinerario> listaItinerarios, String duracionSeleccionada) {
+        String consulta;
+
+        if (duracionSeleccionada.equals("Todas las duraciones")) {
+            consulta = "SELECT id_itinerario, nombre, fecha_creacion, descripcion, duracion FROM itinerario";
+        } else {
+            consulta = "SELECT id_itinerario, nombre, fecha_creacion, descripcion, duracion FROM itinerario WHERE duracion = ?";
+        }
+
+        try {
+            PreparedStatement stmt = conn.prepareStatement(consulta);
+
+            if (!duracionSeleccionada.equals("Todas las duraciones")) {
+                stmt.setString(1, duracionSeleccionada);
+            }
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Itinerario itinerario = new Itinerario(
+                        rs.getInt("id_itinerario"),
+                        rs.getString("nombre"),
+                        rs.getDate("fecha_creacion"), // <-- ESTE ES Date
+                        rs.getString("descripcion"),
+                        rs.getInt("duracion")
+                );
+
+                listaItinerarios.add(itinerario);
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public static void cargarDatosItinerariosFiltrados(ObservableList<Itinerario> listaItinerarios, String busqueda) {
+        Connection conn = Conexion.conn;
+
+        String consulta = "SELECT id_itinerario, nombre, fecha_creacion, descripcion, duracion "
                 + "FROM itinerario "
                 + "WHERE nombre LIKE ? OR descripcion LIKE ? OR CAST(duracion AS CHAR) LIKE ?";
 
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (PreparedStatement ps = conn.prepareStatement(consulta)) {
             String wildcard = "%" + busqueda + "%";
             ps.setString(1, wildcard);
             ps.setString(2, wildcard);
@@ -205,7 +414,7 @@ public class Conexion {
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    ItinerarioTabla it = new ItinerarioTabla();
+                    Itinerario it = new Itinerario();
                     it.setIdItinerario(rs.getInt("id_itinerario"));
                     it.setNombre(rs.getString("nombre"));
                     it.setFechaCreacion(rs.getDate("fecha_creacion"));
@@ -221,13 +430,13 @@ public class Conexion {
         }
     }
 
-    public static void cargarDatosItinerarios(ObservableList<ItinerarioTabla> listado) {
+    public static void cargarDatosItinerarios(ObservableList<Itinerario> listado) {
         conectar();
         try {
             String consultaCarga = "SELECT id_itinerario, nombre, fecha_creacion, descripcion, duracion, id_usuario FROM itinerario";
             try (Statement st = conn.createStatement(); ResultSet rs = st.executeQuery(consultaCarga)) {
                 while (rs.next()) {
-                    listado.add(new ItinerarioTabla(
+                    listado.add(new Itinerario(
                             rs.getInt("id_itinerario"),
                             rs.getString("nombre"),
                             rs.getDate("fecha_creacion"),
@@ -313,6 +522,35 @@ public class Conexion {
         }
     }
 
+    public static void cargarDatosActividadesFiltradas(ObservableList<Actividad> listaActividades, String busqueda) {
+        Connection conn = Conexion.conn;
+
+        String consulta = "SELECT id_actividad, nombre, descripcion, id_destino "
+                + "FROM actividades "
+                + "WHERE nombre LIKE ? OR descripcion LIKE ?";
+
+        try (PreparedStatement ps = conn.prepareStatement(consulta)) {
+            String comodin = "%" + busqueda + "%";
+            ps.setString(1, comodin);
+            ps.setString(2, comodin);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Actividad act = new Actividad();
+                    act.setIdActividad(rs.getInt("id_actividad"));
+                    act.setNombre(rs.getString("nombre"));
+                    act.setDescripcion(rs.getString("descripcion"));
+                    act.setIdDestino(rs.getInt("id_destino"));
+
+                    listaActividades.add(act);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al cargar actividades filtradas:");
+            e.printStackTrace();
+        }
+    }
+
     public static void cargarComboDestino(ComboBox<Destino> comboDestino) {
         conectar();
         try {
@@ -368,6 +606,37 @@ public class Conexion {
             return false;
         } finally {
             cerrarConexion();
+        }
+    }
+
+    public static void cargarDatosAlojamientosFiltrados(ObservableList<Alojamiento> listaAlojamientos, String busqueda) {
+        Connection conn = Conexion.conn;
+
+        String consulta = "SELECT id_alojamiento, nombre, id_tipo_fk, contacto, imagen, id_destino_fk "
+                + "FROM alojamiento "
+                + "WHERE nombre LIKE ? OR contacto LIKE ?";
+
+        try (PreparedStatement ps = conn.prepareStatement(consulta)) {
+            String wildcard = "%" + busqueda + "%";
+            ps.setString(1, wildcard);
+            ps.setString(2, wildcard);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Alojamiento al = new Alojamiento();
+                    al.setIdAlojamiento(rs.getInt("id_alojamiento"));
+                    al.setNombre(rs.getString("nombre"));
+                    al.setIdTipo(rs.getInt("id_tipo_fk"));
+                    al.setContacto(rs.getString("contacto"));
+                    al.setImagen(rs.getString("imagen"));
+                    al.setIdDestino(rs.getInt("id_destino_fk"));
+
+                    listaAlojamientos.add(al);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al cargar alojamientos filtrados:");
+            e.printStackTrace();
         }
     }
 
@@ -431,6 +700,30 @@ public class Conexion {
         }
     }
 
+    public static void cargarDatosTiposAlojamientoFiltrados(ObservableList<TipoAlojamiento> listaTipos, String busqueda) {
+        Connection conn = Conexion.conn;
+
+        String consulta = "SELECT id_tipo, tipo FROM tipoalojamiento WHERE tipo LIKE ?";
+
+        try (PreparedStatement ps = conn.prepareStatement(consulta)) {
+            String wildcard = "%" + busqueda + "%";
+            ps.setString(1, wildcard);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    TipoAlojamiento tipoAloj = new TipoAlojamiento();
+                    tipoAloj.setIdTipo(rs.getInt("id_tipo"));
+                    tipoAloj.setTipo(rs.getString("tipo"));
+
+                    listaTipos.add(tipoAloj);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al cargar tipos de alojamiento filtrados:");
+            e.printStackTrace();
+        }
+    }
+
     public static void cargarDatosTiposAlojamientoRegistrar(ComboBox<TipoAlojamiento> comboTipo) {
         conectar();
         try {
@@ -485,6 +778,31 @@ public class Conexion {
         }
     }
 
+    public static void cargarDatosCategoriasFiltradas(ObservableList<Categoria> listaCategorias, String busqueda) {
+        Connection conn = Conexion.conn;
+        String consulta = "SELECT id_categoria, nombre, descripcion FROM categoria WHERE nombre LIKE ? OR descripcion LIKE ?";
+
+        try (PreparedStatement ps = conn.prepareStatement(consulta)) {
+            String wildcard = "%" + busqueda + "%";
+            ps.setString(1, wildcard);
+            ps.setString(2, wildcard);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Categoria cat = new Categoria();
+                    cat.setIdCategoria(rs.getInt("id_categoria"));
+                    cat.setNombre(rs.getString("nombre"));
+                    cat.setDescripcion(rs.getString("descripcion"));
+
+                    listaCategorias.add(cat);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al cargar categorías filtradas:");
+            e.printStackTrace();
+        }
+    }
+
     public static void cargarDatosCategorias(ObservableList<Categoria> listado) {
         conectar();
         try {
@@ -530,7 +848,6 @@ public class Conexion {
     public static void cargarDatosDestinos(ObservableList<Destino> listado) {
         conectar();
         try {
-            // Asumiendo que el número de 'visitas' es el conteo de reseñas para cada destino.
             String consulta = "SELECT d.id_destino, d.nombre, d.descripcion, d.fecha_creacion, d.imagen, "
                     + "COUNT(r.id_resena) as visitas, "
                     + "COALESCE(AVG(r.clasificacion), 0) as valoracion "
@@ -558,7 +875,7 @@ public class Conexion {
 
     public static int contar(String tabla) {
         int total = 0;
-        conectar(); // Asegúrate de que la conexión se abre
+        conectar();
         String query = "SELECT COUNT(*) FROM " + tabla;
         try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
             if (rs.next()) {
@@ -567,9 +884,32 @@ public class Conexion {
         } catch (SQLException ex) {
             Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
-            cerrarConexion(); // Asegúrate de cerrar la conexión
+            cerrarConexion();
         }
         return total;
+    }
+
+    /*Grafico de principal*/
+    public static ObservableList<InformeActividadDestino> cargarActividadesPorDestino() {
+        ObservableList<InformeActividadDestino> listado = FXCollections.observableArrayList();
+        String consulta = "SELECT d.nombre AS DESTINO, COUNT(a.id_actividad) AS ACTIVIDADES "
+                + "FROM actividades a "
+                + "JOIN destinos d ON a.id_destino = d.id_destino "
+                + "GROUP BY d.nombre;";
+        try {
+            Statement st = conn.createStatement();
+            ResultSet rs = st.executeQuery(consulta);
+
+            while (rs.next()) {
+                listado.add(new InformeActividadDestino(
+                        rs.getString("DESTINO"),
+                        rs.getInt("ACTIVIDADES")
+                ));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return listado;
     }
 
 }

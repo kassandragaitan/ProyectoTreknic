@@ -4,84 +4,319 @@
 <?import javafx.scene.chart.BarChart?>
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.NumberAxis?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
 
-<HBox alignment="CENTER" prefHeight="910.0" prefWidth="1290.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controladores.PrincipalController">
-    <children>
-        <AnchorPane prefHeight="950.0" prefWidth="1263.0" styleClass="anchorpane-style">
-      
-            <stylesheets>
-                <URL value="@estilos.css" />
-            </stylesheets>
-  <VBox fillWidth="true" layoutX="66.0" prefHeight="950.0" prefWidth="1222.0" spacing="20" style="-fx-padding: 20;"> <!-- Aumentado el prefHeight para forzar el desplazamiento -->
-      <HBox prefHeight="120.0" prefWidth="1206.0" spacing="10" style="-fx-alignment: center;">
-          <!-- Paneles de Datos -->
-                      <Pane styleClass="data-panel">
-                          <Label layoutX="14.0" layoutY="54.0" styleClass="data-title" text="Usuarios Registrados" />
-                          <Label fx:id="labelUsuarioReg" layoutX="14.0" layoutY="74.0" prefHeight="20.0" prefWidth="138.0" styleClass="data-value" text="1,254" />
-                          <Label layoutX="119.0" prefHeight="49.0" prefWidth="38.0" styleClass="data-change-positive" text="+12%" />
-                      </Pane>
-                      <Pane styleClass="data-panel">
-                          <Label layoutX="14.0" layoutY="54.0" styleClass="data-title" text="Itinerarios Activos" />
-                          <Label fx:id="labelItinerarioActivo" layoutX="14.0" layoutY="74.0" prefHeight="20.0" prefWidth="119.0" styleClass="data-value" text="86" />
-                          <Label layoutX="133.0" layoutY="14.0" styleClass="data-change-positive" text="+5%" />
-                      </Pane>
-                      <Pane styleClass="data-panel">
-                          <Label layoutX="14.0" layoutY="54.0" prefHeight="18.0" prefWidth="126.0" styleClass="data-title" text="Destinos Populares" />
-                          <Label fx:id="labelDestinosPopulares" layoutX="14.0" layoutY="74.0" prefHeight="20.0" prefWidth="126.0" styleClass="data-value" text="32" />
-                          <Label layoutX="114.0" layoutY="14.0" styleClass="data-change-negative" text="-3%" />
-                      </Pane>
-                      <Pane styleClass="data-panel">
-                          <Label layoutX="14.0" layoutY="51.0" styleClass="data-title" text="Actividades Mensuales" />
-                          <Label fx:id="labelActividadesMen" layoutX="14.0" layoutY="74.0" prefHeight="20.0" prefWidth="149.0" styleClass="data-value" text="543" />
-                          <Label layoutX="114.0" layoutY="14.0" styleClass="data-change-positive" text="+18%" />
-                      </Pane>
-                  </HBox>
-                  <!-- Actividad Reciente y Gráfico de Barras -->
-                  <HBox spacing="10">
-                      <Pane prefHeight="394.0" prefWidth="535.0" styleClass="chart-panel">
-                          <Label style="-fx-background-color: lightblue;" styleClass="chart-title" text="Actividad Reciente" textFill="#cc4040" />
-                          <!-- Añade aquí tu gráfico de barras -->
-                          <BarChart layoutX="14.0" layoutY="51.0" prefHeight="309.0" prefWidth="500.0">
-                              <xAxis>
-                                  <CategoryAxis label="Día" />
-                              </xAxis>
-                              <yAxis>
-                                  <NumberAxis label="Actividad" />
-                              </yAxis>
-                          </BarChart>
-                      </Pane>
-                      <Pane prefHeight="366.0" prefWidth="686.0" styleClass="table-panel">
-                          <Label style="-fx-background-color: lightblue;" styleClass="chart-title" text="Destinos Más Visitados" textFill="#ef4f4f" />
-                          <TableView fx:id="tablaDestinos" layoutX="26.0" layoutY="41.0" prefHeight="311.0" prefWidth="612.0">
-                              <columns>
-                                  <TableColumn fx:id="columnaDestino" prefWidth="144.79998397827148" text="DESTINO" />
-                                  <TableColumn fx:id="columnaVisitas" prefWidth="194.40003967285156" text="VISITAS" />
-                                  <TableColumn fx:id="columnaValoracion" prefWidth="440.7999267578125" text="VALORACIÓN" />
-                              </columns>
-                          </TableView>
-                      </Pane>
-                  </HBox>
-                  <HBox prefHeight="354.0" prefWidth="1206.0" spacing="10" style="-fx-alignment: center;">
-                      <Pane layoutX="49.0" layoutY="564.0" prefHeight="330.0" prefWidth="1182.0" styleClass="data-panel" stylesheets="@estilos.css">
-                          <children>
-                              <TableView layoutX="21.0" layoutY="39.0" prefHeight="301.0" prefWidth="1141.0">
-                                  <columns>
-                                      <TableColumn prefWidth="75.0" text="C1" />
-                                      <TableColumn prefWidth="75.0" text="C2" />
-                                  </columns>
-                              </TableView>
-                              <Label layoutX="32.0" layoutY="6.0" style="-fx-background-color: lightblue;" text="Label" />
-                          </children>
-                      </Pane>
-                  </HBox>
-              </VBox>
-        </AnchorPane>
-    </children>
-</HBox>
+
+<AnchorPane id="AnchorPane" prefHeight="700.0" prefWidth="900.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controladores.PrincipalController">
+    <stylesheets>
+        <URL value="@/Estilos/Principal.css"/>
+    </stylesheets>
+
+    <ScrollPane fitToWidth="true" fitToHeight="true" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0">
+        <VBox spacing="10">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+
+            <!-- Encabezado -->
+            <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-background-color: #F5F5F5;">
+                <padding>
+                    <Insets top="15" right="15" bottom="15" left="15"/>
+                </padding>
+                <ImageView fitHeight="50" fitWidth="50">
+                    <image>
+                        <Image url="@user.png"/>
+                    </image>
+                </ImageView>
+                <VBox>
+                    <Label text="Bienvenid@" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                    <Label text="Kassandra Gaitán" style="-fx-font-size: 14px;"/>
+                </VBox>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="☰" style="-fx-font-size: 20px;"/>
+            </HBox>
+
+            <!-- Barra de búsqueda -->
+            <HBox alignment="CENTER">
+                <TextField promptText="Busca itinerarios, actividades y guías aquí" prefWidth="600"/>
+            </HBox>
+
+            <!-- Categorías -->
+            <!-- Categorías -->
+            <FlowPane hgap="10" vgap="10" alignment="CENTER">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10"/>
+                </padding>
+
+                <Button text=" Casa Rural">
+                    <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                            <image>
+                                <Image url="@iconos/casa.png" />
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+
+                <Button text=" Resort">
+                    <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                            <image>
+                                <Image url="@iconos/resort.png" />
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+
+                <Button text=" Hotel">
+                    <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                            <image>
+                                <Image url="@iconos/hotel.png" />
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+
+                <Button text=" Apartamento">
+                    <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                            <image>
+                                <Image url="@iconos/apartamento.png" />
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+
+                <Button text=" Cabaña">
+                    <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                            <image>
+                                <Image url="@iconos/cabana.png" />
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+
+                <Button text=" Hostal">
+                    <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                            <image>
+                                <Image url="@/imagenes_principal/cama.png"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+
+                <Button text=" Villa">
+                    <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                            <image>
+                                <Image url="@iconos/villa.png" />
+                                
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+
+                <Button text=" Ver más">
+                    <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                            <image>
+                                <Image url="@iconos/vermas.png" />
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+            </FlowPane>
+
+            <!-- PANEL PRINCIPAL -->
+            <VBox spacing="20">
+                <HBox spacing="20" alignment="CENTER">
+                    <!-- Panel 1 -->
+                    <StackPane styleClass="data-panel">
+                        <VBox spacing="10" alignment="TOP_LEFT">
+                            <!-- Icono y % -->
+                            <HBox alignment="CENTER_LEFT">
+                                <StackPane styleClass="icon-container">
+                                    <ImageView fitWidth="24" fitHeight="24">
+                                        <image>
+                                            <Image url="@/imagenes_principal/users.png"/>
+                                        </image>
+                                    </ImageView>
+                                </StackPane>
+                                <Region HBox.hgrow="ALWAYS"/>
+                                <Label text="+12%" styleClass="data-change-positive-box"/>
+                            </HBox>
+
+                            <!-- Texto -->
+                            <VBox spacing="5" alignment="CENTER_LEFT">
+                                <Label text="Usuarios Registrados" styleClass="data-title"/>
+                                <Label fx:id="labelUsuarioReg" text="1,254" styleClass="data-value"/>
+                            </VBox>
+                        </VBox>
+                    </StackPane>
+
+
+                    <StackPane styleClass="data-panel">
+                        <VBox spacing="10" alignment="TOP_LEFT">
+                            <!-- Icono y % -->
+                            <HBox alignment="CENTER_LEFT">
+                                <StackPane styleClass="icon-container">
+                                    <ImageView fitWidth="24" fitHeight="24">
+                                        <image>
+                                            <Image url="@/imagenes_principal/calendar.png"/>
+                                        </image>
+                                    </ImageView>
+                                </StackPane>
+                                <Region HBox.hgrow="ALWAYS"/>
+                                <Label text="+5%" styleClass="data-change-positive-box"/>
+                            </HBox>
+
+                            <!-- Texto -->
+                            <VBox spacing="5" alignment="CENTER_LEFT">
+                                <Label text="Itinerarios Activos" styleClass="data-title"/>
+                                <Label fx:id="labelItinerarioActivo" text="86" styleClass="data-value"/>
+                            </VBox>
+                        </VBox>
+                    </StackPane>
+
+                    <StackPane styleClass="data-panel">
+                        <VBox spacing="10" alignment="TOP_LEFT">
+                            <!-- Icono y % -->
+                            <HBox alignment="CENTER_LEFT">
+                                <StackPane styleClass="icon-container">
+                                    <ImageView fitWidth="24" fitHeight="24">
+                                        <image>
+                                            <Image url="@/imagenes_principal/map-pin.png"/>
+
+                                        </image>
+                                    </ImageView>
+                                </StackPane>
+                                <Region HBox.hgrow="ALWAYS"/>
+                                <Label text="-3%" styleClass="data-change-negative-box"/>
+                            </HBox>
+
+                            <!-- Texto -->
+                            <VBox spacing="5" alignment="CENTER_LEFT">
+                                <Label text="Destinos Populares" styleClass="data-title"/>
+                                <Label fx:id="labelDestinosPopulares" text="32" styleClass="data-value"/>
+                            </VBox>
+                        </VBox>
+                    </StackPane>
+
+
+                    <StackPane styleClass="data-panel">
+                        <VBox spacing="10" alignment="TOP_LEFT">
+                            <!-- Icono y % -->
+                            <HBox alignment="CENTER_LEFT">
+                                <StackPane styleClass="icon-container">
+                                    <ImageView fitWidth="24" fitHeight="24">
+                                        <image>
+                                            <Image url="@/imagenes_principal/trending-up.png"/>
+                                        </image>
+                                    </ImageView>
+                                </StackPane>
+                                <Region HBox.hgrow="ALWAYS"/>
+                                <Label text="+18%" styleClass="data-change-positive-box"/>
+                            </HBox>
+
+                            <!-- Texto -->
+                            <VBox spacing="5" alignment="CENTER_LEFT">
+                                <Label text="Reservas Mensuales" styleClass="data-title"/>
+                                <Label fx:id="labelActividadesMen" text="543" styleClass="data-value"/>
+                            </VBox>
+                        </VBox>
+                    </StackPane>
+
+                </HBox>
+                <HBox spacing="20" alignment="CENTER">
+                    <!-- Gráfico -->
+                    <VBox spacing="10" styleClass="chart-panel" prefWidth="600" prefHeight="350">
+                        <Label text="Actividad Reciente" styleClass="chart-title"/>
+                        <BarChart fx:id="barChartActividad" prefHeight="300" prefWidth="580">
+                            <xAxis>
+                                <CategoryAxis fx:id="ejeXActividad" label="Destino"/>
+                            </xAxis>
+                            <yAxis>
+                                <NumberAxis fx:id="ejeYActividad" label="Actividad"/>
+                            </yAxis>
+                        </BarChart>
+
+                    </VBox>
+
+                    <!-- Tabla -->
+                    <VBox spacing="10" styleClass="table-panel" prefWidth="600" prefHeight="350">
+                        <Label text="Destinos Más Visitados" styleClass="chart-title"/>
+                        <TableView fx:id="tablaDestinos" prefHeight="300" prefWidth="580">
+                            <columns>
+                                <TableColumn fx:id="columnaDestino" text="DESTINO" prefWidth="200"/>
+                                <TableColumn fx:id="columnaVisitas" text="VISITAS" prefWidth="100"/>
+                                <TableColumn fx:id="columnaValoracion" text="VALORACIÓN" prefWidth="280"/>
+                            </columns>
+                        </TableView>
+                    </VBox>
+                </HBox>
+            </VBox>
+
+            <!-- Destinos destacados -->
+            <VBox spacing="10">
+                <Label text="Destinos Destacados" style="-fx-font-weight: bold; -fx-font-size: 16px;"/>
+                <HBox spacing="10">
+                    <!-- Masaya -->
+                    <VBox>
+                        <ImageView fitWidth="250" fitHeight="150">
+                            <image>
+                                <Image url="@/imagenes_principal/masaya.png"/>
+                            </image>
+                        </ImageView>
+                        <Label text="Masaya" style="-fx-font-weight: bold;"/>
+                        <Label text="Laguna de Apoyo, Masaya"/>
+                    </VBox>
+
+                    <!-- Granada - AJUSTADA -->
+                    <VBox>
+                        <ImageView fitWidth="250" fitHeight="150"> 
+                            <image>
+                                <Image url="@/imagenes_principal/granada.png"/>
+                            </image>
+                        </ImageView>
+                        <Label text="Granada" style="-fx-font-weight: bold;"/>
+                        <Label text="Centro Histórico"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+
+            <!-- Destinos por categoría -->
+            <VBox spacing="10">
+                <Label text="Destinos organizados por categoría" style="-fx-font-weight: bold; -fx-font-size: 16px;"/>
+                <HBox spacing="20">
+                    <VBox alignment="CENTER">
+                        <ImageView fitWidth="250" fitHeight="150"> 
+                            <image>
+                                <Image url="@/imagenes_principal/cornIsland.png"/>
+                            </image>
+                        </ImageView>
+                        <Label text="🇳🇮 Corn Island" style="-fx-font-weight: bold;"/>
+                    </VBox>
+                    <VBox alignment="CENTER">
+                        <ImageView fitWidth="250" fitHeight="150"> 
+                            <image>
+                                <Image url="@/imagenes_principal/san_juan.png"/>
+                            </image>
+                        </ImageView>
+                        <Label text="✨ San Juan del Sur" style="-fx-font-weight: bold;"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+
+
+        </VBox>
+    </ScrollPane>
+
+
+</AnchorPane>
