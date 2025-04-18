@@ -16,6 +16,8 @@ public class Alojamiento {
     private String contacto;
     private String imagen;
     private int idDestino;
+    private String nombreDestino;
+    private String nombreTipo;
 
     public Alojamiento() {
     }
@@ -27,6 +29,22 @@ public class Alojamiento {
         this.contacto = contacto;
         this.imagen = imagen;
         this.idDestino = idDestino;
+    }
+
+    public String getNombreTipo() {
+        return nombreTipo;
+    }
+
+    public void setNombreTipo(String nombreTipo) {
+        this.nombreTipo = nombreTipo;
+    }
+
+    public String getNombreDestino() {
+        return nombreDestino;
+    }
+
+    public void setNombreDestino(String nombreDestino) {
+        this.nombreDestino = nombreDestino;
     }
 
     public int getIdAlojamiento() {

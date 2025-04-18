@@ -12,8 +12,21 @@ public class Itinerario {
     private Boolean isActive;
     private String foto;
     private int idUsuario;
+    private String nombreUsuario;
 
     public Itinerario() {
+    }
+
+    public Itinerario(int idItinerario, String nombre, String descripcion, int duracion, Date fechaCreacion, Boolean isActive, String foto, int idUsuario, String nombreUsuario) {
+        this.idItinerario = idItinerario;
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.duracion = duracion;
+        this.fechaCreacion = fechaCreacion;
+        this.isActive = isActive;
+        this.foto = foto;
+        this.idUsuario = idUsuario;
+        this.nombreUsuario = nombreUsuario;
     }
 
     // Constructor básico
@@ -49,6 +62,14 @@ public class Itinerario {
 
     public void setIdItinerario(int idItinerario) {
         this.idItinerario = idItinerario;
+    }
+
+    public String getNombreUsuario() {
+        return nombreUsuario;
+    }
+
+    public void setNombreUsuario(String nombreUsuario) {
+        this.nombreUsuario = nombreUsuario;
     }
 
     public String getNombre() {

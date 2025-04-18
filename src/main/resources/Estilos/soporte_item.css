@@ -1,22 +1,36 @@
-/*
- * Empty Stylesheet file.
- */
-
 .mainFxmlClass {
+    -fx-background-color: #f9fafb;
+    -fx-border-color: #e5e7eb;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-padding: 10;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.03), 5, 0.0, 0, 1);
+}
 
-}
 .label-style {
-    -fx-background-color: #4285F4; /* Blue color; adjust the color code as needed */
-    -fx-background-radius: 10; /* Rounded corners */
-    -fx-padding: 5 10 5 10; /* Top, right, bottom, left padding */
-    -fx-text-fill: white; /* White text color */
-    -fx-font-weight: bold; /* Bold font */
-    -fx-font-size: 14px; /* Font size */
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 5, 0, 0, 1); /* Shadow effect */
+    -fx-background-color: #e0e7ff;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
 }
+
 .label-rounded {
-    -fx-background-color: #f0f0f0; /* Light grey background; adjust as needed */
-    -fx-background-radius: 15; /* Rounded corners */
-    -fx-padding: 8 10 8 10; /* Top, right, bottom, left padding */
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5); /* Soft shadow effect */
+    -fx-background-color: #e5e7eb;
+    -fx-text-fill: #374151;
+    -fx-background-radius: 15px;
+    -fx-padding: 3 10 3 10;
+}
+
+.list-cell {
+    -fx-background-color: white !important; /* ¡Esto fuerza el fondo blanco! */
+    -fx-border-width: 0;
+    -fx-padding: 10px;
+}
+
+.list-cell:odd, .list-cell:even {
+    -fx-background-color: white !important; /* Elimina intercalado */
+}
+
+.list-cell:selected {
+    -fx-background-color: #e0e7ff !important; /* Color al seleccionar (opcional) */
+    -fx-text-fill: black;
 }

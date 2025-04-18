@@ -5,6 +5,7 @@
 package controladores;
 
 import bbdd.Conexion;
+import bbdd.ConsultasResenas;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -27,7 +28,7 @@ import modelo.Resena;
  */
 public class GestionResenasController implements Initializable {
 
-     @FXML
+    @FXML
     private TableView<Resena> destinosTable;
     @FXML
     private TableColumn<Resena, String> destinoColumn;
@@ -35,7 +36,6 @@ public class GestionResenasController implements Initializable {
     private TableColumn<Resena, String> comentarioDestinoColumn;
     @FXML
     private TableColumn<Resena, Integer> clasificacionDestinoColumn;
-
     @FXML
     private TableView<Resena> usuariosTable;
     @FXML
@@ -55,7 +55,7 @@ public class GestionResenasController implements Initializable {
         comentarioUsuarioColumn.setCellValueFactory(new PropertyValueFactory<>("comentario"));
         clasificacionUsuarioColumn.setCellValueFactory(new PropertyValueFactory<>("clasificacion"));
 
-        List<Resena> resenas = Conexion.obtenerResenas();
+        List<Resena> resenas = ConsultasResenas.obtenerResenas();
         destinosTable.setItems(FXCollections.observableArrayList(resenas));
         usuariosTable.setItems(FXCollections.observableArrayList(resenas));
     }

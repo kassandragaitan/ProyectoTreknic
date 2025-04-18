@@ -7,6 +7,8 @@ package controladores;
 import Utilidades.Alertas;
 import Utilidades.compruebaCampo;
 import bbdd.Conexion;
+import bbdd.ConsultasActividades;
+import bbdd.ConsultasDestinos;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
@@ -19,6 +21,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.Stage;
 import modelo.Actividad;
 import modelo.Destino;
 
@@ -43,10 +46,13 @@ public class AgregarActividadController implements Initializable {
     /**
      * Initializes the controller class.
      */
+  private Actividad actividadActual;
+    private boolean esEdicion = false;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         Conexion.conectar();
-        Conexion.cargarComboDestino(comboDestino);
+        ConsultasDestinos.cargarComboDestino(comboDestino);
         Conexion.cerrarConexion();
 
         Image imagen = new Image(getClass().getResourceAsStream("/img/Encabezado.png"));
@@ -63,25 +69,73 @@ public class AgregarActividadController implements Initializable {
             Alertas.aviso("Campo vacío", "Debe seleccionar un destino.");
         } else {
             Destino destinoSeleccionado = comboDestino.getValue();
-            Actividad actividad = new Actividad(
-                    0,
-                    campoNombre.getText(),
-                    campoDescripcion.getText(),
-                    destinoSeleccionado.getId_destino()
-            );
 
-            if (Conexion.registrarActividad(actividad)) {
-                Alertas.informacion("Actividad registrada exitosamente.");
-                limpiarFormulario();
+            if (esEdicion && actividadActual != null) {
+                actividadActual.setNombre(campoNombre.getText());
+                actividadActual.setDescripcion(campoDescripcion.getText());
+                actividadActual.setIdDestino(destinoSeleccionado.getId_destino());
+
+                if (ConsultasActividades.actualizarActividad(actividadActual)) {
+                    Alertas.informacion("Actividad actualizada exitosamente.");
+                    cerrarVentana();
+                } else {
+                    Alertas.error("Error", "No se pudo actualizar la actividad.");
+                }
             } else {
-                Alertas.error("Error en el registro", "No se pudo registrar la actividad.");
+                Actividad actividad = new Actividad(
+                        0,
+                        campoNombre.getText(),
+                        campoDescripcion.getText(),
+                        destinoSeleccionado.getId_destino()
+                );
+
+                if (ConsultasActividades.registrarActividad(actividad)) {
+                    Alertas.informacion("Actividad registrada exitosamente.");
+                    limpiarFormulario();
+                } else {
+                    Alertas.error("Error en el registro", "No se pudo registrar la actividad.");
+                }
             }
         }
+    }
+
+    public void verActividad(Actividad act) {
+        this.actividadActual = act;
+        campoNombre.setText(act.getNombre());
+        campoDescripcion.setText(act.getDescripcion());
+
+        for (Destino destino : comboDestino.getItems()) {
+            if (destino.getId_destino() == act.getIdDestino()) {
+                comboDestino.getSelectionModel().select(destino);
+                break;
+            }
+        }
+
+        this.esEdicion = true;
+        botonRegistrar.setText("Actualizar");
+    }
+
+    public void setEdicionActiva(boolean editable) {
+        campoNombre.setEditable(editable);
+        campoDescripcion.setEditable(editable);
+        comboDestino.setDisable(!editable);
+        botonRegistrar.setVisible(editable);
+
+        double opacidad = editable ? 1.0 : 0.75;
+        campoNombre.setOpacity(opacidad);
+        campoDescripcion.setOpacity(opacidad);
+        comboDestino.setOpacity(opacidad);
     }
 
     private void limpiarFormulario() {
         campoNombre.clear();
         campoDescripcion.clear();
         comboDestino.getSelectionModel().clearSelection();
+        botonRegistrar.setText("Guardar");
+    }
+
+    private void cerrarVentana() {
+        Stage stage = (Stage) botonRegistrar.getScene().getWindow();
+        stage.close();
     }
 }

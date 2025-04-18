@@ -7,6 +7,7 @@ package controladores;
 import Utilidades.Alertas;
 import Utilidades.compruebaCampo;
 import bbdd.Conexion;
+import bbdd.ConsultasItinerario;
 import java.net.URL;
 import java.util.Date;
 import java.util.ResourceBundle;
@@ -20,8 +21,8 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.Stage;
 import modelo.Itinerario;
-
 
 /**
  * FXML Controller class
@@ -44,13 +45,18 @@ public class AgregarItinerarioController implements Initializable {
     /**
      * Initializes the controller class.
      */
+    
+    private Itinerario itinerarioActual;
+    private boolean esEdicion = false;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         Conexion.conectar();
         ObservableList<Integer> duraciones = FXCollections.observableArrayList();
         comboDuracion.setItems(duraciones);
-        Conexion.cargarComboDuracionItinerario(comboDuracion);
+        ConsultasItinerario.cargarComboDuracionItinerario(comboDuracion);
         Conexion.cerrarConexion();
+
         Image imagen = new Image(getClass().getResourceAsStream("/img/Encabezado.png"));
         imagenTrekNic.setImage(imagen);
     }
@@ -66,25 +72,67 @@ public class AgregarItinerarioController implements Initializable {
         } else if (comboDuracion.getValue() == null) {
             Alertas.aviso("Campo vacío", "Debe seleccionar una duración.");
         } else {
-            Itinerario itinerario = new Itinerario();
-            itinerario.setNombre(campoNombre.getText());
-            itinerario.setDescripcion(campoDescripcion.getText());
-            itinerario.setDuracion(comboDuracion.getValue());
-            itinerario.setFechaCreacion(new java.util.Date()); // Asegúrate de que la fecha sea correcta según tu contexto
-            itinerario.setIdUsuario(1); // Ajusta según el ID de usuario adecuado o cómo lo manejes
+            if (esEdicion && itinerarioActual != null) {
+                // Modo edición
+                itinerarioActual.setNombre(campoNombre.getText());
+                itinerarioActual.setDescripcion(campoDescripcion.getText());
+                itinerarioActual.setDuracion(comboDuracion.getValue());
 
-            if (Conexion.registrarItinerario(itinerario)) {
-                Alertas.informacion("Itinerario registrado exitosamente.");
-                limpiarFormulario();
+                if (ConsultasItinerario.actualizarItinerario(itinerarioActual)) {
+                    Alertas.informacion("Itinerario actualizado exitosamente.");
+                    cerrarVentana();
+                } else {
+                    Alertas.error("Error al actualizar", "No se pudo actualizar el itinerario.");
+                }
             } else {
-                Alertas.error("Error en el registro", "Ocurrió un error al registrar el itinerario.");
+                // Modo nuevo
+                Itinerario nuevo = new Itinerario();
+                nuevo.setNombre(campoNombre.getText());
+                nuevo.setDescripcion(campoDescripcion.getText());
+                nuevo.setDuracion(comboDuracion.getValue());
+                nuevo.setFechaCreacion(new Date());
+                nuevo.setIdUsuario(1); // Ajusta si estás usando login
+
+                if (ConsultasItinerario.registrarItinerario(nuevo)) {
+                    Alertas.informacion("Itinerario registrado exitosamente.");
+                    limpiarFormulario();
+                } else {
+                    Alertas.error("Error en el registro", "Ocurrió un error al registrar el itinerario.");
+                }
             }
         }
+    }
+
+    public void verItinerario(Itinerario it) {
+        this.itinerarioActual = it;
+        campoNombre.setText(it.getNombre());
+        campoDescripcion.setText(it.getDescripcion());
+        comboDuracion.setValue(it.getDuracion());
+        this.esEdicion = true;
+        botonRegistrar.setText("Actualizar");
+    }
+
+    public void setEdicionActiva(boolean editable) {
+        campoNombre.setEditable(editable);
+        campoDescripcion.setEditable(editable);
+        comboDuracion.setDisable(!editable);
+        botonRegistrar.setVisible(editable);
+
+        double opacidad = editable ? 1.0 : 0.75;
+        campoNombre.setOpacity(opacidad);
+        campoDescripcion.setOpacity(opacidad);
+        comboDuracion.setOpacity(opacidad);
     }
 
     private void limpiarFormulario() {
         campoNombre.clear();
         campoDescripcion.clear();
         comboDuracion.getSelectionModel().clearSelection();
+        botonRegistrar.setText("Guardar");
+    }
+
+    private void cerrarVentana() {
+        Stage stage = (Stage) botonRegistrar.getScene().getWindow();
+        stage.close();
     }
 }

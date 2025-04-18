@@ -5,6 +5,7 @@
 package controladores;
 
 import bbdd.Conexion;
+import bbdd.ConsultasNotificaciones;
 import java.net.URL;
 import java.util.Date;
 import java.util.ResourceBundle;
@@ -41,7 +42,7 @@ public class NotificacionesController implements Initializable {
     @FXML
     private TableColumn<Notificacion, Date> columnaFecha;
     @FXML
-    private TableColumn<Notificacion, String>Acciones;
+    private TableColumn<Notificacion, String> Acciones;
     @FXML
     private TableView<Notificacion> tablaNotificaciones;
 
@@ -50,7 +51,7 @@ public class NotificacionesController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-      initializeTableView();
+        initializeTableView();
         cargarNotificaciones();
     }
 
@@ -64,7 +65,7 @@ public class NotificacionesController implements Initializable {
 
     private void cargarNotificaciones() {
         ObservableList<Notificacion> listaNotificaciones = FXCollections.observableArrayList();
-        Conexion.cargarDatosNotificaciones(listaNotificaciones);
+        ConsultasNotificaciones.cargarDatosNotificaciones(listaNotificaciones);
         tablaNotificaciones.setItems(listaNotificaciones);
     }
 }

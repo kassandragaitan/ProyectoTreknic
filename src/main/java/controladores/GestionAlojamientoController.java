@@ -4,7 +4,9 @@
  */
 package controladores;
 
+import acciones.CeldaAccionesAlojamiento;
 import bbdd.Conexion;
+import bbdd.ConsultasAlojamientos;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
@@ -16,6 +18,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -23,7 +26,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import modelo.Alojamiento;
-
 
 /**
  * FXML Controller class
@@ -39,19 +41,23 @@ public class GestionAlojamientoController implements Initializable {
     @FXML
     private TableColumn<Alojamiento, String> columnaNombre;
     @FXML
-    private TableColumn<Alojamiento, Integer> columnaTipo;
+    private TableColumn<Alojamiento, String> columnaTipo;
     @FXML
     private TableColumn<Alojamiento, String> columnaContacto;
     @FXML
     private TableColumn<Alojamiento, String> columnaImagen;
     @FXML
-    private TableColumn<Alojamiento, Integer> columnaIdDestino;
+    private TableColumn<Alojamiento, String> columnaIdDestino;
     @FXML
-    private TableColumn<Alojamiento, Boolean> columnAcciones;
+    private TableColumn<Alojamiento, Void> columnAcciones;
     @FXML
     private TextField campoBuscarAlojamiento;
     @FXML
     private Button botonNuevoAlojamiento;
+    @FXML
+    private ComboBox<?> comboTipo;
+    @FXML
+    private ComboBox<?> comboDestino;
 
     /**
      * Initializes the controller class.
@@ -59,16 +65,21 @@ public class GestionAlojamientoController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         cargarAlojamientos();
+        columnaIdAlojamiento.setVisible(false);
+        tablaAlojamientos.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
         campoBuscarAlojamiento.textProperty().addListener((observable, oldValue, newValue) -> {
             buscarAlojamientosEnTiempoReal(newValue);
         });
+
+        columnAcciones.setCellFactory(col -> new CeldaAccionesAlojamiento());
 
     }
 
     private void buscarAlojamientosEnTiempoReal(String texto) {
         ObservableList<Alojamiento> listaAlojamientos = FXCollections.observableArrayList();
         Conexion.conectar();
-        Conexion.cargarDatosAlojamientosFiltrados(listaAlojamientos, texto);
+        ConsultasAlojamientos.cargarDatosAlojamientosFiltrados(listaAlojamientos, texto);
         Conexion.cerrarConexion();
         tablaAlojamientos.setItems(listaAlojamientos);
     }
@@ -76,16 +87,17 @@ public class GestionAlojamientoController implements Initializable {
     private void cargarAlojamientos() {
         ObservableList<Alojamiento> listaAlojamientos = FXCollections.observableArrayList();
         Conexion.conectar();
-        Conexion.cargarDatosAlojamientos(listaAlojamientos);
+        ConsultasAlojamientos.cargarDatosAlojamientos(listaAlojamientos);
         Conexion.cerrarConexion();
 
         tablaAlojamientos.setItems(listaAlojamientos);
         columnaIdAlojamiento.setCellValueFactory(new PropertyValueFactory<>("idAlojamiento"));
         columnaNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
-        columnaTipo.setCellValueFactory(new PropertyValueFactory<>("idTipo"));
+        columnaTipo.setCellValueFactory(new PropertyValueFactory<>("nombreTipo"));
         columnaContacto.setCellValueFactory(new PropertyValueFactory<>("contacto"));
         columnaImagen.setCellValueFactory(new PropertyValueFactory<>("imagen"));
-        columnaIdDestino.setCellValueFactory(new PropertyValueFactory<>("idDestino"));
+        columnaIdDestino.setCellValueFactory(new PropertyValueFactory<>("nombreDestino"));
+
     }
 
     @FXML

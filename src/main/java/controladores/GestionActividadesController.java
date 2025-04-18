@@ -5,6 +5,7 @@
 package controladores;
 
 import bbdd.Conexion;
+import bbdd.ConsultasActividades;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
@@ -16,6 +17,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -23,6 +25,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import modelo.Actividad;
+import acciones.CeldaAccionesActividad;
+
 
 /**
  * FXML Controller class
@@ -40,30 +44,43 @@ public class GestionActividadesController implements Initializable {
     @FXML
     private TableColumn<Actividad, String> columnaDescripcion;
     @FXML
-    private TableColumn<Actividad, Integer> columnaIdDestino;
+    private TableColumn<Actividad, String> columnaIdDestino;
     @FXML
-    private TableColumn<Actividad, Boolean> columnAcciones;
+    private TableColumn<Actividad, Void> columnAcciones;
     @FXML
     private TextField campoBuscarActividad;
     @FXML
     private Button botonNuevaActividad;
+    @FXML
+    private ComboBox<?> combo1;
+    @FXML
+    private ComboBox<?> combo2;
 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+
         cargarActividades();
+        columnaIdActividad.setVisible(false);
+
+        tablaActividades.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
         campoBuscarActividad.textProperty().addListener((observable, oldValue, newValue) -> {
             buscarActividadesEnTiempoReal(newValue);
         });
+        inicializarAccionesColumna();
 
     }
+private void inicializarAccionesColumna() {
+    columnAcciones.setCellFactory(col -> new CeldaAccionesActividad());
+}
 
     private void buscarActividadesEnTiempoReal(String texto) {
         ObservableList<Actividad> listaActividades = FXCollections.observableArrayList();
         Conexion.conectar();
-        Conexion.cargarDatosActividadesFiltradas(listaActividades, texto);
+        ConsultasActividades.cargarDatosActividadesFiltradas(listaActividades, texto);
         Conexion.cerrarConexion();
         tablaActividades.setItems(listaActividades);
     }
@@ -71,14 +88,15 @@ public class GestionActividadesController implements Initializable {
     private void cargarActividades() {
         ObservableList<Actividad> listaActividades = FXCollections.observableArrayList();
         Conexion.conectar();
-        Conexion.cargarDatosActividades(listaActividades);
+        ConsultasActividades.cargarDatosActividades(listaActividades);
         Conexion.cerrarConexion();
 
         tablaActividades.setItems(listaActividades);
         columnaIdActividad.setCellValueFactory(new PropertyValueFactory<>("idActividad"));
         columnaNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         columnaDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
-        columnaIdDestino.setCellValueFactory(new PropertyValueFactory<>("idDestino"));
+        columnaIdDestino.setCellValueFactory(new PropertyValueFactory<>("nombreDestino"));
+
     }
 
     @FXML

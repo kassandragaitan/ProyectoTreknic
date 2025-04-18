@@ -5,6 +5,7 @@
 package controladores;
 
 import bbdd.Conexion;
+import bbdd.ConsultasTipoAlojamiento;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
@@ -52,8 +53,12 @@ public class GestionTipoDeAlojamientoController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
 
         Conexion.conectar();
-        Conexion.cargarDatosTiposAlojamiento(listaTipos);
+        ConsultasTipoAlojamiento.cargarDatosTiposAlojamiento(listaTipos);
         Conexion.cerrarConexion();
+        
+        columnaIdTipo.setVisible(false);
+        tablaTipoAlojamiento.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
 
         tablaTipoAlojamiento.setItems(listaTipos);
         columnaIdTipo.setCellValueFactory(new PropertyValueFactory<>("idTipo"));
@@ -68,7 +73,7 @@ public class GestionTipoDeAlojamientoController implements Initializable {
     private void buscarTiposAlojamientoEnTiempoReal(String texto) {
         ObservableList<TipoAlojamiento> listaTipos = FXCollections.observableArrayList();
         Conexion.conectar();
-        Conexion.cargarDatosTiposAlojamientoFiltrados(listaTipos, texto);
+        ConsultasTipoAlojamiento.cargarDatosTiposAlojamientoFiltrados(listaTipos, texto);
         Conexion.cerrarConexion();
         tablaTipoAlojamiento.setItems(listaTipos);
     }

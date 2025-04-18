@@ -4,7 +4,9 @@
  */
 package controladores;
 
+import acciones.CeldaAccionesItinerario;
 import bbdd.Conexion;
+import bbdd.ConsultasItinerario;
 import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -47,7 +49,7 @@ public class GestionItinerarioController implements Initializable {
      * Initializes the controller class.
      */
     @FXML
-    private TableColumn<Itinerario, Boolean> columnAcciones;
+    private TableColumn<Itinerario, Void> columnAcciones;
     @FXML
     private TableColumn<Itinerario, Integer> columnaIdItinerario;
     @FXML
@@ -57,7 +59,7 @@ public class GestionItinerarioController implements Initializable {
     @FXML
     private TableColumn<Itinerario, Integer> columnaDuracion;
     @FXML
-    private TableColumn<Itinerario, java.util.Date> columnaFechaCreacion; // o Date sin mas 
+    private TableColumn<Itinerario, Date> columnaFechaCreacion; 
     @FXML
     private TextField campoBuscarItinerario;
     @FXML
@@ -66,20 +68,23 @@ public class GestionItinerarioController implements Initializable {
     private TableView<Itinerario> tablaItinerario;
     @FXML
     private ComboBox<String> comboDuraciones;
+    @FXML
+    private TableColumn<Itinerario, String> columnaUsuario;
 
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        cargarItinerarios();
+  @Override
+public void initialize(URL url, ResourceBundle rb) {
+     cargarItinerarios();
         inicializarAccionesColumna();
+        tablaItinerario.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-        ///
+        columnaIdItinerario.setVisible(false);
+
         campoBuscarItinerario.textProperty().addListener((observable, oldValue, newValue) -> {
             buscarItinerariosEnTiempoReal(newValue);
         });
 
         Conexion.conectar();
-       ObservableList<String> duraciones = Conexion.cargarDuracionesItinerarios();
-
+        ObservableList<String> duraciones = ConsultasItinerario.cargarDuracionesItinerarios();
         Conexion.cerrarConexion();
 
         comboDuraciones.setItems(duraciones);
@@ -88,21 +93,20 @@ public class GestionItinerarioController implements Initializable {
         comboDuraciones.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             filtrarItinerariosPorDuracion(newVal);
         });
-
     }
 
     private void filtrarItinerariosPorDuracion(String duracionSeleccionada) {
         ObservableList<Itinerario> lista = FXCollections.observableArrayList();
         Conexion.conectar();
-        Conexion.cargarItinerariosPorDuracion(lista, duracionSeleccionada);
+        ConsultasItinerario.cargarItinerariosPorDuracion(lista, duracionSeleccionada);
         Conexion.cerrarConexion();
-        tablaItinerario.setItems(lista); // tu TableView debe llamarse así
+        tablaItinerario.setItems(lista);
     }
 
     private void buscarItinerariosEnTiempoReal(String texto) {
         ObservableList<Itinerario> listaItinerarios = FXCollections.observableArrayList();
         Conexion.conectar();
-        Conexion.cargarDatosItinerariosFiltrados(listaItinerarios, texto);
+        ConsultasItinerario.cargarDatosItinerariosFiltrados(listaItinerarios, texto);
         Conexion.cerrarConexion();
         tablaItinerario.setItems(listaItinerarios);
     }
@@ -110,7 +114,7 @@ public class GestionItinerarioController implements Initializable {
     public void cargarItinerarios() {
         ObservableList<Itinerario> listaItinerarios = FXCollections.observableArrayList();
         Conexion.conectar();
-        Conexion.cargarDatosItinerarios(listaItinerarios);
+        ConsultasItinerario.cargarDatosItinerarios(listaItinerarios);
         Conexion.cerrarConexion();
 
         tablaItinerario.setItems(listaItinerarios);
@@ -119,67 +123,11 @@ public class GestionItinerarioController implements Initializable {
         columaDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
         columnaDuracion.setCellValueFactory(new PropertyValueFactory<>("duracion"));
         columnaFechaCreacion.setCellValueFactory(new PropertyValueFactory<>("fechaCreacion"));
+        columnaUsuario.setCellValueFactory(new PropertyValueFactory<>("nombreUsuario"));
     }
 
     private void inicializarAccionesColumna() {
-        columnAcciones.setCellFactory(col -> new TableCell<Itinerario, Boolean>() {
-            private final HBox hbox = new HBox(10);
-            private final Button viewButton = new Button("Ver");
-            private final Button editButton = new Button("Editar");
-            private final Button toggleActiveButton = new Button();
-
-            {
-                viewButton.setOnAction(e -> viewItinerarioDetails(getTableRow().getItem()));
-                editButton.setOnAction(e -> editItinerario(getTableRow().getItem()));
-                toggleActiveButton.setOnAction(e -> toggleActiveStatus(getTableRow().getItem()));
-                hbox.getChildren().addAll(viewButton, editButton, toggleActiveButton);
-                hbox.setAlignment(Pos.CENTER);
-            }
-
-            @Override
-            protected void updateItem(Boolean isActive, boolean empty) {
-                super.updateItem(isActive, empty);
-                if (empty || getTableRow() == null || getTableRow().getItem() == null || isActive == null) {
-                    setGraphic(null);
-                } else {
-                    toggleActiveButton.setText(isActive ? "Desactivar" : "Activar");
-                    setGraphic(hbox);
-                }
-            }
-        });
-    }
-
-    private void viewItinerarioDetails(Itinerario itinerario) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/AgregarItinerario.fxml"));
-            Parent root = loader.load();
-            Stage stage = new Stage();
-            stage.setTitle("Agregar itinerario");
-            stage.setScene(new Scene(root));
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.showAndWait();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void editItinerario(Itinerario itinerario) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/AgregarItinerario.fxml"));
-            Parent root = loader.load();
-            Stage stage = new Stage();
-            stage.setTitle("Agregar itinerario");
-            stage.setScene(new Scene(root));
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.showAndWait();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void toggleActiveStatus(Itinerario itinerario) {
-        itinerario.setIsActive(!itinerario.getIsActive());
-        tablaItinerario.refresh();
+        columnAcciones.setCellFactory(col -> new CeldaAccionesItinerario());
     }
 
     @FXML
@@ -192,10 +140,8 @@ public class GestionItinerarioController implements Initializable {
             stage.setScene(new Scene(root));
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.showAndWait();
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
-
 }

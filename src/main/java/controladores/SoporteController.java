@@ -103,8 +103,8 @@ public class SoporteController implements Initializable {
         initializeTicketsTable();
         ticketsTable.setItems(ticketData);
         // Carga de FAQ y guías
-        loadFAQs();
-        loadGuides();
+        cargarFAQs();
+        cargarGuias();
 
     }
 
@@ -126,40 +126,43 @@ public class SoporteController implements Initializable {
         System.out.println("Ticket ID: " + ticket.getId() + " viewed.");
     }
 
-    private void loadFAQs() {
-        // Load FAQs
-        faqList.getItems().addAll(
-                new FAQItem("¿Cómo crear un nuevo itinerario?", "Para crear un nuevo itinerario, vaya a la sección 'Gestión de Itinerarios' y haga clic en el botón 'Nuevo Itinerario'. Complete el formulario con la información requerida y guarde los cambios."),
-                new FAQItem("¿Cómo añadir un nuevo destino?", "Para añadir un nuevo destino, acceda a la sección 'Gestión de Destinos' y haga clic en 'Nuevo Destino'. Complete los campos necesarios incluyendo nombre, país, descripción e imágenes representativas."),
-                new FAQItem("¿Cómo gestionar los permisos de usuario?", "Los permisos de usuario se gestionan desde la sección 'Gestión de Usuarios'. Seleccione el usuario deseado y haga clic en 'Editar' para modificar su rol y permisos en el sistema."),
-                new FAQItem("¿Cómo generar un reporte personalizado?", "Para generar un reporte personalizado, vaya a la sección 'Reportes y Estadísticas', seleccione el tipo de reporte y el período de tiempo deseado. Luego puede exportar los datos en varios formatos."),
-                new FAQItem("¿Cómo configurar notificaciones automáticas?", "Las notificaciones automáticas se configuran en la sección 'Configuración de Notificaciones'. Puede crear nuevas reglas de notificación y definir los destinatarios y condiciones para cada una.")
-        );
-        faqList.setCellFactory(param -> new ListCell<FAQItem>() {
-            @Override
-            protected void updateItem(FAQItem item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setText(null);
+private void cargarFAQs() {
+    faqList.getItems().addAll(
+            new FAQItem("¿Cómo crear un nuevo itinerario?", "Para crear un nuevo itinerario, vaya a la sección 'Gestión de Itinerarios' y haga clic en el botón 'Nuevo Itinerario'. Complete el formulario con la información requerida y guarde los cambios."),
+            new FAQItem("¿Cómo añadir un nuevo destino?", "Para añadir un nuevo destino, acceda a la sección 'Gestión de Destinos' y haga clic en 'Nuevo Destino'. Complete los campos necesarios incluyendo nombre, país, descripción e imágenes representativas."),
+            new FAQItem("¿Cómo gestionar los permisos de usuario?", "Los permisos de usuario se gestionan desde la sección 'Gestión de Usuarios'. Seleccione el usuario deseado y haga clic en 'Editar' para modificar su rol y permisos en el sistema."),
+            new FAQItem("¿Cómo generar un reporte personalizado?", "Para generar un reporte personalizado, vaya a la sección 'Reportes y Estadísticas', seleccione el tipo de reporte y el período de tiempo deseado. Luego puede exportar los datos en varios formatos."),
+            new FAQItem("¿Cómo configurar notificaciones automáticas?", "Las notificaciones automáticas se configuran en la sección 'Configuración de Notificaciones'. Puede crear nuevas reglas de notificación y definir los destinatarios y condiciones para cada una.")
+    );
+
+    faqList.setCellFactory(param -> new ListCell<FAQItem>() {
+        @Override
+        protected void updateItem(FAQItem item, boolean empty) {
+            super.updateItem(item, empty);
+            if (empty || item == null) {
+                setText(null);
+                setGraphic(null);
+                setStyle(""); // Restablecer estilo en celdas vacías
+            } else {
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/Soporte_Item.fxml"));
+                    Node node = loader.load();
+                    Soporte_ItemController controller = loader.getController();
+                    controller.setItem(item);
+                    setGraphic(node);
+                    setStyle("-fx-background-color: white;"); // <<--- aquí lo importante
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    setText("Error loading FXML");
                     setGraphic(null);
-                } else {
-                    try {
-                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/Soporte_Item.fxml"));
-                        Node node = loader.load();
-                        Soporte_ItemController controller = loader.getController();
-                        controller.setItem(item);
-                        setGraphic(node);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        setText("Error loading FXML");
-                        setGraphic(null);
-                    }
                 }
             }
-        });
-    }
+        }
+    });
+}
 
-    private void loadGuides() {
+
+    private void cargarGuias() {
         guidesList.getItems().addAll(
                 "Guía de Inicio Rápido",
                 "Documentación de Referencia",

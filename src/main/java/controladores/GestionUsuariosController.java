@@ -7,6 +7,7 @@ package controladores;
 import Utilidades.Alertas;
 import Utilidades.compruebaCampo;
 import bbdd.Conexion;
+import bbdd.ConsultasUsuario;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -67,9 +68,9 @@ public class GestionUsuariosController implements Initializable {
         Conexion.conectar();
         checkActivo.setSelected(true);
 
-        Conexion.cargarComboIdioma(campoIdioma);
-        Conexion.cargarComboTipoUsuario(campoTipoUsuario);
-        Conexion.cargarComboTipoCompania(campoTipoCompania);
+        ConsultasUsuario.cargarComboIdioma(campoIdioma);
+        ConsultasUsuario.cargarComboTipoUsuario(campoTipoUsuario);
+        ConsultasUsuario.cargarComboTipoCompania(campoTipoCompania);
         Conexion.cerrarConexion();
 
         Image imagen = new Image(getClass().getResourceAsStream("/img/Encabezado.png"));
@@ -128,7 +129,7 @@ public class GestionUsuariosController implements Initializable {
             usuario.setTipoUsuario(campoTipoUsuario.getValue());
             usuario.setActivo(checkActivo.isSelected());
 
-            if (Conexion.registrarUsuario(usuario)) {
+            if (ConsultasUsuario.registrarUsuario(usuario)) {
                 Alertas.informacion("Usuario registrado exitosamente.");
                 limpiarFormulario();
             } else {

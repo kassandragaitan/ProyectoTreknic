@@ -8,10 +8,11 @@
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="controladores.SoporteController">
     <children>
-          <AnchorPane stylesheets="@/Estilos/configuracion.css">
-            <VBox alignment="TOP_CENTER" spacing="20.0" AnchorPane.topAnchor="20.0"
-                  AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.bottomAnchor="20.0">
-
+        <AnchorPane stylesheets="@/Estilos/configuracion.css">
+            <VBox alignment="TOP_CENTER" spacing="20.0"
+                  AnchorPane.topAnchor="20.0" AnchorPane.leftAnchor="20.0"
+                  AnchorPane.rightAnchor="20.0" AnchorPane.bottomAnchor="20.0">
+                
                 <!-- TÍTULO UNIFICADO -->
                 <Label text="Gestión de Soporte" styleClass="title"/>
 
@@ -20,38 +21,38 @@
 
                 <!-- TABPANE CENTRAL -->
                 <TabPane fx:id="tabPane"
-                         prefHeight="300.0"
-                         prefWidth="800.0"
+                         VBox.vgrow="ALWAYS"
                          tabClosingPolicy="UNAVAILABLE">
                     <tabs>
                         <!-- TAB 1: FAQ -->
                         <Tab text="Preguntas Frecuentes">
                             <AnchorPane>
+                                <!-- Buscador con más separación del borde -->
                                 <TextField fx:id="searchField2"
                                            promptText="Buscar tickets..."
-                                           AnchorPane.topAnchor="0.0"
+                                           AnchorPane.topAnchor="10.0"
                                            AnchorPane.leftAnchor="0.0"
                                            AnchorPane.rightAnchor="0.0"
                                            prefHeight="26" />
+                                <!-- Lista con más separación desde el buscador -->
                                 <ListView fx:id="faqList"
-                                          AnchorPane.topAnchor="30.0"
+                                          AnchorPane.topAnchor="50.0"
                                           AnchorPane.leftAnchor="0.0"
                                           AnchorPane.rightAnchor="0.0"
                                           AnchorPane.bottomAnchor="0.0" />
                             </AnchorPane>
                         </Tab>
 
-                        <!-- TAB 2: Mis Tickets -->
                         <Tab text="Mis Tickets">
                             <AnchorPane>
                                 <TextField fx:id="searchField"
                                            promptText="Buscar tickets..."
-                                           AnchorPane.topAnchor="0.0"
+                                           AnchorPane.topAnchor="10.0"
                                            AnchorPane.leftAnchor="0.0"
                                            AnchorPane.rightAnchor="0.0"
                                            prefHeight="26" />
                                 <TableView fx:id="ticketsTable"
-                                           AnchorPane.topAnchor="40.0"
+                                           AnchorPane.topAnchor="50.0"
                                            AnchorPane.leftAnchor="0.0"
                                            AnchorPane.rightAnchor="0.0"
                                            AnchorPane.bottomAnchor="0.0">
@@ -68,17 +69,18 @@
                             </AnchorPane>
                         </Tab>
 
+
                         <!-- TAB 3: Guías -->
                         <Tab text="Guías de Usuario">
                             <AnchorPane>
                                 <TextField fx:id="searchField1"
                                            promptText="Buscar guías..."
-                                           AnchorPane.topAnchor="0.0"
+                                           AnchorPane.topAnchor="10.0"
                                            AnchorPane.leftAnchor="0.0"
                                            AnchorPane.rightAnchor="0.0"
                                            prefHeight="26" />
                                 <ListView fx:id="guidesList"
-                                          AnchorPane.topAnchor="30.0"
+                                          AnchorPane.topAnchor="50.0"
                                           AnchorPane.leftAnchor="0.0"
                                           AnchorPane.rightAnchor="0.0"
                                           AnchorPane.bottomAnchor="0.0" />

@@ -14,7 +14,7 @@
     <children>
         <AnchorPane id="AnchorPane" styleClass="mainFxmlClass">
             <stylesheets>
-                <URL value="@Estilos/gestiondestinos.css" />
+                <URL value="@/Estilos/gestiondestinos.css" />
             </stylesheets>
             <children>
                 <VBox alignment="TOP_CENTER" spacing="20" style="-fx-padding: 10;">

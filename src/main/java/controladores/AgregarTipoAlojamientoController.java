@@ -7,6 +7,7 @@ package controladores;
 import Utilidades.Alertas;
 import Utilidades.compruebaCampo;
 import bbdd.Conexion;
+import bbdd.ConsultasTipoAlojamiento;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -48,7 +49,7 @@ public class AgregarTipoAlojamientoController implements Initializable {
         } else {
             TipoAlojamiento tipo = new TipoAlojamiento(campoTipo.getText());
 
-            if (Conexion.registrarTipoAlojamiento(tipo)) {
+            if (ConsultasTipoAlojamiento.registrarTipoAlojamiento(tipo)) {
                 Alertas.informacion("Tipo de Alojamiento registrado exitosamente.");
                 campoTipo.clear();
             } else {

@@ -6,6 +6,7 @@ package controladores;
 
 import Utilidades.Animacion;
 import bbdd.Conexion;
+import bbdd.ConsultasUsuario;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -34,7 +35,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import modelo.CeldaAccionesUsuario;
+import acciones.CeldaAccionesUsuario;
 import modelo.Usuario;
 import java.text.SimpleDateFormat;
 import javafx.scene.control.ComboBox;
@@ -97,7 +98,7 @@ public class AdministracionUsuarioController implements Initializable {
 
         // Cargar roles desde la BBDD (solo UNA VEZ)
         Conexion.conectar();
-        ObservableList<String> roles = Conexion.cargarRolesUsuarios();
+        ObservableList<String> roles = ConsultasUsuario.cargarRolesUsuarios();
         Conexion.cerrarConexion();
 
         comboRoles.setItems(roles);
@@ -107,7 +108,7 @@ public class AdministracionUsuarioController implements Initializable {
             filtrarUsuariosPorRol(newValue);
         });
         Conexion.conectar();
-        ObservableList<String> estados = Conexion.cargarEstadosUsuarios();
+        ObservableList<String> estados = ConsultasUsuario.cargarEstadosUsuarios();
         Conexion.cerrarConexion();
 
         comboEstado.setItems(estados);
@@ -122,7 +123,7 @@ public class AdministracionUsuarioController implements Initializable {
     private void filtrarUsuariosPorRol(String rolSeleccionado) {
         ObservableList<Usuario> listaUsuarios = FXCollections.observableArrayList();
         Conexion.conectar();
-        Conexion.cargarUsuariosPorRol(listaUsuarios, rolSeleccionado);
+        ConsultasUsuario.cargarUsuariosPorRol(listaUsuarios, rolSeleccionado);
         Conexion.cerrarConexion();
         tablaUsuarios.setItems(listaUsuarios);
     }
@@ -130,7 +131,7 @@ public class AdministracionUsuarioController implements Initializable {
     private void filtrarUsuariosPorEstado(String estadoSeleccionado) {
         ObservableList<Usuario> listaUsuarios = FXCollections.observableArrayList();
         Conexion.conectar();
-        Conexion.cargarUsuariosPorEstado(listaUsuarios, estadoSeleccionado);
+        ConsultasUsuario.cargarUsuariosPorEstado(listaUsuarios, estadoSeleccionado);
         Conexion.cerrarConexion();
         tablaUsuarios.setItems(listaUsuarios);
     }
@@ -138,7 +139,7 @@ public class AdministracionUsuarioController implements Initializable {
     private void buscarUsuariosEnTiempoReal(String texto) {
         ObservableList<Usuario> listaUsuarios = FXCollections.observableArrayList();
         Conexion.conectar();
-        Conexion.cargarDatosUsuariosFiltrados(listaUsuarios, texto);
+        ConsultasUsuario.cargarDatosUsuariosFiltrados(listaUsuarios, texto);
         Conexion.cerrarConexion();
         tablaUsuarios.setItems(listaUsuarios);
     }

@@ -5,6 +5,7 @@
 package controladores;
 
 import bbdd.Conexion;
+import bbdd.ConsultasCategoria;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
@@ -51,8 +52,10 @@ public class GestionCategoriaController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         ObservableList<Categoria> listaCategorias = FXCollections.observableArrayList();
         Conexion.conectar();
-        Conexion.cargarDatosCategorias(listaCategorias);
+        ConsultasCategoria.cargarDatosCategorias(listaCategorias);
         Conexion.cerrarConexion();
+        tablaCategoria.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        columnaIdCategoria.setVisible(false); // si deseas ocultar el ID
 
         tablaCategoria.setItems(listaCategorias);
         columnaIdCategoria.setCellValueFactory(new PropertyValueFactory<>("idCategoria"));
@@ -68,7 +71,7 @@ public class GestionCategoriaController implements Initializable {
     private void buscarCategoriasEnTiempoReal(String texto) {
         ObservableList<Categoria> listaCategorias = FXCollections.observableArrayList();
         Conexion.conectar();
-        Conexion.cargarDatosCategoriasFiltradas(listaCategorias, texto);
+        ConsultasCategoria.cargarDatosCategoriasFiltradas(listaCategorias, texto);
         Conexion.cerrarConexion();
         tablaCategoria.setItems(listaCategorias);
     }

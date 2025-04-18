@@ -5,6 +5,7 @@
 package controladores;
 
 import bbdd.Conexion;
+import bbdd.ConsultasDestinos;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
@@ -149,7 +150,7 @@ public class PrincipalController implements Initializable {
 
     private void cargarDatosDestinos() {
         ObservableList<Destino> listadoDestinos = FXCollections.observableArrayList();
-        Conexion.cargarDatosDestinos(listadoDestinos);
+        ConsultasDestinos.cargarDatosDestinos(listadoDestinos);
         tablaDestinos.setItems(listadoDestinos);
     }
 

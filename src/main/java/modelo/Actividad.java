@@ -14,6 +14,7 @@ public class Actividad {
     private String nombre;
     private String descripcion;
     private int idDestino;
+    private String nombreDestino;
 
     public Actividad() {
     }
@@ -23,6 +24,14 @@ public class Actividad {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.idDestino = idDestino;
+    }
+
+    public String getNombreDestino() {
+        return nombreDestino;
+    }
+
+    public void setNombreDestino(String nombreDestino) {
+        this.nombreDestino = nombreDestino;
     }
 
     public int getIdActividad() {

@@ -7,6 +7,7 @@ package controladores;
 import Utilidades.Alertas;
 import Utilidades.compruebaCampo;
 import bbdd.Conexion;
+import bbdd.ConsultasCategoria;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -53,7 +54,7 @@ public class AgregarCategoriaController implements Initializable {
         } else {
             Categoria categoria = new Categoria(campoNombre.getText(), campoDescripcion.getText());
 
-            if (Conexion.registrarCategoria(categoria)) {
+            if (ConsultasCategoria.registrarCategoria(categoria)) {
                 Alertas.informacion("Categoría registrada exitosamente.");
                 campoNombre.clear();
                 campoDescripcion.clear();
