@@ -23,7 +23,8 @@ import modelo.TipoAlojamiento;
  * @author k0343
  */
 public class ConsultasTipoAlojamiento {
-   public static boolean registrarTipoAlojamiento(TipoAlojamiento tipo) {
+
+    public static boolean registrarTipoAlojamiento(TipoAlojamiento tipo) {
         conectar();
         try {
             String consulta = "INSERT INTO tipoalojamiento (tipo) VALUES (?)";
@@ -34,6 +35,23 @@ public class ConsultasTipoAlojamiento {
             return resultado > 0;
         } catch (SQLException ex) {
             Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        } finally {
+            cerrarConexion();
+        }
+    }
+
+    public static boolean actualizarTipoAlojamiento(TipoAlojamiento tipo) {
+        conectar();
+        String sql = "UPDATE tipoalojamiento SET tipo = ? WHERE id_tipo = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, tipo.getTipo());
+            stmt.setInt(2, tipo.getIdTipo());
+
+            int filas = stmt.executeUpdate();
+            return filas > 0;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
             return false;
         } finally {
             cerrarConexion();
@@ -99,5 +117,5 @@ public class ConsultasTipoAlojamiento {
             cerrarConexion();
         }
     }
-   
+
 }

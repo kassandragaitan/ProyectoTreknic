@@ -52,6 +52,7 @@
                 <columns>
                     <TableColumn fx:id="columnaIdTipo" text="ID" visible="false" />
                     <TableColumn fx:id="columnaTipo" text="Tipo" />
+                    <TableColumn fx:id="columnaAcciones" text="Acciones" />
                     <TableColumn fx:id="columnaInvisible" visible="false" prefWidth="0" maxWidth="0" minWidth="0" />
                 </columns>
             </TableView>

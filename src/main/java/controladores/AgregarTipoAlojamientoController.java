@@ -17,6 +17,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.Stage;
 import modelo.TipoAlojamiento;
 
 /**
@@ -36,10 +37,31 @@ public class AgregarTipoAlojamientoController implements Initializable {
     /**
      * Initializes the controller class.
      */
+    private TipoAlojamiento tipoActual;
+    private boolean esEdicion = false;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         Image imagen = new Image(getClass().getResourceAsStream("/img/Encabezado.png"));
         imagenTrekNic.setImage(imagen);
+    }
+
+    public void verTipoAlojamiento(TipoAlojamiento tipo) {
+        this.tipoActual = tipo;
+        campoTipo.setText(tipo.getTipo());
+        esEdicion = true;
+        botonRegistrar.setText("Actualizar");
+    }
+
+    public void setEdicionActiva(boolean editable) {
+        campoTipo.setEditable(editable);
+        botonRegistrar.setVisible(editable);
+        campoTipo.setOpacity(editable ? 1.0 : 0.75);
+    }
+
+    private void cerrarVentana() {
+        Stage stage = (Stage) botonRegistrar.getScene().getWindow();
+        stage.close();
     }
 
     @FXML
@@ -49,15 +71,29 @@ public class AgregarTipoAlojamientoController implements Initializable {
         } else {
             TipoAlojamiento tipo = new TipoAlojamiento(campoTipo.getText());
 
-            if (ConsultasTipoAlojamiento.registrarTipoAlojamiento(tipo)) {
-                Alertas.informacion("Tipo de Alojamiento registrado exitosamente.");
-                campoTipo.clear();
+            boolean exito;
+
+            if (esEdicion && tipoActual != null) {
+                tipo.setIdTipo(tipoActual.getIdTipo());
+                exito = ConsultasTipoAlojamiento.actualizarTipoAlojamiento(tipo);
+
+                if (exito) {
+                    Alertas.informacion("Tipo de Alojamiento actualizado exitosamente.");
+                    cerrarVentana();
+                } else {
+                    Alertas.error("Error en la actualización", "No se pudo actualizar el tipo de alojamiento.");
+                }
+
             } else {
-                Alertas.error("Error en el registro", "Ocurrió un error al registrar el tipo de alojamiento.");
+                exito = ConsultasTipoAlojamiento.registrarTipoAlojamiento(tipo);
+
+                if (exito) {
+                    Alertas.informacion("Tipo de Alojamiento registrado exitosamente.");
+                    campoTipo.clear();
+                } else {
+                    Alertas.error("Error en el registro", "Ocurrió un error al registrar el tipo de alojamiento.");
+                }
             }
         }
-
     }
-
-
 }

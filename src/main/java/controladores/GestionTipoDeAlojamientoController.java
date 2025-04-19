@@ -4,6 +4,7 @@
  */
 package controladores;
 
+import acciones.CeldaAccionesTipoAlojamiento;
 import bbdd.Conexion;
 import bbdd.ConsultasTipoAlojamiento;
 import java.net.URL;
@@ -43,6 +44,8 @@ public class GestionTipoDeAlojamientoController implements Initializable {
     private TextField campoBuscarTipoAlojamiento;
     @FXML
     private Button botonNuevoTipo;
+    @FXML
+    private TableColumn<TipoAlojamiento, Void> columnaAcciones;
 
     private ObservableList<TipoAlojamiento> listaTipos = FXCollections.observableArrayList();
 
@@ -55,10 +58,9 @@ public class GestionTipoDeAlojamientoController implements Initializable {
         Conexion.conectar();
         ConsultasTipoAlojamiento.cargarDatosTiposAlojamiento(listaTipos);
         Conexion.cerrarConexion();
-        
+
         columnaIdTipo.setVisible(false);
         tablaTipoAlojamiento.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-
 
         tablaTipoAlojamiento.setItems(listaTipos);
         columnaIdTipo.setCellValueFactory(new PropertyValueFactory<>("idTipo"));
@@ -67,6 +69,8 @@ public class GestionTipoDeAlojamientoController implements Initializable {
         campoBuscarTipoAlojamiento.textProperty().addListener((observable, oldValue, newValue) -> {
             buscarTiposAlojamientoEnTiempoReal(newValue);
         });
+
+        columnaAcciones.setCellFactory(col -> new CeldaAccionesTipoAlojamiento());
 
     }
 
