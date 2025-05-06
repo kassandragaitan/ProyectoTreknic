@@ -1,181 +1,93 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package controladores;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
-import java.util.function.Consumer;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
+import bbdd.Conexion;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.ContentDisplay;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
+import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.util.Callback;
-import modelo.FAQItem;
-import modelo.Ticket;
+import modelo.PreguntaFrecuente;
+import modelo.PruebaFuncionalidad;
+import modelo.Sugerencia;
 
-/**
- * FXML Controller class
- *
- * @author k0343
- */
+import java.io.IOException;
+import java.net.URL;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ResourceBundle;
+import java.util.function.Consumer;
+import javafx.util.Callback;
+
 public class SoporteController implements Initializable {
 
     @FXML
-    private ListView<FAQItem> faqList;  // Cambio aquí para manejar FAQItem
-    @FXML
-    private TableView<Ticket> ticketsTable;
-    @FXML
-    private ListView<String> guidesList;
-    @FXML
-    private TabPane tabPane;
-    @FXML
-    private TextField searchField;
-    @FXML
-    private TableColumn<Ticket, String> columnID;
-    @FXML
-    private TableColumn<Ticket, String> columnAsunto;
-    @FXML
-    private TableColumn<Ticket, String> columnEstado;
-    @FXML
-    private TableColumn<Ticket, String> columnPrioridad;
-    @FXML
-    private TableColumn<Ticket, String> columnCreado;
-    @FXML
-    private TableColumn<Ticket, String> columnUltimaActualizacion;
-    @FXML
-    private TableColumn<Ticket, Button> columnAcciones;
-    @FXML
-    private TextField searchField1;
+    private TabPane panelPestanas;
 
-    private ObservableList<Ticket> ticketData = FXCollections.observableArrayList();
+    @FXML
+    private ListView<PreguntaFrecuente> listaPreguntas;
+    @FXML
+    private TextField campoBuscarPreguntas;
 
-    public static class ButtonTableCell<S> extends TableCell<S, Button> {
+    @FXML
+    private TableView<Sugerencia> tablaSugerencias;
+    @FXML
+    private TableColumn<Sugerencia, String> columnaIDSugerencia;
+    @FXML
+    private TableColumn<Sugerencia, String> columnaTituloSugerencia;
+    @FXML
+    private TableColumn<Sugerencia, String> columnaMensajeSugerencia;
+    @FXML
+    private TableColumn<Sugerencia, String> columnaFechaSugerencia;
+    @FXML
+    private TextField campoBuscarSugerencias;
+    @FXML
+    private Button botonNuevaSugerencia;
+    private ObservableList<Sugerencia> datosSugerencias = FXCollections.observableArrayList();
 
-        private final Button actionButton = new Button();
-
-        public ButtonTableCell(String buttonText, Consumer<S> action) {
-            actionButton.setText(buttonText);
-            actionButton.setOnAction(e -> action.accept(getTableView().getItems().get(getIndex())));
-            setGraphic(actionButton);
-            setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
-        }
-
-        public static <S> Callback<TableColumn<S, Button>, TableCell<S, Button>> forTableColumn(String buttonText, Consumer<S> action) {
-            return column -> new ButtonTableCell<>(buttonText, action);
-        }
-    }
+    @FXML
+    private ListView<PruebaFuncionalidad> listaCentroPruebas;
+    @FXML
+    private TextField campoBuscarPruebas;
+    @FXML
+    private Button botonAgregarPrueba;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        ticketData.addAll(
-                new Ticket("TK-001", "Error al crear itinerario", "Abierto", "Alta", "1/10/2023", "2/10/2023"),
-                new Ticket("TK-002", "Problema con carga de imágenes", "En Proceso", "Media", "28/9/2023", "1/10/2023"),
-                new Ticket("TK-003", "Solicitud de nueva funcionalidad", "Abierto", "Baja", "25/9/2023", "25/9/2023")
-        );
+        cargarPreguntas();
+        cargarSugerencias();
+        cargarCentroPruebas();
 
-        // Configura la TableView
-        initializeTicketsTable();
-        ticketsTable.setItems(ticketData);
-        // Carga de FAQ y guías
-        cargarFAQs();
-        cargarGuias();
-
+        columnaIDSugerencia.setCellValueFactory(cell -> new SimpleStringProperty(String.valueOf(cell.getValue().getId())));
+        columnaTituloSugerencia.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getTitulo()));
+        columnaMensajeSugerencia.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getMensaje()));
+        columnaFechaSugerencia.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getFechaEnvio()));
     }
 
-    private void initializeTicketsTable() {
+    private void cargarPreguntas() {
+        listaPreguntas.getItems().clear();
+        try (Connection conn = Conexion.conectar(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery("SELECT pregunta, respuesta FROM preguntas_frecuentes")) {
 
-        columnID.setCellValueFactory(cellData -> cellData.getValue().idProperty());
-        columnAsunto.setCellValueFactory(cellData -> cellData.getValue().asuntoProperty());
-        columnEstado.setCellValueFactory(cellData -> cellData.getValue().estadoProperty());
-        columnPrioridad.setCellValueFactory(cellData -> cellData.getValue().prioridadProperty());
-        columnCreado.setCellValueFactory(cellData -> cellData.getValue().creadoProperty());
-        columnUltimaActualizacion.setCellValueFactory(cellData -> cellData.getValue().ultimaActualizacionProperty());
-
-        columnAcciones.setCellFactory(param -> new ButtonTableCell<>("Ver", this::handleViewTicket));
-        ticketsTable.setItems(ticketData);
-    }
-
-    private void handleViewTicket(Ticket ticket) {
-        // Aquí manejas la acción del botón Ver, por ejemplo, mostrar detalles del ticket.
-        System.out.println("Ticket ID: " + ticket.getId() + " viewed.");
-    }
-
-private void cargarFAQs() {
-    faqList.getItems().addAll(
-            new FAQItem("¿Cómo crear un nuevo itinerario?", "Para crear un nuevo itinerario, vaya a la sección 'Gestión de Itinerarios' y haga clic en el botón 'Nuevo Itinerario'. Complete el formulario con la información requerida y guarde los cambios."),
-            new FAQItem("¿Cómo añadir un nuevo destino?", "Para añadir un nuevo destino, acceda a la sección 'Gestión de Destinos' y haga clic en 'Nuevo Destino'. Complete los campos necesarios incluyendo nombre, país, descripción e imágenes representativas."),
-            new FAQItem("¿Cómo gestionar los permisos de usuario?", "Los permisos de usuario se gestionan desde la sección 'Gestión de Usuarios'. Seleccione el usuario deseado y haga clic en 'Editar' para modificar su rol y permisos en el sistema."),
-            new FAQItem("¿Cómo generar un reporte personalizado?", "Para generar un reporte personalizado, vaya a la sección 'Reportes y Estadísticas', seleccione el tipo de reporte y el período de tiempo deseado. Luego puede exportar los datos en varios formatos."),
-            new FAQItem("¿Cómo configurar notificaciones automáticas?", "Las notificaciones automáticas se configuran en la sección 'Configuración de Notificaciones'. Puede crear nuevas reglas de notificación y definir los destinatarios y condiciones para cada una.")
-    );
-
-    faqList.setCellFactory(param -> new ListCell<FAQItem>() {
-        @Override
-        protected void updateItem(FAQItem item, boolean empty) {
-            super.updateItem(item, empty);
-            if (empty || item == null) {
-                setText(null);
-                setGraphic(null);
-                setStyle(""); // Restablecer estilo en celdas vacías
-            } else {
-                try {
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/Soporte_Item.fxml"));
-                    Node node = loader.load();
-                    Soporte_ItemController controller = loader.getController();
-                    controller.setItem(item);
-                    setGraphic(node);
-                    setStyle("-fx-background-color: white;"); // <<--- aquí lo importante
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    setText("Error loading FXML");
-                    setGraphic(null);
-                }
+            while (rs.next()) {
+                PreguntaFrecuente pregunta = new PreguntaFrecuente(
+                        rs.getString("pregunta"),
+                        rs.getString("respuesta")
+                );
+                listaPreguntas.getItems().add(pregunta);
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    });
-}
 
-
-    private void cargarGuias() {
-        guidesList.getItems().addAll(
-                "Guía de Inicio Rápido",
-                "Documentación de Referencia",
-                "Manual de Usuario Final",
-                "Guía de Configuración Avanzada",
-                "Preguntas Frecuentes"
-        );
-
-        guidesList.getItems().addAll("Guía 1", "Guía 2", "Guía 3");
-
-        guidesList.setCellFactory(param -> new ListCell<String>() {
+        listaPreguntas.setCellFactory(param -> new ListCell<>() {
             @Override
-            protected void updateItem(String item, boolean empty) {
+            protected void updateItem(PreguntaFrecuente item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty || item == null) {
                     setText(null);
@@ -185,17 +97,168 @@ private void cargarFAQs() {
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/Soporte_Item.fxml"));
                         Node node = loader.load();
                         Soporte_ItemController controller = loader.getController();
-                        // Asumiendo que Soporte_ItemController puede manejar un String
                         controller.setItem(item);
                         setGraphic(node);
                     } catch (IOException e) {
                         e.printStackTrace();
-                        setText("Error loading FXML");
-                        setGraphic(null);
                     }
                 }
             }
         });
     }
 
+    private void cargarSugerencias() {
+        datosSugerencias.clear();
+        try (Connection conn = Conexion.conectar(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery("SELECT id_sugerencia, titulo, mensaje, fecha_envio FROM sugerencias")) {
+
+            while (rs.next()) {
+                Sugerencia s = new Sugerencia(
+                        rs.getInt("id_sugerencia"),
+                        rs.getString("titulo"),
+                        rs.getString("mensaje"),
+                        rs.getString("fecha_envio").substring(0, 10) // solo la fecha
+                );
+                datosSugerencias.add(s);
+            }
+            tablaSugerencias.setItems(datosSugerencias);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void abrirFormularioSugerencia(ActionEvent event) {
+        TextInputDialog dialogo = new TextInputDialog();
+        dialogo.setTitle("Nueva Sugerencia");
+        dialogo.setHeaderText("Escribe tu sugerencia");
+        dialogo.setContentText("Mensaje:");
+
+        TextField tituloField = new TextField();
+        tituloField.setPromptText("Título (opcional)");
+        dialogo.getDialogPane().setContent(new VBox(tituloField, new Label("Mensaje:"), dialogo.getEditor()));
+
+        dialogo.showAndWait().ifPresent(mensaje -> {
+            String titulo = tituloField.getText();
+            if (mensaje.trim().isEmpty()) {
+                new Alert(Alert.AlertType.WARNING, "El mensaje no puede estar vacío.").showAndWait();
+                return;
+            }
+
+            try (Connection conn = Conexion.conectar()) {
+                String sql = "INSERT INTO sugerencias (id_usuario, titulo, mensaje, fecha_envio) VALUES (?, ?, ?, NOW())";
+                var stmt = conn.prepareStatement(sql);
+                stmt.setInt(1, 1); // ← Cambiar por ID real del usuario
+                stmt.setString(2, titulo.isEmpty() ? null : titulo);
+                stmt.setString(3, mensaje);
+                stmt.executeUpdate();
+                cargarSugerencias();
+                new Alert(Alert.AlertType.INFORMATION, "¡Sugerencia enviada con éxito!").showAndWait();
+            } catch (Exception e) {
+                e.printStackTrace();
+                new Alert(Alert.AlertType.ERROR, "Error al enviar sugerencia.").showAndWait();
+            }
+        });
+    }
+
+    private void cargarCentroPruebas() {
+        ObservableList<PruebaFuncionalidad> pruebas = FXCollections.observableArrayList();
+        try (Connection conn = Conexion.conectar(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery("SELECT id_funcionalidad, titulo, descripcion FROM funcionalidades_prueba")) {
+
+            while (rs.next()) {
+                pruebas.add(new PruebaFuncionalidad(
+                        rs.getInt("id_funcionalidad"),
+                        rs.getString("titulo"),
+                        rs.getString("descripcion")
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        listaCentroPruebas.setItems(pruebas);
+
+        listaCentroPruebas.setCellFactory(param -> new ListCell<>() {
+            @Override
+            protected void updateItem(PruebaFuncionalidad item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    try {
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/Soporte_Item.fxml"));
+                        Node node = loader.load();
+                        Soporte_ItemController controller = loader.getController();
+                        controller.setItem(item);
+                        setGraphic(node);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
+
+    @FXML
+    private void abrirFormularioPrueba(ActionEvent event) {
+        Dialog<ButtonType> dialogo = new Dialog<>();
+        dialogo.setTitle("Nueva Funcionalidad de Prueba");
+        dialogo.setHeaderText("Describe la funcionalidad en prueba");
+
+        TextField campoTitulo = new TextField();
+        campoTitulo.setPromptText("Título");
+
+        TextArea campoDescripcion = new TextArea();
+        campoDescripcion.setPromptText("Descripción");
+        campoDescripcion.setPrefRowCount(4);
+
+        VBox contenido = new VBox(10, new Label("Título:"), campoTitulo,
+                new Label("Descripción:"), campoDescripcion);
+        contenido.setStyle("-fx-padding: 10;");
+        dialogo.getDialogPane().setContent(contenido);
+
+        ButtonType botonGuardar = new ButtonType("Guardar", ButtonBar.ButtonData.OK_DONE);
+        dialogo.getDialogPane().getButtonTypes().addAll(botonGuardar, ButtonType.CANCEL);
+
+        dialogo.showAndWait().ifPresent(tipo -> {
+            if (tipo == botonGuardar) {
+                String titulo = campoTitulo.getText().trim();
+                String descripcion = campoDescripcion.getText().trim();
+
+                if (titulo.isEmpty() || descripcion.isEmpty()) {
+                    new Alert(Alert.AlertType.WARNING, "Todos los campos son obligatorios.").showAndWait();
+                    return;
+                }
+
+                try (Connection conn = Conexion.conectar()) {
+                    String sql = "INSERT INTO funcionalidades_prueba (titulo, descripcion) VALUES (?, ?)";
+                    var stmt = conn.prepareStatement(sql);
+                    stmt.setString(1, titulo);
+                    stmt.setString(2, descripcion);
+                    stmt.executeUpdate();
+                    cargarCentroPruebas();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    new Alert(Alert.AlertType.ERROR, "Error al guardar la funcionalidad.").showAndWait();
+                }
+            }
+        });
+    }
+
+    // Clase utilitaria para botones en tabla si decides usarla en el futuro
+    public static class CeldaBotonTabla<S> extends TableCell<S, Button> {
+
+        private final Button botonAccion = new Button();
+
+        public CeldaBotonTabla(String textoBoton, Consumer<S> accion) {
+            botonAccion.setText(textoBoton);
+            botonAccion.setOnAction(e -> accion.accept(getTableView().getItems().get(getIndex())));
+            setGraphic(botonAccion);
+            setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+        }
+
+        public static <S> Callback<TableColumn<S, Button>, TableCell<S, Button>> paraTabla(String textoBoton, Consumer<S> accion) {
+            return columna -> new CeldaBotonTabla<>(textoBoton, accion);
+        }
+    }
 }

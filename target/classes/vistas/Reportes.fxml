@@ -11,7 +11,7 @@
       fx:controller="controladores.ReportesController">
 
     <children>
-        <AnchorPane stylesheets="@Estilos/reportes.css">
+        <AnchorPane fx:id="panel" stylesheets="@/Estilos/reportes.css">
             <VBox alignment="TOP_CENTER"
                   spacing="20.0"
                   AnchorPane.topAnchor="20.0"
@@ -29,58 +29,61 @@
                 <Pane prefHeight="120.0" prefWidth="850.0">
                     <children>
                         <Label layoutX="14.0" layoutY="14.0" text="Tipo de reporte" />
-                        <Label layoutX="442.0" layoutY="14.0" text="Período de tiempo" />
+                        <Label fx:id="labelFiltro" layoutX="442.0" layoutY="14.0" text="Filtro" visible="false" />
 
-                        <ComboBox layoutX="14.0" layoutY="46.0" prefHeight="25.0" prefWidth="413.0" />
-                        <ComboBox layoutX="442.0" layoutY="46.0" prefHeight="25.0" prefWidth="413.0" />
+                        <ComboBox fx:id="comboTipoReporte"
+                                  layoutX="14.0" layoutY="46.0"
+                                  prefHeight="25.0" prefWidth="413.0"
+                                  promptText="Seleccione tipo de reporte" />
+
+                        <ComboBox fx:id="comboFiltro"
+                                  layoutX="442.0" layoutY="46.0"
+                                  prefHeight="25.0" prefWidth="413.0"
+                                  promptText="Seleccione filtro"
+                                  visible="false" />
                     </children>
                 </Pane>
 
-                <!-- Texto sobre el gráfico -->
-                <Label text="Usuarios registrados" styleClass="section-title" />
-
-                <!-- Gráfico justo debajo -->
-                <LineChart fx:id="lineChart"
-                           prefHeight="200.0"
-                           prefWidth="850.0">
-                    <xAxis>
-                        <CategoryAxis side="BOTTOM" />
-                    </xAxis>
-                    <yAxis>
-                        <NumberAxis side="LEFT" />
-                    </yAxis>
-                </LineChart>
-
-                <!-- Paneles estadísticos -->
-                <HBox spacing="20.0" alignment="CENTER">
+                <!-- Contenedor de gráficos alternables -->
+                <StackPane prefHeight="400.0" prefWidth="850.0">
                     <children>
-                        <Pane prefHeight="62.0" prefWidth="200.0" styleClass="total-panel">
-                            <children>
-                                <Label layoutX="14.0" layoutY="2.0" text="Total" />
-                                <Label layoutX="86.0" layoutY="31.0" text="Label" />
-                            </children>
-                        </Pane>
+                        <LineChart fx:id="lineChart"
+                                   prefHeight="380.0" prefWidth="850.0"
+                                   visible="false">
+                            <xAxis>
+                                <CategoryAxis side="BOTTOM" />
+                            </xAxis>
+                            <yAxis>
+                                <NumberAxis side="LEFT" />
+                            </yAxis>
+                        </LineChart>
 
-                        <Pane prefHeight="62.0" prefWidth="200.0" styleClass="total-panel">
-                            <children>
-                                <Label layoutX="14.0" layoutY="2.0" text="Promedio" />
-                                <Label layoutX="86.0" layoutY="31.0" text="Label" />
-                            </children>
-                        </Pane>
+                        <PieChart fx:id="graficoTipos"
+                                  prefHeight="380.0"
+                                  prefWidth="850.0"
+                                  visible="false" />
+                    </children>
+                </StackPane>
 
-                        <Pane prefHeight="62.0" prefWidth="200.0" styleClass="total-panel">
-                            <children>
-                                <Label layoutX="14.0" layoutY="2.0" text="Máximo" />
-                                <Label layoutX="86.0" layoutY="31.0" text="Label" />
-                            </children>
-                        </Pane>
-
-                        <Pane prefHeight="62.0" prefWidth="200.0" styleClass="total-panel">
-                            <children>
-                                <Label layoutX="14.0" layoutY="2.0" text="Crecimiento" />
-                                <Label layoutX="86.0" layoutY="31.0" text="Label" />
-                            </children>
-                        </Pane>
+                <!-- Paneles estadísticos estilizados -->
+                <HBox spacing="20.0" alignment="CENTER" styleClass="stat-cards">
+                    <children>
+                        <VBox styleClass="stat-card" prefWidth="200.0" prefHeight="80.0">
+                            <Label text="Total" styleClass="stat-title"/>
+                            <Label fx:id="labelTotal" text="0" styleClass="stat-value" visible="false"/>
+                        </VBox>
+                        <VBox styleClass="stat-card" prefWidth="200.0" prefHeight="80.0">
+                            <Label text="Promedio" styleClass="stat-title"/>
+                            <Label fx:id="labelPromedio" text="0" styleClass="stat-value" visible="false"/>
+                        </VBox>
+                        <VBox styleClass="stat-card" prefWidth="200.0" prefHeight="80.0">
+                            <Label text="Máximo" styleClass="stat-title"/>
+                            <Label fx:id="labelMaximo" text="0" styleClass="stat-value" visible="false"/>
+                        </VBox>
+                        <VBox styleClass="stat-card" prefWidth="200.0" prefHeight="80.0">
+                            <Label text="Crecimiento" styleClass="stat-title"/>
+                            <Label fx:id="labelCrecimiento" text="0%" styleClass="stat-value" visible="false"/>
+                        </VBox>
                     </children>
                 </HBox>
 

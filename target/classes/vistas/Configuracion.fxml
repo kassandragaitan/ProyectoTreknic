@@ -6,10 +6,11 @@
 <HBox xmlns="http://javafx.com/javafx/23.0.1"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="controladores.ConfiguracionController"
+      fx:id="rootHBox"
       alignment="TOP_CENTER">
 
     <children>
-        <AnchorPane>
+        <AnchorPane fx:id="contenedor">
             <VBox alignment="TOP_CENTER"
                   spacing="20.0"
                   AnchorPane.topAnchor="20.0"
@@ -120,10 +121,11 @@
                                       AnchorPane.leftAnchor="10.0"
                                       AnchorPane.rightAnchor="10.0"
                                       AnchorPane.bottomAnchor="10.0">
+
                                     <children>
                                         <HBox spacing="10.0">
-                                            <Label text="Tema"/>
-                                            <ComboBox fx:id="temaComboBox"/>
+                                            <Label text="Color de Fondo"/>
+                                            <ColorPicker fx:id="colorPickerFondo" onAction="#seleccionarColorFondo"/>
                                         </HBox>
 
                                         <HBox spacing="10.0">
@@ -145,8 +147,13 @@
                                             <Label text="CSS Personalizado"/>
                                             <TextArea fx:id="cssPersonalizadoField" wrapText="true"/>
                                         </VBox>
+
+                                        <!-- AQUÍ agregamos el botón -->
+                                        <Button fx:id="botonGuardarCambio" text="Guardar Cambios" onAction="#guardarConfiguracionApariencia" prefWidth="200"/>
+                                        <Button text="Subir CSS Personalizado" onAction="#subirCssPersonalizado" prefWidth="200"/>
                                     </children>
                                 </VBox>
+
                             </AnchorPane>
                         </Tab>
                     </tabs>

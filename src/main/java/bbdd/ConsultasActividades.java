@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ComboBox;
 import modelo.Actividad;
@@ -60,6 +61,45 @@ public static boolean actualizarActividad(Actividad actividad) {
         return false;
     } finally {
         Conexion.cerrarConexion();
+    }
+}
+public static ObservableList<String> cargarNombresDestinos() {
+    ObservableList<String> lista = FXCollections.observableArrayList();
+    String sql = "SELECT DISTINCT nombre FROM destinos ORDER BY nombre";
+    try {
+        PreparedStatement ps = Conexion.conn.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            lista.add(rs.getString("nombre"));
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return lista;
+}
+
+public static void cargarActividadesPorDestino(ObservableList<Actividad> lista, String nombreDestino) {
+    String sql = "SELECT a.id_actividad, a.nombre, a.descripcion, d.nombre AS nombre_destino " +
+                 "FROM actividades a " +
+                 "JOIN destinos d ON a.id_destino = d.id_destino " +
+                 "WHERE d.nombre = ?";
+
+    try {
+        PreparedStatement ps = Conexion.conn.prepareStatement(sql);
+        ps.setString(1, nombreDestino);
+        ResultSet rs = ps.executeQuery();
+
+        while (rs.next()) {
+            Actividad actividad = new Actividad(
+                    rs.getInt("id_actividad"),
+                    rs.getString("nombre"),
+                    rs.getString("descripcion"),
+                    rs.getString("nombre_destino")
+            );
+            lista.add(actividad);
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
 }
 

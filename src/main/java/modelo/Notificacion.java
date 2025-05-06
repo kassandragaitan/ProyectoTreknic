@@ -11,12 +11,34 @@ import java.util.Date;
  * @author k0343
  */
 public class Notificacion {
+
     private int idNotificacion;
     private String descripcion;
     private Date fecha;
     private String notificacion;
     private int idUsuario;
-    private String nombreDestinatario;  // Nuevo campo para el nombre del destinatario
+    private String nombreDestinatario;
+    private String tipoNotificacion;
+    private String prioridad;
+    private boolean leido;
+
+    public Notificacion(int idNotificacion, String descripcion, Date fecha, String notificacion, String nombreDestinatario, String tipoNotificacion, String prioridad, boolean leido) {
+        this.idNotificacion = idNotificacion;
+        this.descripcion = descripcion;
+        this.fecha = fecha;
+        this.notificacion = notificacion;
+        this.nombreDestinatario = nombreDestinatario;
+        this.tipoNotificacion = tipoNotificacion;
+        this.prioridad = prioridad;
+        this.leido = leido;
+    }
+
+    public Notificacion(String notificacion, String descripcion, String nombreDestinatario, Date fecha) {
+        this.notificacion = notificacion;
+        this.descripcion = descripcion;
+        this.nombreDestinatario = nombreDestinatario;
+        this.fecha = fecha;
+    }
 
     public Notificacion(int idNotificacion, String descripcion, Date fecha, String notificacion, int idUsuario, String nombreDestinatario) {
         this.idNotificacion = idNotificacion;
@@ -67,7 +89,6 @@ public class Notificacion {
         this.idUsuario = idUsuario;
     }
 
-    // Getters y Setters...
     public String getNombreDestinatario() {
         return nombreDestinatario;
     }
@@ -75,5 +96,29 @@ public class Notificacion {
     public void setNombreDestinatario(String nombreDestinatario) {
         this.nombreDestinatario = nombreDestinatario;
     }
-}
 
+    public String getTipoNotificacion() {
+        return tipoNotificacion;
+    }
+
+    public void setTipoNotificacion(String tipoNotificacion) {
+        this.tipoNotificacion = tipoNotificacion;
+    }
+
+    public String getPrioridad() {
+        return prioridad;
+    }
+
+    public void setPrioridad(String prioridad) {
+        this.prioridad = prioridad;
+    }
+
+    public boolean isLeido() {
+        return leido;
+    }
+
+    public void setLeido(boolean leido) {
+        this.leido = leido;
+    }
+
+}

@@ -31,6 +31,15 @@ public class Alojamiento {
         this.idDestino = idDestino;
     }
 
+    public Alojamiento(int idAlojamiento, String nombre, String contacto, String imagen, String nombreTipo, String nombreDestino) {
+        this.idAlojamiento = idAlojamiento;
+        this.nombre = nombre;
+        this.contacto = contacto;
+        this.imagen = imagen;
+        this.nombreTipo = nombreTipo;
+        this.nombreDestino = nombreDestino;
+    }
+
     public String getNombreTipo() {
         return nombreTipo;
     }

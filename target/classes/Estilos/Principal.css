@@ -1,10 +1,4 @@
-/*
- * Empty Stylesheet file.
- */
-/*
 
-
-/* === Estilo General === */
 .mainFxmlClass {
     -fx-background-color: #faffff;
     -fx-padding: 0;
@@ -25,7 +19,6 @@
     -fx-padding: 20px;
 }
 
-/* === Botones === */
 .button {
     -fx-background-color: #003049;
     -fx-text-fill: white;
@@ -45,7 +38,6 @@
     -fx-background-radius: 12;
 }
 
-/* === Encabezado y etiquetas === */
 .label {
     -fx-text-fill: #001219;
 }
@@ -60,7 +52,6 @@
     -fx-text-fill: #555;
 }
 
-/* === Imágenes y tarjetas === */
 .image-view {
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 3);
     -fx-background-radius: 12;
@@ -72,7 +63,7 @@
     -fx-text-fill: #000;
 }
 
-/* === Footer === */
+
 .hbox {
     -fx-background-color: #145da0;
 }
@@ -83,24 +74,13 @@
     -fx-font-size: 14px;
 }
 
-/* === Campo de búsqueda === */
-.text-field {
-    -fx-background-radius: 20;
-    -fx-padding: 8 16;
-    -fx-background-color: white;
-    -fx-border-color: #ccc;
-    -fx-border-radius: 20;
-    -fx-font-size: 14px;
-}
-
-/* === Paneles de datos === */
 .data-panel {
     -fx-background-color: white;
     -fx-background-radius: 10;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 6, 0.2, 0, 2);
-    -fx-padding: 15;
-    -fx-pref-width: 230px;
-    -fx-pref-height: 140px;
+    -fx-padding: 20;
+    -fx-pref-width: 255px;
+    -fx-pref-height: 160px;
 }
 
 .icon-container, .icon-circle {
@@ -122,7 +102,6 @@
     -fx-font-weight: bold;
 }
 
-/* === Indicadores positivos/negativos === */
 .data-change-positive-box {
     -fx-background-color: #d1f7d6;
     -fx-text-fill: green;
@@ -141,7 +120,7 @@
     -fx-font-size: 12px;
 }
 
-/* === Paneles gráficos y tablas === */
+
 .chart-panel, .table-panel {
     -fx-background-color: white;
     -fx-border-color: #dcdcdc;
@@ -160,222 +139,110 @@
     -fx-background-radius: 5;
 }
 
-/* === GRÁFICO DE BARRAS === */
-
-/* Líneas del gráfico */
 .chart-vertical-grid-lines, .chart-horizontal-grid-lines {
     -fx-stroke: #d3d3d3;
 }
 
-/* Ejes: texto visible */
 .axis {
     -fx-tick-label-fill: #000000;
     -fx-font-size: 12px;
 }
 
-/* Línea base del eje X (como en Huesca/Teruel) */
 .chart .axis-bottom {
- -fx-border-color: black;
+    -fx-border-color: black;
     -fx-border-width: 0 0 2px 0;
     -fx-tick-label-fill: #000000;
     -fx-tick-label-font-size: 12px;
 }
 
-/* Asegura que las etiquetas del eje X no se recorten */
 .axis .axis-label {
     -fx-text-fill: #000000;
     -fx-font-size: 12px;
 }
-/*
-.mainFxmlClass {
-    -fx-background-color: #faffff;
-    -fx-padding: 0;
+
+.default-color0.chart-bar {
+    -fx-bar-fill: #daeafe;
 }
- Aplica el fondo celeste general al AnchorPane raíz 
-.anchor-pane {
-    -fx-background-color: #faffff;
-}
-
- Hace transparente el ScrollPane para dejar ver el fondo del AnchorPane 
-.scroll-pane {
-    -fx-background-color: transparent;
-    -fx-background: transparent;
-    -fx-padding: 0;
-}
-
- General 
-.root {
-    -fx-background-color: #F0F8FF;
-    -fx-padding: 20px;
-        -fx-font-family: "Segoe UI", sans-serif;
-
-}
-
- Botones principales 
-.button {
-    -fx-background-color: #003049;
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
-    -fx-background-radius: 10;
-    -fx-padding: 10 20;
-}
-
-.button:hover {
-    -fx-background-color: #005f73;
-}
-
- Botones categoría específicos 
-.flow-pane .button {
-    -fx-background-color: #003049;
-    -fx-text-fill: white;
-    -fx-font-size: 12px;
-    -fx-background-radius: 12;
-}
-
- Header 
-.label {
-    -fx-text-fill: #001219;
-}
-
-.label-title {
-    -fx-font-size: 16px;
-    -fx-font-weight: bold;
-}
-
-.label-subtitle {
-    -fx-font-size: 14px;
-    -fx-text-fill: #555;
-}
-
- Tarjetas de destino 
-.image-view {
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 3);
-    -fx-background-radius: 12;
-}
-
- Categorías destacadas 
-.hbox .vbox .label {
-
-    -fx-font-size: 14px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #000;
-}
-
- Barra inferior 
-.hbox {
-
-    -fx-background-color: #145da0;
-}
-
-.hbox .button {
-    -fx-background-color: transparent;
-    -fx-text-fill: white;
-    -fx-font-size: 14px;
-}
-
- Search field 
-.text-field {
-    -fx-background-radius: 20;
-    -fx-padding: 8 16;
-    -fx-background-color: white;
-    -fx-border-color: #ccc;
-    -fx-border-radius: 20;
-    -fx-font-size: 14px;
-}
-
- ScrollPane 
-.scroll-pane {
-    -fx-background-color: transparent;
-}
-
- Panel de datos 
-.data-panel {
-    -fx-background-color: white;
-    -fx-background-radius: 10;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 6, 0.2, 0, 2);
-    -fx-padding: 15;
-    -fx-pref-width: 230px;
-    -fx-pref-height: 140px;
-}
-
-.icon-container {
-    -fx-background-color: #e6f0ff;
-    -fx-background-radius: 10;
-    -fx-padding: 10;
-    -fx-alignment: center;
-}
-
-.data-title {
-    -fx-font-size: 14px;
-    -fx-text-fill: #4a4a4a;
-    -fx-font-weight: normal;
-}
-
-.data-value {
-    -fx-font-size: 22px;
-    -fx-text-fill: #1a1a1a;
-    -fx-font-weight: bold;
-}
-
-.data-change-positive-box {
-    -fx-background-color: #d1f7d6;
-    -fx-text-fill: green;
-    -fx-font-weight: bold;
-    -fx-font-size: 12px;
-    -fx-padding: 4 8;
-    -fx-background-radius: 5;
-}
- 
- Paneles gráficos 
-.chart-panel, .table-panel {
+.table-view {
     -fx-background-color: white;
     -fx-border-color: #dcdcdc;
     -fx-border-width: 1;
     -fx-background-radius: 8;
-    -fx-padding: 15px;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 6, 0.3, 0, 2);
-}
-
-.chart-title {
-    -fx-font-size: 16px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #3477b5;
-        -fx-background-color: #e6f0ff;
-    -fx-background-color: #d2ebf9;
-    -fx-padding: 5 10 5 10;
-    -fx-background-radius: 5;
-}
-
-.icon-circle {
-    -fx-background-color: #e6f0ff;
-    -fx-background-radius: 10;
+    -fx-border-radius: 8;
     -fx-padding: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 6, 0.3, 0, 2);
+    -fx-table-cell-border-color: transparent;
+}
+.table-view .column-header-background {
+    -fx-background-color: #e6f0ff; 
+    -fx-background-radius: 8 8 0 0;
+    -fx-border-color: transparent;
+}
+
+.table-view .column-header {
+    -fx-alignment: center;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+    -fx-text-fill: #1a1a1a;
+    -fx-background-color: transparent;
+}
+.table-view .table-cell {
+    -fx-padding: 8 5;
+    -fx-font-size: 13px;
     -fx-alignment: center;
 }
 
-.data-change-positive-box {
-    -fx-background-color: #d1f7d6;
-    -fx-text-fill: green;
-    -fx-font-weight: bold;
-    -fx-padding: 4 8;
+.table-row-cell:selected {
+    -fx-background-color: #d1eaff;
+}
+
+.table-row-cell {
+    -fx-border-color: transparent;
+    -fx-background-color: white;
+}
+
+.table-view .scroll-bar:vertical,
+.table-view .scroll-bar:horizontal {
+    -fx-background-color: transparent;
+}
+
+.table-view .scroll-bar .thumb {
+    -fx-background-color: #c0d8ee;
+    -fx-background-radius: 4;
+}
+
+.table-view .scroll-bar .track {
+    -fx-background-color: #f0f4f8;
+}
+
+.combo-box {
+    -fx-background-color: #e6f0ff;
+    -fx-border-radius: 5;
     -fx-background-radius: 5;
-    -fx-font-size: 12px;
+    -fx-padding: 4 10;
+    -fx-font-size: 13px;
+    -fx-border-color: #c0d5ea;
+    -fx-text-fill: #1a1a1a;
 }
 
-.data-change-negative-box {
-    -fx-background-color: #ffe1e1;
-    -fx-text-fill: red;
-    -fx-font-weight: bold;
-    -fx-padding: 4 8;
+.combo-box .arrow-button {
+    -fx-background-color: transparent;
+}
+
+.combo-box .arrow {
+    -fx-background-color: #1a1a1a;
+}
+
+.combo-box .list-cell {
+    -fx-background-color: white;
+    -fx-text-fill: #000;
+}
+
+.combo-custom {
+    -fx-background-color: #e6f0ff;
+    -fx-border-color: transparent;
     -fx-background-radius: 5;
-    -fx-font-size: 12px;
+    -fx-padding: 4 8;
+    -fx-font-weight: bold;
+    -fx-text-fill: #001f4d;
 }
-
-.chart-vertical-grid-lines, .chart-horizontal-grid-lines {
-    -fx-stroke: #d3d3d3;  gris claro 
-}
-
-.axis {
-    -fx-tick-label-fill: #000000;  color de texto de los ejes 
-    -fx-font-size: 12px;
-}*/

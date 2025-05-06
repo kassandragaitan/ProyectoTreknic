@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
@@ -18,16 +19,14 @@
 
     <children>
 
-        <!-- Imagen centrada y pegada al panel -->
-   <!-- Imagen centrada y flotando justo encima del panel -->
-<ImageView fx:id="imagenTrekNic"
-           fitHeight="60.0" fitWidth="100.0"
-           preserveRatio="true" pickOnBounds="true"
-           layoutX="210.0" layoutY="15.0"
-           style="-fx-translate-y: 30;" />
+        <!-- Imagen centrada flotando justo encima del panel -->
+        <ImageView fx:id="imagenTrekNic"
+                   fitHeight="60.0" fitWidth="100.0"
+                   preserveRatio="true" pickOnBounds="true"
+                   layoutX="210.0" layoutY="15.0"
+                   style="-fx-translate-y: 30;" />
 
-
-        <!-- Panel alineado visualmente justo debajo de la imagen -->
+        <!-- Panel visual justo debajo -->
         <VBox layoutX="100.0" layoutY="100.0" spacing="15.0" styleClass="panel-registro"
               alignment="TOP_LEFT" prefWidth="300.0">
 
@@ -47,13 +46,19 @@
                               wrapText="true" prefWidth="180.0" prefHeight="100.0"/>
                 </HBox>
 
-                <!-- Fecha creación con más espacio -->
+                <!-- Fecha creación -->
                 <HBox spacing="10" alignment="CENTER_LEFT">
                     <Label text="Fecha creación" styleClass="label-campo" prefWidth="120.0"/>
                     <DatePicker fx:id="campoFecha" styleClass="combo-registro" prefWidth="200.0"/>
                 </HBox>
 
-                <!-- Imagen + botón más ancho -->
+                <!-- Categoría -->
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="Categoría" styleClass="label-campo" prefWidth="120.0"/>
+                    <ComboBox fx:id="comboCategoria" styleClass="combo-registro" prefWidth="180.0"/>
+                </HBox>
+
+                <!-- Imagen -->
                 <HBox spacing="10" alignment="CENTER_LEFT">
                     <Label text="Imagen" styleClass="label-campo" prefWidth="120.0"/>
                     <TextField fx:id="campoRutaArchivo" styleClass="campo-registro" prefWidth="120.0"/>

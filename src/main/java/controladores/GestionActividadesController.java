@@ -27,7 +27,6 @@ import javafx.stage.Stage;
 import modelo.Actividad;
 import acciones.CeldaAccionesActividad;
 
-
 /**
  * FXML Controller class
  *
@@ -50,11 +49,13 @@ public class GestionActividadesController implements Initializable {
     @FXML
     private TextField campoBuscarActividad;
     @FXML
+    private ComboBox<String> comboFiltroPor;
+    @FXML
+    private ComboBox<String> comboValorFiltro;
+    @FXML
+    private Button botonQuitarFiltro;
+    @FXML
     private Button botonNuevaActividad;
-    @FXML
-    private ComboBox<?> combo1;
-    @FXML
-    private ComboBox<?> combo2;
 
     /**
      * Initializes the controller class.
@@ -72,10 +73,47 @@ public class GestionActividadesController implements Initializable {
         });
         inicializarAccionesColumna();
 
+        comboFiltroPor.setPromptText("Selecciona un tipo de filtro...");
+        comboFiltroPor.setItems(FXCollections.observableArrayList("Filtrar por destino"));
+        comboFiltroPor.getSelectionModel().clearSelection();
+        comboValorFiltro.setDisable(true);
+
+        comboFiltroPor.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            comboValorFiltro.getItems().clear();
+            comboValorFiltro.getSelectionModel().clearSelection();
+            comboValorFiltro.setDisable(true);
+
+            if (newVal == null) {
+                return;
+            }
+
+            ObservableList<String> opciones = FXCollections.observableArrayList();
+            Conexion.conectar();
+
+            if (newVal.equals("Filtrar por destino")) {
+                opciones = ConsultasActividades.cargarNombresDestinos();
+                comboValorFiltro.setItems(opciones);
+            }
+
+            Conexion.cerrarConexion();
+            comboValorFiltro.setDisable(false);
+        });
+
+        comboValorFiltro.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                ObservableList<Actividad> lista = FXCollections.observableArrayList();
+                Conexion.conectar();
+                ConsultasActividades.cargarActividadesPorDestino(lista, newVal);
+                Conexion.cerrarConexion();
+                tablaActividades.setItems(lista);
+            }
+        });
+
     }
-private void inicializarAccionesColumna() {
-    columnAcciones.setCellFactory(col -> new CeldaAccionesActividad());
-}
+
+    private void inicializarAccionesColumna() {
+        columnAcciones.setCellFactory(col -> new CeldaAccionesActividad());
+    }
 
     private void buscarActividadesEnTiempoReal(String texto) {
         ObservableList<Actividad> listaActividades = FXCollections.observableArrayList();
@@ -85,7 +123,7 @@ private void inicializarAccionesColumna() {
         tablaActividades.setItems(listaActividades);
     }
 
-    private void cargarActividades() {
+    public void cargarActividades() {  // Cambié 'private' a 'public'
         ObservableList<Actividad> listaActividades = FXCollections.observableArrayList();
         Conexion.conectar();
         ConsultasActividades.cargarDatosActividades(listaActividades);
@@ -96,7 +134,11 @@ private void inicializarAccionesColumna() {
         columnaNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         columnaDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
         columnaIdDestino.setCellValueFactory(new PropertyValueFactory<>("nombreDestino"));
+    }
 
+// Método para recargar la tabla
+    public void recargarTabla() {
+        cargarActividades();  // Recargar la tabla con nuevos datos
     }
 
     @FXML
@@ -104,15 +146,29 @@ private void inicializarAccionesColumna() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/AgregarActividad.fxml"));
             Parent root = loader.load();
+
+            // Pasar la referencia del controlador principal
+            AgregarActividadController controlador = loader.getController();
+            controlador.setGestionActividadesController(this);  // Aquí se pasa la referencia
+
             Stage stage = new Stage();
-            stage.setTitle("Agregar itinerario");
+            stage.setTitle("Agregar Actividad");
             stage.setScene(new Scene(root));
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.showAndWait();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
 
+    @FXML
+    private void quitarFiltroActividad(ActionEvent event) {
+        comboFiltroPor.getSelectionModel().clearSelection();
+        comboValorFiltro.getSelectionModel().clearSelection();
+        comboValorFiltro.getItems().clear();
+        comboValorFiltro.setDisable(true);
+        campoBuscarActividad.clear();
+        cargarActividades();
     }
 
 }

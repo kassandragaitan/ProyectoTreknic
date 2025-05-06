@@ -1,11 +1,10 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package controladores;
 
 import Utilidades.Alertas;
-import bbdd.Conexion;
+import Utilidades.compruebaCampo;
+import bbdd.ConsultasLogin;
+import controladores.MenuController;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -17,13 +16,11 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
+import javafx.stage.Modality;
+import modelo.Usuario;
 
-/**
- * FXML Controller class
- *
- * @author k0343
- */
 public class LoginController implements Initializable {
 
     @FXML
@@ -32,55 +29,98 @@ public class LoginController implements Initializable {
     private TextField campoUsuario;
     @FXML
     private PasswordField campoContrasena;
+    @FXML
+    private Label loginlabel;
 
-    /**
-     * Initializes the controller class.
-     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
     }
 
     @FXML
     private void Acceder(ActionEvent event) {
+        String email = campoUsuario.getText();
+        String password = campoContrasena.getText();
 
-        String miUsuario = campoUsuario.getText();
-        String mipass = campoContrasena.getText();
-
-        Conexion.conectar();
-
-        if (Conexion.acceder(miUsuario, mipass)) {
-            abrirPantallaPrincipal();
+        if (compruebaCampo.compruebaVacio(campoUsuario)) {
+            Alertas.aviso("Campo vacío", "El campo de correo no puede estar vacío.");
+        } else if (!compruebaCampo.emailValido(campoUsuario)) {
+            Alertas.aviso("Formato inválido", "El correo electrónico no es válido.");
+        } else if (compruebaCampo.compruebaVacio(campoContrasena)) {
+            Alertas.aviso("Campo vacío", "El campo de contraseña no puede estar vacío.");
         } else {
-            Alertas.error("Error", "Usuario o contraseña incorrectos.");
-            campoUsuario.clear();
-            campoContrasena.clear();
+            int resultado = ConsultasLogin.validarLogin(email, password);
+
+            switch (resultado) {
+                case 0:
+                    Usuario usuario = ConsultasLogin.obtenerUsuarioPorEmail(email);
+                    Usuario.setUsuarioActual(usuario);
+
+                    try {
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/Menu.fxml"));
+                        Parent root = loader.load();
+                        MenuController controller = loader.getController();
+                        controller.setUsuarioActual(usuario);
+
+                        Stage stage = new Stage();
+                        stage.setTitle("Treknic");
+                        stage.setScene(new Scene(root));
+                        stage.setMinWidth(1000);
+                        stage.setMinHeight(700);
+                        stage.setMaximized(true);
+                        stage.show();
+
+                        Stage loginStage = (Stage) campoUsuario.getScene().getWindow();
+                        loginStage.close();
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+
+                case 1:
+                    Alertas.error("Error", "El correo electrónico no está registrado.");
+                    campoUsuario.clear();
+                    campoContrasena.clear();
+                    break;
+
+                case 2:
+                    Alertas.error("Error", "La contraseña es incorrecta.");
+                    ConsultasLogin.registrarIntentoFallido(email);
+                    campoContrasena.clear();
+                    break;
+
+                case 3:
+                    Alertas.error("Error", "Tu cuenta está inactiva.");
+                    campoUsuario.clear();
+                    campoContrasena.clear();
+                    break;
+
+                default:
+                    Alertas.error("Error", "Ha ocurrido un error inesperado.");
+                    campoUsuario.clear();
+                    campoContrasena.clear();
+                    break;
+            }
+
         }
-        Conexion.cerrarConexion();
     }
 
-    private void abrirPantallaPrincipal() {
+    @FXML
+    private void abrirVentanaRecuperar(ActionEvent event
+    ) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/Menu.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/RecuperarPassword.fxml"));
             Parent root = loader.load();
 
             Stage stage = new Stage();
-            stage.setTitle("Treknic");
+            stage.setTitle("Recuperar Contraseña");
             stage.setScene(new Scene(root));
-            
-            stage.setMinWidth(1000);
-            stage.setMinHeight(700);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
 
-         
-            stage.setMaximized(true);
-            stage.show();
-
-        
-            Stage loginStage = (Stage) campoUsuario.getScene().getWindow();
-            loginStage.close();
-
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
 }

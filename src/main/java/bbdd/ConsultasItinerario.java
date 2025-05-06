@@ -33,7 +33,7 @@ public class ConsultasItinerario {
             pst.setString(1, itinerario.getNombre());
             pst.setString(2, itinerario.getDescripcion());
             pst.setTimestamp(3, new java.sql.Timestamp(itinerario.getFechaCreacion().getTime()));
-            pst.setInt(4, itinerario.getDuracion());
+            pst.setString(4, String.valueOf(itinerario.getDuracion()));
             pst.setInt(5, itinerario.getIdUsuario());
 
             int resultado = pst.executeUpdate();
@@ -60,6 +60,52 @@ public class ConsultasItinerario {
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    public static ObservableList<String> cargarUsuariosDeItinerarios() {
+        ObservableList<String> lista = FXCollections.observableArrayList();
+        String consulta = "SELECT DISTINCT u.nombre FROM itinerario i JOIN usuarios u ON i.id_usuario = u.id_usuario";
+
+        try {
+            PreparedStatement ps = Conexion.conectar().prepareStatement(consulta);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                lista.add(rs.getString("nombre"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            Conexion.cerrarConexion();
+        }
+
+        return lista;
+    }
+
+    public static void cargarItinerariosPorUsuario(ObservableList<Itinerario> lista, String nombreUsuario) {
+        String consulta = "SELECT i.*, u.nombre AS nombre_usuario FROM itinerario i "
+                + "JOIN usuarios u ON i.id_usuario = u.id_usuario "
+                + "WHERE u.nombre = ?";
+        try {
+            PreparedStatement ps = Conexion.conn.prepareStatement(consulta);
+            ps.setString(1, nombreUsuario);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Itinerario itinerario = new Itinerario(
+                        rs.getInt("id_itinerario"),
+                        rs.getString("nombre"),
+                        rs.getDate("fecha_creacion"),
+                        rs.getString("descripcion"),
+                        mapEnumDurations(rs.getString("duracion")), // o rs.getInt("duracion")
+                        rs.getInt("id_usuario")
+                );
+                itinerario.setNombreUsuario(rs.getString("nombre_usuario"));
+
+                lista.add(itinerario);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 

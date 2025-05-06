@@ -63,6 +63,11 @@ public class AgregarTipoAlojamientoController implements Initializable {
         Stage stage = (Stage) botonRegistrar.getScene().getWindow();
         stage.close();
     }
+    private GestionTipoDeAlojamientoController gestionTipoAlojamientoController;
+
+    public void setGestionTipoAlojamientoController(GestionTipoDeAlojamientoController controller) {
+        this.gestionTipoAlojamientoController = controller;
+    }
 
     @FXML
     private void RegistrarTipoAlojamiento(ActionEvent event) {
@@ -79,6 +84,7 @@ public class AgregarTipoAlojamientoController implements Initializable {
 
                 if (exito) {
                     Alertas.informacion("Tipo de Alojamiento actualizado exitosamente.");
+                    recargarTabla();  // Recargar la tabla después de la actualización
                     cerrarVentana();
                 } else {
                     Alertas.error("Error en la actualización", "No se pudo actualizar el tipo de alojamiento.");
@@ -90,10 +96,17 @@ public class AgregarTipoAlojamientoController implements Initializable {
                 if (exito) {
                     Alertas.informacion("Tipo de Alojamiento registrado exitosamente.");
                     campoTipo.clear();
+                    recargarTabla();  // Recargar la tabla después de registrar el nuevo tipo
                 } else {
                     Alertas.error("Error en el registro", "Ocurrió un error al registrar el tipo de alojamiento.");
                 }
             }
+        }
+    }
+
+    private void recargarTabla() {
+        if (gestionTipoAlojamientoController != null) {
+            gestionTipoAlojamientoController.recargarTabla();  // Llamar a recargar la tabla en el controlador principal
         }
     }
 }

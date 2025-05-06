@@ -12,7 +12,7 @@
             prefWidth="1000.0" prefHeight="600.0">
 
     <stylesheets>
-        <URL value="@/Estilos/gestiontipodealojamiento.css" />
+       <URL value="@/Estilos/gestion.css" />
     </stylesheets>
 
     <!-- Centrado del contenido con ancho limitado -->

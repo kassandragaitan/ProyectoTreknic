@@ -1,54 +1,21 @@
-/*
- * Empty Stylesheet file.
- */
-
-.mainFxmlClass {
-
-}
-/* Main container background */
-.anchor-pane {
-    -fx-background-color: #daeafe;
+.stat-cards {
+    -fx-padding: 20 0 0 0;
 }
 
-/* Labels styling */
-.label {
-    -fx-font-size: 16px;
+.stat-card {
+    -fx-background-color: #f5f5f5;
+    -fx-background-radius: 10;
+    -fx-padding: 10;
+    -fx-alignment: center;
+}
+
+.stat-title {
+    -fx-font-size: 14px;
+    -fx-text-fill: #777;
+}
+
+.stat-value {
+    -fx-font-size: 20px;
     -fx-font-weight: bold;
-    -fx-text-fill: #3477b5;
-}
-
-/* ComboBox styling */
-.combo-box {
-    -fx-background-color: #ffffff;
-    -fx-border-color: #3874b4;
-}
-
-/* Button styling */
-.button {
-    -fx-background-color: #3874b4;
-    -fx-text-fill: white;
-    -fx-border-radius: 5;
-    -fx-background-radius: 5;
-}
-
-/* Panes styling */
-.pane {
-    -fx-background-color: #daeafe;
-    -fx-border-color: #3477b5;
-    -fx-border-width: 2px;
-    -fx-border-style: solid;
-}
-
-/* LineChart styling */
-.line-chart {
-    -fx-background-color: #3874b4;
-}
-/* Styling for specific panels */
-.total-panel, .promedio-panel, .otros-panel {
-    -fx-background-color: #e3e8ee;
-    -fx-border-color: #3477b5;
-    -fx-border-width: 2px;
-    -fx-border-radius: 5px;
-    -fx-padding: 10px;
-    -fx-background-radius: 5px;
+    -fx-text-fill: #111;
 }

@@ -7,6 +7,7 @@ package controladores;
 import Utilidades.Alertas;
 import Utilidades.compruebaCampo;
 import bbdd.Conexion;
+import bbdd.ConsultasConfiguracion;
 import bbdd.ConsultasUsuario;
 import java.io.IOException;
 import java.net.URL;
@@ -27,6 +28,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import modelo.ConfiguracionSistema;
 import modelo.Usuario;
 
 /**
@@ -76,7 +78,21 @@ public class GestionUsuariosController implements Initializable {
         Image imagen = new Image(getClass().getResourceAsStream("/img/Encabezado.png"));
         imagenTrekNic.setImage(imagen);
     }
-   public void VerCamposUsuario(Usuario usuario) {
+private boolean validarContraseña(String pass) {
+    ConfiguracionSistema config = ConsultasConfiguracion.obtenerConfiguracion();
+    String politica = config.getPoliticaContrasena();
+
+    switch (politica) {
+        case "Fuerte":
+            return pass.length() >= 8 && pass.matches(".*[A-Z].*") && pass.matches(".*[0-9].*");
+        case "Media":
+            return pass.length() >= 6;
+        default: // Débil
+            return pass.length() >= 4;
+    }
+}
+
+    public void VerCamposUsuario(Usuario usuario) {
         campoNombre.setText(usuario.getNombre());
         campoTelefono.setText(usuario.getTelefono());
         campoEmail.setText(usuario.getEmail());
@@ -99,6 +115,11 @@ public class GestionUsuariosController implements Initializable {
         botonRegistrar.setDisable(!editable); // desactiva el botón de guardar si solo estás viendo
     }
 
+    private AdministracionUsuarioController administracionUsuarioController;
+
+    public void setAdministracionUsuarioController(AdministracionUsuarioController controller) {
+        this.administracionUsuarioController = controller;
+    }
 
     @FXML
     private void registrar(ActionEvent event) {
@@ -125,17 +146,24 @@ public class GestionUsuariosController implements Initializable {
             usuario.setEmail(campoEmail.getText());
             usuario.setContrasena(campoContrasena.getText());
             usuario.setTipoViajero(campoTipoCompania.getValue());
-            usuario.setIdioma(campoIdioma.getValue());//.getSelectedItem().toString(), 
+            usuario.setIdioma(campoIdioma.getValue());//.getSelectedItem().toString(), ?????
             usuario.setTipoUsuario(campoTipoUsuario.getValue());
             usuario.setActivo(checkActivo.isSelected());
 
             if (ConsultasUsuario.registrarUsuario(usuario)) {
                 Alertas.informacion("Usuario registrado exitosamente.");
                 limpiarFormulario();
+                recargarTabla();
             } else {
 
                 Alertas.error("Error en el registro", "Ocurrió un error al registrar el usuario.");
             }
+        }
+    }
+
+    private void recargarTabla() {
+        if (administracionUsuarioController != null) {
+            administracionUsuarioController.recargarTabla();  // Llamar a recargar la tabla en el controlador principal
         }
     }
 

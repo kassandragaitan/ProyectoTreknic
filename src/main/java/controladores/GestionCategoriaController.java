@@ -50,22 +50,27 @@ public class GestionCategoriaController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        ObservableList<Categoria> listaCategorias = FXCollections.observableArrayList();
-        Conexion.conectar();
-        ConsultasCategoria.cargarDatosCategorias(listaCategorias);
-        Conexion.cerrarConexion();
-        tablaCategoria.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        columnaIdCategoria.setVisible(false); // si deseas ocultar el ID
-
-        tablaCategoria.setItems(listaCategorias);
-        columnaIdCategoria.setCellValueFactory(new PropertyValueFactory<>("idCategoria"));
-        columnaNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
-        columnaDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
 
         campoBuscarCategoria.textProperty().addListener((observable, oldValue, newValue) -> {
             buscarCategoriasEnTiempoReal(newValue);
         });
+        recargarTabla();
+    }
 
+    public void cargarDatosCategorias() {  // Cambié 'private' a 'public'
+        ObservableList<Categoria> listaCategorias = FXCollections.observableArrayList();
+        Conexion.conectar();
+        ConsultasCategoria.cargarDatosCategorias(listaCategorias);
+        Conexion.cerrarConexion();
+        tablaCategoria.setItems(listaCategorias);
+        columnaIdCategoria.setCellValueFactory(new PropertyValueFactory<>("idCategoria"));
+        columnaNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+        columnaDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
+    }
+
+// Método para recargar la tabla
+    public void recargarTabla() {
+        cargarDatosCategorias();  // Recargar la tabla con nuevos datos
     }
 
     private void buscarCategoriasEnTiempoReal(String texto) {
@@ -81,15 +86,19 @@ public class GestionCategoriaController implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/AgregarCategoria.fxml"));
             Parent root = loader.load();
+
+            // Pasar la referencia del controlador principal
+            AgregarCategoriaController controlador = loader.getController();
+            controlador.setGestionCategoriaController(this);  // Aquí se pasa la referencia
+
             Stage stage = new Stage();
-            stage.setTitle("Agregar itinerario");
+            stage.setTitle("Agregar Categoría");
             stage.setScene(new Scene(root));
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.showAndWait();
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
 }

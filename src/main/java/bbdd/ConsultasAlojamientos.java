@@ -12,12 +12,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ComboBox;
 import modelo.Alojamiento;
 import modelo.TipoAlojamiento;
+import modelo.Usuario;
 
 /**
  *
@@ -59,6 +63,82 @@ public class ConsultasAlojamientos {
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    public static ObservableList<String> cargarTiposAlojamiento() {
+        ObservableList<String> lista = FXCollections.observableArrayList();
+        String consulta = "SELECT DISTINCT tipo FROM tipoalojamiento";
+        try (PreparedStatement ps = Conexion.conn.prepareStatement(consulta); ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                lista.add(rs.getString("tipo"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return lista;
+    }
+
+    public static ObservableList<String> cargarDestinosAlojamiento() {
+        ObservableList<String> lista = FXCollections.observableArrayList();
+        String consulta = "SELECT DISTINCT nombre FROM destinos";
+        try (PreparedStatement ps = Conexion.conn.prepareStatement(consulta); ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                lista.add(rs.getString("nombre"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return lista;
+    }
+
+    public static void cargarAlojamientosPorTipo(ObservableList<Alojamiento> lista, String tipo) {
+        String sql = "SELECT a.*, t.tipo, d.nombre AS nombre_destino "
+                + "FROM alojamiento a "
+                + "JOIN tipoalojamiento t ON a.id_tipo_fk = t.id_tipo "
+                + "JOIN destinos d ON a.id_destino_fk = d.id_destino "
+                + "WHERE t.tipo = ?";
+        try (PreparedStatement ps = Conexion.conn.prepareStatement(sql)) {
+            ps.setString(1, tipo);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Alojamiento a = new Alojamiento(
+                        rs.getInt("id_alojamiento"),
+                        rs.getString("nombre"),
+                        rs.getString("contacto"),
+                        rs.getString("imagen"),
+                        rs.getString("tipo"),
+                        rs.getString("nombre_destino")
+                );
+                lista.add(a);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void cargarAlojamientosPorDestino(ObservableList<Alojamiento> lista, String destino) {
+        String sql = "SELECT a.*, t.tipo, d.nombre AS nombre_destino "
+                + "FROM alojamiento a "
+                + "JOIN tipoalojamiento t ON a.id_tipo_fk = t.id_tipo "
+                + "JOIN destinos d ON a.id_destino_fk = d.id_destino "
+                + "WHERE d.nombre = ?";
+        try (PreparedStatement ps = Conexion.conn.prepareStatement(sql)) {
+            ps.setString(1, destino);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Alojamiento a = new Alojamiento(
+                        rs.getInt("id_alojamiento"),
+                        rs.getString("nombre"),
+                        rs.getString("contacto"),
+                        rs.getString("imagen"),
+                        rs.getString("tipo"),
+                        rs.getString("nombre_destino")
+                );
+                lista.add(a);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -148,4 +228,112 @@ public class ConsultasAlojamientos {
             cerrarConexion();
         }
     }
+//public static List<Alojamiento> obtenerAlojamientosFavoritos() {
+//    List<Alojamiento> lista = new ArrayList<>();
+//    Connection conn = null;
+//    PreparedStatement ps = null;
+//    ResultSet rs = null;
+//
+//    try {
+//        conn = Conexion.conectar();
+//
+//        String sql =
+//            "SELECT a.nombre AS nombre_alojamiento, " +
+//            "a.imagen AS imagen_alojamiento, " +
+//            "d.nombre AS nombre_destino " +
+//            "FROM favoritos f " +
+//            "JOIN destinos d ON f.id_destino = d.id_destino " +
+//            "JOIN alojamiento a ON a.id_destino_fk = d.id_destino " +
+//            "ORDER BY f.id_favoritos DESC " +
+//            "LIMIT 5";
+//
+//        ps = conn.prepareStatement(sql);
+//        rs = ps.executeQuery();
+//
+//        while (rs.next()) {
+//            Alojamiento alojamiento = new Alojamiento();
+//            alojamiento.setNombre(rs.getString("nombre_alojamiento"));
+//            alojamiento.setImagen(rs.getString("imagen_alojamiento"));
+//            alojamiento.setNombreDestino(rs.getString("nombre_destino"));
+//            lista.add(alojamiento);
+//        }
+//
+//    } catch (SQLException e) {
+//        e.printStackTrace();
+//    } finally {
+//        Conexion.cerrarConexion();
+//    }
+//
+//    return lista;
+//}
+
+    public static List<Alojamiento> obtenerAlojamientosFavoritosPorUsuario(int idUsuario) {
+        List<Alojamiento> favoritos = new ArrayList<>();
+        String sql = "SELECT a.id_alojamiento, a.nombre, a.imagen, d.nombre AS destino "
+                + "FROM favoritos f "
+                + "JOIN alojamiento a ON f.id_alojamiento = a.id_alojamiento "
+                + "JOIN destinos d ON a.id_destino_fk = d.id_destino "
+                + "WHERE f.id_usuario = ?";
+
+        try (Connection conn = Conexion.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, idUsuario);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Alojamiento aloj = new Alojamiento();
+                aloj.setIdAlojamiento(rs.getInt("id_alojamiento"));
+                aloj.setNombre(rs.getString("nombre"));
+                aloj.setImagen(rs.getString("imagen"));
+                aloj.setNombreDestino(rs.getString("destino"));
+                favoritos.add(aloj);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return favoritos;
+    }
+
+    public static boolean agregarAFavoritos(int idAlojamiento, int idUsuario) {
+        String sql = "INSERT IGNORE INTO favoritos (id_usuario, id_alojamiento) VALUES (?, ?)";
+
+        try (Connection conn = Conexion.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, idUsuario);
+            stmt.setInt(2, idAlojamiento); // El campo debe ser id_destino o id_alojamiento_fk según tu tabla
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean existeFavorito(int idUsuario, int idAlojamiento) {
+        String sql = "SELECT COUNT(*) FROM favoritos WHERE id_usuario = ? AND id_alojamiento = ?";
+        try (Connection conn = Conexion.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, idUsuario);
+            stmt.setInt(2, idAlojamiento);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public static boolean eliminarDeFavoritos(int idAlojamiento, int idUsuario) {
+        String sql = "DELETE FROM favoritos WHERE id_alojamiento = ? AND id_usuario = ?";
+        try (Connection conn = Conexion.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, idAlojamiento);
+            stmt.setInt(2, idUsuario);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }

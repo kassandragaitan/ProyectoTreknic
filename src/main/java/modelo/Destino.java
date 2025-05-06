@@ -1,29 +1,49 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package modelo;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 
-/**
- *
- * @author k0343
- */
 public class Destino {
 
     private int id_destino;
     private String nombre;
     private String descripcion;
-    private Date fecha_creacion;
+    private String categoria;
+    private Date fecha_creacion; // original desde BBDD
+    private String imagen;
 
     private int visitas;
     private double valoracion;
 
-    public Destino() {
+    public Destino() {}
+
+    public Destino(int id_destino, String nombre, String descripcion, String categoria, Date fecha_creacion) {
+        this.id_destino = id_destino;
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.categoria = categoria;
+        this.fecha_creacion = fecha_creacion;
     }
 
-    //constructor para principal
+    public Destino(int id_destino, String nombre, String descripcion, Date fecha_creacion, String imagen) {
+        this.id_destino = id_destino;
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.fecha_creacion = fecha_creacion;
+        this.imagen = imagen;
+    }
+
+    public Destino(int id_destino, String nombre, String descripcion, Date fecha_creacion, String imagen, int visitas, double valoracion) {
+        this.id_destino = id_destino;
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.fecha_creacion = fecha_creacion;
+        this.imagen = imagen;
+        this.visitas = visitas;
+        this.valoracion = valoracion;
+    }
+
     public Destino(int id_destino, String nombre, String descripcion, Date fecha_creacion, int visitas, double valoracion) {
         this.id_destino = id_destino;
         this.nombre = nombre;
@@ -33,17 +53,15 @@ public class Destino {
         this.valoracion = valoracion;
     }
 
-    //constructor para actividades 
     public Destino(int id_destino, String nombre) {
         this.id_destino = id_destino;
         this.nombre = nombre;
     }
 
-    public Destino(int id_destino, String nombre, String descripcion, Date fecha_creacion) {
-        this.id_destino = id_destino;
+    public Destino(String nombre, String descripcion, String imagen) {
         this.nombre = nombre;
         this.descripcion = descripcion;
-        this.fecha_creacion = fecha_creacion;
+        this.imagen = imagen;
     }
 
     public int getId_destino() {
@@ -70,6 +88,14 @@ public class Destino {
         this.descripcion = descripcion;
     }
 
+    public String getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
+    }
+
     public Date getFecha_creacion() {
         return fecha_creacion;
     }
@@ -78,7 +104,20 @@ public class Destino {
         this.fecha_creacion = fecha_creacion;
     }
 
-    // Getters y setters de principal
+    // Conversión segura para LocalDate (para filtros)
+    public LocalDate getFecha() {
+        if (this.fecha_creacion == null) return null;
+        return this.fecha_creacion.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+    }
+
+    public String getImagen() {
+        return imagen;
+    }
+
+    public void setImagen(String imagen) {
+        this.imagen = imagen;
+    }
+
     public int getVisitas() {
         return visitas;
     }

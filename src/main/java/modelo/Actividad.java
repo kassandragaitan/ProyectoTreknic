@@ -26,6 +26,13 @@ public class Actividad {
         this.idDestino = idDestino;
     }
 
+    public Actividad(int idActividad, String nombre, String descripcion, String nombreDestino) {
+        this.idActividad = idActividad;
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.nombreDestino = nombreDestino;
+    }
+
     public String getNombreDestino() {
         return nombreDestino;
     }

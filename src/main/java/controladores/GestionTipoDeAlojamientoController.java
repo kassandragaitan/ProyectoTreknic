@@ -47,31 +47,34 @@ public class GestionTipoDeAlojamientoController implements Initializable {
     @FXML
     private TableColumn<TipoAlojamiento, Void> columnaAcciones;
 
-    private ObservableList<TipoAlojamiento> listaTipos = FXCollections.observableArrayList();
-
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
-        Conexion.conectar();
-        ConsultasTipoAlojamiento.cargarDatosTiposAlojamiento(listaTipos);
-        Conexion.cerrarConexion();
-
-        columnaIdTipo.setVisible(false);
-        tablaTipoAlojamiento.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-
-        tablaTipoAlojamiento.setItems(listaTipos);
-        columnaIdTipo.setCellValueFactory(new PropertyValueFactory<>("idTipo"));
-        columnaTipo.setCellValueFactory(new PropertyValueFactory<>("tipo"));
-
         campoBuscarTipoAlojamiento.textProperty().addListener((observable, oldValue, newValue) -> {
             buscarTiposAlojamientoEnTiempoReal(newValue);
         });
 
         columnaAcciones.setCellFactory(col -> new CeldaAccionesTipoAlojamiento());
+        recargarTabla();
+    }
 
+    public void cargarDatosTiposAlojamiento() {  // Hacemos este método público
+        ObservableList<TipoAlojamiento> listaTipos = FXCollections.observableArrayList();
+        Conexion.conectar();
+        ConsultasTipoAlojamiento.cargarDatosTiposAlojamiento(listaTipos);
+        Conexion.cerrarConexion();
+
+        tablaTipoAlojamiento.setItems(listaTipos);
+        columnaIdTipo.setCellValueFactory(new PropertyValueFactory<>("idTipo"));
+        columnaTipo.setCellValueFactory(new PropertyValueFactory<>("tipo"));
+    }
+
+// Método para recargar la tabla
+    public void recargarTabla() {
+        cargarDatosTiposAlojamiento();  // Recargar la tabla con nuevos datos
     }
 
     private void buscarTiposAlojamientoEnTiempoReal(String texto) {
@@ -87,6 +90,9 @@ public class GestionTipoDeAlojamientoController implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/AgregarTipoAlojamiento.fxml"));
             Parent root = loader.load();
+            AgregarTipoAlojamientoController controlador = loader.getController();
+            controlador.setGestionTipoAlojamientoController(this);  // Aquí se pasa la referencia
+
             Stage stage = new Stage();
             stage.setTitle("Agregar itinerario");
             stage.setScene(new Scene(root));

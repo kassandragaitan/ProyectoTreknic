@@ -59,7 +59,7 @@ public class GestionItinerarioController implements Initializable {
     @FXML
     private TableColumn<Itinerario, Integer> columnaDuracion;
     @FXML
-    private TableColumn<Itinerario, Date> columnaFechaCreacion; 
+    private TableColumn<Itinerario, Date> columnaFechaCreacion;
     @FXML
     private TextField campoBuscarItinerario;
     @FXML
@@ -67,40 +67,91 @@ public class GestionItinerarioController implements Initializable {
     @FXML
     private TableView<Itinerario> tablaItinerario;
     @FXML
-    private ComboBox<String> comboDuraciones;
-    @FXML
     private TableColumn<Itinerario, String> columnaUsuario;
+    @FXML
+    private ComboBox<String> comboFiltroPor;
+    @FXML
+    private ComboBox<String> comboValorFiltro;
+    @FXML
+    private Button botonQuitarFiltro;
+    @FXML
+    private TableColumn<?, ?> columnaInvisible;
 
-  @Override
-public void initialize(URL url, ResourceBundle rb) {
-     cargarItinerarios();
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        cargarItinerarios();
         inicializarAccionesColumna();
         tablaItinerario.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         columnaIdItinerario.setVisible(false);
-
+        Conexion.conectar();
+        ObservableList<String> duraciones = ConsultasItinerario.cargarDuracionesItinerarios();
+        Conexion.cerrarConexion();
         campoBuscarItinerario.textProperty().addListener((observable, oldValue, newValue) -> {
             buscarItinerariosEnTiempoReal(newValue);
         });
 
-        Conexion.conectar();
-        ObservableList<String> duraciones = ConsultasItinerario.cargarDuracionesItinerarios();
-        Conexion.cerrarConexion();
+        comboFiltroPor.setPromptText("Selecciona un tipo de filtro...");
+        comboFiltroPor.setItems(FXCollections.observableArrayList("Filtrar por duración", "Filtrar por usuario"));
+        comboFiltroPor.getSelectionModel().clearSelection();
+        comboValorFiltro.setDisable(true);
 
-        comboDuraciones.setItems(duraciones);
-        comboDuraciones.getSelectionModel().selectFirst();
+        comboFiltroPor.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            comboValorFiltro.getItems().clear();
+            comboValorFiltro.getSelectionModel().clearSelection();
+            comboValorFiltro.setDisable(true);
 
-        comboDuraciones.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-            filtrarItinerariosPorDuracion(newVal);
+            if (newVal == null) {
+                return;
+            }
+
+            ObservableList<String> opciones = FXCollections.observableArrayList();
+            Conexion.conectar();
+            switch (newVal) {
+                case "Filtrar por duración":
+                    opciones = ConsultasItinerario.cargarDuracionesItinerarios();
+                    break;
+                case "Filtrar por usuario":
+                    opciones = ConsultasItinerario.cargarUsuariosDeItinerarios();
+                    break;
+            }
+            Conexion.cerrarConexion();
+            comboValorFiltro.setItems(opciones);
+            comboValorFiltro.setDisable(false);
+
+            recargarTabla();
         });
-    }
 
-    private void filtrarItinerariosPorDuracion(String duracionSeleccionada) {
-        ObservableList<Itinerario> lista = FXCollections.observableArrayList();
-        Conexion.conectar();
-        ConsultasItinerario.cargarItinerariosPorDuracion(lista, duracionSeleccionada);
-        Conexion.cerrarConexion();
-        tablaItinerario.setItems(lista);
+        comboValorFiltro.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                ObservableList<Itinerario> lista = FXCollections.observableArrayList();
+                String filtro = comboFiltroPor.getValue();
+
+                Conexion.conectar();
+                if ("Filtrar por duración".equals(filtro)) {
+                    ConsultasItinerario.cargarItinerariosPorDuracion(lista, newVal);
+                } else if ("Filtrar por usuario".equals(filtro)) {
+                    ConsultasItinerario.cargarItinerariosPorUsuario(lista, newVal);
+                }
+                Conexion.cerrarConexion();
+                tablaItinerario.setItems(lista);
+            }
+        });
+
+        botonQuitarFiltro.setOnAction(e -> {
+            comboFiltroPor.getSelectionModel().clearSelection();
+            comboFiltroPor.setValue(null);
+
+            comboValorFiltro.getSelectionModel().clearSelection();
+            comboValorFiltro.getItems().clear();
+            comboValorFiltro.setDisable(true);
+
+            campoBuscarItinerario.clear();
+            cargarItinerarios();
+
+            comboFiltroPor.setVisible(false);
+            comboFiltroPor.setVisible(true);
+        });
     }
 
     private void buscarItinerariosEnTiempoReal(String texto) {
@@ -126,6 +177,10 @@ public void initialize(URL url, ResourceBundle rb) {
         columnaUsuario.setCellValueFactory(new PropertyValueFactory<>("nombreUsuario"));
     }
 
+    public void recargarTabla() {
+        cargarItinerarios();
+    }
+
     private void inicializarAccionesColumna() {
         columnAcciones.setCellFactory(col -> new CeldaAccionesItinerario());
     }
@@ -135,8 +190,12 @@ public void initialize(URL url, ResourceBundle rb) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/AgregarItinerario.fxml"));
             Parent root = loader.load();
+
+            AgregarItinerarioController controlador = loader.getController();
+            controlador.setGestionItinerarioController(this);  // Aquí se pasa la referencia
+
             Stage stage = new Stage();
-            stage.setTitle("Agregar itinerario");
+            stage.setTitle("Agregar Itinerario");
             stage.setScene(new Scene(root));
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.showAndWait();
@@ -144,4 +203,5 @@ public void initialize(URL url, ResourceBundle rb) {
             e.printStackTrace();
         }
     }
+
 }

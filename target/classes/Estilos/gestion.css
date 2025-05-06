@@ -11,13 +11,12 @@
 
 .label {
     -fx-font-size: 16px;
-    -fx-text-fill: #78909c; /* color para el titulo de encabezado */
+    -fx-text-fill: #78909c;
 }
 .labelTitulo {
     -fx-font-size: 16px;
     -fx-text-fill: #333;
 }
-/*diseños para la tabla de gestion usuario*/
 
 .button {
     -fx-background-color: #f0f0f0;
@@ -34,7 +33,7 @@
     -fx-background-color: #e4e4e4;
     -fx-text-fill: #145da0;
     -fx-font-weight: bold;
-     -fx-border-color: #145da0;
+    -fx-border-color: #145da0;
 }
 .button:pressed {
     -fx-background-color: #62a7e7;
@@ -59,7 +58,7 @@
 }
 
 .combo-box .arrow {
-    -fx-shape: "M0 0 L1 0 L0.5 1 z"; /* Triangular arrow */
+    -fx-shape: "M0 0 L1 0 L0.5 1 z";
     -fx-fill: white;
     -fx-effect: dropshadow( one-pass-box , black , 2 , 0.0 , 1 , 1 );
 }
@@ -71,11 +70,10 @@
 }
 
 .combo-box-popup .list-cell:filled:selected, .combo-box-popup .list-cell:filled:selected:hover {
-    -fx-background-color: #78909c; /* Darker blue for selected item */
+    -fx-background-color: #78909c;
     -fx-text-fill: white;
 }
 
-/*diseño de la tablaaaa */
 
 
 .table-view {
@@ -86,7 +84,6 @@
     -fx-font-size: 13px;
     -fx-text-fill: #343a40;
     -fx-padding: 0;
-    /*    -fx-background-radius: 8;*/
     -fx-background-radius: 0;
     -fx-border-radius: 0;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0.1, 0, 2);
@@ -118,12 +115,10 @@
 .table-view .table-row-cell:selected {
     -fx-background-color: #e8f0fe;
 }
-/* Forzar color del texto en filas seleccionadas */
 .table-row-cell:selected .table-cell {
-    -fx-text-fill: #212121; /* negro o gris oscuro */
+    -fx-text-fill: #212121;
 }
 
-/* Opcional: también en hover (por si agregas efectos de hover en filas más adelante) */
 .table-row-cell:hover .table-cell {
     -fx-text-fill: #212121;
 }
@@ -133,7 +128,6 @@
     -fx-alignment: CENTER;
 }
 
-/* Avatar estilo */
 .user-avatar {
     -fx-background-color: #dee2e6;
     -fx-background-radius: 50%;
@@ -144,7 +138,6 @@
     -fx-alignment: center;
 }
 
-/* Nombre y email */
 .user-name {
     -fx-font-weight: bold;
     -fx-font-size: 13px;
@@ -156,14 +149,15 @@
     -fx-font-size: 11px;
 }
 
-/* Roles como badge */
 .rol-admin {
-    -fx-background-color: #f3e8ff;
-    -fx-text-fill: #6f42c1;
+    -fx-background-color: #e6f0ff;
+    -fx-text-fill: #3477b5;
     -fx-padding: 3 12;
     -fx-background-radius: 20;
     -fx-font-size: 12px;
+    -fx-font-weight: bold;
 }
+
 .rol-editor {
     -fx-background-color: #e3f2fd;
     -fx-text-fill: #1a73e8;
@@ -179,7 +173,6 @@
     -fx-font-size: 12px;
 }
 
-/* Estado badge */
 .estado-activo {
     -fx-background-color: #d1f7d6;
     -fx-text-fill: #2e7d32;
@@ -195,7 +188,6 @@
     -fx-font-size: 12px;
 }
 
-/* Botones tipo texto */
 .table-button {
     -fx-background-color: transparent;
     -fx-text-fill: #1a73e8;
@@ -223,4 +215,24 @@
     -fx-opacity: 0.6;
     -fx-background-color: #f0f0f0;
     -fx-text-fill: #999;
+}
+.primary {
+    -fx-background-color: #145da0;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 8 16;
+    -fx-font-size: 13px;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+}
+
+.primary:hover {
+    -fx-background-color: #0d47a1;
+    -fx-text-fill: white; /* 👈 Letras blancas al pasar el cursor */
+}
+
+.primary:pressed {
+    -fx-background-color: #e0e0e0; /* Fondo claro */
+    -fx-text-fill: black;         /* Letras negras */
 }

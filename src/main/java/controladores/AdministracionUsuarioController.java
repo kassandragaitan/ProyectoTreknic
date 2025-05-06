@@ -67,15 +67,17 @@ public class AdministracionUsuarioController implements Initializable {
     @FXML
     private TableView<Usuario> tablaUsuarios;
     @FXML
-    private ComboBox<String> comboRoles;
+    private ComboBox<String> comboFiltroPor;
     @FXML
-    private ComboBox<String> comboEstado;
+    private ComboBox<String> comboValorFiltro;
+    @FXML
+    private Button botonQuitarFiltro;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        recargarTabla();
         columnCorreo.setVisible(false);
         columnContrasena.setVisible(false);
-
         columnUsuario.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         columnCorreo.setCellValueFactory(new PropertyValueFactory<>("email"));
         columnContrasena.setCellValueFactory(new PropertyValueFactory<>("contrasena"));
@@ -92,48 +94,83 @@ public class AdministracionUsuarioController implements Initializable {
         tablaUsuarios.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         tablaUsuarios.toFront();
         initializeCustomCells();
+
+        botonQuitarFiltro.setDisable(true); // Desactivar por defecto
+
         campoBuscarUsuario.textProperty().addListener((observable, oldValue, newValue) -> {
             buscarUsuariosEnTiempoReal(newValue);
+            botonQuitarFiltro.setDisable(newValue.trim().isEmpty());
         });
 
-        // Cargar roles desde la BBDD (solo UNA VEZ)
-        Conexion.conectar();
-        ObservableList<String> roles = ConsultasUsuario.cargarRolesUsuarios();
-        Conexion.cerrarConexion();
+        comboFiltroPor.setPromptText("Selecciona un tipo de filtro...");
+        comboFiltroPor.setItems(FXCollections.observableArrayList("Filtrar por rol", "Filtrar por idioma", "Filtrar por tipo de compañía"));
+        comboFiltroPor.getSelectionModel().clearSelection();
+        comboValorFiltro.setDisable(true);
 
-        comboRoles.setItems(roles);
-        comboRoles.getSelectionModel().selectFirst();
+        comboFiltroPor.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            comboValorFiltro.getItems().clear();
+            comboValorFiltro.getSelectionModel().clearSelection();
+            comboValorFiltro.setDisable(true);
 
-        comboRoles.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            filtrarUsuariosPorRol(newValue);
+            if (newVal == null) {
+                return;
+            }
+
+            ObservableList<String> opciones = FXCollections.observableArrayList();
+            Conexion.conectar();
+            switch (newVal) {
+                case "Filtrar por rol":
+                    opciones = ConsultasUsuario.cargarRolesUsuarios();
+                    opciones.remove("Todos los roles");
+                    comboValorFiltro.setItems(opciones);
+                    break;
+                case "Filtrar por idioma":
+                    ConsultasUsuario.cargarComboIdioma(comboValorFiltro);
+                    break;
+                case "Filtrar por tipo de compañía":
+                    ConsultasUsuario.cargarComboTipoCompania(comboValorFiltro);
+                    break;
+            }
+            Conexion.cerrarConexion();
+            comboValorFiltro.setDisable(false);
         });
-        Conexion.conectar();
-        ObservableList<String> estados = ConsultasUsuario.cargarEstadosUsuarios();
-        Conexion.cerrarConexion();
 
-        comboEstado.setItems(estados);
-        comboEstado.getSelectionModel().selectFirst();
+        comboValorFiltro.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                ObservableList<Usuario> listaUsuarios = FXCollections.observableArrayList();
+                String filtro = comboFiltroPor.getValue();
 
-        comboEstado.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-            filtrarUsuariosPorEstado(newVal);
+                if ("Filtrar por rol".equals(filtro)) {
+                    Conexion.conectar();
+                    ConsultasUsuario.cargarUsuariosPorRol(listaUsuarios, newVal);
+                    Conexion.cerrarConexion();
+                } else {
+                    String campo = "";
+                    if ("Filtrar por idioma".equals(filtro)) {
+                        campo = "idioma_preferido";
+                    } else if ("Filtrar por tipo de compañía".equals(filtro)) {
+                        campo = "tipo_viajero";
+                    }
+
+                    ConsultasUsuario.cargarUsuariosPorCampo(listaUsuarios, campo, newVal);
+                }
+                tablaUsuarios.setItems(listaUsuarios);
+                botonQuitarFiltro.setDisable(false);
+            }
         });
 
-    }
-
-    private void filtrarUsuariosPorRol(String rolSeleccionado) {
-        ObservableList<Usuario> listaUsuarios = FXCollections.observableArrayList();
-        Conexion.conectar();
-        ConsultasUsuario.cargarUsuariosPorRol(listaUsuarios, rolSeleccionado);
-        Conexion.cerrarConexion();
-        tablaUsuarios.setItems(listaUsuarios);
-    }
-
-    private void filtrarUsuariosPorEstado(String estadoSeleccionado) {
-        ObservableList<Usuario> listaUsuarios = FXCollections.observableArrayList();
-        Conexion.conectar();
-        ConsultasUsuario.cargarUsuariosPorEstado(listaUsuarios, estadoSeleccionado);
-        Conexion.cerrarConexion();
-        tablaUsuarios.setItems(listaUsuarios);
+        botonQuitarFiltro.setOnAction(e -> {
+            comboFiltroPor.getSelectionModel().clearSelection();
+            comboFiltroPor.setValue(null);
+            comboValorFiltro.getSelectionModel().clearSelection();
+            comboValorFiltro.getItems().clear();
+            comboValorFiltro.setDisable(true);
+            campoBuscarUsuario.clear();
+            tablaUsuarios.setItems(generarDatosUsuario());
+            comboFiltroPor.setVisible(false);
+            comboFiltroPor.setVisible(true);
+            botonQuitarFiltro.setDisable(true);
+        });
     }
 
     private void buscarUsuariosEnTiempoReal(String texto) {
@@ -144,7 +181,7 @@ public class AdministracionUsuarioController implements Initializable {
         tablaUsuarios.setItems(listaUsuarios);
     }
 
-    private ObservableList<Usuario> generarDatosUsuario() {
+    public ObservableList<Usuario> generarDatosUsuario() {
         ObservableList<Usuario> listaUsuarios = FXCollections.observableArrayList();
         try (Connection conn = Conexion.conectar()) {
             String query = "SELECT id_usuario, nombre, email, contrasena, tipo_usuario, idioma_preferido, tipo_viajero, telefono, fecha_registro, activo FROM usuarios";
@@ -163,12 +200,16 @@ public class AdministracionUsuarioController implements Initializable {
                         rs.getString("telefono")
                 );
                 usuario.setActivo(rs.getBoolean("activo"));
-                listaUsuarios.add(usuario); // ✅ nombre correcto
+                listaUsuarios.add(usuario);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
         return listaUsuarios;
+    }
+
+    public void recargarTabla() {
+        tablaUsuarios.setItems(generarDatosUsuario());
     }
 
     private void initializeCustomCells() {
@@ -183,8 +224,7 @@ public class AdministracionUsuarioController implements Initializable {
                 } else {
                     HBox contenedor = new HBox(10);
                     contenedor.setAlignment(Pos.CENTER_LEFT);
-
-                    Label avatar = new Label("👤");
+                    Label avatar = new Label("\uD83D\uDC64");
                     avatar.getStyleClass().add("user-avatar");
 
                     VBox info = new VBox(2);
@@ -235,8 +275,12 @@ public class AdministracionUsuarioController implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/GestionUsuarios.fxml"));
             Parent root = loader.load();
+
+            GestionUsuariosController controlador = loader.getController();
+            controlador.setAdministracionUsuarioController(this);
+
             Stage stage = new Stage();
-            stage.setTitle("Agregar usuario");
+            stage.setTitle("Agregar Usuario");
             stage.setScene(new Scene(root));
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.showAndWait();
@@ -244,4 +288,5 @@ public class AdministracionUsuarioController implements Initializable {
             e.printStackTrace();
         }
     }
+
 }

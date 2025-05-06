@@ -25,7 +25,8 @@ import modelo.Usuario;
  * @author k0343
  */
 public class ConsultasUsuario {
-      public static boolean registrarUsuario(Usuario usuario) {
+
+    public static boolean registrarUsuario(Usuario usuario) {
         conectar();
         try {
             String consulta = "INSERT INTO usuarios (nombre, email, contrasena, tipo_usuario, idioma_preferido, tipo_viajero, telefono, fecha_registro, activo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -37,8 +38,8 @@ public class ConsultasUsuario {
             pst.setString(5, usuario.getIdioma());
             pst.setString(6, usuario.getTipoViajero());
             pst.setString(7, usuario.getTelefono());
-            pst.setTimestamp(8, new Timestamp(System.currentTimeMillis())); // Fecha actual
-            pst.setBoolean(9, usuario.getActivo()); // ✅ nuevo campo "activo"
+            pst.setTimestamp(8, new Timestamp(System.currentTimeMillis())); 
+            pst.setBoolean(9, usuario.getActivo()); 
 
             int resultado = pst.executeUpdate();
             return resultado > 0;
@@ -52,7 +53,7 @@ public class ConsultasUsuario {
 
     public static ObservableList<String> cargarRolesUsuarios() {
         ObservableList<String> roles = FXCollections.observableArrayList();
-        roles.add("Todos los roles"); // Agregamos esta opción por defecto
+        roles.add("Todos los roles");
 
         String consulta = "SELECT DISTINCT tipo_usuario FROM usuarios";
 
@@ -132,25 +133,15 @@ public class ConsultasUsuario {
         }
     }
 
-    public static void cargarUsuariosPorEstado(ObservableList<Usuario> listaUsuarios, String estadoSeleccionado) {
-        String consulta;
 
-        if (estadoSeleccionado.equals("Todos los estados")) {
-            consulta = "SELECT id_usuario, nombre, email, contrasena, tipo_usuario, idioma_preferido, tipo_viajero, telefono, fecha_registro, activo FROM usuarios";
-        } else {
-            consulta = "SELECT id_usuario, nombre, email, contrasena, tipo_usuario, idioma_preferido, tipo_viajero, telefono, fecha_registro, activo FROM usuarios WHERE activo = ?";
-        }
 
-        try {
-            PreparedStatement stmt = conn.prepareStatement(consulta);
+    public static void cargarUsuariosPorCampo(ObservableList<Usuario> listaUsuarios, String campo, String valor) {
+        conectar();
+        String consulta = "SELECT * FROM usuarios WHERE " + campo + " = ?";
 
-            if (!estadoSeleccionado.equals("Todos los estados")) {
-                boolean valorEstado = estadoSeleccionado.equals("Activo");
-                stmt.setBoolean(1, valorEstado);
-            }
-
-            ResultSet rs = stmt.executeQuery();
-
+        try (PreparedStatement ps = conn.prepareStatement(consulta)) {
+            ps.setString(1, valor);
+            ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 Usuario usuario = new Usuario(
                         rs.getInt("id_usuario"),
@@ -166,22 +157,24 @@ public class ConsultasUsuario {
                 usuario.setActivo(rs.getBoolean("activo"));
                 listaUsuarios.add(usuario);
             }
-
-        } catch (SQLException ex) {
-            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            cerrarConexion();
         }
     }
 
     public static void cargarDatosUsuariosFiltrados(ObservableList<Usuario> listaUsuarios, String busqueda) {
         Connection conn = Conexion.conn;
 
-        String consulta = "SELECT id_usuario, nombre, email, tipo_usuario, idioma_preferido, tipo_viajero, telefono, activo "
+        String consulta = "SELECT id_usuario, nombre, email, tipo_usuario, idioma_preferido, tipo_viajero, telefono, activo, fecha_registro "
                 + "FROM usuarios "
-                + "WHERE nombre LIKE ? OR email LIKE ? OR tipo_usuario LIKE ? OR idioma_preferido LIKE ?";
+                + "WHERE nombre LIKE ? OR email LIKE ? OR tipo_usuario LIKE ? OR idioma_preferido LIKE ? "
+                + "OR tipo_viajero LIKE ? OR DATE_FORMAT(fecha_registro, '%Y-%m-%d') LIKE ?";
 
         try (PreparedStatement ps = conn.prepareStatement(consulta)) {
             String wildcard = "%" + busqueda + "%";
-            for (int i = 1; i <= 4; i++) {
+            for (int i = 1; i <= 6; i++) {
                 ps.setString(i, wildcard);
             }
 
@@ -196,6 +189,7 @@ public class ConsultasUsuario {
                     usuario.setTipoViajero(rs.getString("tipo_viajero"));
                     usuario.setTelefono(rs.getString("telefono"));
                     usuario.setActivo(rs.getBoolean("activo"));
+                    usuario.setFechaRegistro(rs.getDate("fecha_registro"));
 
                     listaUsuarios.add(usuario);
                 }

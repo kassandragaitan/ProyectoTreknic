@@ -5,32 +5,26 @@
     -fx-background-radius: 8px;
     -fx-padding: 10;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.03), 5, 0.0, 0, 1);
+    -fx-margin: 10 20 10 20;
 }
 
-.label-style {
-    -fx-background-color: #e0e7ff;
-    -fx-border-radius: 8px;
-    -fx-background-radius: 8px;
-}
-
-.label-rounded {
-    -fx-background-color: #e5e7eb;
+.label {
     -fx-text-fill: #374151;
-    -fx-background-radius: 15px;
-    -fx-padding: 3 10 3 10;
+    -fx-font-size: 12px;
 }
 
 .list-cell {
-    -fx-background-color: white !important; /* ¡Esto fuerza el fondo blanco! */
+    -fx-background-color: white !important;
+    -fx-padding: 4px 0 4px 0;
     -fx-border-width: 0;
-    -fx-padding: 10px;
 }
 
 .list-cell:odd, .list-cell:even {
-    -fx-background-color: white !important; /* Elimina intercalado */
+    -fx-background-color: white !important;
 }
 
-.list-cell:selected {
-    -fx-background-color: #e0e7ff !important; /* Color al seleccionar (opcional) */
+.list-cell:selected .label {
     -fx-text-fill: black;
 }
+
+

@@ -46,7 +46,7 @@ public class AgregarActividadController implements Initializable {
     /**
      * Initializes the controller class.
      */
-  private Actividad actividadActual;
+    private Actividad actividadActual;
     private boolean esEdicion = false;
 
     @Override
@@ -57,6 +57,13 @@ public class AgregarActividadController implements Initializable {
 
         Image imagen = new Image(getClass().getResourceAsStream("/img/Encabezado.png"));
         imagenTrekNic.setImage(imagen);
+    }
+
+    private GestionActividadesController gestionActividadesController;  // Referencia al controlador principal
+
+// Método para establecer la referencia del controlador principal
+    public void setGestionActividadesController(GestionActividadesController controller) {
+        this.gestionActividadesController = controller;
     }
 
     @FXML
@@ -77,6 +84,7 @@ public class AgregarActividadController implements Initializable {
 
                 if (ConsultasActividades.actualizarActividad(actividadActual)) {
                     Alertas.informacion("Actividad actualizada exitosamente.");
+                    recargarTabla();  // Recargar la tabla después de la actualización
                     cerrarVentana();
                 } else {
                     Alertas.error("Error", "No se pudo actualizar la actividad.");
@@ -91,11 +99,18 @@ public class AgregarActividadController implements Initializable {
 
                 if (ConsultasActividades.registrarActividad(actividad)) {
                     Alertas.informacion("Actividad registrada exitosamente.");
+                    recargarTabla();  // Recargar la tabla después de registrar
                     limpiarFormulario();
                 } else {
                     Alertas.error("Error en el registro", "No se pudo registrar la actividad.");
                 }
             }
+        }
+    }
+
+    private void recargarTabla() {
+        if (gestionActividadesController != null) {
+            gestionActividadesController.recargarTabla();  // Llamar a recargar la tabla en el controlador principal
         }
     }
 

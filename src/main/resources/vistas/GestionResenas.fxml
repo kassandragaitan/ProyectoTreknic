@@ -10,7 +10,7 @@
       fx:controller="controladores.GestionResenasController">
 
     <children>
-        <AnchorPane stylesheets="@Estilos/gestionresenas.css">
+        <AnchorPane stylesheets="@/Estilos/gestion.css">
             <VBox alignment="TOP_CENTER"
                   spacing="20.0"
                   AnchorPane.topAnchor="20.0"

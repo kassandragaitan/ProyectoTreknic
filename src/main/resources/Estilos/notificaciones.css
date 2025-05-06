@@ -1,18 +1,72 @@
-/*
- * Empty Stylesheet file.
- */
-
-.mainFxmlClass {
-
-}
-.toggle-button {
-    -fx-padding: 5;
-    -fx-background-radius: 50; /* Hace el fondo completamente redondo */
-    -fx-border-radius: 50; /* Asegura que el borde sea redondo */
-    -fx-background-color: #b0c4de; /* Color de fondo por defecto (gris azulado) */
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 10, 0, 0, 0); /* Sombra opcional */
+.check-box {
+    -fx-background-color: transparent;
+    -fx-border-color: #beddd0;
+    -fx-border-width: 2px;
+    -fx-border-radius: 4;
+    -fx-background-radius: 6;
+    -fx-pref-width: 22px;
+    -fx-pref-height: 24px;
+    -fx-cursor: hand;
+    -fx-padding: 0;
+    -fx-alignment: center;
 }
 
-.toggle-button:selected {
-    -fx-background-color: #4169e1; /* Color de fondo cuando está seleccionado (azul real) */
+.check-box:selected {
+    -fx-background-color: #2dc38c;
+    -fx-border-color: #2dc38c;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.34), 2, 0, 0, 1);
+}
+
+/* CheckBox de preferencias generales */
+.check-box-preferencias {
+    -fx-background-color: transparent;
+    -fx-border-color: #beddd0;
+    -fx-border-width: 2px;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-pref-width: 24px;
+    -fx-pref-height: 24px;
+    -fx-cursor: hand;
+    -fx-padding: 0;
+    -fx-alignment: center;
+}
+
+.check-box-preferencias:selected {
+    -fx-background-color: #2dc38c;
+    -fx-border-color: #2dc38c;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.34), 2, 0, 0, 1);
+}
+
+/* Ocultamos el texto de las preferencias */
+.check-box-preferencias .text {
+    -fx-fill: transparent;
+}
+
+/* CheckBox de días de notificación */
+.check-box-dia {
+    -fx-background-color: transparent;
+    -fx-border-color: #beddd0;
+    -fx-border-width: 2px;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-pref-width: 28px;
+    -fx-pref-height: 28px;
+    -fx-cursor: hand;
+    -fx-padding: 0;
+    -fx-alignment: center;
+    -fx-font-size: 12px; /* Tamaño de la letra */
+    -fx-text-fill: #333333;
+    -fx-font-weight: bold;
+}
+
+.check-box-dia:selected {
+    -fx-background-color: #2dc38c;
+    -fx-border-color: #2dc38c;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-text-fill: white;
 }

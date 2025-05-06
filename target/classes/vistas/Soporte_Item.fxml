@@ -1,60 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import java.net.URL?>
-<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 
-<HBox alignment="CENTER"
-      xmlns="http://javafx.com/javafx/23.0.1"
+<HBox alignment="CENTER" xmlns="http://javafx.com/javafx/23.0.1"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="controladores.Soporte_ItemController">
    <children>
-      <AnchorPane id="AnchorPane" prefHeight="100.0" prefWidth="600.0" styleClass="mainFxmlClass">
+      <AnchorPane prefHeight="70.0" prefWidth="720.0" maxWidth="720.0" styleClass="mainFxmlClass">
          <stylesheets>
             <URL value="@/Estilos/soporte_item.css" />
          </stylesheets>
          <children>
-            <!-- Columna de icono -->
-            <VBox prefHeight="100.0" prefWidth="100.0">
+
+            <!-- Ícono -->
+            <VBox layoutX="10.0" layoutY="15.0" prefWidth="50.0">
                <children>
-                  <Pane prefHeight="100.0" prefWidth="100.0">
-                     <children>
-                        <Label layoutX="36.0" layoutY="10.0" prefHeight="50.0" prefWidth="50.0" styleClass="label-style" />
-                        <ImageView fx:id="iconImageView" fitHeight="40.0" fitWidth="40.0" layoutX="40.0" layoutY="14.0"
-                                   pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../img/documento.png" />
-                           </image>
-                        </ImageView>
-                     </children>
-                  </Pane>
+                  <ImageView fx:id="iconoImagen"
+                             fitHeight="28.0" fitWidth="28.0"
+                             preserveRatio="true"
+                             pickOnBounds="true"
+                             layoutX="0.0" layoutY="0.0">
+                     <image>
+                        <Image url="@../img/documento.png"/>
+                     </image>
+                  </ImageView>
                </children>
             </VBox>
 
-            <!-- Columna de texto -->
-            <HBox layoutX="100.0" prefHeight="100.0" prefWidth="500.0">
+            <!-- Contenido -->
+            <VBox layoutX="60.0" layoutY="10.0" prefWidth="640.0">
                <children>
-                  <Pane prefHeight="100.0" prefWidth="500.0">
-                     <children>
-                        <Label fx:id="titleLabel" layoutX="20.0" layoutY="8.0" text="Título de la pregunta">
-                           <font>
-                              <Font name="System Bold" size="14.0" />
-                           </font>
-                        </Label>
-                        <Label layoutX="20.0" layoutY="35.0" prefHeight="20.0" prefWidth="105.0" styleClass="label-rounded" />
-                        <Label layoutX="34.0" layoutY="39.0" text="Categoría" />
-                        <Label fx:id="descriptionLabel" layoutX="20.0" layoutY="65.0" prefWidth="450.0"
-                               wrapText="true" text="Descripción o instrucciones de la pregunta frecuente." />
-                     </children>
-                  </Pane>
+                  <Label fx:id="etiquetaTitulo"
+                         text="Título de la pregunta">
+                     <font>
+                        <Font name="System Bold" size="13.0"/>
+                     </font>
+                  </Label>
+                  <Label fx:id="etiquetaDescripcion"
+                         text="Respuesta o explicación de la pregunta frecuente."
+                         wrapText="true"/>
                </children>
-            </HBox>
+            </VBox>
+
          </children>
       </AnchorPane>
    </children>

@@ -45,7 +45,6 @@ public class AgregarItinerarioController implements Initializable {
     /**
      * Initializes the controller class.
      */
-    
     private Itinerario itinerarioActual;
     private boolean esEdicion = false;
 
@@ -59,6 +58,13 @@ public class AgregarItinerarioController implements Initializable {
 
         Image imagen = new Image(getClass().getResourceAsStream("/img/Encabezado.png"));
         imagenTrekNic.setImage(imagen);
+    }
+
+    private GestionItinerarioController gestionItinerarioController;  // Referencia al controlador principal
+
+// Método para establecer la referencia del controlador principal
+    public void setGestionItinerarioController(GestionItinerarioController controller) {
+        this.gestionItinerarioController = controller;
     }
 
     @FXML
@@ -80,6 +86,7 @@ public class AgregarItinerarioController implements Initializable {
 
                 if (ConsultasItinerario.actualizarItinerario(itinerarioActual)) {
                     Alertas.informacion("Itinerario actualizado exitosamente.");
+                    recargarTabla();  // Recargar la tabla después de la actualización
                     cerrarVentana();
                 } else {
                     Alertas.error("Error al actualizar", "No se pudo actualizar el itinerario.");
@@ -96,10 +103,17 @@ public class AgregarItinerarioController implements Initializable {
                 if (ConsultasItinerario.registrarItinerario(nuevo)) {
                     Alertas.informacion("Itinerario registrado exitosamente.");
                     limpiarFormulario();
+                    recargarTabla();  // Recargar la tabla después de registrar
                 } else {
                     Alertas.error("Error en el registro", "Ocurrió un error al registrar el itinerario.");
                 }
             }
+        }
+    }
+
+    private void recargarTabla() {
+        if (gestionItinerarioController != null) {
+            gestionItinerarioController.recargarTabla();  // Llamar a recargar la tabla en el controlador principal
         }
     }
 

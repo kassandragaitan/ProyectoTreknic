@@ -12,35 +12,38 @@
             styleClass="mainFxmlClass">
 
     <stylesheets>
-        <URL value="@Estilos/gestionactividades.css" />
+      <URL value="@/Estilos/gestion.css" />
     </stylesheets>
 
     <VBox spacing="15" AnchorPane.topAnchor="20" AnchorPane.leftAnchor="20"
           AnchorPane.rightAnchor="20" AnchorPane.bottomAnchor="20">
 
-        <!-- Título -->
-        <Label text="Gestión de Actividades"
-               styleClass="labelTitulo">
-            <stylesheets>
-                <URL value="@administracionusuario.css" />
-            </stylesheets>
-        </Label>
+  <!-- Título -->
+        <HBox alignment="CENTER_LEFT" spacing="10">
+            <Label text="Gestión de Actividades" styleClass="labelTitulo">
+                <stylesheets>
+                    <URL value="@administracionusuario.css" />
+                </stylesheets>
+            </Label>
+            <Pane HBox.hgrow="ALWAYS" />
+            <Button fx:id="botonNuevaActividad"
+                    text="Nueva Actividad"
+                    onAction="#RegistrarNuevaActividad"
+                    styleClass="primary"
+                    stylesheets="@gestionactividades.css" />
+        </HBox>
 
         <!-- Filtros -->
         <HBox spacing="10">
             <TextField fx:id="campoBuscarActividad"
                        promptText="Buscar actividad..."
                        HBox.hgrow="ALWAYS" />
-            <ComboBox fx:id="combo1" prefWidth="150" />
-            <ComboBox fx:id="combo2" prefWidth="150" />
-            <Button fx:id="botonNuevaActividad"
-                    text="Nueva Actividad"
-                    onAction="#RegistrarNuevaActividad"
-                    styleClass="primary">
-                <stylesheets>
-                    <URL value="@gestionactividades.css" />
-                </stylesheets>
-            </Button>
+            <ComboBox fx:id="comboFiltroPor" prefWidth="150.0" />
+            <ComboBox fx:id="comboValorFiltro" prefWidth="150.0" />
+            <Button fx:id="botonQuitarFiltro"
+                    text="Quitar Filtro"
+                    styleClass="secondary"
+                    onAction="#quitarFiltroActividad"/>
         </HBox>
 
         <!-- Tabla -->

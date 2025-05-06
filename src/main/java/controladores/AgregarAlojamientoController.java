@@ -10,8 +10,13 @@ import bbdd.Conexion;
 import bbdd.ConsultasAlojamientos;
 import bbdd.ConsultasDestinos;
 import bbdd.ConsultasTipoAlojamiento;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ResourceBundle;
+import java.util.UUID;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -22,6 +27,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import modelo.Actividad;
 import modelo.Alojamiento;
@@ -67,62 +73,79 @@ public class AgregarAlojamientoController implements Initializable {
         imagenTrekNic.setImage(imagen);
     }
 
-    @FXML
-    private void RegistrarAlojamiento(ActionEvent event) {
-        if (compruebaCampo.compruebaVacio(campoNombre)) {
-            Alertas.aviso("Campo vacío", "El nombre no puede estar vacío.");
-        } else if (compruebaCampo.compruebaVacio(campoContacto)) {
-            Alertas.aviso("Campo vacío", "El contacto no puede estar vacío.");
-        } else if (comboDestino.getValue() == null || comboTipo.getValue() == null) {
-            Alertas.aviso("Campo vacío", "Debe seleccionar tipo y destino.");
-        } else {
-            Alojamiento nuevo = new Alojamiento(
-                    esEdicion ? alojamientoActual.getIdAlojamiento() : 0,
-                    campoNombre.getText(),
-                    comboTipo.getValue().getIdTipo(),
-                    campoContacto.getText(),
-                    campoImagen.getText(),
-                    comboDestino.getValue().getId_destino()
-            );
+   private GestionAlojamientoController gestionAlojamientoController;
 
-            boolean exito = esEdicion
+// Método para establecer la referencia del controlador principal
+public void setGestionAlojamientoController(GestionAlojamientoController controller) {
+    this.gestionAlojamientoController = controller;
+}
+
+@FXML
+private void RegistrarAlojamiento(ActionEvent event) {
+    if (compruebaCampo.compruebaVacio(campoNombre)) {
+        Alertas.aviso("Campo vacío", "El nombre no puede estar vacío.");
+    } else if (compruebaCampo.compruebaVacio(campoContacto)) {
+        Alertas.aviso("Campo vacío", "El contacto no puede estar vacío.");
+    } else if (comboDestino.getValue() == null || comboTipo.getValue() == null) {
+        Alertas.aviso("Campo vacío", "Debe seleccionar tipo y destino.");
+    } else {
+        Alojamiento nuevo = new Alojamiento(
+                esEdicion ? alojamientoActual.getIdAlojamiento() : 0,
+                campoNombre.getText(),
+                comboTipo.getValue().getIdTipo(),
+                campoContacto.getText(),
+                campoImagen.getText(),
+                comboDestino.getValue().getId_destino()
+        );
+
+        boolean exito = esEdicion
                 ? ConsultasAlojamientos.actualizarAlojamiento(nuevo)
                 : ConsultasAlojamientos.registrarAlojamiento(nuevo);
 
-            if (exito) {
-                Alertas.informacion(esEdicion ? "Alojamiento actualizado correctamente." : "Alojamiento registrado correctamente.");
-                cerrarVentana();
-            } else {
-                Alertas.error("Error", "No se pudo guardar el alojamiento.");
-            }
+        if (exito) {
+            Alertas.informacion(esEdicion ? "Alojamiento actualizado correctamente." : "Alojamiento registrado correctamente.");
+            recargarTabla();  // Llamada a recargar la tabla después de registrar
+            cerrarVentana();
+        } else {
+            Alertas.error("Error", "No se pudo guardar el alojamiento.");
+        }
+    }
+}
+
+// Método para recargar la tabla de alojamientos
+private void recargarTabla() {
+    if (gestionAlojamientoController != null) {
+        gestionAlojamientoController.cargarAlojamientos();  // Recargar la tabla en el controlador principal
+    }
+}
+
+
+
+   public void verAlojamiento(Alojamiento a) {
+    this.alojamientoActual = a;
+    campoNombre.setText(a.getNombre());
+    campoContacto.setText(a.getContacto());
+    campoImagen.setText(a.getImagen());
+
+    // Buscar tipo de alojamiento y seleccionarlo (CORREGIDO)
+    for (TipoAlojamiento tipo : comboTipo.getItems()) {
+        if (tipo.getIdTipo() == a.getIdTipo()) {
+            comboTipo.setValue(tipo);
+            break;
         }
     }
 
-    public void verAlojamiento(Alojamiento a) {
-        this.alojamientoActual = a;
-        campoNombre.setText(a.getNombre());
-        campoContacto.setText(a.getContacto());
-        campoImagen.setText(a.getImagen());
-
-        // Buscar tipo de alojamiento y seleccionarlo
-        for (TipoAlojamiento tipo : comboTipo.getItems()) {
-            if (tipo.getIdTipo() == a.getIdAlojamiento()) {
-                comboTipo.setValue(tipo);
-                break;
-            }
+    // Buscar destino y seleccionarlo
+    for (Destino dest : comboDestino.getItems()) {
+        if (dest.getId_destino() == a.getIdDestino()) {
+            comboDestino.setValue(dest);
+            break;
         }
-
-        // Buscar destino y seleccionarlo (CORREGIDO)
-        for (Destino dest : comboDestino.getItems()) {
-            if (dest.getId_destino() == a.getIdDestino()) {
-                comboDestino.setValue(dest);
-                break;
-            }
-        }
-
-        botonRegistrar.setText("Actualizar");
-        esEdicion = true;
     }
+
+    botonRegistrar.setText("Actualizar");
+    esEdicion = true;
+}
 
     public void setEdicionActiva(boolean editable) {
         campoNombre.setEditable(editable);
@@ -143,5 +166,51 @@ public class AgregarAlojamientoController implements Initializable {
     private void cerrarVentana() {
         Stage stage = (Stage) botonRegistrar.getScene().getWindow();
         stage.close();
+    }
+
+ @FXML
+private void seleccionarImagen(ActionEvent event) {
+    // File chooser for image selection
+    FileChooser fileChooser = new FileChooser();
+    fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Imagenes", "*.png", "*.jpg", "*.jpeg"));
+
+    // Open file dialog and get the selected file
+    File archivo = fileChooser.showOpenDialog(null);
+
+    if (archivo != null) {
+        // Generate a new unique filename (UUID or timestamp)
+        String nombreArchivoUnico = UUID.randomUUID().toString() + extensionArchivo(archivo);
+
+        // Create a folder for storing images (if it doesn't exist)
+        File carpetaImagen = new File("C:/xampp/htdocs/carpetaimg/alojamientos");
+        if (!carpetaImagen.exists()) {
+            carpetaImagen.mkdirs(); // Create the directory if it doesn't exist
+        }
+
+        // Define the target file path
+        File objetivoArchivo = new File(carpetaImagen, nombreArchivoUnico);
+
+        try {
+            // Copy the selected file to the target location
+            Files.copy(archivo.toPath(), objetivoArchivo.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+            // Update the text field with the relative path
+            campoImagen.setText("alojamientos/" + nombreArchivoUnico);  // Store only relative path in the database
+
+        } catch (IOException e) {
+            Alertas.error("Error al guardar la imagen", "Hubo un problema al guardar la imagen: " + e.getMessage());
+        }
+    }
+}
+
+
+// Helper method to get the file extension
+    private String extensionArchivo(File file) {
+        String nombreArchivo = file.getName();
+        int indiceDeExtension = nombreArchivo.lastIndexOf(".");
+        if (indiceDeExtension > 0) {
+            return nombreArchivo.substring(indiceDeExtension); // e.g. ".png"
+        }
+        return "";
     }
 }

@@ -11,7 +11,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import modelo.FAQItem;
+import modelo.PreguntaFrecuente;
 
 /**
  * FXML Controller class
@@ -21,26 +21,25 @@ import modelo.FAQItem;
 public class Soporte_ItemController implements Initializable {
 
     @FXML
-    private ImageView iconImageView;
+    private ImageView iconoImagen;
     @FXML
-    private Label titleLabel;
+    private Label etiquetaTitulo;
     @FXML
-    private Label descriptionLabel;
+    private Label etiquetaDescripcion;
 
     /**
      * Initializes the controller class.
      */
     public void setItem(Object item) {
-        if (item instanceof FAQItem) {
-            FAQItem faqItem = (FAQItem) item;
-            titleLabel.setText(faqItem.getTitle());
-            descriptionLabel.setText(faqItem.getDescription());
-            iconImageView.setImage(new Image(getClass().getResourceAsStream("/img/documento.png")));
+        if (item instanceof PreguntaFrecuente) {
+            PreguntaFrecuente pregunta = (PreguntaFrecuente) item;
+            etiquetaTitulo.setText(pregunta.getPregunta());
+            etiquetaDescripcion.setText(pregunta.getRespuesta());
+            iconoImagen.setImage(new Image(getClass().getResourceAsStream("/img/documento.png")));
         } else if (item instanceof String) {
-            // Manejar el caso de String, ajusta según sea necesario
-            titleLabel.setText((String) item);
-            descriptionLabel.setText(""); // Puedes dejarlo vacío o poner un texto por defecto
-            iconImageView.setImage(new Image(getClass().getResourceAsStream("/img/documento.png"))); // Ajusta la imagen si es necesario
+            etiquetaTitulo.setText((String) item);
+            etiquetaDescripcion.setText("");
+            iconoImagen.setImage(new Image(getClass().getResourceAsStream("/img/documento.png")));
         }
     }
 

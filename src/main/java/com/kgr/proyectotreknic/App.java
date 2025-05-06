@@ -5,12 +5,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 
-/**
- * JavaFX App
- */
 public class App extends Application {
 
     private static Scene scene;
@@ -22,17 +18,17 @@ public class App extends Application {
         scene = new Scene(root);
         stage.setScene(scene);
 
-        stage.setMaximized(true);
-
         stage.setTitle("Treknic");
-        stage.setMinWidth(900);
-        stage.setMinHeight(600
-        );
-        stage.show();
-    }
 
-    public static void main(String[] args) {
-        launch();
+        stage.setResizable(false);
+        stage.setMaximized(false);
+
+        stage.setWidth(900);
+        stage.setHeight(650);
+        stage.centerOnScreen();
+
+        stage.show();
+
     }
 
 }

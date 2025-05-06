@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import java.net.URL?>
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
@@ -12,58 +10,61 @@
             styleClass="mainFxmlClass">
 
     <stylesheets>
-        <URL value="@Estilos/gestionalojamiento.css" />
+      <URL value="@/Estilos/gestion.css" />
     </stylesheets>
 
-    <VBox spacing="15" AnchorPane.topAnchor="20" AnchorPane.leftAnchor="20"
-          AnchorPane.rightAnchor="20" AnchorPane.bottomAnchor="20">
+    <VBox spacing="15.0" AnchorPane.topAnchor="20.0" AnchorPane.leftAnchor="20.0"
+          AnchorPane.rightAnchor="20.0" AnchorPane.bottomAnchor="20.0">
 
-        <!-- Título -->
-        <Label text="Gestión de Alojamientos"
-               styleClass="labelTitulo">
-            <stylesheets>
-                <URL value="@administracionalojamientos.css" />
-            </stylesheets>
-        </Label>
-
-        <!-- Filtros y acciones -->
-        <HBox spacing="10">
-            <TextField fx:id="campoBuscarAlojamiento"
-                       promptText="Buscar alojamiento..."
-                       HBox.hgrow="ALWAYS" />
-            <ComboBox fx:id="comboTipo" prefWidth="150" />
-            <ComboBox fx:id="comboDestino" prefWidth="150" />
+        <HBox alignment="CENTER_LEFT" spacing="10.0">
+            <Label text="Gestión de Alojamientos" styleClass="labelTitulo"></Label>
+            <Pane HBox.hgrow="ALWAYS" />
             <Button fx:id="botonNuevoAlojamiento"
                     text="Nuevo Alojamiento"
                     onAction="#nuevoAlojamiento"
-                    styleClass="primary">
-                <stylesheets>
-                    <URL value="@gestionalojamientos.css" />
-                </stylesheets>
-            </Button>
+                    styleClass="primary" />
         </HBox>
 
-        <!-- Tabla de Alojamientos -->
-        <TableView fx:id="tablaAlojamientos"
-                   VBox.vgrow="ALWAYS">
-            <columns>
-                <TableColumn fx:id="columnaIdAlojamiento"
-                             text="ID"
-                             visible="false" />
-                <TableColumn fx:id="columnaNombre"
-                             text="Nombre" />
-                <TableColumn fx:id="columnaTipo"
-                             text="Tipo de Alojamiento" />
-                <TableColumn fx:id="columnaContacto"
-                             text="Contacto" />
-                <TableColumn fx:id="columnaImagen"
-                             text="Imagen" />
-                <TableColumn fx:id="columnaIdDestino"
-                             text="Destino" />
-                <TableColumn fx:id="columnAcciones"
-                             text="Acciones" />
-            </columns>
-        </TableView>
+        <HBox spacing="10.0">
+            <TextField fx:id="campoBuscarAlojamiento"
+                       promptText="Buscar alojamiento..."
+                       HBox.hgrow="ALWAYS" />
 
+            <ComboBox fx:id="comboFiltroPor"
+                      promptText="Selecciona un tipo de filtro..."
+                      prefWidth="200.0"/>
+
+            <ComboBox fx:id="comboValorFiltro"
+                      prefWidth="200.0"
+                      disable="true"/>
+
+            <Button fx:id="botonQuitarFiltro"
+                    text="Quitar Filtro"
+                    styleClass="secondary" />
+        </HBox>
+
+        <ScrollPane fitToWidth="true" fitToHeight="true" maxHeight="250.0">
+            <TableView fx:id="tablaAlojamientos" prefHeight="250.0">
+                <columns>
+                    <TableColumn fx:id="columnaIdAlojamiento" text="ID" />
+                    <TableColumn fx:id="columnaNombre" text="Nombre" />
+                    <TableColumn fx:id="columnaTipo" text="Tipo de Alojamiento" />
+                    <TableColumn fx:id="columnaContacto" text="Contacto" />
+                    <TableColumn fx:id="columnaImagen" text="Imagen" />
+                    <TableColumn fx:id="columnaIdDestino" text="Destino" />
+                    <TableColumn fx:id="columnAcciones" text="Acciones" />
+                </columns>
+            </TableView>
+        </ScrollPane>
+
+        <Label text="Alojamientos Favoritos de Usuarios"
+               style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+
+        <ScrollPane fitToWidth="true" fitToHeight="false" prefHeight="300.0">
+            <FlowPane fx:id="contenedorFavoritos"
+                      hgap="10.0" vgap="10.0"
+                      VBox.vgrow="ALWAYS"
+                      style="-fx-background-color: #f5f5f5;" />
+        </ScrollPane>
     </VBox>
 </AnchorPane>

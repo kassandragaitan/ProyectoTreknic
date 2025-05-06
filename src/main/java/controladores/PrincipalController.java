@@ -1,39 +1,53 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package controladores;
 
+import Utilidades.Alertas;
 import bbdd.Conexion;
+import bbdd.ConsultasAlojamientos;
 import bbdd.ConsultasDestinos;
+import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Timer;
+import java.util.TimerTask;
+import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Group;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+import javafx.util.Duration;
+import modelo.Alojamiento;
+import modelo.ConfiguracionSistema;
 import modelo.Destino;
 import modelo.InformeActividadDestino;
+import modelo.Usuario;
 
-/**
- * FXML Controller class
- *
- * @author k0343
- */
 public class PrincipalController implements Initializable {
 
     @FXML
@@ -58,21 +72,34 @@ public class PrincipalController implements Initializable {
     private NumberAxis ejeYActividad;
     @FXML
     private CategoryAxis ejeXActividad;
+    @FXML
+    private AnchorPane contenedor;
+    @FXML
+    private ScrollPane scrollPane;
 
-    /**
-     * Initializes the controller class.
-     */
+    @FXML
+    private ComboBox<String> comboCategoria;
+    @FXML
+    private FlowPane contenedorCategorias;
+    @FXML
+    private Label labelNombre;
+    @FXML
+    private FlowPane contenedorFavoritos;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         columnaDestino.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         columnaVisitas.setCellValueFactory(new PropertyValueFactory<>("visitas"));
-        columnaValoracion.setCellValueFactory(cellData
-                -> new ReadOnlyStringWrapper(generarEstrellas(cellData.getValue().getValoracion()))
-        );
+        columnaValoracion.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(generarEstrellas(cellData.getValue().getValoracion())));
 
-        ejeXActividad.setTickLabelRotation(0); // Horizontal
+        columnaDestino.prefWidthProperty().bind(tablaDestinos.widthProperty().divide(3));
+        columnaVisitas.prefWidthProperty().bind(tablaDestinos.widthProperty().divide(3));
+        columnaValoracion.prefWidthProperty().bind(tablaDestinos.widthProperty().divide(3));
+        
+        
+        ejeXActividad.setTickLabelRotation(0);
         ejeXActividad.setTickLabelGap(10);
-        ejeXActividad.setTickLength(10);       // Espacio entre texto y eje
+        ejeXActividad.setTickLength(10);
 
         ejeYActividad.setTickUnit(1);
         ejeYActividad.setMinorTickVisible(false);
@@ -81,6 +108,164 @@ public class PrincipalController implements Initializable {
         cargarDatosDestinos();
         cargarDatosPanel();
         cargarGraficoActividadReciente();
+        aplicarColorFondo();
+
+        Platform.runLater(() -> {
+            String css = ConfiguracionSistema.getInstancia().getCssPersonalizado();
+            if (!css.isEmpty() && scrollPane.getScene() != null) {
+                scrollPane.getScene().getStylesheets().add(css);
+            }
+        });
+
+        inicializarCategorias();
+        cargarAlojamientosFavoritos();
+
+    }
+
+    private Timer temporizadorSesion;
+
+    public void iniciarTemporizadorSesion(int minutos) {
+        if (temporizadorSesion != null) {
+            temporizadorSesion.cancel();
+        }
+        temporizadorSesion = new Timer();
+        temporizadorSesion.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(() -> {
+                    cerrarSesion();
+                    Alertas.aviso("Sesión finalizada", "Por seguridad, tu sesión ha expirado.");
+                });
+            }
+        }, minutos * 60 * 1000);
+    }
+
+    private void cerrarSesion() {
+        try {
+            // Cargar pantalla de login
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/Login.fxml"));
+            Parent root = loader.load();
+
+            // Obtener el escenario actual
+            Stage stage = (Stage) contenedor.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Iniciar Sesión");
+            stage.show();
+
+            // Limpiar usuario actual
+            Usuario.setUsuarioActual(null);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Alertas.error("Error", "No se pudo cerrar la sesión correctamente.");
+        }
+    }
+
+    private Usuario usuarioActual; // Para tener acceso al usuario desde fuera
+
+    public void inicializarUsuario(Usuario usuario) {
+        this.usuarioActual = usuario;
+        Usuario.setUsuarioActual(usuario);
+
+        // Actualizar la etiqueta con el nombre del usuario
+        labelNombre.setText(usuario.getNombre());
+    }
+
+    private void inicializarCategorias() {
+        List<String> categorias = ConsultasDestinos.obtenerNombresCategorias();
+        comboCategoria.getItems().addAll(categorias);
+        comboCategoria.setOnAction(e -> cargarDestinosPorCategoria());
+    }
+
+    private void cargarAlojamientosFavoritos() {
+        contenedorFavoritos.getChildren().clear();
+        List<Alojamiento> favoritos = ConsultasAlojamientos.obtenerAlojamientosFavoritosPorUsuario(Usuario.getUsuarioActual().getIdUsuario());
+
+        if (favoritos == null || favoritos.isEmpty()) {
+            Label sinFavoritos = new Label("No hay alojamientos favoritos.");
+            sinFavoritos.setStyle("-fx-text-fill: gray; -fx-font-size: 14px;");
+            contenedorFavoritos.getChildren().add(sinFavoritos);
+            return;
+        }
+
+        for (Alojamiento aloj : favoritos) {
+            VBox tarjeta = crearTarjetaAlojamiento(aloj);
+            contenedorFavoritos.getChildren().add(tarjeta);
+
+            // Agregamos una animación sutil de entrada
+            FadeTransition ft = new FadeTransition(Duration.millis(500), tarjeta);
+            ft.setFromValue(0);
+            ft.setToValue(1);
+            ft.play();
+        }
+    }
+
+    private VBox crearTarjetaAlojamiento(Alojamiento aloj) {
+        VBox tarjeta = new VBox(8);
+        tarjeta.setPrefWidth(200);
+        tarjeta.setPrefHeight(220);
+        tarjeta.setAlignment(Pos.TOP_CENTER);
+        tarjeta.setStyle("-fx-background-color: white; -fx-padding: 10px; -fx-background-radius: 10px; "
+                + "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0.2, 0, 1);");
+
+        String urlImagen = "http://localhost/carpetaimg/" + aloj.getImagen();
+        ImageView imagen = new ImageView(new Image(urlImagen, true));
+        imagen.setFitWidth(180);
+        imagen.setFitHeight(120);
+        imagen.setPreserveRatio(true);
+        imagen.setSmooth(true);
+        imagen.setCache(true);
+
+        Label nombre = new Label(aloj.getNombre());
+        nombre.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+
+        Label destino = new Label("Destino: " + aloj.getNombreDestino());
+        destino.setStyle("-fx-text-fill: gray; -fx-font-size: 12px;");
+
+        tarjeta.getChildren().addAll(imagen, nombre, destino);
+        return tarjeta;
+    }
+
+    private void cargarDestinosPorCategoria() {
+        contenedorCategorias.getChildren().clear();
+        String categoria = comboCategoria.getValue();
+
+        if (categoria != null) {
+            List<Destino> destinos = ConsultasDestinos.obtenerDestinosPorNombreCategoria(categoria);
+
+            for (Destino destino : destinos) {
+                VBox tarjeta = new VBox(8);
+                tarjeta.setPrefWidth(200);
+                tarjeta.setPrefHeight(220);
+                tarjeta.setAlignment(Pos.TOP_CENTER);
+                tarjeta.setStyle("-fx-background-color: white; -fx-padding: 10px; -fx-background-radius: 10px; "
+                        + "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0.2, 0, 1);");
+
+                String urlImagen = "http://localhost/carpetaimg/" + destino.getImagen();
+                ImageView imagen = new ImageView(new Image(urlImagen, true));
+                imagen.setFitWidth(180);
+                imagen.setFitHeight(120);
+                imagen.setPreserveRatio(true);
+                imagen.setSmooth(true);
+                imagen.setCache(true);
+
+                Label nombre = new Label(destino.getNombre());
+                nombre.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+
+                tarjeta.getChildren().addAll(imagen, nombre);
+                contenedorCategorias.getChildren().add(tarjeta);
+
+                FadeTransition ft = new FadeTransition(Duration.millis(400), tarjeta);
+                ft.setFromValue(0);
+                ft.setToValue(1);
+                ft.play();
+            }
+        }
+    }
+
+    private void aplicarColorFondo() {
+        String colorHex = Utilidades.EstiloSistema.getInstancia().getColorFondoHex();
+        scrollPane.setStyle("-fx-background: " + colorHex + "; -fx-background-color: " + colorHex + ";");
     }
 
     private void cargarGraficoActividadReciente() {
@@ -109,25 +294,11 @@ public class PrincipalController implements Initializable {
                     barra.setStyle("-fx-bar-fill: #daeafe;");
 
                     Tooltip tooltip = new Tooltip(data.getXValue().toUpperCase() + ": " + data.getYValue());
-                    tooltip.setStyle(
-                            "-fx-background-color: rgba(0, 0, 0, 0.8); "
-                            + "-fx-text-fill: white; "
-                            + "-fx-font-weight: bold; "
-                            + "-fx-font-size: 12px; "
-                            + "-fx-padding: 6px;"
-                    );
+                    tooltip.setStyle("-fx-background-color: rgba(0, 0, 0, 0.8); -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 12px; -fx-padding: 6px;");
                     Tooltip.install(barra, tooltip);
 
                     Label etiqueta = new Label(String.valueOf(data.getYValue()));
-                    etiqueta.setStyle(
-                            "-fx-background-color: white; "
-                            + "-fx-text-fill: black; "
-                            + "-fx-font-weight: bold; "
-                            + "-fx-font-size: 12px; "
-                            + "-fx-padding: 2px 6px; "
-                            + "-fx-border-radius: 4px; "
-                            + "-fx-background-radius: 4px;"
-                    );
+                    etiqueta.setStyle("-fx-background-color: white; -fx-text-fill: black; -fx-font-weight: bold; -fx-font-size: 12px; -fx-padding: 2px 6px; -fx-border-radius: 4px; -fx-background-radius: 4px;");
 
                     StackPane stack = (StackPane) barra;
                     stack.getChildren().add(etiqueta);
@@ -141,11 +312,11 @@ public class PrincipalController implements Initializable {
     }
 
     private String generarEstrellas(double valoracion) {
-        String estrellas = "";
+        StringBuilder estrellas = new StringBuilder();
         for (int i = 0; i < 5; i++) {
-            estrellas += i < valoracion ? "★" : "☆";
+            estrellas.append(i < valoracion ? "★" : "☆");
         }
-        return estrellas;
+        return estrellas.toString();
     }
 
     private void cargarDatosDestinos() {
@@ -160,10 +331,10 @@ public class PrincipalController implements Initializable {
         int totalDestinosP = Conexion.contar("destinos");
         int totalActividadesMen = Conexion.contar("actividades");
 
-        labelUsuarioReg.setText(String.valueOf(totalUsuarios) + " Usuarios");
-        labelItinerarioActivo.setText(String.valueOf(totalItinerarios) + " Itinerarios");
-        labelDestinosPopulares.setText(String.valueOf(totalDestinosP) + " Destinos");
-        labelActividadesMen.setText(String.valueOf(totalActividadesMen) + " Actividades");
+        labelUsuarioReg.setText(totalUsuarios + " Usuarios");
+        labelItinerarioActivo.setText(totalItinerarios + " Itinerarios");
+        labelDestinosPopulares.setText(totalDestinosP + " Destinos");
+        labelActividadesMen.setText(totalActividadesMen + " Actividades");
     }
 
 }

@@ -22,6 +22,7 @@ public class Usuario {
     private String idioma;
     private String telefono;
     private boolean activo;
+    private static Usuario usuarioActual;
 
     public Usuario() {
     }
@@ -132,5 +133,13 @@ public class Usuario {
 
     public void setActivo(boolean activo) {
         this.activo = activo;
+    }
+
+    public static Usuario getUsuarioActual() {
+        return usuarioActual;
+    }
+
+    public static void setUsuarioActual(Usuario usuario) {
+        usuarioActual = usuario;
     }
 }

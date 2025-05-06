@@ -39,4 +39,11 @@ public class compruebaCampo {
             return false;
         }
     }
+
+    public static boolean emailValido(TextField campo) {
+        String email = campo.getText().trim();
+        String regex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
+        return email.matches(regex);
+    }
+
 }
