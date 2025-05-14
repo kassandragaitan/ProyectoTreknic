@@ -10,13 +10,14 @@ public class Destino {
     private String nombre;
     private String descripcion;
     private String categoria;
-    private Date fecha_creacion; // original desde BBDD
+    private Date fecha_creacion;
     private String imagen;
 
     private int visitas;
     private double valoracion;
 
-    public Destino() {}
+    public Destino() {
+    }
 
     public Destino(int id_destino, String nombre, String descripcion, String categoria, Date fecha_creacion) {
         this.id_destino = id_destino;
@@ -32,6 +33,15 @@ public class Destino {
         this.descripcion = descripcion;
         this.fecha_creacion = fecha_creacion;
         this.imagen = imagen;
+    }
+
+    public Destino(int id_destino, String nombre, String descripcion, Date fecha_creacion, String imagen, String categoria) {
+        this.id_destino = id_destino;
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.fecha_creacion = fecha_creacion;
+        this.imagen = imagen;
+        this.categoria = categoria;
     }
 
     public Destino(int id_destino, String nombre, String descripcion, Date fecha_creacion, String imagen, int visitas, double valoracion) {
@@ -104,9 +114,10 @@ public class Destino {
         this.fecha_creacion = fecha_creacion;
     }
 
-    // Conversión segura para LocalDate (para filtros)
     public LocalDate getFecha() {
-        if (this.fecha_creacion == null) return null;
+        if (this.fecha_creacion == null) {
+            return null;
+        }
         return this.fecha_creacion.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
     }
 

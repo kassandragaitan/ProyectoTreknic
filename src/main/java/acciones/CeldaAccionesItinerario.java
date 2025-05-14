@@ -1,13 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package acciones;
-
-/**
- *
- * @author k0343
- */
 
 import bbdd.Conexion;
 import controladores.AgregarItinerarioController;
@@ -27,6 +18,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import modelo.Itinerario;
 
 public class CeldaAccionesItinerario extends TableCell<Itinerario, Void> {
@@ -36,7 +28,9 @@ public class CeldaAccionesItinerario extends TableCell<Itinerario, Void> {
     private final Button botonEditar = new Button("Editar");
     private final Button botonEliminar = new Button("Eliminar");
 
-    public CeldaAccionesItinerario() {
+    public CeldaAccionesItinerario(GestionItinerarioController controller) {
+        this.gestionItinerarioController = controller;
+
         botonVer.getStyleClass().add("table-button");
         botonEditar.getStyleClass().add("table-button");
         botonEliminar.getStyleClass().addAll("table-button", "red");
@@ -61,7 +55,7 @@ public class CeldaAccionesItinerario extends TableCell<Itinerario, Void> {
         botonEliminar.setOnAction(e -> {
             Itinerario itinerario = getTableRow().getItem();
             if (itinerario != null) {
-                Alert confirm = new Alert(AlertType.CONFIRMATION);
+                Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
                 confirm.setTitle("Confirmar eliminación");
                 confirm.setHeaderText("¿Seguro que deseas eliminar este itinerario?");
                 confirm.setContentText("Itinerario: " + itinerario.getNombre());
@@ -70,8 +64,14 @@ public class CeldaAccionesItinerario extends TableCell<Itinerario, Void> {
                     if (response == ButtonType.OK) {
                         if (eliminarItinerarioPorId(itinerario.getIdItinerario())) {
                             getTableView().getItems().remove(itinerario);
+
+                            Alert exito = new Alert(Alert.AlertType.INFORMATION);
+                            exito.setTitle("Eliminado");
+                            exito.setHeaderText("Itinerario eliminado correctamente.");
+                            exito.setContentText("Se ha eliminado el itinerario: " + itinerario.getNombre());
+                            exito.showAndWait();
                         } else {
-                            Alert error = new Alert(AlertType.ERROR);
+                            Alert error = new Alert(Alert.AlertType.ERROR);
                             error.setTitle("Error");
                             error.setHeaderText("No se pudo eliminar el itinerario.");
                             error.showAndWait();
@@ -92,12 +92,15 @@ public class CeldaAccionesItinerario extends TableCell<Itinerario, Void> {
         }
     }
 
-    private void abrirVentanaGestionItinerario(Itinerario itinerario, boolean editable) {
+    private final GestionItinerarioController gestionItinerarioController;
+
+    private boolean abrirVentanaGestionItinerario(Itinerario itinerario, boolean editable) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/AgregarItinerario.fxml"));
             Parent root = loader.load();
 
             AgregarItinerarioController controller = loader.getController();
+            controller.setGestionItinerarioController(gestionItinerarioController);
             controller.verItinerario(itinerario);
             controller.setEdicionActiva(editable);
 
@@ -105,16 +108,22 @@ public class CeldaAccionesItinerario extends TableCell<Itinerario, Void> {
             stage.setTitle(editable ? "Editar Itinerario" : "Ver Itinerario");
             stage.setScene(new Scene(root));
             stage.initModality(Modality.APPLICATION_MODAL);
+            stage.initStyle(StageStyle.DECORATED);
+            stage.setResizable(false);
+            stage.setMaximized(false);
             stage.showAndWait();
+
+            return editable && controller.getModificado();
+
         } catch (Exception ex) {
             ex.printStackTrace();
+            return false;
         }
     }
 
     private boolean eliminarItinerarioPorId(int idItinerario) {
-        String sql = "DELETE FROM itinerario WHERE id_itinerario = ?";
-        try (Connection conn = Conexion.conectar();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        String sql = "DELETE FROM itinerarios WHERE id_itinerario = ?";
+        try (Connection conn = Conexion.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, idItinerario);
             int filas = stmt.executeUpdate();
             return filas > 0;

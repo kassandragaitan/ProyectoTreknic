@@ -21,7 +21,6 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.ComboBox;
 import modelo.Alojamiento;
 import modelo.TipoAlojamiento;
-import modelo.Usuario;
 
 /**
  *
@@ -32,7 +31,7 @@ public class ConsultasAlojamientos {
     public static boolean registrarAlojamiento(Alojamiento alojamiento) {
         conectar();
         try {
-            String consulta = "INSERT INTO alojamiento (nombre, id_tipo_fk, contacto, imagen, id_destino_fk) VALUES (?, ?, ?, ?, ?)";
+            String consulta = "INSERT INTO alojamientos (nombre, id_tipo_fk, contacto, imagen, id_destino_fk) VALUES (?, ?, ?, ?, ?)";
             PreparedStatement pst = conn.prepareStatement(consulta);
             pst.setString(1, alojamiento.getNombre());
             pst.setInt(2, alojamiento.getIdTipo());
@@ -50,7 +49,7 @@ public class ConsultasAlojamientos {
     }
 
     public static boolean actualizarAlojamiento(Alojamiento alojamiento) {
-        String sql = "UPDATE alojamiento SET nombre = ?, id_tipo_fk = ?, contacto = ?, imagen = ?, id_destino_fk = ? WHERE id_alojamiento = ?";
+        String sql = "UPDATE alojamientos SET nombre = ?, id_tipo_fk = ?, contacto = ?, imagen = ?, id_destino_fk = ? WHERE id_alojamiento = ?";
         try (Connection conn = Conexion.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, alojamiento.getNombre());
             stmt.setInt(2, alojamiento.getIdTipo());
@@ -94,7 +93,7 @@ public class ConsultasAlojamientos {
 
     public static void cargarAlojamientosPorTipo(ObservableList<Alojamiento> lista, String tipo) {
         String sql = "SELECT a.*, t.tipo, d.nombre AS nombre_destino "
-                + "FROM alojamiento a "
+                + "FROM alojamientos a "
                 + "JOIN tipoalojamiento t ON a.id_tipo_fk = t.id_tipo "
                 + "JOIN destinos d ON a.id_destino_fk = d.id_destino "
                 + "WHERE t.tipo = ?";
@@ -119,7 +118,7 @@ public class ConsultasAlojamientos {
 
     public static void cargarAlojamientosPorDestino(ObservableList<Alojamiento> lista, String destino) {
         String sql = "SELECT a.*, t.tipo, d.nombre AS nombre_destino "
-                + "FROM alojamiento a "
+                + "FROM alojamientos a "
                 + "JOIN tipoalojamiento t ON a.id_tipo_fk = t.id_tipo "
                 + "JOIN destinos d ON a.id_destino_fk = d.id_destino "
                 + "WHERE d.nombre = ?";
@@ -147,7 +146,7 @@ public class ConsultasAlojamientos {
 
         String consulta = "SELECT a.id_alojamiento, a.nombre, a.contacto, a.imagen, "
                 + "a.id_destino_fk, d.nombre AS nombre_destino, a.id_tipo_fk, t.tipo AS nombre_tipo "
-                + "FROM alojamiento a "
+                + "FROM alojamientos a "
                 + "JOIN destinos d ON a.id_destino_fk = d.id_destino "
                 + "JOIN tipoalojamiento t ON a.id_tipo_fk = t.id_tipo "
                 + "WHERE a.nombre LIKE ? OR a.contacto LIKE ? OR d.nombre LIKE ? OR t.tipo LIKE ?";
@@ -203,7 +202,7 @@ public class ConsultasAlojamientos {
             String consultaCarga
                     = "SELECT a.id_alojamiento, a.nombre, a.contacto, a.imagen, "
                     + "a.id_destino_fk, d.nombre AS nombre_destino, a.id_tipo_fk, t.tipo AS nombre_tipo "
-                    + "FROM alojamiento a "
+                    + "FROM alojamientos a "
                     + "JOIN destinos d ON a.id_destino_fk = d.id_destino "
                     + "JOIN tipoalojamiento t ON a.id_tipo_fk = t.id_tipo";
 
@@ -228,50 +227,12 @@ public class ConsultasAlojamientos {
             cerrarConexion();
         }
     }
-//public static List<Alojamiento> obtenerAlojamientosFavoritos() {
-//    List<Alojamiento> lista = new ArrayList<>();
-//    Connection conn = null;
-//    PreparedStatement ps = null;
-//    ResultSet rs = null;
-//
-//    try {
-//        conn = Conexion.conectar();
-//
-//        String sql =
-//            "SELECT a.nombre AS nombre_alojamiento, " +
-//            "a.imagen AS imagen_alojamiento, " +
-//            "d.nombre AS nombre_destino " +
-//            "FROM favoritos f " +
-//            "JOIN destinos d ON f.id_destino = d.id_destino " +
-//            "JOIN alojamiento a ON a.id_destino_fk = d.id_destino " +
-//            "ORDER BY f.id_favoritos DESC " +
-//            "LIMIT 5";
-//
-//        ps = conn.prepareStatement(sql);
-//        rs = ps.executeQuery();
-//
-//        while (rs.next()) {
-//            Alojamiento alojamiento = new Alojamiento();
-//            alojamiento.setNombre(rs.getString("nombre_alojamiento"));
-//            alojamiento.setImagen(rs.getString("imagen_alojamiento"));
-//            alojamiento.setNombreDestino(rs.getString("nombre_destino"));
-//            lista.add(alojamiento);
-//        }
-//
-//    } catch (SQLException e) {
-//        e.printStackTrace();
-//    } finally {
-//        Conexion.cerrarConexion();
-//    }
-//
-//    return lista;
-//}
 
     public static List<Alojamiento> obtenerAlojamientosFavoritosPorUsuario(int idUsuario) {
         List<Alojamiento> favoritos = new ArrayList<>();
         String sql = "SELECT a.id_alojamiento, a.nombre, a.imagen, d.nombre AS destino "
                 + "FROM favoritos f "
-                + "JOIN alojamiento a ON f.id_alojamiento = a.id_alojamiento "
+                + "JOIN alojamientos a ON f.id_alojamiento = a.id_alojamiento "
                 + "JOIN destinos d ON a.id_destino_fk = d.id_destino "
                 + "WHERE f.id_usuario = ?";
 
@@ -298,10 +259,9 @@ public class ConsultasAlojamientos {
 
     public static boolean agregarAFavoritos(int idAlojamiento, int idUsuario) {
         String sql = "INSERT IGNORE INTO favoritos (id_usuario, id_alojamiento) VALUES (?, ?)";
-
         try (Connection conn = Conexion.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, idUsuario);
-            stmt.setInt(2, idAlojamiento); // El campo debe ser id_destino o id_alojamiento_fk según tu tabla
+            stmt.setInt(2, idAlojamiento);
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -324,15 +284,45 @@ public class ConsultasAlojamientos {
         return false;
     }
 
-    public static boolean eliminarDeFavoritos(int idAlojamiento, int idUsuario) {
-        String sql = "DELETE FROM favoritos WHERE id_alojamiento = ? AND id_usuario = ?";
+    public static boolean eliminarAlojamiento(int idAlojamiento) {
+        String sqlEliminar = "DELETE FROM alojamientos WHERE id_alojamiento = ?";
+        try (Connection conn = Conexion.conectar(); PreparedStatement stmtEliminar = conn.prepareStatement(sqlEliminar)) {
+            stmtEliminar.setInt(1, idAlojamiento);
+            return stmtEliminar.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean eliminarAlojamientoDeFavoritos(int idAlojamiento) {
+        String sql = "DELETE FROM favoritos WHERE id_alojamiento = ?";
         try (Connection conn = Conexion.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, idAlojamiento);
-            stmt.setInt(2, idUsuario);
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    public static boolean eliminarDeFavoritos(int idAlojamiento, int idUsuario) {
+        // SQL para eliminar el alojamiento de los favoritos de un usuario específico
+        String sql = "DELETE FROM favoritos WHERE id_alojamiento = ? AND id_usuario = ?";
+
+        try (Connection conn = Conexion.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            // Establecer los parámetros de la consulta (id del alojamiento y el id del usuario)
+            stmt.setInt(1, idAlojamiento);
+            stmt.setInt(2, idUsuario);
+
+            // Ejecutar la consulta
+            int filasAfectadas = stmt.executeUpdate();
+
+            // Si se eliminó alguna fila (es decir, se eliminó un favorito), retornamos true
+            return filasAfectadas > 0;
+        } catch (SQLException e) {
+            e.printStackTrace(); // En caso de error, mostramos la traza
+            return false; // Retornamos false si hubo un error en la operación
         }
     }
 

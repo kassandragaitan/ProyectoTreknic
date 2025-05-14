@@ -16,7 +16,6 @@
          </stylesheets>
          <children>
 
-            <!-- Ícono -->
             <VBox layoutX="10.0" layoutY="15.0" prefWidth="50.0">
                <children>
                   <ImageView fx:id="iconoImagen"
@@ -31,7 +30,6 @@
                </children>
             </VBox>
 
-            <!-- Contenido -->
             <VBox layoutX="60.0" layoutY="10.0" prefWidth="640.0">
                <children>
                   <Label fx:id="etiquetaTitulo"

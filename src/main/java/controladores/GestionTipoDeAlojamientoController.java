@@ -24,6 +24,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import modelo.Alojamiento;
 import modelo.TipoAlojamiento;
 
@@ -61,7 +62,7 @@ public class GestionTipoDeAlojamientoController implements Initializable {
         recargarTabla();
     }
 
-    public void cargarDatosTiposAlojamiento() {  // Hacemos este método público
+    public void cargarDatosTiposAlojamiento() {
         ObservableList<TipoAlojamiento> listaTipos = FXCollections.observableArrayList();
         Conexion.conectar();
         ConsultasTipoAlojamiento.cargarDatosTiposAlojamiento(listaTipos);
@@ -72,9 +73,8 @@ public class GestionTipoDeAlojamientoController implements Initializable {
         columnaTipo.setCellValueFactory(new PropertyValueFactory<>("tipo"));
     }
 
-// Método para recargar la tabla
     public void recargarTabla() {
-        cargarDatosTiposAlojamiento();  // Recargar la tabla con nuevos datos
+        cargarDatosTiposAlojamiento();
     }
 
     private void buscarTiposAlojamientoEnTiempoReal(String texto) {
@@ -91,10 +91,13 @@ public class GestionTipoDeAlojamientoController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/AgregarTipoAlojamiento.fxml"));
             Parent root = loader.load();
             AgregarTipoAlojamientoController controlador = loader.getController();
-            controlador.setGestionTipoAlojamientoController(this);  // Aquí se pasa la referencia
+            controlador.setGestionTipoAlojamientoController(this);
 
             Stage stage = new Stage();
-            stage.setTitle("Agregar itinerario");
+            stage.initStyle(StageStyle.DECORATED);
+            stage.setMaximized(false);
+            stage.setResizable(false);
+            stage.setTitle("Agregar tipo de alojamiento");
             stage.setScene(new Scene(root));
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.showAndWait();

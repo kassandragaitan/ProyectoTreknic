@@ -1,5 +1,7 @@
 package controladores;
 
+import Utilidades.Alertas;
+import Utilidades.validarEmail;
 import bbdd.ConsultasLogin;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -25,19 +27,21 @@ public class RecuperarPasswordController implements Initializable {
     private Button botonRestablecer;
     @FXML
     private Label etiquetaError;
-
-    private String email;
-    private boolean codigoVerificado = false;
     @FXML
     private Button botonEnviarCodigo;
     @FXML
     private Button botonReenviar;
+
+    private String email;
+    private boolean codigoVerificado = false;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         campoNuevaPass.setDisable(true);
         campoConfirmarPass.setDisable(true);
         botonRestablecer.setDisable(true);
+        campoCodigo.setDisable(true);
+        botonReenviar.setDisable(true);
 
         campoCodigo.textProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal.length() == 6) {
@@ -51,6 +55,24 @@ public class RecuperarPasswordController implements Initializable {
                 codigoVerificado = false;
             }
         });
+
+        campoEmail.textProperty().addListener((obs, oldVal, newVal) -> {
+            if (!codigoVerificado && !oldVal.equals(newVal)) {
+                campoCodigo.clear();
+                campoCodigo.setDisable(true);
+                botonReenviar.setDisable(true);
+                botonReenviar.setVisible(false);
+                etiquetaError.setText("");
+            }
+
+            if (!newVal.trim().isEmpty()
+                    && Utilidades.validarEmail.esEmailValido(newVal.trim())
+                    && ConsultasLogin.existeEmail(newVal.trim())) {
+                botonReenviar.setDisable(false);
+            } else {
+                botonReenviar.setDisable(true);
+            }
+        });
     }
 
     @FXML
@@ -59,11 +81,19 @@ public class RecuperarPasswordController implements Initializable {
 
         if (email.isEmpty()) {
             etiquetaError.setText("Por favor, ingresa un correo.");
+            etiquetaError.setTextFill(Color.RED);
+            return;
+        }
+
+        if (!validarEmail.esEmailValido(email)) {
+            etiquetaError.setText("El formato del correo no es válido.");
+            etiquetaError.setTextFill(Color.RED);
             return;
         }
 
         if (!ConsultasLogin.existeEmail(email)) {
             etiquetaError.setText("El correo no está registrado.");
+            etiquetaError.setTextFill(Color.RED);
             return;
         }
 
@@ -87,8 +117,8 @@ public class RecuperarPasswordController implements Initializable {
             campoConfirmarPass.setDisable(false);
             botonRestablecer.setDisable(false);
 
-            // NUEVO: Desactivar email y envío
             campoEmail.setDisable(true);
+            campoCodigo.setDisable(true); 
             botonEnviarCodigo.setDisable(true);
             botonReenviar.setVisible(false);
 
@@ -102,7 +132,6 @@ public class RecuperarPasswordController implements Initializable {
             botonRestablecer.setDisable(true);
             codigoVerificado = false;
 
-            // NUEVO: Mostrar opción de reenviar
             botonReenviar.setVisible(true);
         }
     }
@@ -115,34 +144,34 @@ public class RecuperarPasswordController implements Initializable {
             return;
         }
 
-        String pass1 = campoNuevaPass.getText();
-        String pass2 = campoConfirmarPass.getText();
+        String contrasenaUno = campoNuevaPass.getText();
+        String contrasenaDos = campoConfirmarPass.getText();
 
-        if (pass1.isEmpty() || pass2.isEmpty()) {
+        if (contrasenaUno.isEmpty() || contrasenaDos.isEmpty()) {
             etiquetaError.setText("Completa ambos campos de contraseña.");
             return;
         }
 
-        if (!pass1.equals(pass2)) {
+        if (!contrasenaUno.equals(contrasenaDos)) {
             etiquetaError.setText("Las contraseñas no coinciden.");
             return;
         }
 
-        if (!esPasswordSegura(pass1)) {
+        if (!contraseñaSegura(contrasenaUno)) {
             etiquetaError.setText("La contraseña debe tener al menos 8 caracteres, una letra y un número.");
             return;
         }
 
-        if (ConsultasLogin.actualizarContrasena(email, pass1)) {
-            etiquetaError.setText("Contraseña actualizada correctamente.");
-            etiquetaError.setTextFill(Color.GREEN);
+        if (ConsultasLogin.actualizarContrasena(email, contrasenaUno)) {
+            Alertas.informacion("Tu contraseña ha sido actualizada correctamente.");
+        ((Stage) campoEmail.getScene().getWindow()).close();
         } else {
             etiquetaError.setText("Error al actualizar la contraseña.");
             etiquetaError.setTextFill(Color.RED);
         }
     }
 
-    private boolean esPasswordSegura(String password) {
+    private boolean contraseñaSegura(String password) {
         return password.length() >= 8
                 && password.matches(".*[a-zA-Z].*")
                 && password.matches(".*\\d.*");
@@ -154,9 +183,18 @@ public class RecuperarPasswordController implements Initializable {
     }
 
     @FXML
-    private void reenviarCodigo(ActionEvent eveft) {
-        if (email == null || email.isEmpty()) {
-            etiquetaError.setText("Primero debes ingresar un correo válido.");
+    private void reenviarCodigo(ActionEvent event) {
+        email = campoEmail.getText().trim();
+
+        if (email.isEmpty()) {
+            etiquetaError.setText("Primero debes ingresar un correo.");
+            etiquetaError.setTextFill(Color.RED);
+            return;
+        }
+
+        if (!ConsultasLogin.existeEmail(email)) {
+            etiquetaError.setText("El correo no está registrado.");
+            etiquetaError.setTextFill(Color.RED);
             return;
         }
 
@@ -164,10 +202,11 @@ public class RecuperarPasswordController implements Initializable {
         ConsultasLogin.registrarCodigoVerificacion(email, nuevoCodigo);
         EmailUtil.enviarCodigo(email, nuevoCodigo);
 
-        etiquetaError.setText("Nuevo código enviado. Revisa tu correo.");
-        etiquetaError.setTextFill(Color.GREEN);
-        campoCodigo.clear(); // Limpia el campo del código ingresado
+        campoCodigo.clear();
+        campoCodigo.setDisable(false);
 
+        etiquetaError.setText("El código ha sido reenviado. Revisa tu correo.");
+        etiquetaError.setTextFill(Color.GREEN);
         botonReenviar.setVisible(false);
     }
 

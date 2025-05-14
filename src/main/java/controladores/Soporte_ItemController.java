@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package controladores;
 
 import java.net.URL;
@@ -12,40 +8,40 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import modelo.PreguntaFrecuente;
+import modelo.PruebaFuncionalidad;
 
-/**
- * FXML Controller class
- *
- * @author k0343
- */
 public class Soporte_ItemController implements Initializable {
 
     @FXML
     private ImageView iconoImagen;
+
     @FXML
     private Label etiquetaTitulo;
+
     @FXML
     private Label etiquetaDescripcion;
 
-    /**
-     * Initializes the controller class.
-     */
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+    }
+
     public void setItem(Object item) {
+        String icono = "/img/documento.png";
+
         if (item instanceof PreguntaFrecuente) {
             PreguntaFrecuente pregunta = (PreguntaFrecuente) item;
             etiquetaTitulo.setText(pregunta.getPregunta());
             etiquetaDescripcion.setText(pregunta.getRespuesta());
-            iconoImagen.setImage(new Image(getClass().getResourceAsStream("/img/documento.png")));
-        } else if (item instanceof String) {
-            etiquetaTitulo.setText((String) item);
-            etiquetaDescripcion.setText("");
-            iconoImagen.setImage(new Image(getClass().getResourceAsStream("/img/documento.png")));
+        } else if (item instanceof modelo.PruebaFuncionalidad) {
+            PruebaFuncionalidad funcionalidad = (PruebaFuncionalidad) item;
+            etiquetaTitulo.setText(funcionalidad.getTitulo());
+            etiquetaDescripcion.setText(funcionalidad.getDescripcion());
+        } else {
+            etiquetaTitulo.setText("Elemento desconocido");
+            etiquetaDescripcion.setText("No se pudo mostrar información.");
         }
-    }
 
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
+        iconoImagen.setImage(new Image(getClass().getResourceAsStream(icono)));
 
     }
-
 }

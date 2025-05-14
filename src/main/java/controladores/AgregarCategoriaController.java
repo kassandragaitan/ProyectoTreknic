@@ -51,9 +51,8 @@ public class AgregarCategoriaController implements Initializable {
         imagenTrekNic.setImage(imagen);
     }
 
-    private GestionCategoriaController gestionCategoriaController;  // Referencia al controlador principal
+    private GestionCategoriaController gestionCategoriaController;  
 
-// Método para establecer la referencia del controlador principal
     public void setGestionCategoriaController(GestionCategoriaController controller) {
         this.gestionCategoriaController = controller;
     }
@@ -61,10 +60,12 @@ public class AgregarCategoriaController implements Initializable {
 
     @FXML
     private void RegistrarCategoria(ActionEvent event) {
-        if (campoNombre.getText().trim().isEmpty()) {
+        if (compruebaCampo.compruebaVacio(campoNombre)) {
             Alertas.aviso("Campo vacío", "El nombre no puede estar vacío.");
-        } else if (campoDescripcion.getText().trim().isEmpty()) {
+        } else if (compruebaCampo.compruebaVacio(campoDescripcion)) {
             Alertas.aviso("Campo vacío", "La descripción no puede estar vacía.");
+        } else if (ConsultasCategoria.existeCategoria(campoNombre.getText())) {
+            Alertas.aviso("Duplicado", "Ya existe una categoría con ese nombre.");
         } else {
 
             Categoria categoria = new Categoria(campoNombre.getText(), campoDescripcion.getText());
@@ -86,7 +87,7 @@ public class AgregarCategoriaController implements Initializable {
 
     private void recargarTabla() {
         if (gestionCategoriaController != null) {
-            gestionCategoriaController.recargarTabla();  // Llamar a recargar la tabla en el controlador principal
+            gestionCategoriaController.recargarTabla();
         }
     }
 

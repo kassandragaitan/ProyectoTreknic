@@ -27,7 +27,11 @@ public class Usuario {
     public Usuario() {
     }
 
-    // Constructor sin ID (para insertar nuevo usuario)
+    public Usuario(int id_usuario, String nombre) {
+        this.idUsuario = id_usuario;
+        this.nombre = nombre;
+    }
+
     public Usuario(String nombre, String email, String contrasena, String tipoUsuario,
             Date fechaRegistro, String tipoViajero, String idioma, String telefono) {
         this.nombre = nombre;
@@ -142,4 +146,10 @@ public class Usuario {
     public static void setUsuarioActual(Usuario usuario) {
         usuarioActual = usuario;
     }
+
+    @Override
+    public String toString() {
+        return nombre;
+    }
+
 }

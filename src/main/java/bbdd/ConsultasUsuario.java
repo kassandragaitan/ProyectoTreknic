@@ -38,8 +38,8 @@ public class ConsultasUsuario {
             pst.setString(5, usuario.getIdioma());
             pst.setString(6, usuario.getTipoViajero());
             pst.setString(7, usuario.getTelefono());
-            pst.setTimestamp(8, new Timestamp(System.currentTimeMillis())); 
-            pst.setBoolean(9, usuario.getActivo()); 
+            pst.setTimestamp(8, new Timestamp(System.currentTimeMillis()));
+            pst.setBoolean(9, usuario.getActivo());
 
             int resultado = pst.executeUpdate();
             return resultado > 0;
@@ -73,7 +73,7 @@ public class ConsultasUsuario {
 
     public static ObservableList<String> cargarEstadosUsuarios() {
         ObservableList<String> estados = FXCollections.observableArrayList();
-        estados.add("Todos los estados"); // Opción por defecto
+        estados.add("Todos los estados");
 
         String consulta = "SELECT DISTINCT activo FROM usuarios";
 
@@ -132,8 +132,6 @@ public class ConsultasUsuario {
             Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
-
 
     public static void cargarUsuariosPorCampo(ObservableList<Usuario> listaUsuarios, String campo, String valor) {
         conectar();
@@ -200,7 +198,10 @@ public class ConsultasUsuario {
         }
     }
 
-    public static void cargarComboTipoUsuario(ComboBox comboTipoUsuario) {
+    public static void cargarComboTipoUsuario(ComboBox<String> comboTipoUsuario) {
+        comboTipoUsuario.getItems().clear();
+        comboTipoUsuario.getItems().add("Seleccione");
+
         try {
             String consulta = "SHOW COLUMNS FROM usuarios LIKE 'tipo_usuario'";
             Statement st = conn.createStatement();
@@ -208,18 +209,23 @@ public class ConsultasUsuario {
 
             if (rs.next()) {
                 String enumValues = rs.getString("Type");
-                enumValues = enumValues.substring(5, enumValues.length() - 1);
-                String[] values = enumValues.split("','");
+                enumValues = enumValues.substring(5, enumValues.length() - 1).replace("'", "");
+                String[] values = enumValues.split(",");
                 for (String value : values) {
-                    comboTipoUsuario.getItems().add(value.replace("'", ""));
+                    comboTipoUsuario.getItems().add(value);
                 }
             }
         } catch (SQLException ex) {
             Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
         }
+
+        comboTipoUsuario.getSelectionModel().selectFirst();
     }
 
-    public static void cargarComboTipoCompania(ComboBox comboTipoCompania) {
+    public static void cargarComboTipoCompania(ComboBox<String> comboTipoCompania) {
+        comboTipoCompania.getItems().clear();
+        comboTipoCompania.getItems().add("Seleccione");
+
         try {
             String consulta = "SHOW COLUMNS FROM usuarios LIKE 'tipo_viajero'";
             Statement st = conn.createStatement();
@@ -236,12 +242,16 @@ public class ConsultasUsuario {
         } catch (SQLException ex) {
             Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
         }
+
+        comboTipoCompania.getSelectionModel().selectFirst();
     }
 
-    public static void cargarComboIdioma(ComboBox comboIdioma) {
+    public static void cargarComboIdioma(ComboBox<String> comboIdioma) {
+        comboIdioma.getItems().clear();
+        comboIdioma.getItems().add("Seleccione");
+
         try {
             String consulta = "SHOW COLUMNS FROM usuarios WHERE Field = 'idioma_preferido'";
-
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery(consulta);
 
@@ -256,5 +266,52 @@ public class ConsultasUsuario {
         } catch (SQLException ex) {
             Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
         }
+
+        comboIdioma.getSelectionModel().selectFirst();
     }
+
+    public static boolean actualizarUsuario(Usuario usuario) {
+        conectar();
+        try {
+            String consulta = "UPDATE usuarios SET nombre = ?, email = ?, contrasena = ?, tipo_usuario = ?, idioma_preferido = ?, tipo_viajero = ?, telefono = ?, activo = ? WHERE id_usuario = ?";
+            PreparedStatement pst = conn.prepareStatement(consulta);
+            pst.setString(1, usuario.getNombre());
+            pst.setString(2, usuario.getEmail());
+            pst.setString(3, usuario.getContrasena());
+            pst.setString(4, usuario.getTipoUsuario());
+            pst.setString(5, usuario.getIdioma());
+            pst.setString(6, usuario.getTipoViajero());
+            pst.setString(7, usuario.getTelefono());
+            pst.setBoolean(8, usuario.getActivo());
+            pst.setInt(9, usuario.getIdUsuario());
+
+            int resultado = pst.executeUpdate();
+            return resultado > 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        } finally {
+            cerrarConexion();
+        }
+    }
+
+    public static boolean existeEmail(String email) {
+        boolean existe = false;
+        try {
+            conectar();
+            String consulta = "SELECT COUNT(*) FROM usuarios WHERE email = ?";
+            PreparedStatement pst = conn.prepareStatement(consulta);
+            pst.setString(1, email);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next() && rs.getInt(1) > 0) {
+                existe = true;
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(ConsultasUsuario.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            cerrarConexion();
+        }
+        return existe;
+    }
+
 }

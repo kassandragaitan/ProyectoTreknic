@@ -7,11 +7,16 @@ C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\RecuperarPasswordCont
 C:\Users\k0343\ProyectoTreknic\src\main\java\Utilidades\Animacion.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\bbdd\ConsultasResenas.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\bbdd\ConsultasMovimientos.java
+C:\Users\k0343\ProyectoTreknic\src\main\java\bbdd\ConsultasSoporte.java
+C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\FormularioSugerenciaController.java
+C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\AgregarReporteController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\bbdd\ConsultasCategoria.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\acciones\CeldaAccionesAlojamiento.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\SeguridadLogin.java
+C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\FormularioResenaController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\Notificacion.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\acciones\CeldaAccionesActividad.java
+C:\Users\k0343\ProyectoTreknic\src\main\java\bbdd\ConsultasPreguntasFrecuentes.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\GestionAlojamientoController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\GestionResenasController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\VerificacionCodigoController.java
@@ -19,6 +24,7 @@ C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\ConfiguracionSistema.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\Utilidades\compruebaCampo.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\Utilidades\validarTelefonoGlobal.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\GestionTipoDeAlojamientoController.java
+C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\Reporte.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\Alojamiento.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\LoginController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\GestionActividadesController.java
@@ -30,6 +36,7 @@ C:\Users\k0343\ProyectoTreknic\src\main\java\bbdd\ConsultasReportes.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\bbdd\ConsultasUsuario.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\Usuario.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\PrincipalController.java
+C:\Users\k0343\ProyectoTreknic\src\main\java\Utilidades\validarEmail.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\AgregarCategoriaController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\bbdd\ConsultasTipoAlojamiento.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\acciones\CeldaAccionesUsuario.java
@@ -38,11 +45,15 @@ C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\AgregarDestinoControl
 C:\Users\k0343\ProyectoTreknic\src\main\java\Utilidades\ConfiguracionSistema.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\module-info.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\Sugerencia.java
+C:\Users\k0343\ProyectoTreknic\src\main\java\acciones\CeldaAccionesDestino.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\Soporte_ItemController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\SolicitarVerificacionCodigo.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\Actividad.java
+C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\FormularioPreguntaController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\InformeTipoAlojamiento.java
+C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\ConexionFtp.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\AgregarActividadController.java
+C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\FormularioPruebaController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\EmailUtil.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\AgregarTipoAlojamientoController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\bbdd\ConsultasAlojamientos.java
@@ -68,5 +79,6 @@ C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\NotificacionesControl
 C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\InformeActividadDestino.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\Resena.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\bbdd\ConsultasConfiguracion.java
+C:\Users\k0343\ProyectoTreknic\src\main\java\bbdd\ConsultasSugerencias.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\bbdd\Conexion.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\PreguntaFrecuente.java

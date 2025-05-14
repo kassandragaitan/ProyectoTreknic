@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
@@ -15,7 +14,6 @@
        <URL value="@/Estilos/gestion.css" />
     </stylesheets>
 
-    <!-- Centrado del contenido con ancho limitado -->
     <HBox alignment="CENTER"
           AnchorPane.topAnchor="20"
           AnchorPane.leftAnchor="0"
@@ -24,15 +22,10 @@
 
         <VBox spacing="15" maxWidth="800.0" HBox.hgrow="ALWAYS">
 
-            <!-- Título -->
             <Label text="Gestión de Tipos de Alojamiento"
                    styleClass="labelTitulo">
-                <stylesheets>
-                    <URL value="@/Estilos/gestiontipodealojamiento.css" />
-                </stylesheets>
             </Label>
 
-            <!-- Filtros -->
             <HBox spacing="10">
                 <TextField fx:id="campoBuscarTipoAlojamiento"
                            promptText="Buscar tipo de alojamiento..."
@@ -41,13 +34,9 @@
                         text="Nuevo Tipo"
                         onAction="#nuevoTipoAlojamiento"
                         styleClass="primary">
-                    <stylesheets>
-                        <URL value="@/Estilos/gestiontipodealojamiento.css" />
-                    </stylesheets>
                 </Button>
             </HBox>
 
-            <!-- Tabla -->
             <TableView fx:id="tablaTipoAlojamiento" VBox.vgrow="ALWAYS">
                 <columns>
                     <TableColumn fx:id="columnaIdTipo" text="ID" visible="false" />

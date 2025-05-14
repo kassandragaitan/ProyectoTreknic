@@ -39,6 +39,7 @@ import acciones.CeldaAccionesUsuario;
 import modelo.Usuario;
 import java.text.SimpleDateFormat;
 import javafx.scene.control.ComboBox;
+import javafx.stage.StageStyle;
 
 public class AdministracionUsuarioController implements Initializable {
 
@@ -280,6 +281,9 @@ public class AdministracionUsuarioController implements Initializable {
             controlador.setAdministracionUsuarioController(this);
 
             Stage stage = new Stage();
+            stage.initStyle(StageStyle.DECORATED);
+            stage.setMaximized(false);
+            stage.setResizable(false);
             stage.setTitle("Agregar Usuario");
             stage.setScene(new Scene(root));
             stage.initModality(Modality.APPLICATION_MODAL);

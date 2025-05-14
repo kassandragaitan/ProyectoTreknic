@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import java.net.URL?>
 <?import javafx.scene.chart.BarChart?>
 <?import javafx.scene.chart.CategoryAxis?>
@@ -27,7 +26,6 @@
     <ScrollPane fx:id="scrollPane" fitToHeight="true" fitToWidth="true" style="-fx-padding: 20;" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
         <VBox alignment="TOP_CENTER" spacing="25">
 
-            <!-- Encabezado -->
 <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-padding: 30 0 0 60;">
     <ImageView fitHeight="26" fitWidth="26">
         <image><Image url="@/imagenes_principal/usuario_cuadrado.png"/></image>
@@ -36,8 +34,6 @@
     <Label fx:id="labelNombre" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2F6EB5;"/>
 </HBox>
 
-
-            <!-- Botones de categorías -->
             <FlowPane alignment="CENTER" hgap="10" vgap="10">
                 <Button text=" Casa Rural"><graphic><ImageView fitHeight="20" fitWidth="20"><image><Image url="@iconos/casa.png" /></image></ImageView></graphic></Button>
                 <Button text=" Resort"><graphic><ImageView fitHeight="20" fitWidth="20"><image><Image url="@iconos/resort.png" /></image></ImageView></graphic></Button>
@@ -48,7 +44,6 @@
                 <Button text=" Villa"><graphic><ImageView fitHeight="20" fitWidth="20"><image><Image url="@iconos/villa.png" /></image></ImageView></graphic></Button>
             </FlowPane>
 
-            <!-- Paneles de Métricas -->
             <HBox alignment="CENTER" spacing="20">
                 <!-- Usuarios -->
                 <VBox alignment="TOP_LEFT" spacing="10" styleClass="data-panel">
@@ -64,7 +59,6 @@
                         <Label fx:id="labelUsuarioReg" styleClass="data-value" text="5 Usuarios" />
                     </VBox>
                 </VBox>
-                <!-- Itinerarios -->
                 <VBox alignment="TOP_LEFT" spacing="10" styleClass="data-panel">
                     <HBox alignment="CENTER_LEFT">
                         <StackPane styleClass="icon-container">
@@ -78,7 +72,6 @@
                         <Label fx:id="labelItinerarioActivo" styleClass="data-value" text="1 Itinerarios" />
                     </VBox>
                 </VBox>
-                <!-- Destinos -->
                 <VBox alignment="TOP_LEFT" spacing="10" styleClass="data-panel">
                     <HBox alignment="CENTER_LEFT">
                         <StackPane styleClass="icon-container">
@@ -92,7 +85,6 @@
                         <Label fx:id="labelDestinosPopulares" styleClass="data-value" text="4 Destinos" />
                     </VBox>
                 </VBox>
-                <!-- Reservas -->
                 <VBox alignment="TOP_LEFT" spacing="10" styleClass="data-panel">
                     <HBox alignment="CENTER_LEFT">
                         <StackPane styleClass="icon-container">
@@ -108,7 +100,6 @@
                 </VBox>
             </HBox>
 
-            <!-- Actividad y Tabla -->
             <HBox alignment="CENTER" spacing="20">
                 <VBox prefWidth="530" spacing="10" styleClass="chart-panel">
                     <Label styleClass="chart-title" text="Actividad Reciente" />
@@ -129,7 +120,6 @@
                 </VBox>
             </HBox>
 
-            <!-- Destinos por categoría y favoritos con estilo de panel -->
             <HBox alignment="CENTER" spacing="20">
             <VBox prefWidth="530" spacing="10" styleClass="chart-panel">
 <HBox spacing="10" alignment="CENTER_LEFT">

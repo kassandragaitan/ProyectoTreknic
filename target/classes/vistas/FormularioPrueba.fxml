@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefWidth="500.0" prefHeight="350.0"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controladores.FormularioPruebaController"
+            stylesheets="@/Estilos/estilos.css"
+            styleClass="fondo-registro">
+
+    <children>
+        <VBox layoutX="40.0" layoutY="60.0" spacing="15.0"
+              styleClass="panel-registro" prefWidth="420.0" alignment="TOP_CENTER">
+
+            <children>
+                <Label text="Nueva Funcionalidad de Prueba" styleClass="titulo-registro"/>
+
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="Título" styleClass="label-campo" prefWidth="80.0"/>
+                    <TextField fx:id="campoTitulo" styleClass="campo-registro" prefWidth="250.0"/>
+                </HBox>
+
+                <HBox spacing="10" alignment="TOP_LEFT">
+                    <Label text="Descripción" styleClass="label-campo" prefWidth="80.0"/>
+                    <TextArea fx:id="campoDescripcion" styleClass="campo-registro"
+                              wrapText="true" prefWidth="250.0" prefHeight="100.0"/>
+                </HBox>
+
+                <VBox alignment="CENTER" spacing="5.0">
+                    <Button text="Guardar" fx:id="btnGuardar" onAction="#guardarPrueba"
+                            styleClass="boton-registro"/>
+                </VBox>
+            </children>
+        </VBox>
+    </children>
+</AnchorPane>

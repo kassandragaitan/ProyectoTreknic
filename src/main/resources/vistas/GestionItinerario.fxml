@@ -25,22 +25,22 @@
         </HBox>
 
         <HBox spacing="10">
-            <TextField fx:id="campoBuscarItinerario" promptText="Buscar itinerario..." HBox.hgrow="ALWAYS" />
+            <TextField fx:id="campoBuscarItinerario" promptText="Buscar itinerario..." prefWidth="940" />
             <ComboBox fx:id="comboFiltroPor" promptText="Selecciona filtro..." prefWidth="210.0" />
-            <ComboBox fx:id="comboValorFiltro" prefWidth="150.0" disable="true" />
+            <ComboBox fx:id="comboValorFiltro" prefWidth="200.0" disable="true" />
             <Button fx:id="botonQuitarFiltro" text="Quitar Filtro" styleClass="secondary" />
         </HBox>
 
         <TableView fx:id="tablaItinerario" VBox.vgrow="ALWAYS">
             <columns>
                 <TableColumn fx:id="columnaIdItinerario" text="Id_Itinerario" visible="false" />
-                <TableColumn fx:id="columnaNombre" text="Nombre" prefWidth="150.0" />
-                <TableColumn fx:id="columaDescripcion" text="Descripción" maxWidth="Infinity" />
-                <TableColumn fx:id="columnaDuracion" text="Duración" prefWidth="100.0" />
-                <TableColumn fx:id="columnaFechaCreacion" text="Fecha Creación" prefWidth="150.0" />
-                <TableColumn fx:id="columnaUsuario" text="Usuario" prefWidth="150.0" />
-                <TableColumn fx:id="columnAcciones" text="Acciones" prefWidth="220.0" />
-                <TableColumn fx:id="columnaInvisible" visible="false" maxWidth="0" minWidth="0" prefWidth="0" />
+                <TableColumn fx:id="columnaNombre" text="Nombre" minWidth="120" prefWidth="180" maxWidth="250" />
+                <TableColumn fx:id="columaDescripcion" text="Descripción" minWidth="200" prefWidth="400" maxWidth="600" />
+                <TableColumn fx:id="columnaDuracion" text="Duración" minWidth="80" prefWidth="100" maxWidth="120" />
+                <TableColumn fx:id="columnaFechaCreacion" text="Fecha Creación" minWidth="120" prefWidth="150" maxWidth="180" />
+                <TableColumn fx:id="columnaUsuario" text="Usuario" minWidth="100" prefWidth="150" maxWidth="200" />
+                <TableColumn fx:id="columnAcciones" text="Acciones" minWidth="180" prefWidth="220" maxWidth="250" />
+
             </columns>
         </TableView>
 

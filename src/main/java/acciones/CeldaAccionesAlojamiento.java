@@ -1,5 +1,6 @@
 package acciones;
 
+import Utilidades.Alertas;
 import bbdd.Conexion;
 import bbdd.ConsultasAlojamientos;
 import controladores.AgregarAlojamientoController;
@@ -19,7 +20,9 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import modelo.Alojamiento;
+import modelo.ConexionFtp;
 import modelo.Usuario;
+
 public class CeldaAccionesAlojamiento extends TableCell<Alojamiento, Void> {
 
     private final HBox contenedor = new HBox(10);
@@ -41,7 +44,6 @@ public class CeldaAccionesAlojamiento extends TableCell<Alojamiento, Void> {
         contenedor.setAlignment(Pos.CENTER);
         contenedor.getChildren().addAll(botonVer, botonEditar, botonEliminar, botonFavorito);
 
-        // Acción Ver
         botonVer.setOnAction(e -> {
             Alojamiento alojamiento = getTableRow().getItem();
             if (alojamiento != null) {
@@ -49,7 +51,6 @@ public class CeldaAccionesAlojamiento extends TableCell<Alojamiento, Void> {
             }
         });
 
-        // Acción Editar
         botonEditar.setOnAction(e -> {
             Alojamiento alojamiento = getTableRow().getItem();
             if (alojamiento != null) {
@@ -57,7 +58,6 @@ public class CeldaAccionesAlojamiento extends TableCell<Alojamiento, Void> {
             }
         });
 
-        // Acción Eliminar
         botonEliminar.setOnAction(e -> {
             Alojamiento alojamiento = getTableRow().getItem();
             if (alojamiento != null) {
@@ -68,55 +68,76 @@ public class CeldaAccionesAlojamiento extends TableCell<Alojamiento, Void> {
 
                 confirm.showAndWait().ifPresent(response -> {
                     if (response == ButtonType.OK) {
-                        if (eliminarAlojamientoPorId(alojamiento.getIdAlojamiento())) {
+                        boolean eliminadoDeFavoritos = ConsultasAlojamientos.eliminarAlojamientoDeFavoritos(alojamiento.getIdAlojamiento());
+
+                        boolean eliminado = ConsultasAlojamientos.eliminarAlojamiento(alojamiento.getIdAlojamiento());
+
+                        if (eliminado) {
+                            String img = alojamiento.getImagen();
+                            if (img != null && !img.isBlank()) {
+                                ConexionFtp.eliminarArchivo(img);
+                            }
+                            controlador.recargarFavoritos();
                             getTableView().getItems().remove(alojamiento);
-                        } else {
-                            mostrarError("Error al eliminar alojamiento.");
-                        }
+                            Alertas.informacion("Alojamiento eliminados correctamente.");
+                        
+
+                    } else {
+                        mostrarError("Error al eliminar alojamiento.");
                     }
-                });
-            }
-        });
-
-        // Acción Alternar Favorito
-        botonFavorito.setOnAction(e -> {
-            Alojamiento alojamiento = getTableRow().getItem();
-            Usuario usuario = Usuario.getUsuarioActual();
-            if (alojamiento != null && usuario != null) {
-                int idAlojamiento = alojamiento.getIdAlojamiento();
-                int idUsuario = usuario.getIdUsuario();
-
-                boolean yaEsFavorito = ConsultasAlojamientos.existeFavorito(idUsuario, idAlojamiento);
-
-                boolean exito;
-                String mensaje;
-
-                if (yaEsFavorito) {
-                    exito = ConsultasAlojamientos.eliminarDeFavoritos(idAlojamiento, idUsuario);
-                    mensaje = exito ? "Alojamiento eliminado de favoritos." : "No se pudo eliminar de favoritos.";
-                } else {
-                    exito = ConsultasAlojamientos.agregarAFavoritos(idAlojamiento, idUsuario);
-                    mensaje = exito ? "Alojamiento añadido a favoritos." : "No se pudo añadir a favoritos.";
-                }
-
-                Alert alerta = new Alert(exito ? Alert.AlertType.INFORMATION : Alert.AlertType.ERROR);
-                alerta.setTitle(yaEsFavorito ? "Favorito eliminado" : "Favorito añadido");
-                alerta.setContentText(mensaje);
-                alerta.showAndWait();
-
-                // 🌀 Recargar visualmente los favoritos
-                if (controlador != null) {
-                    controlador.recargarFavoritos();
                 }
             }
-        });
+        );
     }
 
-    @Override
-    protected void updateItem(Void item, boolean empty) {
+    });
+
+    botonFavorito.setOnAction (e  
+        -> {
+    Alojamiento alojamiento = getTableRow().getItem();
+        Usuario usuario = Usuario.getUsuarioActual();
+        if (alojamiento != null && usuario != null) {
+            int idAlojamiento = alojamiento.getIdAlojamiento();
+            int idUsuario = usuario.getIdUsuario();
+
+            boolean yaEsFavorito = ConsultasAlojamientos.existeFavorito(idUsuario, idAlojamiento);
+
+            boolean exito;
+            String mensaje;
+
+            if (yaEsFavorito) {
+                exito = ConsultasAlojamientos.eliminarDeFavoritos(idAlojamiento, idUsuario);
+                mensaje = exito ? "Alojamiento eliminado de favoritos." : "No se pudo eliminar de favoritos.";
+            } else {
+                exito = ConsultasAlojamientos.agregarAFavoritos(idAlojamiento, idUsuario);
+                mensaje = exito ? "Alojamiento añadido a favoritos." : "No se pudo añadir a favoritos.";
+            }
+
+            Alert alerta = new Alert(exito ? Alert.AlertType.INFORMATION : Alert.AlertType.ERROR);
+            alerta.setTitle(yaEsFavorito ? "Favorito eliminado" : "Favorito añadido");
+            alerta.setContentText(mensaje);
+            alerta.showAndWait();
+
+            if (controlador != null) {
+                controlador.recargarFavoritos();
+            }
+        }
+    }
+
+);
+
+    }
+
+        @Override
+protected void updateItem
+        (Void item, boolean empty
+        
+            ) {
         super.updateItem(item, empty);
-        setGraphic(empty || getTableRow().getItem() == null ? null : contenedor);
-    }
+            setGraphic(empty || getTableRow().getItem() == null ? null : contenedor);
+        }
+
+    
 
     private void mostrarVentanaAlojamiento(Alojamiento alojamiento, boolean editable) {
         try {

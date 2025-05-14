@@ -16,9 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.ComboBox;
 import modelo.Actividad;
-import modelo.Destino;
 
 /**
  *
@@ -137,7 +135,6 @@ public static void cargarActividadesPorDestino(ObservableList<Actividad> lista, 
 
     public static void cargarDatosActividades(ObservableList<Actividad> listado) {
         try {
-//            String consultaCarga = "SELECT id_actividad, nombre, descripcion, id_destino FROM actividades";
             String consultaCarga = "SELECT a.id_actividad, a.nombre, a.descripcion, a.id_destino, d.nombre AS nombre_destino "
                     + "FROM actividades a JOIN destinos d ON a.id_destino = d.id_destino";
 

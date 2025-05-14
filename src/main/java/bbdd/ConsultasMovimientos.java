@@ -6,9 +6,6 @@ package bbdd;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Time;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.Date;
 
 /**
@@ -17,16 +14,22 @@ import java.util.Date;
  */
 public class ConsultasMovimientos {
 
-    public static void registrarMovimiento(String descripcion,Date fecha, int idUsuario) {
-        String sql = "INSERT INTO notificaciones (id_usuario, descripcion, fecha, tipo_notificacion, leido, prioridad) "
-                + "VALUES (?, ?, NOW(), 'Sistema', 0, 'Normal')";
-
-        try (PreparedStatement ps = Conexion.conn.prepareStatement(sql)) {
-            ps.setInt(1, idUsuario);
-            ps.setString(2, descripcion);
+     public static void registrarMovimiento(String descripcion, Date fecha, int idUsuario) {
+        try {
+            String sql = "INSERT INTO notificaciones (descripcion, fecha, id_usuario, tipo_notificacion, prioridad, leido, notificacion) "
+                       + "VALUES (?, ?, ?, 'Sistema', 'Normal', 0, ?)";
+            PreparedStatement ps = Conexion.conectar().prepareStatement(sql);
+            ps.setString(1, descripcion);
+            ps.setDate(2, new java.sql.Date(fecha.getTime()));
+            ps.setInt(3, idUsuario);
+            ps.setString(4, descripcion); 
             ps.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
     }
+    
+  
+
+
 }

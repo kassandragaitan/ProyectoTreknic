@@ -3,7 +3,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
  */
 package controladores;
-
 import bbdd.ConsultasLogin;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -30,15 +29,14 @@ public class VerificacionCodigoController implements Initializable {
     /**
      * Initializes the controller class.
      */
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+    }
+
     private String email;
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        // TODO
     }
 
     @FXML

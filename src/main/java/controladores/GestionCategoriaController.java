@@ -23,6 +23,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import modelo.Categoria;
 
 /**
@@ -57,7 +58,7 @@ public class GestionCategoriaController implements Initializable {
         recargarTabla();
     }
 
-    public void cargarDatosCategorias() {  // Cambié 'private' a 'public'
+    public void cargarDatosCategorias() {
         ObservableList<Categoria> listaCategorias = FXCollections.observableArrayList();
         Conexion.conectar();
         ConsultasCategoria.cargarDatosCategorias(listaCategorias);
@@ -68,9 +69,8 @@ public class GestionCategoriaController implements Initializable {
         columnaDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
     }
 
-// Método para recargar la tabla
     public void recargarTabla() {
-        cargarDatosCategorias();  // Recargar la tabla con nuevos datos
+        cargarDatosCategorias();
     }
 
     private void buscarCategoriasEnTiempoReal(String texto) {
@@ -87,11 +87,13 @@ public class GestionCategoriaController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/AgregarCategoria.fxml"));
             Parent root = loader.load();
 
-            // Pasar la referencia del controlador principal
             AgregarCategoriaController controlador = loader.getController();
-            controlador.setGestionCategoriaController(this);  // Aquí se pasa la referencia
+            controlador.setGestionCategoriaController(this);
 
             Stage stage = new Stage();
+            stage.initStyle(StageStyle.DECORATED);
+            stage.setMaximized(false);
+            stage.setResizable(false);
             stage.setTitle("Agregar Categoría");
             stage.setScene(new Scene(root));
             stage.initModality(Modality.APPLICATION_MODAL);

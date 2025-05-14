@@ -13,7 +13,7 @@ import javafx.scene.paint.Color;
 public class EstiloSistema {
 
     private static EstiloSistema instancia;
-    private Color colorFondo = Color.WHITE; // Color por defecto
+    private Color colorFondo = Color.WHITE; 
 
     private EstiloSistema() {
     }

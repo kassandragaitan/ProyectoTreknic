@@ -1,45 +1,68 @@
 .root {
-    -fx-font-family: 'Arial'; /* Fuente predeterminada */
+    -fx-font-family: 'Arial'; 
 }
 
 .button {
-    -fx-background-color: #3874b4; /* Azul suave para botones */
-    -fx-text-fill: white; /* Texto en blanco para contraste */
+    -fx-background-color: #3874b4; 
+    -fx-text-fill: white;
     -fx-border-radius: 5;
     -fx-background-radius: 5;
-    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 5, 0, 0, 1); /* Sombra ligera para botones */
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 5, 0, 0, 1); 
 }
 
 .text-field {
-    -fx-border-color: #B0BEC5; /* Color de borde gris */
+    -fx-border-color: #B0BEC5;
     -fx-border-radius: 5;
 }
 
 .image-view {
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0); /* Sombra para imágenes */
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0); 
 }
 
 .label {
-    -fx-font-size: 14px; /* Tamaño de la fuente para etiquetas */
+    -fx-font-size: 14px; 
 }
-
 .tile-pane {
-    -fx-hgap: 20; /* Espacio horizontal entre elementos */
-    -fx-vgap: 20; /* Espacio vertical entre elementos */
+    -fx-hgap: 20;
+    -fx-vgap: 20;
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+}
+.destination-card {
+    -fx-padding: 10px;
+    -fx-border-color: #3477b5;
+    -fx-border-width: 2px;
+    -fx-border-radius: 8px;  
+    -fx-background-color: #daeafe;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.15), 10, 0.5, 0, 5);
+    -fx-min-width: 220px; 
+    -fx-max-width: 260px;  
+    -fx-pref-height: 180px; 
+    -fx-text-fill: #333;
 }
 
-.destination-card {
-    -fx-padding: 10;
-    -fx-border-color: #3477b5; /* Cambia a un color de borde que combina con los botones */
-    -fx-border-width: 2; /* Hace el borde un poco más grueso para destacar */
-    -fx-border-radius: 5;
-    -fx-background-color: #daeafe; /* Fondo claro para destacar el contenido */
-    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 10, 0.5, 0, 5); /* Sombra suave para dar profundidad */
+.button {
+    -fx-background-color: #3874b4;
+    -fx-text-fill: white;
+    -fx-border-radius: 20px;
+    -fx-background-radius: 20px;
+    -fx-padding: 8px 16px; 
+    -fx-font-size: 13px;  
+    -fx-min-height: 30px;  
+}
+
+.button:hover {
+    -fx-background-color: #145da0;
+}
+
+.scroll-pane {
+    -fx-border-width: 0; 
+    -fx-background-color: transparent;
 }
 
 .primary {
-    -fx-background-color: #3874b4; /* Azul intenso para elementos primarios */
-    -fx-text-fill: white; /* Texto en blanco */
+    -fx-background-color: #3874b4; 
+    -fx-text-fill: white; 
 }
 
 .background-pane {
@@ -47,4 +70,53 @@
     -fx-background-repeat: no-repeat;
     -fx-background-position: center center;
     -fx-background-size: cover;
+}
+.text-field {
+    -fx-border-color: #cfd8dc;
+    -fx-border-width: 2;
+    -fx-padding: 5px;
+    -fx-background-color: #eceff1;
+    -fx-font-size: 13px;
+}
+
+.combo-box-base {
+    -fx-border-color: #cfd8dc;
+    -fx-border-width: 2;
+    -fx-padding: 2;
+    -fx-background-color: #eceff1;
+    -fx-font-size: 13px;
+}
+
+.combo-box .arrow-button {
+    -fx-background-color: #78909c;
+}
+
+.combo-box .arrow {
+    -fx-shape: "M0 0 L1 0 L0.5 1 z";
+    -fx-fill: white;
+}
+
+.primary {
+    -fx-background-color: #145da0;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 8 16;
+    -fx-font-size: 13px;
+    -fx-background-radius: 6;
+    -fx-border-color: transparent;
+    -fx-cursor: hand;
+}
+
+.primary:hover {
+    -fx-background-color: #0d47a1;
+    -fx-text-fill: white;
+}
+
+.secondary {
+    -fx-background-color: #f0f0f0;
+    -fx-text-fill: #333;
+    -fx-padding: 6 12;
+    -fx-font-size: 13px;
+    -fx-border-color: #ccc;
+    -fx-background-radius: 4;
 }

@@ -15,6 +15,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.fxml.FXML;
+import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -31,9 +32,15 @@ public class LoginController implements Initializable {
     private PasswordField campoContrasena;
     @FXML
     private Label loginlabel;
+    @FXML
+    private Button botonOlvidar;
+    @FXML
+    private Button botonRegistro;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        botonOlvidar.setCursor(Cursor.HAND);
+        botonRegistro.setCursor(Cursor.HAND);
     }
 
     @FXML
@@ -45,6 +52,7 @@ public class LoginController implements Initializable {
             Alertas.aviso("Campo vacío", "El campo de correo no puede estar vacío.");
         } else if (!compruebaCampo.emailValido(campoUsuario)) {
             Alertas.aviso("Formato inválido", "El correo electrónico no es válido.");
+            campoUsuario.clear();
         } else if (compruebaCampo.compruebaVacio(campoContrasena)) {
             Alertas.aviso("Campo vacío", "El campo de contraseña no puede estar vacío.");
         } else {
@@ -64,7 +72,7 @@ public class LoginController implements Initializable {
                         Stage stage = new Stage();
                         stage.setTitle("Treknic");
                         stage.setScene(new Scene(root));
-                        stage.setMinWidth(1000);
+                        stage.setMinWidth(1400);
                         stage.setMinHeight(700);
                         stage.setMaximized(true);
                         stage.show();
@@ -116,8 +124,34 @@ public class LoginController implements Initializable {
             stage.setTitle("Recuperar Contraseña");
             stage.setScene(new Scene(root));
             stage.initModality(Modality.APPLICATION_MODAL);
+            stage.initStyle(javafx.stage.StageStyle.DECORATED);
+            stage.setResizable(false);
+            stage.setMaximized(false);
+            stage.centerOnScreen();
             stage.showAndWait();
 
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void abrirVentanaRegistro(ActionEvent event) {
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/GestionUsuarios.fxml"));
+            Parent root = loader.load();
+            GestionUsuariosController controller = loader.getController();
+            controller.setAbiertoDesdeLogin(true);
+            Stage stage = new Stage();
+            stage.setResizable(false);
+            stage.setMaximized(false);
+            stage.initStyle(javafx.stage.StageStyle.DECORATED);
+            stage.centerOnScreen();
+            stage.setTitle("Registro de Usuario");
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
         } catch (IOException e) {
             e.printStackTrace();
         }

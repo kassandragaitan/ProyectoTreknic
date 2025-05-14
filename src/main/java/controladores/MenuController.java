@@ -4,6 +4,7 @@
  */
 package controladores;
 
+import Utilidades.Animacion;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -71,45 +72,44 @@ public class MenuController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-//        cargarEcena("/vistas/Principal.fxml");
 
     }
     private Usuario usuarioActual;
 
     public void setUsuarioActual(Usuario usuario) {
         this.usuarioActual = usuario;
-        cargarPrincipalConUsuario(); // ⬅️ Ya no llamas a cargarEcena() con la ruta directamente
+        cargarPrincipalConUsuario();
     }
-public void cargarEcena(String escena) {
-    try {
-        FXMLLoader cargador = new FXMLLoader();
-        cargador.setLocation(getClass().getResource(escena));
-        Parent nuevaEscena = cargador.load();
 
-        // Intenta pasar usuario si el controlador tiene el método correspondiente
-        Object controller = cargador.getController();
-        if (controller instanceof PrincipalController && usuarioActual != null) {
-            ((PrincipalController) controller).inicializarUsuario(usuarioActual);
+    public void cargarEcena(String escena) {
+        try {
+            FXMLLoader cargador = new FXMLLoader();
+            cargador.setLocation(getClass().getResource(escena));
+            Parent nuevaEscena = cargador.load();
+
+            Object controller = cargador.getController();
+            if (controller instanceof PrincipalController && usuarioActual != null) {
+                ((PrincipalController) controller).inicializarUsuario(usuarioActual);
+            }
+
+            panel.setCenter(nuevaEscena);
+            Animacion.aparecer2000(nuevaEscena);
+
+        } catch (IOException ex) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         }
-
-        panel.setCenter(nuevaEscena);
-
-    } catch (IOException ex) {
-        Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
     }
-}
-
 
     private void cargarPrincipalConUsuario() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/Principal.fxml"));
             Parent nuevaEscena = loader.load();
 
-            // Pasar usuario al controlador de Principal
             PrincipalController controller = loader.getController();
             controller.inicializarUsuario(usuarioActual);
 
             panel.setCenter(nuevaEscena);
+            Animacion.aparecer2000(nuevaEscena);
 
         } catch (IOException ex) {
             Logger.getLogger(MenuController.class.getName()).log(Level.SEVERE, null, ex);
@@ -162,7 +162,7 @@ public void cargarEcena(String escena) {
 
     @FXML
     private void irAResenas(ActionEvent event) {
-        cargarEcena("/vistas/GestionResenas.fxml");//resenas
+        cargarEcena("/vistas/GestionResenas.fxml");
     }
 
     @FXML

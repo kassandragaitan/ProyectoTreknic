@@ -32,7 +32,9 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import modelo.Alojamiento;
+import modelo.ConexionFtp;
 import modelo.Usuario;
 
 /**
@@ -152,6 +154,77 @@ public class GestionAlojamientoController implements Initializable {
 
     private void cargarAlojamientosFavoritos() {
         contenedorFavoritos.getChildren().clear();
+
+        List<Alojamiento> favoritos
+                = ConsultasAlojamientos.obtenerAlojamientosFavoritosPorUsuario(
+                        Usuario.getUsuarioActual().getIdUsuario()
+                );
+
+        for (Alojamiento aloj : favoritos) {
+            VBox tarjeta = new VBox(5);
+            tarjeta.setStyle(
+                    "-fx-background-color: white; -fx-padding: 10px; "
+                    + "-fx-background-radius: 10px; "
+                    + "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0.2, 0, 1);"
+                    + "-fx-alignment: center;"
+            );
+
+            ImageView imagen = new ImageView();
+            imagen.setFitWidth(200);
+            imagen.setFitHeight(130);
+            imagen.setPreserveRatio(true);
+
+            String nombreImg = aloj.getImagen();
+            if (nombreImg != null && !nombreImg.isBlank()) {
+                try {
+                    ConexionFtp.cargarImagen(nombreImg, imagen);
+                } catch (Exception ex) {
+                    System.err.println("⚠️ Error cargando imagen favorito: " + ex.getMessage());
+                    imagen.setImage(new Image(
+                            getClass().getResourceAsStream("/img/default-image.png")
+                    ));
+                }
+            } else {
+                imagen.setImage(new Image(
+                        getClass().getResourceAsStream("/img/default-image.png")
+                ));
+            }
+
+            Label nombre = new Label(aloj.getNombre());
+            nombre.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+
+            Label destino = new Label("Destino: " + aloj.getNombreDestino());
+            destino.setStyle("-fx-text-fill: gray; -fx-font-size: 12px;");
+
+            Button botonFavorito = new Button("Quitar de Favoritos");
+            botonFavorito.setStyle("-fx-background-color: #d9534f; -fx-text-fill: white;");
+            botonFavorito.setOnAction(e -> {
+                boolean eliminado = ConsultasAlojamientos
+                        .eliminarDeFavoritos(aloj.getIdAlojamiento(),
+                                Usuario.getUsuarioActual().getIdUsuario());
+                if (eliminado) {
+                    Alertas.informacion("El alojamiento ha sido eliminado de favoritos.");
+                    cargarAlojamientosFavoritos();
+                } else {
+                    Alertas.error("Error", "No se pudo eliminar el alojamiento de favoritos.");
+                }
+            });
+
+            tarjeta.getChildren().addAll(imagen, nombre, destino, botonFavorito);
+            contenedorFavoritos.getChildren().add(tarjeta);
+        }
+    }
+
+    private void buscarAlojamientosEnTiempoReal(String texto) {
+        ObservableList<Alojamiento> listaAlojamientos = FXCollections.observableArrayList();
+        Conexion.conectar();
+        ConsultasAlojamientos.cargarDatosAlojamientosFiltrados(listaAlojamientos, texto);
+        Conexion.cerrarConexion();
+        tablaAlojamientos.setItems(listaAlojamientos);
+    }
+
+    public void recargarFavoritos() {
+        contenedorFavoritos.getChildren().clear();
         List<Alojamiento> favoritos = ConsultasAlojamientos.obtenerAlojamientosFavoritosPorUsuario(Usuario.getUsuarioActual().getIdUsuario());
 
         for (Alojamiento aloj : favoritos) {
@@ -176,8 +249,8 @@ public class GestionAlojamientoController implements Initializable {
             botonFavorito.setOnAction(e -> {
                 boolean eliminado = ConsultasAlojamientos.eliminarDeFavoritos(aloj.getIdAlojamiento(), Usuario.getUsuarioActual().getIdUsuario());
                 if (eliminado) {
-                    Alertas.informacion("El alojamiento ha sido eliminado de favoritos.");//"Favorito eliminado",
-                    cargarAlojamientosFavoritos(); // Recarga para actualizar la vista
+                    Alertas.informacion("El alojamiento ha sido eliminado de favoritos.");
+                    recargarFavoritos();
                 } else {
                     Alertas.error("Error", "No se pudo eliminar el alojamiento de favoritos.");
                 }
@@ -186,18 +259,6 @@ public class GestionAlojamientoController implements Initializable {
             tarjeta.getChildren().addAll(imagen, nombre, destino, botonFavorito);
             contenedorFavoritos.getChildren().add(tarjeta);
         }
-    }
-
-    private void buscarAlojamientosEnTiempoReal(String texto) {
-        ObservableList<Alojamiento> listaAlojamientos = FXCollections.observableArrayList();
-        Conexion.conectar();
-        ConsultasAlojamientos.cargarDatosAlojamientosFiltrados(listaAlojamientos, texto);
-        Conexion.cerrarConexion();
-        tablaAlojamientos.setItems(listaAlojamientos);
-    }
-
-    public void recargarFavoritos() {
-        cargarAlojamientosFavoritos();
     }
 
     public void cargarAlojamientos() {
@@ -221,11 +282,13 @@ public class GestionAlojamientoController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/AgregarAlojamiento.fxml"));
             Parent root = loader.load();
 
-            // Pasar la referencia del controlador principal al controlador de agregar alojamiento
             AgregarAlojamientoController controlador = loader.getController();
-            controlador.setGestionAlojamientoController(this);  // Aquí se pasa la referencia
+            controlador.setGestionAlojamientoController(this);
 
             Stage stage = new Stage();
+            stage.initStyle(StageStyle.DECORATED);
+            stage.setMaximized(false);
+            stage.setResizable(false);
             stage.setTitle("Agregar Alojamiento");
             stage.setScene(new Scene(root));
             stage.initModality(Modality.APPLICATION_MODAL);

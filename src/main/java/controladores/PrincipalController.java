@@ -15,7 +15,6 @@ import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -38,6 +37,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -95,12 +95,10 @@ public class PrincipalController implements Initializable {
         columnaDestino.prefWidthProperty().bind(tablaDestinos.widthProperty().divide(3));
         columnaVisitas.prefWidthProperty().bind(tablaDestinos.widthProperty().divide(3));
         columnaValoracion.prefWidthProperty().bind(tablaDestinos.widthProperty().divide(3));
-        
-        
+
         ejeXActividad.setTickLabelRotation(0);
         ejeXActividad.setTickLabelGap(10);
         ejeXActividad.setTickLength(10);
-
         ejeYActividad.setTickUnit(1);
         ejeYActividad.setMinorTickVisible(false);
         ejeYActividad.setForceZeroInRange(true);
@@ -118,8 +116,8 @@ public class PrincipalController implements Initializable {
         });
 
         inicializarCategorias();
+        mostrarTodosLosDestinosAgrupados();
         cargarAlojamientosFavoritos();
-
     }
 
     private Timer temporizadorSesion;
@@ -142,17 +140,14 @@ public class PrincipalController implements Initializable {
 
     private void cerrarSesion() {
         try {
-            // Cargar pantalla de login
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/Login.fxml"));
             Parent root = loader.load();
 
-            // Obtener el escenario actual
             Stage stage = (Stage) contenedor.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.setTitle("Iniciar Sesión");
             stage.show();
 
-            // Limpiar usuario actual
             Usuario.setUsuarioActual(null);
 
         } catch (IOException e) {
@@ -161,20 +156,87 @@ public class PrincipalController implements Initializable {
         }
     }
 
-    private Usuario usuarioActual; // Para tener acceso al usuario desde fuera
+    private Usuario usuarioActual;
 
     public void inicializarUsuario(Usuario usuario) {
         this.usuarioActual = usuario;
         Usuario.setUsuarioActual(usuario);
 
-        // Actualizar la etiqueta con el nombre del usuario
         labelNombre.setText(usuario.getNombre());
     }
 
     private void inicializarCategorias() {
         List<String> categorias = ConsultasDestinos.obtenerNombresCategorias();
         comboCategoria.getItems().addAll(categorias);
-        comboCategoria.setOnAction(e -> cargarDestinosPorCategoria());
+
+        mostrarTodosLosDestinosAgrupados();
+
+        comboCategoria.setOnAction(e -> {
+            String seleccion = comboCategoria.getValue();
+            if (seleccion != null && !seleccion.isEmpty()) {
+                cargarDestinosPorCategoria();
+            } else {
+                mostrarTodosLosDestinosAgrupados();
+            }
+        });
+    }
+
+    private void mostrarTodosLosDestinosAgrupados() {
+        contenedorCategorias.getChildren().clear();
+        List<String> categorias = ConsultasDestinos.obtenerNombresCategorias();
+
+        for (String categoria : categorias) {
+            List<Destino> destinos = ConsultasDestinos.obtenerDestinosPorNombreCategoria(categoria);
+
+            if (!destinos.isEmpty()) {
+                VBox bloqueCategoria = new VBox(10);
+                bloqueCategoria.setAlignment(Pos.TOP_CENTER);
+
+                Label tituloCategoria = new Label(categoria);
+                tituloCategoria.setStyle("-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: #2F6EB5;");
+
+                FlowPane flowDestinos = new FlowPane();
+                flowDestinos.setHgap(15);
+                flowDestinos.setVgap(15);
+                flowDestinos.setAlignment(Pos.CENTER);
+
+                // Cálculo dinámico para 2 tarjetas por fila:
+                int tarjetasPorFila = 2;
+                double anchoTarjeta = 200;
+                double espacioEntre = flowDestinos.getHgap();
+                double wrapLength = tarjetasPorFila * anchoTarjeta + (tarjetasPorFila - 1) * espacioEntre;
+                flowDestinos.setPrefWrapLength(wrapLength); // Fuerza a 2 por fila
+
+                for (Destino destino : destinos) {
+                    VBox tarjeta = new VBox(8);
+                    tarjeta.setPrefWidth(anchoTarjeta);
+                    tarjeta.setPrefHeight(220);
+                    tarjeta.setAlignment(Pos.TOP_CENTER);
+                    tarjeta.setStyle("-fx-background-color: white; -fx-padding: 10px; -fx-background-radius: 10px; "
+                            + "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0.2, 0, 1);");
+
+                    String urlImagen = "http://localhost/carpetaimg/" + destino.getImagen();
+                    ImageView imagen = new ImageView(new Image(urlImagen, true));
+                    imagen.setFitWidth(180);
+                    imagen.setFitHeight(120);
+                    imagen.setPreserveRatio(true);
+                    imagen.setSmooth(true);
+                    imagen.setCache(true);
+
+                    Label nombre = new Label(destino.getNombre());
+                    nombre.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+
+                    tarjeta.getChildren().addAll(imagen, nombre);
+                    flowDestinos.getChildren().add(tarjeta);
+                }
+
+                HBox contenedorFlow = new HBox(flowDestinos);
+                contenedorFlow.setAlignment(Pos.CENTER);
+
+                bloqueCategoria.getChildren().addAll(tituloCategoria, contenedorFlow);
+                contenedorCategorias.getChildren().add(bloqueCategoria);
+            }
+        }
     }
 
     private void cargarAlojamientosFavoritos() {
@@ -192,7 +254,6 @@ public class PrincipalController implements Initializable {
             VBox tarjeta = crearTarjetaAlojamiento(aloj);
             contenedorFavoritos.getChildren().add(tarjeta);
 
-            // Agregamos una animación sutil de entrada
             FadeTransition ft = new FadeTransition(Duration.millis(500), tarjeta);
             ft.setFromValue(0);
             ft.setToValue(1);
@@ -327,7 +388,7 @@ public class PrincipalController implements Initializable {
 
     private void cargarDatosPanel() {
         int totalUsuarios = Conexion.contar("usuarios");
-        int totalItinerarios = Conexion.contar("itinerario");
+        int totalItinerarios = Conexion.contar("itinerarios");
         int totalDestinosP = Conexion.contar("destinos");
         int totalActividadesMen = Conexion.contar("actividades");
 

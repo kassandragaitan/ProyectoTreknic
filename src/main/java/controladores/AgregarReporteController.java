@@ -1,0 +1,89 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
+ */
+package controladores;
+
+import Utilidades.Alertas;
+import Utilidades.compruebaCampo;
+import bbdd.ConsultasMovimientos;
+import bbdd.ConsultasReportes;
+import java.net.URL;
+import java.util.ResourceBundle;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextArea;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.stage.Stage;
+import modelo.Reporte;
+import modelo.Usuario;
+
+/**
+ * FXML Controller class
+ *
+ * @author k0343
+ */
+public class AgregarReporteController implements Initializable {
+
+    @FXML
+    private ComboBox<String> comboTipoReporte;
+    @FXML
+    private TextArea campoDescripcion;
+    @FXML
+    private Button botonRegistrar;
+    @FXML
+    private ImageView imagenTrekNic;
+
+    private boolean esEdicion = false;
+    private String tipoReporteOriginal;
+
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        comboTipoReporte.getItems().addAll("Usuarios registrados", "Tipos de alojamiento");
+
+        Image imagen = new Image(getClass().getResourceAsStream("/img/Encabezado.png"));
+        imagenTrekNic.setImage(imagen);
+    }
+
+    @FXML
+    private void RegistrarReporte(ActionEvent event) {
+        if (comboTipoReporte.getValue() == null || comboTipoReporte.getValue().equals("Seleccione")) {
+            Alertas.aviso("Campo vacío", "Debe seleccionar un tipo de reporte.");
+        } else if (compruebaCampo.compruebaVacio(campoDescripcion)) {
+            Alertas.aviso("Campo vacío", "La descripción no puede estar vacía.");
+        } else {
+            String tipo = comboTipoReporte.getValue();
+            String descripcion = campoDescripcion.getText();
+
+            Reporte nuevo = new Reporte();
+            nuevo.setTipo(tipo);
+            nuevo.setDescripcion(descripcion);
+            nuevo.setFecha(new java.util.Date());
+            nuevo.setIdUsuario(Usuario.getUsuarioActual().getIdUsuario());
+
+            if (ConsultasReportes.registrarReporte(nuevo)) {
+                ConsultasMovimientos.registrarMovimiento(
+                        "Se ha registrado un reporte de tipo: " + tipo,
+                        new java.sql.Date(System.currentTimeMillis()),
+                        Usuario.getUsuarioActual().getIdUsuario()
+                );
+
+                Alertas.informacion("Reporte registrado exitosamente.");
+                limpiarFormulario();
+            } else {
+                Alertas.error("Error", "No se pudo registrar el reporte.");
+            }
+        }
+
+    }
+
+    private void limpiarFormulario() {
+        comboTipoReporte.getSelectionModel().clearSelection();
+        campoDescripcion.clear();
+    }
+
+}

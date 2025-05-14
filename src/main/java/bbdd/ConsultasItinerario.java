@@ -12,6 +12,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
@@ -28,7 +30,7 @@ public class ConsultasItinerario {
     public static boolean registrarItinerario(Itinerario itinerario) {
         conectar();
         try {
-            String consulta = "INSERT INTO itinerario (nombre, descripcion, fecha_creacion, duracion, id_usuario) VALUES (?, ?, ?, ?, ?)";
+            String consulta = "INSERT INTO itinerarios (nombre, descripcion, fecha_creacion, duracion, id_usuario) VALUES (?, ?, ?, ?, ?)";
             PreparedStatement pst = conn.prepareStatement(consulta);
             pst.setString(1, itinerario.getNombre());
             pst.setString(2, itinerario.getDescripcion());
@@ -48,11 +50,11 @@ public class ConsultasItinerario {
 
     public static boolean actualizarItinerario(Itinerario itinerario) {
         try {
-            String sql = "UPDATE itinerario SET nombre = ?, descripcion = ?, duracion = ? WHERE id_itinerario = ?";
+            String sql = "UPDATE itinerarios SET nombre = ?, descripcion = ?, duracion = ? WHERE id_itinerario = ?";
             PreparedStatement stmt = Conexion.conn.prepareStatement(sql);
             stmt.setString(1, itinerario.getNombre());
             stmt.setString(2, itinerario.getDescripcion());
-            stmt.setInt(3, itinerario.getDuracion());
+            stmt.setString(3, itinerario.getDuracion());
             stmt.setInt(4, itinerario.getIdItinerario());
 
             int filas = stmt.executeUpdate();
@@ -65,7 +67,7 @@ public class ConsultasItinerario {
 
     public static ObservableList<String> cargarUsuariosDeItinerarios() {
         ObservableList<String> lista = FXCollections.observableArrayList();
-        String consulta = "SELECT DISTINCT u.nombre FROM itinerario i JOIN usuarios u ON i.id_usuario = u.id_usuario";
+        String consulta = "SELECT DISTINCT u.nombre FROM itinerarios i JOIN usuarios u ON i.id_usuario = u.id_usuario";
 
         try {
             PreparedStatement ps = Conexion.conectar().prepareStatement(consulta);
@@ -83,7 +85,7 @@ public class ConsultasItinerario {
     }
 
     public static void cargarItinerariosPorUsuario(ObservableList<Itinerario> lista, String nombreUsuario) {
-        String consulta = "SELECT i.*, u.nombre AS nombre_usuario FROM itinerario i "
+        String consulta = "SELECT i.*, u.nombre AS nombre_usuario FROM itinerarios i "
                 + "JOIN usuarios u ON i.id_usuario = u.id_usuario "
                 + "WHERE u.nombre = ?";
         try {
@@ -97,7 +99,7 @@ public class ConsultasItinerario {
                         rs.getString("nombre"),
                         rs.getDate("fecha_creacion"),
                         rs.getString("descripcion"),
-                        mapEnumDurations(rs.getString("duracion")), // o rs.getInt("duracion")
+                        rs.getString("duracion"),
                         rs.getInt("id_usuario")
                 );
                 itinerario.setNombreUsuario(rs.getString("nombre_usuario"));
@@ -109,14 +111,38 @@ public class ConsultasItinerario {
         }
     }
 
-    public static ObservableList<String> cargarDuracionesItinerarios() {
-        ObservableList<String> duraciones = FXCollections.observableArrayList();
-        duraciones.add("Todas las duraciones"); // Opción por defecto
-
-        String consulta = "SELECT DISTINCT duracion FROM itinerario ORDER BY duracion";
+    public static List<Integer> obtenerDuraciones() {
+        List<Integer> listaDuraciones = new ArrayList<>();
 
         try {
-            PreparedStatement st = conn.prepareStatement(consulta);
+            String sql = "SELECT DISTINCT duracion FROM itinerarios ORDER BY duracion";
+            PreparedStatement ps = Conexion.conectar().prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                String valor = rs.getString("duracion");
+                try {
+                    listaDuraciones.add(Integer.parseInt(valor));
+                } catch (NumberFormatException e) {
+                }
+            }
+
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            System.err.println("Error al cargar duraciones: " + e.getMessage());
+        }
+
+        return listaDuraciones;
+    }
+
+    public static ObservableList<String> cargarDuracionesItinerarios() {
+        ObservableList<String> duraciones = FXCollections.observableArrayList();
+
+        String consulta = "SELECT DISTINCT duracion FROM itinerarios ORDER BY duracion";
+
+        try {
+            PreparedStatement st = Conexion.conn.prepareStatement(consulta);
             ResultSet rs = st.executeQuery();
 
             while (rs.next()) {
@@ -129,21 +155,37 @@ public class ConsultasItinerario {
         return duraciones;
     }
 
-    public static void cargarItinerariosPorDuracion(ObservableList<Itinerario> listaItinerarios, String duracionSeleccionada) {
-        String consulta;
-
-        if (duracionSeleccionada.equals("Todas las duraciones")) {
-            consulta = "SELECT id_itinerario, nombre, fecha_creacion, descripcion, duracion FROM itinerario";
-        } else {
-            consulta = "SELECT id_itinerario, nombre, fecha_creacion, descripcion, duracion FROM itinerario WHERE duracion = ?";
-        }
+    public static void cargarComboDuracionItinerario(ComboBox<String> comboDuracion) {
+        comboDuracion.getItems().clear();
+        comboDuracion.getItems().add("Seleccione");
 
         try {
-            PreparedStatement stmt = conn.prepareStatement(consulta);
-
-            if (!duracionSeleccionada.equals("Todas las duraciones")) {
-                stmt.setString(1, duracionSeleccionada);
+            String consulta = "SHOW COLUMNS FROM itinerarios WHERE Field = 'duracion'";
+            Statement st = conn.createStatement();
+            ResultSet rs = st.executeQuery(consulta);
+            if (rs.next()) {
+                String duracionStr = rs.getString("Type");
+                duracionStr = duracionStr.substring(5, duracionStr.length() - 1).replace("'", "");
+                String[] valoresEnum = duracionStr.split(",");
+                for (String valor : valoresEnum) {
+                    comboDuracion.getItems().add(valor.trim());
+                }
             }
+            comboDuracion.getSelectionModel().selectFirst();
+        } catch (SQLException ex) {
+            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public static void cargarItinerariosPorDuracion(ObservableList<Itinerario> listaItinerarios, String duracionSeleccionada) {
+        String consulta = "SELECT i.id_itinerario, i.nombre, i.fecha_creacion, i.descripcion, i.duracion, "
+                + "i.id_usuario, u.nombre AS nombre_usuario "
+                + "FROM itinerarios i JOIN usuarios u ON i.id_usuario = u.id_usuario "
+                + "WHERE i.duracion = ?";
+
+        try {
+            PreparedStatement stmt = Conexion.conn.prepareStatement(consulta);
+            stmt.setString(1, duracionSeleccionada);
 
             ResultSet rs = stmt.executeQuery();
 
@@ -151,11 +193,12 @@ public class ConsultasItinerario {
                 Itinerario itinerario = new Itinerario(
                         rs.getInt("id_itinerario"),
                         rs.getString("nombre"),
-                        rs.getDate("fecha_creacion"), // <-- ESTE ES Date
+                        rs.getDate("fecha_creacion"),
                         rs.getString("descripcion"),
-                        rs.getInt("duracion")
+                        rs.getString("duracion"),
+                        rs.getInt("id_usuario")
                 );
-
+                itinerario.setNombreUsuario(rs.getString("nombre_usuario"));
                 listaItinerarios.add(itinerario);
             }
 
@@ -169,10 +212,11 @@ public class ConsultasItinerario {
 
         String consulta = "SELECT i.id_itinerario, i.nombre, i.fecha_creacion, i.descripcion, i.duracion, "
                 + "i.id_usuario, u.nombre AS nombre_usuario "
-                + "FROM itinerario i "
+                + "FROM itinerarios i "
                 + "JOIN usuarios u ON i.id_usuario = u.id_usuario "
                 + "WHERE i.nombre LIKE ? OR i.descripcion LIKE ? OR "
-                + "CAST(i.duracion AS CHAR) LIKE ? OR u.nombre LIKE ?";
+                + "CAST(i.duracion AS CHAR) LIKE ? OR u.nombre LIKE ? OR "
+                + "DATE_FORMAT(i.fecha_creacion, '%Y-%m-%d') LIKE ?";
 
         try (PreparedStatement ps = conn.prepareStatement(consulta)) {
             String wildcard = "%" + busqueda + "%";
@@ -180,6 +224,7 @@ public class ConsultasItinerario {
             ps.setString(2, wildcard);
             ps.setString(3, wildcard);
             ps.setString(4, wildcard);
+            ps.setString(5, wildcard);
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -188,7 +233,7 @@ public class ConsultasItinerario {
                             rs.getString("nombre"),
                             rs.getDate("fecha_creacion"),
                             rs.getString("descripcion"),
-                            mapEnumDurations(rs.getString("duracion")),
+                            rs.getString("duracion"),
                             rs.getInt("id_usuario")
                     );
                     it.setNombreUsuario(rs.getString("nombre_usuario"));
@@ -204,11 +249,10 @@ public class ConsultasItinerario {
     public static void cargarDatosItinerarios(ObservableList<Itinerario> listado) {
         conectar();
         try {
-//            String consultaCarga = "SELECT id_itinerario, nombre, fecha_creacion, descripcion, duracion, id_usuario FROM itinerario";
             String consultaCarga
                     = "SELECT i.id_itinerario, i.nombre, i.fecha_creacion, i.descripcion, i.duracion, "
                     + "i.id_usuario, u.nombre AS nombre_usuario "
-                    + "FROM itinerario i "
+                    + "FROM itinerarios i "
                     + "JOIN usuarios u ON i.id_usuario = u.id_usuario";
 
             try (Statement st = conn.createStatement(); ResultSet rs = st.executeQuery(consultaCarga)) {
@@ -218,7 +262,7 @@ public class ConsultasItinerario {
                             rs.getString("nombre"),
                             rs.getDate("fecha_creacion"),
                             rs.getString("descripcion"),
-                            mapEnumDurations(rs.getString("duracion")),
+                            rs.getString("duracion"),
                             rs.getInt("id_usuario")
                     );
                     itinerario.setNombreUsuario(rs.getString("nombre_usuario"));
@@ -232,27 +276,24 @@ public class ConsultasItinerario {
         }
     }
 
-    private static int mapEnumDurations(String duration) {
-        return duration.equals("3") ? 3 : duration.equals("5") ? 5 : duration.equals("7") ? 7 : 0;
-    }
-
-    public static void cargarComboDuracionItinerario(ComboBox comboDuracion) {
+    public static boolean existeItinerarioConNombre(String nombre) {
+        boolean existe = false;
         try {
-            String consulta = "SHOW COLUMNS FROM itinerario WHERE Field = 'duracion'";
+            String sql = "SELECT COUNT(*) FROM itinerarios WHERE nombre = ?";
+            PreparedStatement stmt = Conexion.conectar().prepareStatement(sql);
+            stmt.setString(1, nombre.trim());
 
-            Statement st = conn.createStatement();
-            ResultSet rs = st.executeQuery(consulta);
-            if (rs.next()) {
-                String duracionStr = rs.getString("Type");
-                duracionStr = duracionStr.substring(5, duracionStr.length() - 1).replace("'", "");
-                String[] valoresEnum = duracionStr.split(",");
-                for (String valor : valoresEnum) {
-                    comboDuracion.getItems().add(Integer.parseInt(valor.trim())); // Convierte el valor a Integer y lo añade
-                }
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next() && rs.getInt(1) > 0) {
+                existe = true;
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+
+            rs.close();
+            stmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+        return existe;
     }
 
 }

@@ -28,7 +28,7 @@ public class ConsultasCategoria {
     public static boolean registrarCategoria(Categoria categoria) {
         conectar();
         try {
-            String consulta = "INSERT INTO categoria (nombre, descripcion) VALUES (?, ?)";
+            String consulta = "INSERT INTO categorias (nombre, descripcion) VALUES (?, ?)";
             PreparedStatement pst = conn.prepareStatement(consulta);
             pst.setString(1, categoria.getNombre());
             pst.setString(2, categoria.getDescripcion());
@@ -44,7 +44,7 @@ public class ConsultasCategoria {
 
     public static void cargarDatosCategoriasFiltradas(ObservableList<Categoria> listaCategorias, String busqueda) {
         Connection conn = Conexion.conn;
-        String consulta = "SELECT id_categoria, nombre, descripcion FROM categoria WHERE nombre LIKE ? OR descripcion LIKE ?";
+        String consulta = "SELECT id_categoria, nombre, descripcion FROM categorias WHERE nombre LIKE ? OR descripcion LIKE ?";
 
         try (PreparedStatement ps = conn.prepareStatement(consulta)) {
             String wildcard = "%" + busqueda + "%";
@@ -66,46 +66,66 @@ public class ConsultasCategoria {
             e.printStackTrace();
         }
     }
+public static void cargarDatosCategorias(ObservableList<Categoria> listado) {
+    conectar();
+    try {
+        String consultaCarga = "SELECT * FROM categorias"; 
+        try (Statement st = conn.createStatement(); ResultSet rs = st.executeQuery(consultaCarga)) {
+            while (rs.next()) {
+                listado.add(new Categoria(
+                        rs.getInt("id_categoria"),
+                        rs.getString("nombre"),
+                        rs.getString("descripcion") 
+                ));
+            }
+        }
+    } catch (SQLException ex) {
+        Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+    } finally {
+        cerrarConexion();
+    }
+}
 
-    public static void cargarDatosCategorias(ObservableList<Categoria> listado) {
+    public static List<Categoria> obtenerCategorias() {
+        List<Categoria> lista = new ArrayList<>();
+        String sql = "SELECT id_categoria, nombre FROM categorias";
+
         conectar();
-        try {
-            String consultaCarga = "SELECT id_categoria, nombre, descripcion FROM categoria";
-            try (Statement st = conn.createStatement(); ResultSet rs = st.executeQuery(consultaCarga)) {
-                while (rs.next()) {
-                    listado.add(new Categoria(
-                            rs.getInt("id_categoria"),
-                            rs.getString("nombre"),
-                            rs.getString("descripcion")
-                    ));
-                }
+        try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                int id = rs.getInt("id_categoria");
+                String nombre = rs.getString("nombre");
+                Categoria c = new Categoria(id, nombre);
+                lista.add(c);
             }
         } catch (SQLException ex) {
-            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         } finally {
             cerrarConexion();
         }
+
+        return lista;
     }
 
-public static List<Categoria> obtenerCategorias() {
-    List<Categoria> lista = new ArrayList<>();
-    String sql = "SELECT id_categoria, nombre FROM categoria";
+    public static boolean existeCategoria(String nombre) {
+        boolean existe = false;
+        try {
+            String sql = "SELECT COUNT(*) FROM categorias WHERE nombre = ?";
+            PreparedStatement stmt = Conexion.conectar().prepareStatement(sql);
+            stmt.setString(1, nombre.trim());
 
-    try {
-        Statement stmt = Conexion.conn.createStatement();
-        ResultSet rs = stmt.executeQuery(sql);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next() && rs.getInt(1) > 0) {
+                existe = true;
+            }
 
-        while (rs.next()) {
-            int id = rs.getInt("id_categoria");
-            String nombre = rs.getString("nombre");
-            Categoria c = new Categoria(id, nombre);
-            lista.add(c);
+            rs.close();
+            stmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    } catch (SQLException ex) {
-        ex.printStackTrace();
+        return existe;
     }
-    return lista;
-}
-
 
 }

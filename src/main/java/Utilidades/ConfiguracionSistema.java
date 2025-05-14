@@ -20,7 +20,7 @@ public class ConfiguracionSistema {
     private String urlFavicon = "";
     private String cssPersonalizado = "";
 
-    private final String CONFIG_FILE = "settings.properties"; // Archivo donde guardamos
+    private final String CONFIG_FILE = "settings.properties"; 
 
     private ConfiguracionSistema() {
         cargarConfiguracion();

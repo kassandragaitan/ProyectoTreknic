@@ -11,14 +11,21 @@ import java.util.List;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import modelo.Resena;
 
 /**
@@ -44,6 +51,16 @@ public class GestionResenasController implements Initializable {
     private TableColumn<Resena, String> comentarioUsuarioColumn;
     @FXML
     private TableColumn<Resena, Integer> clasificacionUsuarioColumn;
+    @FXML
+    private TabPane tabPane;
+    @FXML
+    private Button botonAgregarResena;
+    @FXML
+    private TextField campoBuscarResenasDestino;
+    @FXML
+    private TextField campoBuscarResenasUsuario;
+    @FXML
+    private Button botonAgregarResenaUsuario;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -58,5 +75,51 @@ public class GestionResenasController implements Initializable {
         List<Resena> resenas = ConsultasResenas.obtenerResenas();
         destinosTable.setItems(FXCollections.observableArrayList(resenas));
         usuariosTable.setItems(FXCollections.observableArrayList(resenas));
+
+        campoBuscarResenasDestino.textProperty().addListener((obs, oldVal, newVal) -> {
+            buscarResenasPorDestino(newVal);
+        });
+
+        campoBuscarResenasUsuario.textProperty().addListener((obs, oldVal, newVal) -> {
+            buscarResenasPorUsuario(newVal);
+        });
+
+    }
+
+    private void buscarResenasPorDestino(String texto) {
+        ObservableList<Resena> listaResenas = FXCollections.observableArrayList();
+        Conexion.conectar();
+        ConsultasResenas.buscarResenasPorDestino(listaResenas, texto);
+        Conexion.cerrarConexion();
+        destinosTable.setItems(listaResenas);
+    }
+
+    private void buscarResenasPorUsuario(String texto) {
+        ObservableList<Resena> listaResenas = FXCollections.observableArrayList();
+        Conexion.conectar();
+        ConsultasResenas.buscarResenasPorUsuario(listaResenas, texto);
+        Conexion.cerrarConexion();
+        usuariosTable.setItems(listaResenas);
+    }
+
+    @FXML
+    private void abrirFormularioResena(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/FormularioResena.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Nueva Reseña");
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+
+            List<Resena> resenas = ConsultasResenas.obtenerResenas();
+            destinosTable.setItems(FXCollections.observableArrayList(resenas));
+            usuariosTable.setItems(FXCollections.observableArrayList(resenas));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

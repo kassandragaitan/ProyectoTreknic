@@ -1,97 +1,90 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import java.net.URL?>
 
 <HBox alignment="TOP_CENTER" xmlns="http://javafx.com/javafx/23.0.1"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="controladores.SoporteController">
     <children>
-        <AnchorPane stylesheets="@/Estilos/configuracion.css">
+        <AnchorPane stylesheets="@/Estilos/soporte.css">
             <VBox alignment="TOP_CENTER" spacing="20.0"
                   AnchorPane.topAnchor="20.0" AnchorPane.leftAnchor="20.0"
                   AnchorPane.rightAnchor="20.0" AnchorPane.bottomAnchor="20.0">
-                
-                <Label text="Gestión de Soporte" styleClass="title"/>
+
+                <Label text="Gestión de Soporte" styleClass="labelTitulo"/>
                 <Separator/>
 
                 <TabPane fx:id="panelPestanas" VBox.vgrow="ALWAYS" tabClosingPolicy="UNAVAILABLE">
                     <tabs>
-                        <Tab text="Preguntas Frecuentes">
+                        <Tab fx:id="tabPreguntas" text="Preguntas Frecuentes">
                             <AnchorPane>
-                                <TextField fx:id="campoBuscarPreguntas"
-                                           promptText="Buscar preguntas..."
-                                           AnchorPane.topAnchor="10.0"
-                                           AnchorPane.leftAnchor="0.0"
-                                           AnchorPane.rightAnchor="0.0"
-                                           prefHeight="26" />
-                                <ListView fx:id="listaPreguntas"
-                                          AnchorPane.topAnchor="50.0"
-                                          AnchorPane.leftAnchor="0.0"
-                                          AnchorPane.rightAnchor="0.0"
-                                          AnchorPane.bottomAnchor="0.0" />
+                                <VBox spacing="10.0" AnchorPane.topAnchor="10.0" AnchorPane.leftAnchor="10.0"
+                                      AnchorPane.rightAnchor="10.0" AnchorPane.bottomAnchor="10.0">
+                                    <HBox spacing="10" alignment="CENTER">
+                                        <TextField fx:id="campoBuscarPreguntas"
+                                                   promptText="Buscar preguntas..."
+                                                   HBox.hgrow="ALWAYS"
+                                                   prefHeight="26"/>
+                                        <Button fx:id="botonAgregarPregunta"
+                                                text="+ Nueva Pregunta"
+                                                onAction="#abrirFormularioPregunta"
+                                                minHeight="26"
+                                                styleClass="primary"/>
+                                    </HBox>
+
+                                    <ListView fx:id="listaPreguntas" VBox.vgrow="ALWAYS"/>
+                                </VBox>
                             </AnchorPane>
                         </Tab>
 
-                        <Tab text="Sugerencias de Usuario">
+                        <Tab fx:id="tabSugerencias" text="Sugerencias">
                             <AnchorPane>
+                                <VBox spacing="10.0" AnchorPane.topAnchor="10.0" AnchorPane.leftAnchor="10.0"
+                                      AnchorPane.rightAnchor="10.0" AnchorPane.bottomAnchor="10.0">
+                                    <HBox spacing="10" alignment="CENTER">
+                                        <TextField fx:id="campoBuscarSugerencias"
+                                                   promptText="Buscar sugerencias..."
+                                                   HBox.hgrow="ALWAYS"
+                                                   prefHeight="26"/>
+                                        <Button fx:id="botonNuevaSugerencia"
+                                                text="+ Nueva Sugerencia"
+                                                onAction="#abrirFormularioSugerencia"
+                                                minHeight="26"
+                                                styleClass="primary"/>
+                                    </HBox>
 
-                                <!-- Fila superior: buscador + botón -->
-                                <HBox spacing="10" AnchorPane.topAnchor="10.0" AnchorPane.leftAnchor="0.0"
-                                      AnchorPane.rightAnchor="0.0">
-                                    <TextField fx:id="campoBuscarSugerencias"
-                                               promptText="Buscar sugerencias..."
-                                               HBox.hgrow="ALWAYS"
-                                               prefHeight="26"/>
-                                    <Button fx:id="botonNuevaSugerencia"
-                                            text="+ Nueva Sugerencia"
-                                            onAction="#abrirFormularioSugerencia"
-                                            minHeight="26"/>
-                                </HBox>
-
-                                <!-- Tabla de sugerencias -->
-                                <TableView fx:id="tablaSugerencias"
-                                           AnchorPane.topAnchor="50.0"
-                                           AnchorPane.leftAnchor="0.0"
-                                           AnchorPane.rightAnchor="0.0"
-                                           AnchorPane.bottomAnchor="0.0">
-                                    <columns>
-                                        <TableColumn fx:id="columnaIDSugerencia" text="ID" prefWidth="50.0"/>
-                                        <TableColumn fx:id="columnaTituloSugerencia" text="Título" prefWidth="200.0"/>
-                                        <TableColumn fx:id="columnaMensajeSugerencia" text="Mensaje" prefWidth="350.0"/>
-                                        <TableColumn fx:id="columnaFechaSugerencia" text="Fecha" prefWidth="150.0"/>
-                                    </columns>
-                                </TableView>
-
+                                    <TableView fx:id="tablaSugerencias" VBox.vgrow="ALWAYS">
+                                        <columns>
+                                            <TableColumn fx:id="columnaIDSugerencia" text="ID" prefWidth="50.0"/>
+                                            <TableColumn fx:id="columnaTituloSugerencia" text="Título" prefWidth="200.0"/>
+                                            <TableColumn fx:id="columnaMensajeSugerencia" text="Mensaje" prefWidth="350.0"/>
+                                            <TableColumn fx:id="columnaFechaSugerencia" text="Fecha" prefWidth="150.0"/>
+                                        </columns>
+                                    </TableView>
+                                </VBox>
                             </AnchorPane>
                         </Tab>
 
-
-                        <Tab text="Centro de Pruebas">
+                        <Tab fx:id="tabPruebas" text="Centro de Pruebas">
                             <AnchorPane>
-                                <HBox spacing="10" AnchorPane.topAnchor="10.0" AnchorPane.leftAnchor="0.0"
-                                      AnchorPane.rightAnchor="0.0" alignment="CENTER_LEFT">
-                                    <TextField fx:id="campoBuscarPruebas"
-                                               promptText="Buscar funcionalidades..."
-                                               HBox.hgrow="ALWAYS"
-                                               prefHeight="26"/>
-                                    <Button fx:id="botonAgregarPrueba"
-                                            text="+ Nueva Funcionalidad"
-                                            onAction="#abrirFormularioPrueba"
-                                            minHeight="26"/>
-                                </HBox>
+                                <VBox spacing="10.0" AnchorPane.topAnchor="10.0" AnchorPane.leftAnchor="10.0"
+                                      AnchorPane.rightAnchor="10.0" AnchorPane.bottomAnchor="10.0">
+                                    <HBox spacing="10" alignment="CENTER">
+                                        <TextField fx:id="campoBuscarPruebas"
+                                                   promptText="Buscar funcionalidades..."
+                                                   HBox.hgrow="ALWAYS"
+                                                   prefHeight="26"/>
+                                        <Button fx:id="botonAgregarPrueba"
+                                                text="+ Nueva Funcionalidad"
+                                                onAction="#abrirFormularioPrueba"
+                                                minHeight="26"
+                                                styleClass="primary"/>
+                                    </HBox>
 
-
-                                <!-- Lista de funcionalidades en prueba -->
-                                <ListView fx:id="listaCentroPruebas"
-                                          AnchorPane.topAnchor="50.0"
-                                          AnchorPane.leftAnchor="0.0"
-                                          AnchorPane.rightAnchor="0.0"
-                                          AnchorPane.bottomAnchor="0.0"/>
+                                    <ListView fx:id="listaCentroPruebas" VBox.vgrow="ALWAYS"/>
+                                </VBox>
                             </AnchorPane>
                         </Tab>
-
                     </tabs>
                 </TabPane>
             </VBox>

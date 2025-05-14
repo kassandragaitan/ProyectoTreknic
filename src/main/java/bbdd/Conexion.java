@@ -20,10 +20,10 @@ import modelo.InformeActividadDestino;
 public class Conexion {
 
     static Connection conn;
-    public static final String URL = "jdbc:mysql://localhost/treknic";
-    public static final String USERNAME = "root";
-    public static final String PASSWORD = "";
-
+    public static final String URL = "jdbc:mysql://145.14.151.1/u812167471_kassandra";
+    public static final String USERNAME = "u812167471_kassandra";
+    public static final String PASSWORD = "2025-Kassandra";
+    
     public static Connection conectar() {
         try {
             Class.forName("com.mysql.jdbc.Driver");

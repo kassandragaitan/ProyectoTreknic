@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import java.net.URL?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -13,7 +12,6 @@
             <children>
                 <VBox spacing="15" AnchorPane.topAnchor="20" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20" AnchorPane.bottomAnchor="20">
 
-                    <!-- Título y botón nuevo -->
                     <HBox alignment="CENTER_LEFT" spacing="10">
                         <Label text="Gestión de Destinos" styleClass="labelTitulo" />
                         <Pane HBox.hgrow="ALWAYS" />
@@ -23,7 +21,6 @@
                                 styleClass="primary" />
                     </HBox>
 
-                    <!-- Filtros -->
                     <HBox spacing="10">
                         <TextField fx:id="campoBuscarDestino" promptText="Buscar destinos..." HBox.hgrow="ALWAYS" />
                         <ComboBox fx:id="comboFiltroPor" promptText="Selecciona filtro..." prefWidth="210.0" />
@@ -31,7 +28,6 @@
                         <Button fx:id="botonQuitarFiltro" text="Quitar Filtro" styleClass="secondary" />
                     </HBox>
 
-                    <!-- ScrollPane para mostrar los destinos -->
                     <ScrollPane fx:id="scrollPane"
                                 fitToWidth="true"
                                 fitToHeight="true"

@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import java.net.URL?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
@@ -16,10 +15,8 @@
         <URL value="@/Estilos/gestion.css" />
     </stylesheets>
 
-    <!-- Título -->
     <Label layoutX="30.0" layoutY="30.0" styleClass="labelTitulo" text="Gestion de Usuarios" />
 
-    <!-- Fila de búsqueda y filtros -->
     <HBox layoutX="30.0" layoutY="70.0" prefHeight="42.0" spacing="10.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="70.0">
         <children>
             <TextField fx:id="campoBuscarUsuario" promptText="Buscar usuarios..." HBox.hgrow="ALWAYS" />
@@ -30,10 +27,8 @@
     </HBox>
 
 
-    <!-- Botón Nuevo Usuario -->
     <Button fx:id="botonNuevoUsuario" layoutY="25.0" onAction="#irAnuevoUsuario" styleClass="primary" stylesheets="@/Estilos/gestiondestinos.css" text="Nuevo Usuario" AnchorPane.rightAnchor="30.0" />
 
-    <!-- Tabla de usuarios -->
     <TableView fx:id="tablaUsuarios" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="130.0">
         <columns>
             <TableColumn fx:id="columnUsuario" prefWidth="140" text="USUARIO" />

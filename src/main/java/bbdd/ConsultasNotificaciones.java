@@ -65,7 +65,6 @@ public class ConsultasNotificaciones {
             cerrarConexion();
         }
     }
-// Cargar las preferencias de un usuario
 
     public static PreferenciasNotificacion cargarPreferencias(int idUsuario) {
         conectar();
@@ -91,11 +90,9 @@ public class ConsultasNotificaciones {
         return preferencias;
     }
 
-// Guardar o actualizar preferencias de un usuario
     public static boolean guardarPreferencias(int idUsuario, PreferenciasNotificacion preferencias) {
         conectar();
         try {
-            // Verificar si ya existe la configuración
             String consultaCheck = "SELECT COUNT(*) FROM configuracion_notificaciones WHERE id_usuario = ?";
             PreparedStatement psCheck = conn.prepareStatement(consultaCheck);
             psCheck.setInt(1, idUsuario);
@@ -104,7 +101,6 @@ public class ConsultasNotificaciones {
             int existe = rsCheck.getInt(1);
 
             if (existe > 0) {
-                // Actualizar
                 String consultaUpdate = "UPDATE configuracion_notificaciones SET notificaciones_correo = ?, notificaciones_sistema = ?, resumen_diario = ?, hora_inicio = ?, hora_fin = ?, dias = ? WHERE id_usuario = ?";
                 PreparedStatement pst = conn.prepareStatement(consultaUpdate);
                 pst.setBoolean(1, preferencias.isCorreo());
@@ -116,7 +112,6 @@ public class ConsultasNotificaciones {
                 pst.setInt(7, idUsuario);
                 pst.executeUpdate();
             } else {
-                // Insertar nuevo
                 String consultaInsert = "INSERT INTO configuracion_notificaciones (id_usuario, notificaciones_correo, notificaciones_sistema, resumen_diario, hora_inicio, hora_fin, dias) VALUES (?, ?, ?, ?, ?, ?, ?)";
                 PreparedStatement pst = conn.prepareStatement(consultaInsert);
                 pst.setInt(1, idUsuario);

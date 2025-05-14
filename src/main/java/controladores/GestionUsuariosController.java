@@ -6,6 +6,8 @@ package controladores;
 
 import Utilidades.Alertas;
 import Utilidades.compruebaCampo;
+import Utilidades.validarEmail;
+import Utilidades.validarTelefonoGlobal;
 import bbdd.Conexion;
 import bbdd.ConsultasConfiguracion;
 import bbdd.ConsultasUsuario;
@@ -58,41 +60,29 @@ public class GestionUsuariosController implements Initializable {
     private CheckBox checkActivo;
     @FXML
     private ImageView imagenTrekNic;
-    @FXML
-    private Label linkLogin;
 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        linkLogin.setCursor(Cursor.HAND);
+    
         Conexion.conectar();
         checkActivo.setSelected(true);
+        checkActivo.setDisable(true);
 
         ConsultasUsuario.cargarComboIdioma(campoIdioma);
         ConsultasUsuario.cargarComboTipoUsuario(campoTipoUsuario);
         ConsultasUsuario.cargarComboTipoCompania(campoTipoCompania);
         Conexion.cerrarConexion();
-
         Image imagen = new Image(getClass().getResourceAsStream("/img/Encabezado.png"));
         imagenTrekNic.setImage(imagen);
     }
-private boolean validarContraseña(String pass) {
-    ConfiguracionSistema config = ConsultasConfiguracion.obtenerConfiguracion();
-    String politica = config.getPoliticaContrasena();
 
-    switch (politica) {
-        case "Fuerte":
-            return pass.length() >= 8 && pass.matches(".*[A-Z].*") && pass.matches(".*[0-9].*");
-        case "Media":
-            return pass.length() >= 6;
-        default: // Débil
-            return pass.length() >= 4;
-    }
-}
+    private Usuario usuarioEnEdicion = null;
 
     public void VerCamposUsuario(Usuario usuario) {
+        this.usuarioEnEdicion = usuario;
         campoNombre.setText(usuario.getNombre());
         campoTelefono.setText(usuario.getTelefono());
         campoEmail.setText(usuario.getEmail());
@@ -112,7 +102,7 @@ private boolean validarContraseña(String pass) {
         campoTipoUsuario.setDisable(!editable);
         campoTipoCompania.setDisable(!editable);
         checkActivo.setDisable(!editable);
-        botonRegistrar.setDisable(!editable); // desactiva el botón de guardar si solo estás viendo
+        botonRegistrar.setDisable(!editable);
     }
 
     private AdministracionUsuarioController administracionUsuarioController;
@@ -120,50 +110,85 @@ private boolean validarContraseña(String pass) {
     public void setAdministracionUsuarioController(AdministracionUsuarioController controller) {
         this.administracionUsuarioController = controller;
     }
+    private boolean abiertoDesdeLogin = false;
+
+    public void setAbiertoDesdeLogin(boolean valor) {
+        this.abiertoDesdeLogin = valor;
+    }
 
     @FXML
     private void registrar(ActionEvent event) {
         Conexion.conectar();
+
         if (compruebaCampo.compruebaVacio(campoNombre)) {
             Alertas.aviso("Campo vacío", "El nombre no puede estar vacío.");
+        } else if (compruebaCampo.compruebaVacio(campoTelefono)) {
+            Alertas.aviso("Campo vacío", "El teléfono no puede estar vacío.");
+        } else if (!validarTelefonoGlobal.esTelefonoValido(campoTelefono.getText())) {
+            Alertas.aviso("Teléfono inválido", "Ingrese un número válido (8-15 dígitos, con o sin '+'). En Nicaragua debe comenzar con 2, 5, 7 u 8.");
+        } else if (campoTelefono.getText().length() > 20) {
+            Alertas.aviso("Teléfono muy largo", "El número de teléfono no debe exceder los 20 caracteres.");
         } else if (compruebaCampo.compruebaVacio(campoEmail)) {
             Alertas.aviso("Campo vacío", "El email no puede estar vacío.");
-            //validacion
+        } else if (!validarEmail.esEmailValido(campoEmail.getText())) {
+            Alertas.aviso("Email inválido", "Ingrese un correo electrónico válido.");
         } else if (compruebaCampo.compruebaVacio(campoContrasena)) {
             Alertas.aviso("Campo vacío", "La contraseña no puede estar vacía.");
-        } //tipo usuario 
-        //fecha registro
-        //idioma preferido 
-        // tipo viajero \
-        //estado activo o inactivo 
-        else if (compruebaCampo.compruebaVacio(campoTelefono)) {
-            Alertas.aviso("Campo vacío", "El teléfono no puede estar vacío.");
-            //validacion
+        } else if (campoTipoCompania.getValue() == null || campoTipoCompania.getValue().equals("Seleccione")) {
+            Alertas.aviso("Combo vacío", "Debe seleccionar un tipo de viajero.");
+        } else if (campoTipoUsuario.getValue() == null || campoTipoUsuario.getValue().equals("Seleccione")) {
+            Alertas.aviso("Combo vacío", "Debe seleccionar un tipo de usuario.");
+        } else if (campoIdioma.getValue() == null || campoIdioma.getValue().equals("Seleccione")) {
+            Alertas.aviso("Combo vacío", "Debe seleccionar un idioma.");
         } else {
+            String telefonoLimpio = campoTelefono.getText().replaceAll("[^+0-9]", "");
+
+            if (usuarioEnEdicion == null && ConsultasUsuario.existeEmail(campoEmail.getText())) {
+                Alertas.aviso("Email duplicado", "El correo ya está registrado. Use otro diferente.");
+                Conexion.cerrarConexion();
+                return;
+            }
+
             Usuario usuario = new Usuario();
             usuario.setNombre(campoNombre.getText());
-            usuario.setTelefono(campoTelefono.getText());
+            usuario.setTelefono(telefonoLimpio);
             usuario.setEmail(campoEmail.getText());
             usuario.setContrasena(campoContrasena.getText());
             usuario.setTipoViajero(campoTipoCompania.getValue());
-            usuario.setIdioma(campoIdioma.getValue());//.getSelectedItem().toString(), ?????
+            usuario.setIdioma(campoIdioma.getValue());
             usuario.setTipoUsuario(campoTipoUsuario.getValue());
-            usuario.setActivo(checkActivo.isSelected());
+            usuario.setActivo(true);
 
-            if (ConsultasUsuario.registrarUsuario(usuario)) {
-                Alertas.informacion("Usuario registrado exitosamente.");
-                limpiarFormulario();
-                recargarTabla();
+            if (usuarioEnEdicion == null) {
+                if (ConsultasUsuario.registrarUsuario(usuario)) {
+                    Alertas.informacion("Usuario registrado exitosamente.");
+                    limpiarFormulario();
+                    recargarTabla();
+
+                    if (abiertoDesdeLogin) {
+                        Stage ventanaActual = (Stage) botonRegistrar.getScene().getWindow();
+                        ventanaActual.close();
+                    }
+                } else {
+                    Alertas.error("Error en el registro", "Ocurrió un error al registrar el usuario.");
+                }
             } else {
-
-                Alertas.error("Error en el registro", "Ocurrió un error al registrar el usuario.");
+                usuario.setIdUsuario(usuarioEnEdicion.getIdUsuario());
+                if (ConsultasUsuario.actualizarUsuario(usuario)) {
+                    Alertas.informacion("Usuario actualizado correctamente.");
+                    recargarTabla();
+                    Stage stage = (Stage) botonRegistrar.getScene().getWindow();
+                    stage.close();
+                } else {
+                    Alertas.error("Error al actualizar", "Ocurrió un error al actualizar el usuario.");
+                }
             }
         }
     }
 
     private void recargarTabla() {
         if (administracionUsuarioController != null) {
-            administracionUsuarioController.recargarTabla();  // Llamar a recargar la tabla en el controlador principal
+            administracionUsuarioController.recargarTabla();
         }
     }
 
@@ -172,31 +197,10 @@ private boolean validarContraseña(String pass) {
         campoTelefono.clear();
         campoEmail.clear();
         campoContrasena.clear();
-        campoTipoUsuario.getSelectionModel().clearSelection();
-        campoTipoCompania.getSelectionModel().clearSelection();
-        campoIdioma.getSelectionModel().clearSelection();
-
+        campoTipoUsuario.getSelectionModel().selectFirst();
+        campoTipoCompania.getSelectionModel().selectFirst();
+        campoIdioma.getSelectionModel().selectFirst();
     }
 
-    @FXML
-    private void irAlLogin(MouseEvent event) {
-        try {
-            // Cargar la nueva vista
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/Login.fxml"));
-            Parent root = loader.load();
 
-            // Crear una nueva ventana
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Iniciar Sesión");
-            stage.show();
-
-            // Cerrar la ventana actual
-            Stage ventanaActual = (Stage) linkLogin.getScene().getWindow();
-            ventanaActual.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 }

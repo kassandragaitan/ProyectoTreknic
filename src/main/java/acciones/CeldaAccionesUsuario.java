@@ -51,7 +51,7 @@ public class CeldaAccionesUsuario extends TableCell<Usuario, Void> {
         botonEditar.setOnAction(e -> {
             Usuario usuario = getTableRow().getItem();
             if (usuario != null) {
-                abrirVentanaGestionUsuario(usuario, true); // campos activados
+                abrirVentanaGestionUsuario(usuario, true); 
             }
         });
 

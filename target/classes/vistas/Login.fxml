@@ -42,8 +42,17 @@
                     </children>
                 </Pane>
 
-                <Button  layoutX="330.0" layoutY="555.0" styleClass="labelDos" text="¿Olvidaste tu contraseña?" onAction="#abrirVentanaRecuperar"/>
-                <Label layoutX="500.0" layoutY="555.0" styleClass="labelDos" text="Regístrate" />
+                <Button fx:id="botonOlvidar" layoutX="330.0" layoutY="555.0"
+                        styleClass="link-button"
+                        text="¿Olvidaste tu contraseña?"
+                        onAction="#abrirVentanaRecuperar" />
+
+                <Button fx:id="botonRegistro" layoutX="500.0" layoutY="555.0"
+                        styleClass="link-button"
+                        text="Regístrate"
+                        onAction="#abrirVentanaRegistro" />
+
+
             </children>
         </AnchorPane>
     </children>

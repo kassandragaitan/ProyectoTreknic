@@ -7,8 +7,10 @@ package controladores;
 import Utilidades.Alertas;
 import Utilidades.compruebaCampo;
 import bbdd.Conexion;
+import bbdd.ConsultasMovimientos;
 import bbdd.ConsultasTipoAlojamiento;
 import java.net.URL;
+import java.util.Date;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -19,6 +21,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import modelo.TipoAlojamiento;
+import modelo.Usuario;
 
 /**
  * FXML Controller class
@@ -73,40 +76,61 @@ public class AgregarTipoAlojamientoController implements Initializable {
     private void RegistrarTipoAlojamiento(ActionEvent event) {
         if (compruebaCampo.compruebaVacio(campoTipo)) {
             Alertas.aviso("Campo vacío", "El tipo de alojamiento no puede estar vacío.");
-        } else {
-            TipoAlojamiento tipo = new TipoAlojamiento(campoTipo.getText());
+            return;
+        }
 
-            boolean exito;
+        String tipoTexto = campoTipo.getText().trim();
 
-            if (esEdicion && tipoActual != null) {
-                tipo.setIdTipo(tipoActual.getIdTipo());
-                exito = ConsultasTipoAlojamiento.actualizarTipoAlojamiento(tipo);
+        if (!esEdicion && ConsultasTipoAlojamiento.existeTipoAlojamiento(tipoTexto)) {
+            Alertas.aviso("Duplicado", "Ya existe un tipo de alojamiento con ese nombre.");
+            return;
+        }
 
-                if (exito) {
-                    Alertas.informacion("Tipo de Alojamiento actualizado exitosamente.");
-                    recargarTabla();  // Recargar la tabla después de la actualización
-                    cerrarVentana();
-                } else {
-                    Alertas.error("Error en la actualización", "No se pudo actualizar el tipo de alojamiento.");
-                }
+        TipoAlojamiento tipo = new TipoAlojamiento(tipoTexto);
+        boolean exito;
 
+        if (esEdicion && tipoActual != null) {
+            tipo.setIdTipo(tipoActual.getIdTipo());
+            exito = ConsultasTipoAlojamiento.actualizarTipoAlojamiento(tipo);
+
+            if (exito) {
+                Conexion.conectar();
+                ConsultasMovimientos.registrarMovimiento(
+                        "Ha actualizado el tipo de alojamiento " + tipoTexto,
+                        new Date(),
+                        Usuario.getUsuarioActual().getIdUsuario()
+                );
+
+                Alertas.informacion("Tipo de Alojamiento actualizado exitosamente.");
+                recargarTabla();
+                cerrarVentana();
             } else {
-                exito = ConsultasTipoAlojamiento.registrarTipoAlojamiento(tipo);
+                Alertas.error("Error en la actualización", "No se pudo actualizar el tipo de alojamiento.");
+            }
 
-                if (exito) {
-                    Alertas.informacion("Tipo de Alojamiento registrado exitosamente.");
-                    campoTipo.clear();
-                    recargarTabla();  // Recargar la tabla después de registrar el nuevo tipo
-                } else {
-                    Alertas.error("Error en el registro", "Ocurrió un error al registrar el tipo de alojamiento.");
-                }
+        } else {
+            exito = ConsultasTipoAlojamiento.registrarTipoAlojamiento(tipo);
+
+            if (exito) {
+                Conexion.conectar();
+                ConsultasMovimientos.registrarMovimiento(
+                        "Ha registrado el tipo de alojamiento " + tipoTexto,
+                        new Date(),
+                        Usuario.getUsuarioActual().getIdUsuario()
+                );
+
+                Alertas.informacion("Tipo de Alojamiento registrado exitosamente.");
+                campoTipo.clear();
+                recargarTabla();
+            } else {
+                Alertas.error("Error en el registro", "Ocurrió un error al registrar el tipo de alojamiento.");
             }
         }
     }
 
     private void recargarTabla() {
         if (gestionTipoAlojamientoController != null) {
-            gestionTipoAlojamientoController.recargarTabla();  // Llamar a recargar la tabla en el controlador principal
+            gestionTipoAlojamientoController.recargarTabla();
         }
     }
 }

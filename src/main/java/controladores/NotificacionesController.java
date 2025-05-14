@@ -39,8 +39,6 @@ public class NotificacionesController implements Initializable {
     @FXML
     private Button botonGuardarCambios;
     @FXML
-    private TableColumn<Notificacion, String> columnaNombre;
-    @FXML
     private TableColumn<Notificacion, String> columnaDescripcion;
     @FXML
     private TableColumn<Notificacion, String> columnaDestinatario;
@@ -125,7 +123,6 @@ public class NotificacionesController implements Initializable {
     }
 
     private void initializeTableView() {
-        columnaNombre.setCellValueFactory(new PropertyValueFactory<>("notificacion"));
         columnaDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
         columnaDestinatario.setCellValueFactory(new PropertyValueFactory<>("nombreDestinatario"));
         columnaFecha.setCellValueFactory(new PropertyValueFactory<>("fecha"));
@@ -220,7 +217,6 @@ public class NotificacionesController implements Initializable {
 
         ConsultasNotificaciones.guardarPreferencias(idUsuarioActivo, preferencias);
 
-        // ✅ Registrar el movimiento
         ConsultasMovimientos.registrarMovimiento("Actualizó sus preferencias de notificación", java.sql.Date.valueOf(LocalDate.now()), idUsuarioActivo);
     }
 

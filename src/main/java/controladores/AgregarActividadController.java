@@ -9,6 +9,7 @@ import Utilidades.compruebaCampo;
 import bbdd.Conexion;
 import bbdd.ConsultasActividades;
 import bbdd.ConsultasDestinos;
+import bbdd.ConsultasMovimientos;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
@@ -18,12 +19,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import modelo.Actividad;
 import modelo.Destino;
+import modelo.Usuario;
 
 /**
  * FXML Controller class
@@ -35,7 +38,7 @@ public class AgregarActividadController implements Initializable {
     @FXML
     private TextField campoNombre;
     @FXML
-    private TextField campoDescripcion;
+    private TextArea campoDescripcion;
     @FXML
     private ComboBox<Destino> comboDestino;
     @FXML
@@ -59,9 +62,8 @@ public class AgregarActividadController implements Initializable {
         imagenTrekNic.setImage(imagen);
     }
 
-    private GestionActividadesController gestionActividadesController;  // Referencia al controlador principal
+    private GestionActividadesController gestionActividadesController;
 
-// Método para establecer la referencia del controlador principal
     public void setGestionActividadesController(GestionActividadesController controller) {
         this.gestionActividadesController = controller;
     }
@@ -73,7 +75,7 @@ public class AgregarActividadController implements Initializable {
         } else if (compruebaCampo.compruebaVacio(campoDescripcion)) {
             Alertas.aviso("Campo vacío", "La descripción no puede estar vacía.");
         } else if (comboDestino.getValue() == null) {
-            Alertas.aviso("Campo vacío", "Debe seleccionar un destino.");
+            Alertas.aviso("Combo vacío", "Debe seleccionar un destino.");
         } else {
             Destino destinoSeleccionado = comboDestino.getValue();
 
@@ -83,8 +85,14 @@ public class AgregarActividadController implements Initializable {
                 actividadActual.setIdDestino(destinoSeleccionado.getId_destino());
 
                 if (ConsultasActividades.actualizarActividad(actividadActual)) {
+                    Conexion.conectar();
+                    ConsultasMovimientos.registrarMovimiento(
+                            "Ha actualizado la actividad " + campoNombre.getText(),
+                            new java.util.Date(),
+                            Usuario.getUsuarioActual().getIdUsuario()
+                    );
                     Alertas.informacion("Actividad actualizada exitosamente.");
-                    recargarTabla();  // Recargar la tabla después de la actualización
+                    recargarTabla();
                     cerrarVentana();
                 } else {
                     Alertas.error("Error", "No se pudo actualizar la actividad.");
@@ -98,8 +106,14 @@ public class AgregarActividadController implements Initializable {
                 );
 
                 if (ConsultasActividades.registrarActividad(actividad)) {
+                    Conexion.conectar();
+                    ConsultasMovimientos.registrarMovimiento(
+                            "Ha registrado la actividad " + campoNombre.getText(),
+                            new java.util.Date(),
+                            Usuario.getUsuarioActual().getIdUsuario()
+                    );
                     Alertas.informacion("Actividad registrada exitosamente.");
-                    recargarTabla();  // Recargar la tabla después de registrar
+                    recargarTabla();
                     limpiarFormulario();
                 } else {
                     Alertas.error("Error en el registro", "No se pudo registrar la actividad.");
@@ -110,7 +124,7 @@ public class AgregarActividadController implements Initializable {
 
     private void recargarTabla() {
         if (gestionActividadesController != null) {
-            gestionActividadesController.recargarTabla();  // Llamar a recargar la tabla en el controlador principal
+            gestionActividadesController.recargarTabla();
         }
     }
 

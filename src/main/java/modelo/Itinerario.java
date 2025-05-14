@@ -7,7 +7,7 @@ public class Itinerario {
     private int idItinerario;
     private String nombre;
     private String descripcion;
-    private int duracion;
+    private String duracion;
     private Date fechaCreacion;
     private Boolean isActive;
     private String foto;
@@ -17,7 +17,7 @@ public class Itinerario {
     public Itinerario() {
     }
 
-    public Itinerario(int idItinerario, String nombre, String descripcion, int duracion, Date fechaCreacion, Boolean isActive, String foto, int idUsuario, String nombreUsuario) {
+    public Itinerario(int idItinerario, String nombre, String descripcion, String duracion, Date fechaCreacion, Boolean isActive, String foto, int idUsuario, String nombreUsuario) {
         this.idItinerario = idItinerario;
         this.nombre = nombre;
         this.descripcion = descripcion;
@@ -30,7 +30,7 @@ public class Itinerario {
     }
 
     // Constructor básico
-    public Itinerario(int idItinerario, String nombre, Date fechaCreacion, String descripcion, int duracion) {
+    public Itinerario(int idItinerario, String nombre, Date fechaCreacion, String descripcion, String duracion) {
         this.idItinerario = idItinerario;
         this.nombre = nombre;
         this.fechaCreacion = fechaCreacion;
@@ -39,7 +39,7 @@ public class Itinerario {
     }
 
     // Constructor completo
-    public Itinerario(int idItinerario, String nombre, Date fechaCreacion, String descripcion, int duracion, int idUsuario, Boolean isActive, String foto) {
+    public Itinerario(int idItinerario, String nombre, Date fechaCreacion, String descripcion, String duracion, int idUsuario, Boolean isActive, String foto) {
         this.idItinerario = idItinerario;
         this.nombre = nombre;
         this.fechaCreacion = fechaCreacion;
@@ -51,7 +51,7 @@ public class Itinerario {
     }
 
     // Constructor sin isActive ni foto
-    public Itinerario(int idItinerario, String nombre, Date fechaCreacion, String descripcion, int duracion, int idUsuario) {
+    public Itinerario(int idItinerario, String nombre, Date fechaCreacion, String descripcion, String duracion, int idUsuario) {
         this(idItinerario, nombre, fechaCreacion, descripcion, duracion, idUsuario, null, null);
     }
 
@@ -88,11 +88,11 @@ public class Itinerario {
         this.descripcion = descripcion;
     }
 
-    public int getDuracion() {
+    public String getDuracion() {
         return duracion;
     }
 
-    public void setDuracion(int duracion) {
+    public void setDuracion(String duracion) {
         this.duracion = duracion;
     }
 

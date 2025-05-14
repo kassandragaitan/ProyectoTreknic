@@ -43,7 +43,6 @@
     -fx-padding: 4 14;
 }
 
-/* registro-usuario.css */
 .fondo-registro {
     -fx-background-color: #dbeeff;
 }
@@ -79,7 +78,6 @@
     -fx-pref-width: 220px;
 }
 
-/* Botón con animación y efecto hover */
 .boton-registro {
     -fx-background-color: white;
     -fx-text-fill: #003d7a;
@@ -87,7 +85,6 @@
     -fx-border-radius: 20;
     -fx-border-color: white;
     -fx-font-weight: bold;
-/*    o 4*/
     -fx-padding: 6px 14px;
     -fx-cursor: hand;
     -fx-effect: dropshadow(one-pass-box, rgba(0,0,0,0.2), 2, 0, 0, 1);
@@ -114,13 +111,21 @@
     -fx-border-radius: 20;
     -fx-border-color: transparent;
 
-    /* 🔽 Ajustamos altura visual */
     -fx-pref-width: 220px;
-    -fx-pref-height: 28px;  /* 👉 Esta línea reduce el alto */
-    -fx-padding: 2 10 2 10; /* 👉 Margen interno más delgado */
-    
+    -fx-pref-height: 28px;  
+    -fx-padding: 2 10 2 10; 
     -fx-font-size: 13px;
 }
 
+.link-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #0c2461;
+    -fx-underline: true;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-border-width: 0;
+    -fx-cursor: hand;
+    -fx-padding: 0;
+}
 
 

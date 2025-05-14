@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import java.net.URL?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.MenuItem?>
@@ -12,7 +11,6 @@
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="controladores.MenuController">
 
-    <!-- Zona central (contenido dinámico) -->
     <center>
         <AnchorPane fx:id="contenido" BorderPane.alignment="CENTER" />
     </center>

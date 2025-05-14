@@ -118,7 +118,7 @@ public class ConsultasLogin {
     }
 
     public static boolean actualizarContrasena(String email, String nuevaPass) {
-        String sql = "UPDATE usuarios SET contraseña = ? WHERE email = ?";
+        String sql = "UPDATE usuarios SET contrasena = ? WHERE email = ?";
         try (Connection conn = Conexion.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, nuevaPass);
             stmt.setString(2, email);

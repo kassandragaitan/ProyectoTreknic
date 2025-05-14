@@ -30,7 +30,6 @@ public class Resenas_ItemController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
     }    
     
 }

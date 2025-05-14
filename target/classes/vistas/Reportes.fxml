@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.scene.chart.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -19,13 +18,19 @@
                   AnchorPane.rightAnchor="20.0"
                   AnchorPane.bottomAnchor="20.0">
 
-                <!-- Título -->
-                <Label text="Reportes y Estadísticas" styleClass="title" />
+                <Label text="Reportes y Estadísticas" styleClass="labelTitulo" />
 
-                <!-- Separador -->
                 <Separator prefWidth="850.0" />
+                
+                <HBox alignment="CENTER_RIGHT" spacing="10.0" prefWidth="850.0">
+                    <children>
+                        <Button fx:id="botonNuevoReporte"
+                                text="Nuevo Reporte"
+                                styleClass="primary"
+                                onAction="#abrirVentanaNuevoReporte"/>
+                    </children>
+                </HBox>
 
-                <!-- Panel de filtros -->
                 <Pane prefHeight="120.0" prefWidth="850.0">
                     <children>
                         <Label layoutX="14.0" layoutY="14.0" text="Tipo de reporte" />
@@ -44,7 +49,6 @@
                     </children>
                 </Pane>
 
-                <!-- Contenedor de gráficos alternables -->
                 <StackPane prefHeight="400.0" prefWidth="850.0">
                     <children>
                         <LineChart fx:id="lineChart"
@@ -65,7 +69,6 @@
                     </children>
                 </StackPane>
 
-                <!-- Paneles estadísticos estilizados -->
                 <HBox spacing="20.0" alignment="CENTER" styleClass="stat-cards">
                     <children>
                         <VBox styleClass="stat-card" prefWidth="200.0" prefHeight="80.0">

@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
@@ -14,8 +13,6 @@
     <stylesheets>
       <URL value="@/Estilos/gestion.css" />
     </stylesheets>
-
-    <!-- Centrado visual -->
     <HBox alignment="CENTER"
           AnchorPane.topAnchor="20"
           AnchorPane.leftAnchor="0"
@@ -24,7 +21,6 @@
 
         <VBox spacing="15" maxWidth="800.0" HBox.hgrow="ALWAYS">
 
-            <!-- Título -->
             <Label text="Gestión de Categorías"
                    styleClass="labelTitulo">
                 <stylesheets>
@@ -32,7 +28,6 @@
                 </stylesheets>
             </Label>
 
-            <!-- Filtros -->
             <HBox spacing="10">
                 <TextField fx:id="campoBuscarCategoria"
                            promptText="Buscar categoría..."
@@ -47,7 +42,6 @@
                 </Button>
             </HBox>
 
-            <!-- Tabla -->
             <TableView fx:id="tablaCategoria" VBox.vgrow="ALWAYS">
                 <columns>
                     <TableColumn fx:id="columnaIdCategoria" text="ID" visible="false" />

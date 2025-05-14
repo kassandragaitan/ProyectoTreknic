@@ -26,6 +26,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import modelo.Actividad;
 import acciones.CeldaAccionesActividad;
+import javafx.stage.StageStyle;
 
 /**
  * FXML Controller class
@@ -123,7 +124,7 @@ public class GestionActividadesController implements Initializable {
         tablaActividades.setItems(listaActividades);
     }
 
-    public void cargarActividades() {  // Cambié 'private' a 'public'
+    public void cargarActividades() {
         ObservableList<Actividad> listaActividades = FXCollections.observableArrayList();
         Conexion.conectar();
         ConsultasActividades.cargarDatosActividades(listaActividades);
@@ -136,9 +137,8 @@ public class GestionActividadesController implements Initializable {
         columnaIdDestino.setCellValueFactory(new PropertyValueFactory<>("nombreDestino"));
     }
 
-// Método para recargar la tabla
     public void recargarTabla() {
-        cargarActividades();  // Recargar la tabla con nuevos datos
+        cargarActividades();
     }
 
     @FXML
@@ -147,11 +147,13 @@ public class GestionActividadesController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/AgregarActividad.fxml"));
             Parent root = loader.load();
 
-            // Pasar la referencia del controlador principal
             AgregarActividadController controlador = loader.getController();
-            controlador.setGestionActividadesController(this);  // Aquí se pasa la referencia
+            controlador.setGestionActividadesController(this);
 
             Stage stage = new Stage();
+            stage.initStyle(StageStyle.DECORATED);
+            stage.setMaximized(false);
+            stage.setResizable(false);
             stage.setTitle("Agregar Actividad");
             stage.setScene(new Scene(root));
             stage.initModality(Modality.APPLICATION_MODAL);

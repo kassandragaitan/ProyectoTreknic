@@ -6,6 +6,7 @@ package Utilidades;
 
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputControl;
 
 /**
  *
@@ -13,8 +14,8 @@ import javafx.scene.control.TextField;
  */
 public class compruebaCampo {
 
-    public static boolean compruebaVacio(TextField campo) {
-        return campo.getText().isEmpty();
+    public static boolean compruebaVacio(TextInputControl campo) {
+        return campo.getText().trim().isEmpty();
     }
 
     public static boolean compruebaNull(ComboBox selector) {

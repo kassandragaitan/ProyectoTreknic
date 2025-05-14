@@ -1,0 +1,79 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
+ */
+package controladores;
+
+import Utilidades.Alertas;
+import Utilidades.compruebaCampo;
+import bbdd.Conexion;
+import bbdd.ConsultasMovimientos;
+import bbdd.ConsultasPreguntasFrecuentes;
+import java.net.URL;
+import java.util.Date;
+import java.util.ResourceBundle;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import modelo.Usuario;
+
+/**
+ * FXML Controller class
+ *
+ * @author k0343
+ */
+public class FormularioPreguntaController implements Initializable {
+
+    @FXML
+    private TextField txtPregunta;
+    @FXML
+    private TextArea txtRespuesta;
+    @FXML
+    private Button btnGuardar;
+
+    /**
+     * Initializes the controller class.
+     */
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        // TODO
+    }
+
+    @FXML
+    private void guardarPregunta(ActionEvent event) {
+        String pregunta = txtPregunta.getText().trim();
+        String respuesta = txtRespuesta.getText().trim();
+
+        if (compruebaCampo.compruebaVacio(txtPregunta)) {
+            Alertas.aviso("Campo vacío", "La pregunta no puede estar vacía.");
+        } else if (compruebaCampo.compruebaVacio(txtRespuesta)) {
+            Alertas.aviso("Campo vacío", "La respuesta no puede estar vacía.");
+        } else {
+            boolean exito = ConsultasPreguntasFrecuentes.insertarPregunta(pregunta, respuesta);
+            if (exito) {
+                Conexion.conectar();
+                ConsultasMovimientos.registrarMovimiento(
+                        "Ha registrado una nueva pregunta frecuente: " + pregunta,
+                        new Date(),
+                        Usuario.getUsuarioActual().getIdUsuario()
+                );
+
+                Alertas.informacion("¡Pregunta guardada correctamente!");
+                limpiarFormulario();
+            } else {
+                Alertas.error("Error", "No se pudo guardar la pregunta.");
+            }
+        }
+
+    }
+
+    private void limpiarFormulario() {
+        txtPregunta.clear();
+        txtRespuesta.clear();
+        btnGuardar.setText("Guardar");
+    }
+
+}

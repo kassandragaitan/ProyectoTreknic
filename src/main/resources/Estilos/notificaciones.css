@@ -1,3 +1,110 @@
+.root {
+    -fx-font-family: 'Segoe UI', sans-serif;
+    -fx-background-color: #f5f7f9;
+}
+
+.labelTitulo {
+    -fx-font-size: 24px;
+    -fx-text-fill: #333;
+}
+
+
+.sub-title {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #145da0;
+}
+
+.label {
+    -fx-text-fill: #333;
+    -fx-font-size: 13px;
+}
+
+
+
+.table-view {
+    -fx-background-color: white;
+    -fx-border-color: transparent;
+    -fx-table-cell-border-color: transparent;
+    -fx-font-size: 13px;
+    -fx-text-fill: #343a40;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0.1, 0, 2);
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: white;
+    -fx-border-color: transparent;
+    -fx-border-width: 0 0 1 0;
+}
+.table-view .column-header .label {
+    -fx-text-fill: #78909c;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-alignment: CENTER;
+    -fx-font-family: 'Segoe UI', sans-serif;
+}
+
+
+.table-view .table-row-cell {
+    -fx-background-color: white;
+    -fx-cell-size: 44px;
+    -fx-padding: 0;
+}
+
+.table-view .table-row-cell:odd {
+    -fx-background-color: #f9f9f9;
+}
+
+.table-view .table-row-cell:selected {
+    -fx-background-color: #e8f0fe;
+}
+.table-view .table-cell {
+    -fx-padding: 6 12;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.table-row-cell:selected .table-cell {
+    -fx-text-fill: #212121;
+}
+
+.table-row-cell:hover .table-cell {
+    -fx-text-fill: #212121;
+}
+
+.table-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #1a73e8;
+    -fx-font-size: 12px;
+    -fx-padding: 2 6;
+    -fx-cursor: hand;
+}
+.table-button:hover {
+    -fx-text-fill: #0c57d6;
+    -fx-underline: true;
+}
+.table-button.red {
+    -fx-text-fill: red;
+}
+.table-button.red:hover {
+    -fx-text-fill: darkred;
+    -fx-underline: true;
+}
+
+
+.save-button {
+    -fx-background-color: #145da0;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+    -fx-padding: 6 16;
+}
+.save-button:hover {
+    -fx-background-color: #0d47a1;
+}
+
 .check-box {
     -fx-background-color: transparent;
     -fx-border-color: #beddd0;
@@ -12,14 +119,13 @@
 }
 
 .check-box:selected {
-    -fx-background-color: #2dc38c;
-    -fx-border-color: #2dc38c;
+    -fx-background-color: #e8f0fe;
+  -fx-border-color: #e8f0fe;
     -fx-border-radius: 6;
     -fx-background-radius: 6;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.34), 2, 0, 0, 1);
 }
 
-/* CheckBox de preferencias generales */
 .check-box-preferencias {
     -fx-background-color: transparent;
     -fx-border-color: #beddd0;
@@ -41,12 +147,10 @@
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.34), 2, 0, 0, 1);
 }
 
-/* Ocultamos el texto de las preferencias */
 .check-box-preferencias .text {
     -fx-fill: transparent;
 }
 
-/* CheckBox de días de notificación */
 .check-box-dia {
     -fx-background-color: transparent;
     -fx-border-color: #beddd0;
@@ -58,15 +162,16 @@
     -fx-cursor: hand;
     -fx-padding: 0;
     -fx-alignment: center;
-    -fx-font-size: 12px; /* Tamaño de la letra */
+    -fx-font-size: 12px; 
     -fx-text-fill: #333333;
     -fx-font-weight: bold;
 }
 
 .check-box-dia:selected {
-    -fx-background-color: #2dc38c;
-    -fx-border-color: #2dc38c;
+  -fx-background-color: #e8f0fe;
+  -fx-border-color: #e8f0fe;
+    
     -fx-border-radius: 6;
     -fx-background-radius: 6;
-    -fx-text-fill: white;
+  -fx-text-fill: #333333;
 }

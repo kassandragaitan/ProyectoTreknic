@@ -74,8 +74,6 @@
     -fx-text-fill: white;
 }
 
-
-
 .table-view {
     -fx-background-color: white;
     -fx-border-color: transparent;
@@ -229,10 +227,10 @@
 
 .primary:hover {
     -fx-background-color: #0d47a1;
-    -fx-text-fill: white; /* 👈 Letras blancas al pasar el cursor */
+    -fx-text-fill: white;
 }
 
 .primary:pressed {
-    -fx-background-color: #e0e0e0; /* Fondo claro */
-    -fx-text-fill: black;         /* Letras negras */
+    -fx-background-color: #e0e0e0;
+    -fx-text-fill: black;       
 }

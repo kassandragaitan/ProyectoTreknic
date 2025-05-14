@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
@@ -18,7 +17,6 @@
     <VBox spacing="15" AnchorPane.topAnchor="20" AnchorPane.leftAnchor="20"
           AnchorPane.rightAnchor="20" AnchorPane.bottomAnchor="20">
 
-  <!-- Título -->
         <HBox alignment="CENTER_LEFT" spacing="10">
             <Label text="Gestión de Actividades" styleClass="labelTitulo">
                 <stylesheets>
@@ -33,7 +31,6 @@
                     stylesheets="@gestionactividades.css" />
         </HBox>
 
-        <!-- Filtros -->
         <HBox spacing="10">
             <TextField fx:id="campoBuscarActividad"
                        promptText="Buscar actividad..."
@@ -46,7 +43,6 @@
                     onAction="#quitarFiltroActividad"/>
         </HBox>
 
-        <!-- Tabla -->
         <TableView fx:id="tablaActividades"
                    VBox.vgrow="ALWAYS">
             <columns>

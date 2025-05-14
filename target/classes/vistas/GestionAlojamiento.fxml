@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import java.net.URL?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
 <AnchorPane xmlns="http://javafx.com/javafx/23.0.1"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="controladores.GestionAlojamientoController"
@@ -17,13 +15,8 @@
     <VBox spacing="15.0" AnchorPane.topAnchor="20.0" AnchorPane.leftAnchor="20.0"
           AnchorPane.rightAnchor="20.0" AnchorPane.bottomAnchor="20.0">
 
-        <!-- Título con botón a la derecha -->
         <HBox alignment="CENTER_LEFT" spacing="10.0">
-            <Label text="Gestión de Alojamientos" styleClass="labelTitulo">
-                <stylesheets>
-                    <URL value="@gestionalojamiento.css" />
-                </stylesheets>
-            </Label>
+            <Label text="Gestión de Alojamientos" styleClass="labelTitulo"></Label>
             <Pane HBox.hgrow="ALWAYS" />
             <Button fx:id="botonNuevoAlojamiento"
                     text="Nuevo Alojamiento"
@@ -31,7 +24,6 @@
                     styleClass="primary" />
         </HBox>
 
-        <!-- Filtros -->
         <HBox spacing="10.0">
             <TextField fx:id="campoBuscarAlojamiento"
                        promptText="Buscar alojamiento..."
@@ -50,7 +42,6 @@
                     styleClass="secondary" />
         </HBox>
 
-        <!-- Tabla de Alojamientos -->
         <ScrollPane fitToWidth="true" fitToHeight="true" maxHeight="250.0">
             <TableView fx:id="tablaAlojamientos" prefHeight="250.0">
                 <columns>
@@ -65,7 +56,6 @@
             </TableView>
         </ScrollPane>
 
-        <!-- Sección de Alojamientos Favoritos -->
         <Label text="Alojamientos Favoritos de Usuarios"
                style="-fx-font-size: 16px; -fx-font-weight: bold;" />
 
@@ -75,6 +65,5 @@
                       VBox.vgrow="ALWAYS"
                       style="-fx-background-color: #f5f5f5;" />
         </ScrollPane>
-
     </VBox>
 </AnchorPane>

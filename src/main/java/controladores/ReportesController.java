@@ -1,21 +1,31 @@
 package controladores;
 
+import Utilidades.Alertas;
 import Utilidades.Animacion;
 import bbdd.ConsultasReportes;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import modelo.InformeTipoAlojamiento;
 
 public class ReportesController implements Initializable {
@@ -40,6 +50,8 @@ public class ReportesController implements Initializable {
     private ComboBox<String> comboFiltro;
     @FXML
     private ComboBox<String> comboTipoReporte;
+    @FXML
+    private Button botonNuevoReporte;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -50,7 +62,6 @@ public class ReportesController implements Initializable {
         ));
         comboTipoReporte.setPromptText("Seleccione tipo de reporte");
 
-        // Initially hide the filter and statistics labels
         comboFiltro.setVisible(false);
         labelFiltro.setVisible(false);
         labelTotal.setVisible(false);
@@ -65,11 +76,9 @@ public class ReportesController implements Initializable {
     private void cambiarTipoReporte() {
         String seleccion = comboTipoReporte.getValue();
 
-        // Clear comboFiltro items and prompt
         comboFiltro.getItems().clear();
         comboFiltro.setPromptText("Seleccione filtro");
 
-        // Hide all the panels initially if no report is selected
         if (seleccion == null || seleccion.isEmpty()) {
             comboFiltro.setVisible(false);
             labelFiltro.setVisible(false);
@@ -80,7 +89,6 @@ public class ReportesController implements Initializable {
             return;
         }
 
-        // Show the filter and statistics panels for valid selections
         comboFiltro.setVisible(true);
         labelFiltro.setVisible(true);
         labelTotal.setVisible(true);
@@ -88,7 +96,6 @@ public class ReportesController implements Initializable {
         labelMaximo.setVisible(true);
         labelCrecimiento.setVisible(true);
 
-        // Set appropriate filter options based on report type
         if (seleccion.equals("Usuarios registrados")) {
             labelFiltro.setText("Idioma");
             comboFiltro.setItems(ConsultasReportes.obtenerIdiomasUsuarios());
@@ -106,11 +113,9 @@ public class ReportesController implements Initializable {
             return;
         }
 
-        // Hide all charts initially
         lineChart.setVisible(false);
         graficoTipos.setVisible(false);
 
-        // Display appropriate chart based on selected report
         if (seleccionReporte.equals("Usuarios registrados")) {
             cargarGraficoUsuarios(filtroSeleccionado);
             lineChart.setVisible(true);
@@ -130,7 +135,6 @@ public class ReportesController implements Initializable {
         int anterior = -1;
         int crecimiento = 0;
 
-        // Process the data
         for (Map.Entry<String, Integer> entry : datos.entrySet()) {
             int valor = entry.getValue();
             serie.getData().add(new XYChart.Data<>(entry.getKey(), valor));
@@ -146,11 +150,9 @@ public class ReportesController implements Initializable {
 
         double promedio = datos.isEmpty() ? 0 : (double) total / datos.size();
 
-        // Update the chart
         lineChart.getData().clear();
         lineChart.getData().add(serie);
 
-        // Animations
         Animacion.transicionGrafico(lineChart);
         for (XYChart.Data<String, Number> data : serie.getData()) {
             Animacion.animarDatosGrafico(data.getNode());
@@ -173,7 +175,6 @@ public class ReportesController implements Initializable {
         int total = 0;
         int maximo = 0;
 
-        // Process the data
         for (InformeTipoAlojamiento item : datos) {
             PieChart.Data data = new PieChart.Data(item.getTipo(), item.getCantidad());
             pieData.add(data);
@@ -185,7 +186,6 @@ public class ReportesController implements Initializable {
 
         double promedio = datos.isEmpty() ? 0 : (double) total / datos.size();
 
-        // Update the pie chart
         graficoTipos.setLegendVisible(true);
         graficoTipos.setLabelsVisible(true);
         graficoTipos.setClockwise(true);
@@ -199,11 +199,9 @@ public class ReportesController implements Initializable {
             );
             Tooltip.install(data.getNode(), tooltip);
 
-            // Animations
             Animacion.animarDatosGrafico(data.getNode());
         }
 
-        // General transition animation
         Animacion.transicionGrafico(graficoTipos);
 
         actualizarEstadisticas(total, promedio, maximo, 0);
@@ -220,6 +218,26 @@ public class ReportesController implements Initializable {
         } else {
             labelCrecimiento.setText(crecimiento + "%");
             labelCrecimiento.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+        }
+    }
+
+    @FXML
+    private void abrirVentanaNuevoReporte(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/AgregarReporte.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            stage.setTitle("Nuevo Reporte");
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.initStyle(StageStyle.DECORATED);
+            stage.setResizable(false);
+            stage.setMaximized(false);
+            stage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Alertas.error("Error", "No se pudo abrir la ventana de nuevo reporte.");
         }
     }
 }

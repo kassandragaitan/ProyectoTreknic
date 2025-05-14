@@ -118,4 +118,24 @@ public class ConsultasTipoAlojamiento {
         }
     }
 
+    public static boolean existeTipoAlojamiento(String tipo) {
+        boolean existe = false;
+        try {
+            String sql = "SELECT COUNT(*) FROM tipoalojamiento WHERE tipo = ?";
+            PreparedStatement stmt = Conexion.conectar().prepareStatement(sql);
+            stmt.setString(1, tipo.trim());
+
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next() && rs.getInt(1) > 0) {
+                existe = true;
+            }
+
+            rs.close();
+            stmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return existe;
+    }
+
 }

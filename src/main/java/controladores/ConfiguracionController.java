@@ -102,12 +102,11 @@ public class ConfiguracionController implements Initializable {
         dosFactoresCheckBox.setSelected(config.isAutenticacionDosFactores());
         listaBlancaIPsField.setText(config.getListaIPs());
 
-        
         idiomaComboBox.getItems().addAll("Español", "Inglés");
-politicaPasswordComboBox.getItems().addAll("Débil", "Media", "Fuerte");
+        politicaPasswordComboBox.getItems().addAll("Débil", "Media", "Fuerte");
 
-idiomaComboBox.getSelectionModel().select(config.getIdioma());
-politicaPasswordComboBox.getSelectionModel().select(config.getPoliticaContrasena());
+        idiomaComboBox.getSelectionModel().select(config.getIdioma());
+        politicaPasswordComboBox.getSelectionModel().select(config.getPoliticaContrasena());
 
     }
 
@@ -115,7 +114,7 @@ politicaPasswordComboBox.getSelectionModel().select(config.getPoliticaContrasena
     private void seleccionarColorFondo(ActionEvent event) {
         Color colorSeleccionado = colorPickerFondo.getValue();
 
-        EstiloSistema.getInstancia().setColorFondo(colorSeleccionado); // <- GUARDAR COLOR ELEGIDO
+        EstiloSistema.getInstancia().setColorFondo(colorSeleccionado);
 
         String colorHex = EstiloSistema.getInstancia().getColorFondoHex();
         rootHBox.setStyle("-fx-background-color: " + colorHex + ";");
@@ -127,26 +126,22 @@ politicaPasswordComboBox.getSelectionModel().select(config.getPoliticaContrasena
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Seleccionar archivo CSS");
 
-        // Filtro para solo archivos .css
         FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("Archivos CSS (*.css)", "*.css");
         fileChooser.getExtensionFilters().add(filter);
 
         File archivoSeleccionado = fileChooser.showOpenDialog(null);
 
         if (archivoSeleccionado != null) {
-            // Guardamos la ruta del CSS en la configuración
             String rutaCss = archivoSeleccionado.toURI().toString();
             ConfiguracionSistema.getInstancia().setCssPersonalizado(rutaCss);
 
-            // Aplicamos el CSS inmediatamente
             Platform.runLater(() -> {
                 if (contenedor.getScene() != null) {
-                    contenedor.getScene().getStylesheets().clear(); // Limpia estilos anteriores si quieres
+                    contenedor.getScene().getStylesheets().clear();
                     contenedor.getScene().getStylesheets().add(rutaCss);
                 }
             });
 
-            // (Opcional) Mensaje de confirmación
             Alert alerta = new Alert(Alert.AlertType.INFORMATION);
             alerta.setTitle("CSS Aplicado");
             alerta.setHeaderText(null);

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="520.0" prefWidth="450.0" styleClass="fondo-registro"
+            stylesheets="@/Estilos/estilos.css"
+            xmlns="http://javafx.com/javafx/23.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controladores.FormularioResenaController">
+
+    <children>
+        <VBox layoutX="25.0" layoutY="80.0" spacing="20.0"
+              styleClass="panel-registro" prefWidth="400.0" alignment="TOP_CENTER">
+
+            <children>
+                <Label text="Registrar Reseña" styleClass="titulo-registro"/>
+
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="Destino" styleClass="label-campo" prefWidth="90"/>
+                    <ComboBox fx:id="comboDestino" styleClass="combo-registro" prefWidth="230"/>
+                </HBox>
+
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="Usuario" styleClass="label-campo" prefWidth="90"/>
+                    <ComboBox fx:id="comboUsuario" styleClass="combo-registro" prefWidth="230"/>
+                </HBox>
+
+                <HBox spacing="10" alignment="TOP_LEFT">
+                    <Label text="Comentario" styleClass="label-campo" prefWidth="90"/>
+                    <TextArea fx:id="campoComentario" styleClass="campo-registro"
+                              wrapText="true" prefWidth="230" prefHeight="100"/>
+                </HBox>
+
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="Clasificación" styleClass="label-campo" prefWidth="90"/>
+                    <Spinner fx:id="spinnerClasificacion" prefWidth="80"/>
+                </HBox>
+
+                <VBox alignment="CENTER" spacing="10">
+                    <Button fx:id="botonGuardar" text="Guardar"
+                            onAction="#guardarResena" styleClass="boton-registro"/>
+                </VBox>
+
+            </children>
+        </VBox>
+    </children>
+</AnchorPane>
+
