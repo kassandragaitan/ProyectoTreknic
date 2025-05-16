@@ -17,6 +17,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -78,21 +79,30 @@ public class GestionAlojamientoController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
+        columnaImagen.setVisible(false);
         cargarAlojamientos();
+        botonQuitarFiltro.setDisable(true);
 
         columnaIdAlojamiento.setVisible(false);
         tablaAlojamientos.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-        campoBuscarAlojamiento.textProperty().addListener((observable, oldValue, newValue) -> {
-            buscarAlojamientosEnTiempoReal(newValue);
+        campoBuscarAlojamiento.textProperty().addListener((obs, oldV, newV) -> {
+            buscarAlojamientosEnTiempoReal(newV);
+            botonQuitarFiltro.setDisable(
+                    newV.trim().isEmpty()
+                    && (comboValorFiltro.getValue() == null || comboValorFiltro.getValue().startsWith("Selecciona"))
+            );
         });
 
         columnAcciones.setCellFactory(col -> new CeldaAccionesAlojamiento(this));
-        ObservableList<String> opcionesFiltro = FXCollections.observableArrayList("Filtrar por tipo de alojamiento", "Filtrar por destino");
-        comboFiltroPor.setItems(opcionesFiltro);
-        comboFiltroPor.setPromptText("Selecciona un tipo de filtro...");
-        comboFiltroPor.getSelectionModel().clearSelection();
+
+        ObservableList<String> filtros = FXCollections.observableArrayList(
+                "Selecciona un tipo de filtro...",
+                "Filtrar por tipo de alojamiento",
+                "Filtrar por destino"
+        );
+        comboFiltroPor.setItems(filtros);
+        comboFiltroPor.getSelectionModel().selectFirst();
         comboValorFiltro.setDisable(true);
 
         comboFiltroPor.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
@@ -100,63 +110,72 @@ public class GestionAlojamientoController implements Initializable {
             comboValorFiltro.getSelectionModel().clearSelection();
             comboValorFiltro.setDisable(true);
 
-            if (newVal == null) {
+            if (newVal == null || newVal.equals(filtros.get(0))) {
                 cargarAlojamientos();
+                botonQuitarFiltro.setDisable(campoBuscarAlojamiento.getText().trim().isEmpty());
                 return;
             }
 
             ObservableList<String> opciones = FXCollections.observableArrayList();
             Conexion.conectar();
-
             if ("Filtrar por destino".equals(newVal)) {
                 opciones = ConsultasAlojamientos.cargarDestinosAlojamiento();
             } else if ("Filtrar por tipo de alojamiento".equals(newVal)) {
                 opciones = ConsultasAlojamientos.cargarTiposAlojamiento();
             }
-
             Conexion.cerrarConexion();
+
+            String placeholderValor = "Selecciona un valor...";
+            if (!opciones.contains(placeholderValor)) {
+                opciones.add(0, placeholderValor);
+            }
             comboValorFiltro.setItems(opciones);
+            comboValorFiltro.getSelectionModel().selectFirst();
             comboValorFiltro.setDisable(false);
-            cargarAlojamientos();
+
+            botonQuitarFiltro.setDisable(
+                    campoBuscarAlojamiento.getText().trim().isEmpty()
+                    && (comboValorFiltro.getValue() == null || comboValorFiltro.getValue().startsWith("Selecciona"))
+            );
         });
 
         comboValorFiltro.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal != null) {
-                ObservableList<Alojamiento> lista = FXCollections.observableArrayList();
-                String filtro = comboFiltroPor.getValue();
-
-                Conexion.conectar();
-                if ("Filtrar por tipo de alojamiento".equals(filtro)) {
-                    ConsultasAlojamientos.cargarAlojamientosPorTipo(lista, newVal);
-                } else if ("Filtrar por destino".equals(filtro)) {
-                    ConsultasAlojamientos.cargarAlojamientosPorDestino(lista, newVal);
-                }
-                Conexion.cerrarConexion();
-                tablaAlojamientos.setItems(lista);
+            if (newVal == null || newVal.startsWith("Selecciona")) {
+                cargarAlojamientos();
+                botonQuitarFiltro.setDisable(campoBuscarAlojamiento.getText().trim().isEmpty());
+                return;
             }
+            botonQuitarFiltro.setDisable(false);
+            ObservableList<Alojamiento> lista = FXCollections.observableArrayList();
+            Conexion.conectar();
+            String filtro = comboFiltroPor.getValue();
+            if ("Filtrar por tipo de alojamiento".equals(filtro)) {
+                ConsultasAlojamientos.cargarAlojamientosPorTipo(lista, newVal);
+            } else if ("Filtrar por destino".equals(filtro)) {
+                ConsultasAlojamientos.cargarAlojamientosPorDestino(lista, newVal);
+            }
+            Conexion.cerrarConexion();
+            tablaAlojamientos.setItems(lista);
         });
 
         botonQuitarFiltro.setOnAction(e -> {
-            comboFiltroPor.getSelectionModel().clearSelection();
-            comboFiltroPor.setValue(null);
+            comboFiltroPor.getSelectionModel().selectFirst();
             comboValorFiltro.getSelectionModel().clearSelection();
             comboValorFiltro.getItems().clear();
             comboValorFiltro.setDisable(true);
             campoBuscarAlojamiento.clear();
             cargarAlojamientos();
-            comboFiltroPor.setVisible(false);
-            comboFiltroPor.setVisible(true);
+            botonQuitarFiltro.setDisable(true);
         });
 
         cargarAlojamientosFavoritos();
-
     }
 
-    private void cargarAlojamientosFavoritos() {
+    public void cargarAlojamientosFavoritos() {
         contenedorFavoritos.getChildren().clear();
 
-        List<Alojamiento> favoritos
-                = ConsultasAlojamientos.obtenerAlojamientosFavoritosPorUsuario(
+        List<Alojamiento> favoritos = ConsultasAlojamientos
+                .obtenerAlojamientosFavoritosPorUsuario(
                         Usuario.getUsuarioActual().getIdUsuario()
                 );
 
@@ -166,12 +185,15 @@ public class GestionAlojamientoController implements Initializable {
                     "-fx-background-color: white; -fx-padding: 10px; "
                     + "-fx-background-radius: 10px; "
                     + "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0.2, 0, 1);"
-                    + "-fx-alignment: center;"
             );
+            tarjeta.setAlignment(Pos.CENTER);
+            tarjeta.setPrefWidth(200);
+            tarjeta.setMaxWidth(200);
+            tarjeta.setPrefHeight(260);
 
             ImageView imagen = new ImageView();
-            imagen.setFitWidth(200);
-            imagen.setFitHeight(130);
+            imagen.setFitWidth(180);
+            imagen.setFitHeight(120);
             imagen.setPreserveRatio(true);
 
             String nombreImg = aloj.getImagen();
@@ -179,7 +201,7 @@ public class GestionAlojamientoController implements Initializable {
                 try {
                     ConexionFtp.cargarImagen(nombreImg, imagen);
                 } catch (Exception ex) {
-                    System.err.println("⚠️ Error cargando imagen favorito: " + ex.getMessage());
+                    System.err.println("Error cargando imagen favorito: " + ex.getMessage());
                     imagen.setImage(new Image(
                             getClass().getResourceAsStream("/img/default-image.png")
                     ));
@@ -190,84 +212,47 @@ public class GestionAlojamientoController implements Initializable {
                 ));
             }
 
-            Label nombre = new Label(aloj.getNombre());
-            nombre.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+            Label lblNombre = new Label(aloj.getNombre());
+            lblNombre.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
 
-            Label destino = new Label("Destino: " + aloj.getNombreDestino());
-            destino.setStyle("-fx-text-fill: gray; -fx-font-size: 12px;");
+            Label lblDestino = new Label("Destino: " + aloj.getNombreDestino());
+            lblDestino.setStyle("-fx-text-fill: gray; -fx-font-size: 12px;");
 
-            Button botonFavorito = new Button("Quitar de Favoritos");
-            botonFavorito.setStyle("-fx-background-color: #d9534f; -fx-text-fill: white;");
-            botonFavorito.setOnAction(e -> {
-                boolean eliminado = ConsultasAlojamientos
-                        .eliminarDeFavoritos(aloj.getIdAlojamiento(),
-                                Usuario.getUsuarioActual().getIdUsuario());
-                if (eliminado) {
+            Button btnQuitar = new Button("Quitar de Favoritos");
+            btnQuitar.setStyle("-fx-background-color: #3874b4; -fx-text-fill: white; -fx-background-radius: 6px;");
+            btnQuitar.setOnAction(evt -> {
+                boolean ok = ConsultasAlojamientos
+                        .eliminarDeFavoritos(
+                                aloj.getIdAlojamiento(),
+                                Usuario.getUsuarioActual().getIdUsuario()
+                        );
+                if (ok) {
                     Alertas.informacion("El alojamiento ha sido eliminado de favoritos.");
                     cargarAlojamientosFavoritos();
                 } else {
-                    Alertas.error("Error", "No se pudo eliminar el alojamiento de favoritos.");
+                    Alertas.error("Error", "No se pudo eliminar de favoritos.");
                 }
             });
 
-            tarjeta.getChildren().addAll(imagen, nombre, destino, botonFavorito);
+            tarjeta.getChildren().addAll(imagen, lblNombre, lblDestino, btnQuitar);
             contenedorFavoritos.getChildren().add(tarjeta);
         }
     }
 
     private void buscarAlojamientosEnTiempoReal(String texto) {
-        ObservableList<Alojamiento> listaAlojamientos = FXCollections.observableArrayList();
+        ObservableList<Alojamiento> lista = FXCollections.observableArrayList();
         Conexion.conectar();
-        ConsultasAlojamientos.cargarDatosAlojamientosFiltrados(listaAlojamientos, texto);
+        ConsultasAlojamientos.cargarDatosAlojamientosFiltrados(lista, texto);
         Conexion.cerrarConexion();
-        tablaAlojamientos.setItems(listaAlojamientos);
-    }
-
-    public void recargarFavoritos() {
-        contenedorFavoritos.getChildren().clear();
-        List<Alojamiento> favoritos = ConsultasAlojamientos.obtenerAlojamientosFavoritosPorUsuario(Usuario.getUsuarioActual().getIdUsuario());
-
-        for (Alojamiento aloj : favoritos) {
-            VBox tarjeta = new VBox(5);
-            tarjeta.setStyle("-fx-background-color: white; -fx-padding: 10px; -fx-background-radius: 10px; "
-                    + "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0.2, 0, 1); -fx-alignment: center;");
-
-            String urlImagen = "http://localhost/carpetaimg/alojamientos/" + aloj.getImagen();
-            ImageView imagen = new ImageView(new Image(urlImagen));
-            imagen.setFitWidth(200);
-            imagen.setFitHeight(130);
-            imagen.setPreserveRatio(true);
-
-            Label nombre = new Label(aloj.getNombre());
-            nombre.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
-
-            Label destino = new Label("Destino: " + aloj.getNombreDestino());
-            destino.setStyle("-fx-text-fill: gray; -fx-font-size: 12px;");
-
-            Button botonFavorito = new Button("Quitar de Favoritos");
-            botonFavorito.setStyle("-fx-background-color: #d9534f; -fx-text-fill: white;");
-            botonFavorito.setOnAction(e -> {
-                boolean eliminado = ConsultasAlojamientos.eliminarDeFavoritos(aloj.getIdAlojamiento(), Usuario.getUsuarioActual().getIdUsuario());
-                if (eliminado) {
-                    Alertas.informacion("El alojamiento ha sido eliminado de favoritos.");
-                    recargarFavoritos();
-                } else {
-                    Alertas.error("Error", "No se pudo eliminar el alojamiento de favoritos.");
-                }
-            });
-
-            tarjeta.getChildren().addAll(imagen, nombre, destino, botonFavorito);
-            contenedorFavoritos.getChildren().add(tarjeta);
-        }
+        tablaAlojamientos.setItems(lista);
     }
 
     public void cargarAlojamientos() {
-        ObservableList<Alojamiento> listaAlojamientos = FXCollections.observableArrayList();
+        ObservableList<Alojamiento> lista = FXCollections.observableArrayList();
         Conexion.conectar();
-        ConsultasAlojamientos.cargarDatosAlojamientos(listaAlojamientos);
+        ConsultasAlojamientos.cargarDatosAlojamientos(lista);
         Conexion.cerrarConexion();
-
-        tablaAlojamientos.setItems(listaAlojamientos);
+        tablaAlojamientos.setItems(lista);
         columnaIdAlojamiento.setCellValueFactory(new PropertyValueFactory<>("idAlojamiento"));
         columnaNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         columnaTipo.setCellValueFactory(new PropertyValueFactory<>("nombreTipo"));
@@ -281,21 +266,20 @@ public class GestionAlojamientoController implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/AgregarAlojamiento.fxml"));
             Parent root = loader.load();
-
-            AgregarAlojamientoController controlador = loader.getController();
-            controlador.setGestionAlojamientoController(this);
-
+            AgregarAlojamientoController ctrl = loader.getController();
+            ctrl.setGestionAlojamientoController(this);
             Stage stage = new Stage();
             stage.initStyle(StageStyle.DECORATED);
-            stage.setMaximized(false);
             stage.setResizable(false);
             stage.setTitle("Agregar Alojamiento");
             stage.setScene(new Scene(root));
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.showAndWait();
+            cargarAlojamientos();
+            cargarAlojamientosFavoritos();
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
 
+    }
 }

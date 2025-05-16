@@ -68,6 +68,14 @@
                                   visible="false" />
                     </children>
                 </StackPane>
+                <HBox alignment="CENTER" spacing="10.0" AnchorPane.topAnchor="/* la posición que quieras */">
+                    <children>
+                        <Button fx:id="botonGenerarPdf"
+                                text="Generar PDF"
+                                styleClass="primary"
+                                onAction="#generarPdf"/>
+                    </children>
+                </HBox>
 
                 <HBox spacing="20.0" alignment="CENTER" styleClass="stat-cards">
                     <children>

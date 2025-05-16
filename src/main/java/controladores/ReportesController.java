@@ -1,5 +1,4 @@
 package controladores;
-
 import Utilidades.Alertas;
 import Utilidades.Animacion;
 import bbdd.ConsultasReportes;
@@ -23,6 +22,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -52,6 +52,8 @@ public class ReportesController implements Initializable {
     private ComboBox<String> comboTipoReporte;
     @FXML
     private Button botonNuevoReporte;
+    @FXML
+    private Button botonGenerarPdf;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -240,4 +242,43 @@ public class ReportesController implements Initializable {
             Alertas.error("Error", "No se pudo abrir la ventana de nuevo reporte.");
         }
     }
+
+    @FXML
+    private void generarPdf(ActionEvent event) {
+//        try {
+//            FileChooser fc = new FileChooser();
+//            fc.setTitle("Guardar reporte como PDF");
+//            fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF Files", "*.pdf"));
+//            File destino = fc.showSaveDialog(panel.getScene().getWindow());
+//            if (destino == null) {
+//                return;
+//            }
+//
+//            PdfWriter writer = new PdfWriter(destino.getAbsolutePath());
+//            PdfDocument pdf = new PdfDocument(writer);
+//            Document document = new Document(pdf);
+//
+//            PdfFont fontBold = PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD);
+//
+//            Paragraph titulo = new Paragraph("Reporte de " + comboTipoReporte.getValue())
+//                    .setFont(fontBold)
+//                    .setFontSize(18)
+//                    .setMarginBottom(10);
+//            document.add(titulo);
+//
+//            document.add(new Paragraph("Filtro: " + comboFiltro.getValue()));
+//            document.add(new Paragraph("Total: " + labelTotal.getText()));
+//            document.add(new Paragraph("Promedio: " + labelPromedio.getText()));
+//            document.add(new Paragraph("Máximo: " + labelMaximo.getText()));
+//            document.add(new Paragraph("Crecimiento: " + labelCrecimiento.getText()));
+//
+//            document.close();
+//
+//            Alertas.informacion("PDF generado en:\n" + destino.getAbsolutePath());
+//
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//            Alertas.error("Error generando PDF", ex.getMessage());
+//        }
+   }
 }

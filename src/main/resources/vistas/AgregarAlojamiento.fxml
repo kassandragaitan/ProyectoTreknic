@@ -40,7 +40,7 @@
                 <HBox spacing="10" alignment="CENTER_LEFT">
                     <Label text="Imagen" styleClass="label-campo" prefWidth="90.0"/>
                     <TextField fx:id="campoImagen" styleClass="campo-registro" prefWidth="100.0"/>
-                    <Button text="Seleccionar" onAction="#seleccionarImagen"
+                    <Button fx:id="botonSeleccionar" text="Seleccionar" onAction="#seleccionarImagen"
                             styleClass="boton-registro" prefWidth="130.0"/>
                 </HBox>
 

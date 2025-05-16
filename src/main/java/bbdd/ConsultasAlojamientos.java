@@ -68,26 +68,34 @@ public class ConsultasAlojamientos {
     public static ObservableList<String> cargarTiposAlojamiento() {
         ObservableList<String> lista = FXCollections.observableArrayList();
         String consulta = "SELECT DISTINCT tipo FROM tipoalojamiento";
-        try (PreparedStatement ps = Conexion.conn.prepareStatement(consulta); ResultSet rs = ps.executeQuery()) {
+
+        try (Connection conn = Conexion.conectar(); PreparedStatement ps = conn.prepareStatement(consulta); ResultSet rs = ps.executeQuery()) {
+
             while (rs.next()) {
                 lista.add(rs.getString("tipo"));
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         return lista;
     }
 
     public static ObservableList<String> cargarDestinosAlojamiento() {
         ObservableList<String> lista = FXCollections.observableArrayList();
         String consulta = "SELECT DISTINCT nombre FROM destinos";
-        try (PreparedStatement ps = Conexion.conn.prepareStatement(consulta); ResultSet rs = ps.executeQuery()) {
+
+        try (Connection conn = Conexion.conectar(); PreparedStatement ps = conn.prepareStatement(consulta); ResultSet rs = ps.executeQuery()) {
+
             while (rs.next()) {
                 lista.add(rs.getString("nombre"));
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         return lista;
     }
 
@@ -97,19 +105,20 @@ public class ConsultasAlojamientos {
                 + "JOIN tipoalojamiento t ON a.id_tipo_fk = t.id_tipo "
                 + "JOIN destinos d ON a.id_destino_fk = d.id_destino "
                 + "WHERE t.tipo = ?";
-        try (PreparedStatement ps = Conexion.conn.prepareStatement(sql)) {
+        try (Connection conn = Conexion.conectar(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, tipo);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                Alojamiento a = new Alojamiento(
-                        rs.getInt("id_alojamiento"),
-                        rs.getString("nombre"),
-                        rs.getString("contacto"),
-                        rs.getString("imagen"),
-                        rs.getString("tipo"),
-                        rs.getString("nombre_destino")
-                );
-                lista.add(a);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Alojamiento a = new Alojamiento(
+                            rs.getInt("id_alojamiento"),
+                            rs.getString("nombre"),
+                            rs.getString("contacto"),
+                            rs.getString("imagen"),
+                            rs.getString("tipo"),
+                            rs.getString("nombre_destino")
+                    );
+                    lista.add(a);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -122,19 +131,20 @@ public class ConsultasAlojamientos {
                 + "JOIN tipoalojamiento t ON a.id_tipo_fk = t.id_tipo "
                 + "JOIN destinos d ON a.id_destino_fk = d.id_destino "
                 + "WHERE d.nombre = ?";
-        try (PreparedStatement ps = Conexion.conn.prepareStatement(sql)) {
+        try (Connection conn = Conexion.conectar(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, destino);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                Alojamiento a = new Alojamiento(
-                        rs.getInt("id_alojamiento"),
-                        rs.getString("nombre"),
-                        rs.getString("contacto"),
-                        rs.getString("imagen"),
-                        rs.getString("tipo"),
-                        rs.getString("nombre_destino")
-                );
-                lista.add(a);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Alojamiento a = new Alojamiento(
+                            rs.getInt("id_alojamiento"),
+                            rs.getString("nombre"),
+                            rs.getString("contacto"),
+                            rs.getString("imagen"),
+                            rs.getString("tipo"),
+                            rs.getString("nombre_destino")
+                    );
+                    lista.add(a);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -142,8 +152,6 @@ public class ConsultasAlojamientos {
     }
 
     public static void cargarDatosAlojamientosFiltrados(ObservableList<Alojamiento> listaAlojamientos, String busqueda) {
-        Connection conn = Conexion.conn;
-
         String consulta = "SELECT a.id_alojamiento, a.nombre, a.contacto, a.imagen, "
                 + "a.id_destino_fk, d.nombre AS nombre_destino, a.id_tipo_fk, t.tipo AS nombre_tipo "
                 + "FROM alojamientos a "
@@ -151,7 +159,7 @@ public class ConsultasAlojamientos {
                 + "JOIN tipoalojamiento t ON a.id_tipo_fk = t.id_tipo "
                 + "WHERE a.nombre LIKE ? OR a.contacto LIKE ? OR d.nombre LIKE ? OR t.tipo LIKE ?";
 
-        try (PreparedStatement ps = conn.prepareStatement(consulta)) {
+        try (Connection conn = Conexion.conectar(); PreparedStatement ps = conn.prepareStatement(consulta)) {
             String wildcard = "%" + busqueda + "%";
             ps.setString(1, wildcard);
             ps.setString(2, wildcard);
@@ -169,7 +177,6 @@ public class ConsultasAlojamientos {
                     al.setNombreDestino(rs.getString("nombre_destino"));
                     al.setIdTipo(rs.getInt("id_tipo_fk"));
                     al.setNombreTipo(rs.getString("nombre_tipo"));
-
                     listaAlojamientos.add(al);
                 }
             }
@@ -180,51 +187,40 @@ public class ConsultasAlojamientos {
     }
 
     public static void cargarComboTipoAlojamiento(ComboBox<TipoAlojamiento> comboTipo) {
-        conectar();
-        try {
-            String consulta = "SELECT id_tipo, tipo FROM tipoalojamiento";
-            Statement st = conn.createStatement();
-            ResultSet rs = st.executeQuery(consulta);
+        String consulta = "SELECT id_tipo, tipo FROM tipoalojamiento";
+        try (Connection conn = Conexion.conectar(); Statement st = conn.createStatement(); ResultSet rs = st.executeQuery(consulta)) {
+
             while (rs.next()) {
                 TipoAlojamiento tipo = new TipoAlojamiento(rs.getInt("id_tipo"), rs.getString("tipo"));
                 comboTipo.getItems().add(tipo);
             }
         } catch (SQLException ex) {
             Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            cerrarConexion();
         }
     }
 
     public static void cargarDatosAlojamientos(ObservableList<Alojamiento> listado) {
-        conectar();
-        try {
-            String consultaCarga
-                    = "SELECT a.id_alojamiento, a.nombre, a.contacto, a.imagen, "
-                    + "a.id_destino_fk, d.nombre AS nombre_destino, a.id_tipo_fk, t.tipo AS nombre_tipo "
-                    + "FROM alojamientos a "
-                    + "JOIN destinos d ON a.id_destino_fk = d.id_destino "
-                    + "JOIN tipoalojamiento t ON a.id_tipo_fk = t.id_tipo";
+        String consultaCarga = "SELECT a.id_alojamiento, a.nombre, a.contacto, a.imagen, "
+                + "a.id_destino_fk, d.nombre AS nombre_destino, a.id_tipo_fk, t.tipo AS nombre_tipo "
+                + "FROM alojamientos a "
+                + "JOIN destinos d ON a.id_destino_fk = d.id_destino "
+                + "JOIN tipoalojamiento t ON a.id_tipo_fk = t.id_tipo";
+        try (Connection conn = Conexion.conectar(); Statement st = conn.createStatement(); ResultSet rs = st.executeQuery(consultaCarga)) {
 
-            try (Statement st = conn.createStatement(); ResultSet rs = st.executeQuery(consultaCarga)) {
-                while (rs.next()) {
-                    Alojamiento al = new Alojamiento();
-                    al.setIdAlojamiento(rs.getInt("id_alojamiento"));
-                    al.setNombre(rs.getString("nombre"));
-                    al.setContacto(rs.getString("contacto"));
-                    al.setImagen(rs.getString("imagen"));
-                    al.setIdDestino(rs.getInt("id_destino_fk"));
-                    al.setNombreDestino(rs.getString("nombre_destino"));
-                    al.setIdTipo(rs.getInt("id_tipo_fk"));
-                    al.setNombreTipo(rs.getString("nombre_tipo"));
-
-                    listado.add(al);
-                }
+            while (rs.next()) {
+                Alojamiento al = new Alojamiento();
+                al.setIdAlojamiento(rs.getInt("id_alojamiento"));
+                al.setNombre(rs.getString("nombre"));
+                al.setContacto(rs.getString("contacto"));
+                al.setImagen(rs.getString("imagen"));
+                al.setIdDestino(rs.getInt("id_destino_fk"));
+                al.setNombreDestino(rs.getString("nombre_destino"));
+                al.setIdTipo(rs.getInt("id_tipo_fk"));
+                al.setNombreTipo(rs.getString("nombre_tipo"));
+                listado.add(al);
             }
         } catch (SQLException ex) {
             Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            cerrarConexion();
         }
     }
 
@@ -307,23 +303,33 @@ public class ConsultasAlojamientos {
     }
 
     public static boolean eliminarDeFavoritos(int idAlojamiento, int idUsuario) {
-        // SQL para eliminar el alojamiento de los favoritos de un usuario específico
         String sql = "DELETE FROM favoritos WHERE id_alojamiento = ? AND id_usuario = ?";
 
         try (Connection conn = Conexion.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
-            // Establecer los parámetros de la consulta (id del alojamiento y el id del usuario)
             stmt.setInt(1, idAlojamiento);
             stmt.setInt(2, idUsuario);
 
-            // Ejecutar la consulta
             int filasAfectadas = stmt.executeUpdate();
 
-            // Si se eliminó alguna fila (es decir, se eliminó un favorito), retornamos true
             return filasAfectadas > 0;
         } catch (SQLException e) {
-            e.printStackTrace(); // En caso de error, mostramos la traza
-            return false; // Retornamos false si hubo un error en la operación
+            e.printStackTrace();
+            return false;
         }
+    }
+
+    public static boolean existeNombreAlojamiento(String nombre) {
+        String sql = "SELECT COUNT(*) FROM alojamientos WHERE nombre = ?";
+        try (Connection conn = Conexion.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, nombre);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
 }

@@ -31,49 +31,48 @@ public class CeldaAccionesDestino {
         botonEliminar.getStyleClass().addAll("table-button", "red");
 
         botonEditar.setOnAction(e -> abrirVentanaDestino(destino, true));
-        
-        
-botonEliminar.setOnAction(e -> {
-    boolean tieneElementosAsociados = ConsultasDestinos.tieneElementosAsociados(destino.getId_destino());
-    
-    if (tieneElementosAsociados) {
-        String mensaje = "Este destino tiene elementos asociados (actividades, reseñas, alojamientos).\n¿Estás seguro de que deseas eliminarlo?";
 
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
-        confirm.setTitle("Confirmar eliminación");
-        confirm.setHeaderText("¿Deseas eliminar este destino?");
-        confirm.setContentText(mensaje);
+        botonEliminar.setOnAction(e -> {
+            boolean tieneElementosAsociados = ConsultasDestinos.tieneElementosAsociados(destino.getId_destino());
 
-        confirm.showAndWait().ifPresent(response -> {
-            if (response == ButtonType.OK) {
-                boolean eliminado = ConsultasDestinos.eliminarDestinoConAsociados(destino.getId_destino());
-                if (eliminado) {
-                    Alertas.informacion("Destino eliminado correctamente.");
-                    controlador.recargarTabla();
-                } else {
-                    Alertas.error("Error", "No se pudo eliminar el destino.");
-                }
+            if (tieneElementosAsociados) {
+                String mensaje = "Este destino tiene elementos asociados (actividades, reseñas, alojamientos).\n¿Estás seguro de que deseas eliminarlo?";
+
+                Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+                confirm.setTitle("Confirmar eliminación");
+                confirm.setHeaderText("¿Deseas eliminar este destino?");
+                confirm.setContentText(mensaje);
+
+                confirm.showAndWait().ifPresent(response -> {
+                    if (response == ButtonType.OK) {
+                        boolean eliminado = ConsultasDestinos.eliminarDestinoConAsociados(destino.getId_destino());
+                        if (eliminado) {
+                            Alertas.informacion("Destino eliminado correctamente.");
+                            controlador.recargarTabla();
+                        } else {
+                            Alertas.error("Error", "No se pudo eliminar el destino.");
+                        }
+                    }
+                });
+            } else {
+                Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+                confirm.setTitle("Confirmar eliminación");
+                confirm.setHeaderText("¿Deseas eliminar este destino?");
+                confirm.setContentText(destino.getNombre());
+
+                confirm.showAndWait().ifPresent(response -> {
+                    if (response == ButtonType.OK) {
+                        boolean eliminado = ConsultasDestinos.eliminarDestino(destino.getId_destino());
+                        if (eliminado) {
+                            Alertas.informacion("Destino eliminado correctamente.");
+                            controlador.recargarTabla();
+                        } else {
+                            Alertas.error("Error", "No se pudo eliminar el destino.");
+                        }
+                    }
+                });
             }
         });
-    } else {
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
-        confirm.setTitle("Confirmar eliminación");
-        confirm.setHeaderText("¿Deseas eliminar este destino?");
-        confirm.setContentText(destino.getNombre());
-
-        confirm.showAndWait().ifPresent(response -> {
-            if (response == ButtonType.OK) {
-                boolean eliminado = ConsultasDestinos.eliminarDestino(destino.getId_destino());
-                if (eliminado) {
-                    Alertas.informacion("Destino eliminado correctamente.");
-                    controlador.recargarTabla();
-                } else {
-                    Alertas.error("Error", "No se pudo eliminar el destino.");
-                }
-            }
-        });
-    }
-});
         return new HBox(10, botonEditar, botonEliminar);
     }
 

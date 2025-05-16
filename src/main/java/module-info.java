@@ -3,8 +3,8 @@ module com.kgr.proyectotreknic {
     requires javafx.fxml;
     requires java.base;
     requires java.sql;
-requires commons.email;
-requires java.mail;
+    requires commons.email;
+    requires java.mail;
     requires Mysql;
     requires commons.net;
     opens com.kgr.proyectotreknic to javafx.fxml;

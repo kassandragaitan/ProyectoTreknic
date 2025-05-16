@@ -37,53 +37,63 @@ public class AgregarReporteController implements Initializable {
     private Button botonRegistrar;
     @FXML
     private ImageView imagenTrekNic;
-
     private boolean esEdicion = false;
     private String tipoReporteOriginal;
+    private String tipoSeleccionado;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        comboTipoReporte.getItems().addAll("Usuarios registrados", "Tipos de alojamiento");
+        imagenTrekNic.setImage(new Image(
+                getClass().getResourceAsStream("/img/Encabezado.png")
+        ));
 
-        Image imagen = new Image(getClass().getResourceAsStream("/img/Encabezado.png"));
-        imagenTrekNic.setImage(imagen);
+        comboTipoReporte.getItems().add("Seleccione");
+        comboTipoReporte.getItems().addAll(
+                "Usuarios registrados",
+                "Tipos de alojamiento"
+        );
+        comboTipoReporte.getSelectionModel().selectFirst();
+        tipoSeleccionado = null;
+        comboTipoReporte.setOnAction(e -> {
+            String sel = comboTipoReporte.getSelectionModel().getSelectedItem();
+            if (sel != null && !sel.equals("Seleccione")) {
+                tipoSeleccionado = sel;
+            } else {
+                tipoSeleccionado = null;
+            }
+        });
     }
 
     @FXML
     private void RegistrarReporte(ActionEvent event) {
-        if (comboTipoReporte.getValue() == null || comboTipoReporte.getValue().equals("Seleccione")) {
+        if (tipoSeleccionado == null) {
             Alertas.aviso("Campo vacío", "Debe seleccionar un tipo de reporte.");
         } else if (compruebaCampo.compruebaVacio(campoDescripcion)) {
             Alertas.aviso("Campo vacío", "La descripción no puede estar vacía.");
         } else {
-            String tipo = comboTipoReporte.getValue();
-            String descripcion = campoDescripcion.getText();
-
             Reporte nuevo = new Reporte();
-            nuevo.setTipo(tipo);
-            nuevo.setDescripcion(descripcion);
+            nuevo.setTipo(tipoSeleccionado);
+            nuevo.setDescripcion(campoDescripcion.getText().trim());
             nuevo.setFecha(new java.util.Date());
             nuevo.setIdUsuario(Usuario.getUsuarioActual().getIdUsuario());
 
             if (ConsultasReportes.registrarReporte(nuevo)) {
                 ConsultasMovimientos.registrarMovimiento(
-                        "Se ha registrado un reporte de tipo: " + tipo,
+                        "Se ha registrado un reporte de tipo: " + tipoSeleccionado,
                         new java.sql.Date(System.currentTimeMillis()),
                         Usuario.getUsuarioActual().getIdUsuario()
                 );
-
                 Alertas.informacion("Reporte registrado exitosamente.");
                 limpiarFormulario();
             } else {
                 Alertas.error("Error", "No se pudo registrar el reporte.");
             }
         }
-
     }
 
     private void limpiarFormulario() {
-        comboTipoReporte.getSelectionModel().clearSelection();
+        comboTipoReporte.getSelectionModel().selectFirst();
+        tipoSeleccionado = null;
         campoDescripcion.clear();
     }
-
 }

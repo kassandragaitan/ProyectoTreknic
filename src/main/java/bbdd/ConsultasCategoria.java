@@ -66,25 +66,26 @@ public class ConsultasCategoria {
             e.printStackTrace();
         }
     }
-public static void cargarDatosCategorias(ObservableList<Categoria> listado) {
-    conectar();
-    try {
-        String consultaCarga = "SELECT * FROM categorias"; 
-        try (Statement st = conn.createStatement(); ResultSet rs = st.executeQuery(consultaCarga)) {
-            while (rs.next()) {
-                listado.add(new Categoria(
-                        rs.getInt("id_categoria"),
-                        rs.getString("nombre"),
-                        rs.getString("descripcion") 
-                ));
+
+    public static void cargarDatosCategorias(ObservableList<Categoria> listado) {
+        conectar();
+        try {
+            String consultaCarga = "SELECT * FROM categorias";
+            try (Statement st = conn.createStatement(); ResultSet rs = st.executeQuery(consultaCarga)) {
+                while (rs.next()) {
+                    listado.add(new Categoria(
+                            rs.getInt("id_categoria"),
+                            rs.getString("nombre"),
+                            rs.getString("descripcion")
+                    ));
+                }
             }
+        } catch (SQLException ex) {
+            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            cerrarConexion();
         }
-    } catch (SQLException ex) {
-        Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
-    } finally {
-        cerrarConexion();
     }
-}
 
     public static List<Categoria> obtenerCategorias() {
         List<Categoria> lista = new ArrayList<>();
@@ -128,4 +129,32 @@ public static void cargarDatosCategorias(ObservableList<Categoria> listado) {
         return existe;
     }
 
+    public static boolean actualizarCategoria(Categoria categoria) {
+        conectar();
+        try {
+            String sql = "UPDATE categorias SET nombre = ?, descripcion = ? WHERE id_categoria = ?";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setString(1, categoria.getNombre());
+            pst.setString(2, categoria.getDescripcion());
+            pst.setInt(3, categoria.getIdCategoria());
+            int filas = pst.executeUpdate();
+            return filas > 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        } finally {
+            cerrarConexion();
+        }
+    }
+
+    public static boolean eliminarPorId(int id) {
+        String sql = "DELETE FROM categorias WHERE id_categoria = ?";
+        try (Connection conn = Conexion.conectar(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
 }

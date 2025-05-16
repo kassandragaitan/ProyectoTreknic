@@ -51,18 +51,34 @@ public class AgregarActividadController implements Initializable {
      */
     private Actividad actividadActual;
     private boolean esEdicion = false;
+    private Destino destinoSeleccionado;
+    private GestionActividadesController gestionActividadesController;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        imagenTrekNic.setImage(new Image(getClass().getResourceAsStream("/img/Encabezado.png")));
+
         Conexion.conectar();
         ConsultasDestinos.cargarComboDestino(comboDestino);
         Conexion.cerrarConexion();
 
-        Image imagen = new Image(getClass().getResourceAsStream("/img/Encabezado.png"));
-        imagenTrekNic.setImage(imagen);
-    }
+        Destino placeholder = new Destino();
+        placeholder.setId_destino(-1);
+        placeholder.setNombre("Seleccione");
+        comboDestino.getItems().add(0, placeholder);
 
-    private GestionActividadesController gestionActividadesController;
+        comboDestino.getSelectionModel().selectFirst();
+        destinoSeleccionado = null;
+
+        comboDestino.setOnAction(e -> {
+            Destino sel = comboDestino.getSelectionModel().getSelectedItem();
+            if (sel != null && sel.getId_destino() != -1) {
+                destinoSeleccionado = sel;
+            } else {
+                destinoSeleccionado = null;
+            }
+        });
+    }
 
     public void setGestionActividadesController(GestionActividadesController controller) {
         this.gestionActividadesController = controller;
@@ -74,8 +90,8 @@ public class AgregarActividadController implements Initializable {
             Alertas.aviso("Campo vacío", "El nombre no puede estar vacío.");
         } else if (compruebaCampo.compruebaVacio(campoDescripcion)) {
             Alertas.aviso("Campo vacío", "La descripción no puede estar vacía.");
-        } else if (comboDestino.getValue() == null) {
-            Alertas.aviso("Combo vacío", "Debe seleccionar un destino.");
+        } else if (destinoSeleccionado == null) {
+            Alertas.aviso("Combo vacío", "Debe seleccionar un destino válido.");
         } else {
             Destino destinoSeleccionado = comboDestino.getValue();
 
@@ -98,10 +114,18 @@ public class AgregarActividadController implements Initializable {
                     Alertas.error("Error", "No se pudo actualizar la actividad.");
                 }
             } else {
+                if (ConsultasActividades.existeActividadConNombreYDestino(
+                        campoNombre.getText().trim(),
+                        destinoSeleccionado.getId_destino()
+                )) {
+                    Alertas.aviso("Duplicado", "Ya existe una actividad con ese nombre para el destino seleccionado.");
+                    return;
+                }
+
                 Actividad actividad = new Actividad(
                         0,
-                        campoNombre.getText(),
-                        campoDescripcion.getText(),
+                        campoNombre.getText().trim(),
+                        campoDescripcion.getText().trim(),
                         destinoSeleccionado.getId_destino()
                 );
 
@@ -132,15 +156,14 @@ public class AgregarActividadController implements Initializable {
         this.actividadActual = act;
         campoNombre.setText(act.getNombre());
         campoDescripcion.setText(act.getDescripcion());
-
-        for (Destino destino : comboDestino.getItems()) {
-            if (destino.getId_destino() == act.getIdDestino()) {
-                comboDestino.getSelectionModel().select(destino);
+        for (Destino dest : comboDestino.getItems()) {
+            if (dest.getId_destino() == act.getIdDestino()) {
+                comboDestino.getSelectionModel().select(dest);
+                destinoSeleccionado = dest;
                 break;
             }
         }
-
-        this.esEdicion = true;
+        esEdicion = true;
         botonRegistrar.setText("Actualizar");
     }
 
@@ -159,7 +182,8 @@ public class AgregarActividadController implements Initializable {
     private void limpiarFormulario() {
         campoNombre.clear();
         campoDescripcion.clear();
-        comboDestino.getSelectionModel().clearSelection();
+        comboDestino.getSelectionModel().selectFirst();
+        destinoSeleccionado = null;
         botonRegistrar.setText("Guardar");
     }
 

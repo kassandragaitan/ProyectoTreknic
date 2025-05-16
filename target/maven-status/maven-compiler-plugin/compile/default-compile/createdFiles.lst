@@ -80,6 +80,7 @@ bbdd\ConsultasSugerencias.class
 controladores\GestionActividadesController.class
 modelo\Resena.class
 modelo\Notificacion.class
+acciones\CeldaAccionesCategoria.class
 acciones\CeldaAccionesDestino.class
 controladores\FormularioSugerenciaController.class
 controladores\NotificacionesController$1.class

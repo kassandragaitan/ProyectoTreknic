@@ -22,9 +22,12 @@
                     </HBox>
 
                     <HBox spacing="10">
-                        <TextField fx:id="campoBuscarDestino" promptText="Buscar destinos..." HBox.hgrow="ALWAYS" />
-                        <ComboBox fx:id="comboFiltroPor" promptText="Selecciona filtro..." prefWidth="210.0" />
-                        <ComboBox fx:id="comboValorFiltro" prefWidth="150.0" disable="true" />
+                        <TextField fx:id="campoBuscarDestino"
+                                   promptText="Buscar destinos..."
+                                   HBox.hgrow="ALWAYS"
+                                   prefWidth="360.0" />
+                        <ComboBox fx:id="comboFiltroPor" promptText="Selecciona filtro..." prefWidth="220.0" />
+                        <ComboBox fx:id="comboValorFiltro" prefWidth="180.0" disable="true" />
                         <Button fx:id="botonQuitarFiltro" text="Quitar Filtro" styleClass="secondary" />
                     </HBox>
 

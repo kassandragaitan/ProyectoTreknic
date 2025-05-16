@@ -10,6 +10,7 @@ package acciones;
  */
 import bbdd.Conexion;
 import controladores.AgregarActividadController;
+import controladores.GestionActividadesController;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -27,15 +28,17 @@ import modelo.Actividad;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-
 public class CeldaAccionesActividad extends TableCell<Actividad, Void> {
 
-  private final HBox contenedor = new HBox(10);
+    private final HBox contenedor = new HBox(10);
     private final Button botonVer = new Button("Ver");
     private final Button botonEditar = new Button("Editar");
     private final Button botonEliminar = new Button("Eliminar");
+    private final GestionActividadesController controller;
 
-    public CeldaAccionesActividad() {
+    public CeldaAccionesActividad(GestionActividadesController controller) {
+        this.controller = controller;
+
         botonVer.getStyleClass().add("table-button");
         botonEditar.getStyleClass().add("table-button");
         botonEliminar.getStyleClass().addAll("table-button", "red");
@@ -45,41 +48,33 @@ public class CeldaAccionesActividad extends TableCell<Actividad, Void> {
 
         botonVer.setOnAction(e -> {
             Actividad actividad = getTableRow().getItem();
-            if (actividad != null) {
-                abrirVentana(actividad, false);
-            }
+            if (actividad != null) abrirVentana(actividad, false);
         });
 
         botonEditar.setOnAction(e -> {
             Actividad actividad = getTableRow().getItem();
             if (actividad != null) {
                 abrirVentana(actividad, true);
+                controller.recargarTabla();
             }
         });
 
         botonEliminar.setOnAction(e -> {
             Actividad actividad = getTableRow().getItem();
             if (actividad != null) {
-                Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
-                confirm.setTitle("Confirmar eliminación");
-                confirm.setHeaderText("¿Seguro que deseas eliminar esta actividad?");
-                confirm.setContentText("Actividad: " + actividad.getNombre());
-
-                confirm.showAndWait().ifPresent(response -> {
-                    if (response == ButtonType.OK) {
-                        if (eliminarActividad(actividad.getIdActividad())) {
-                            getTableView().getItems().remove(actividad);
-                        } else {
-                            Alert error = new Alert(Alert.AlertType.ERROR);
-                            error.setTitle("Error");
-                            error.setHeaderText("No se pudo eliminar la actividad.");
-                            error.showAndWait();
-                        }
+                Alert confirm = new Alert(AlertType.CONFIRMATION,
+                        "¿Eliminar actividad \"" + actividad.getNombre() + "\"?",
+                        ButtonType.OK, ButtonType.CANCEL);
+                confirm.setHeaderText("Confirmar eliminación");
+                confirm.showAndWait().ifPresent(r -> {
+                    if (r == ButtonType.OK && eliminarActividad(actividad.getIdActividad())) {
+                        controller.recargarTabla(); 
                     }
                 });
             }
         });
     }
+
 
     @Override
     protected void updateItem(Void item, boolean empty) {
@@ -95,15 +90,21 @@ public class CeldaAccionesActividad extends TableCell<Actividad, Void> {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/AgregarActividad.fxml"));
             Parent root = loader.load();
-            AgregarActividadController controller = loader.getController();
-            controller.verActividad(actividad);
-            controller.setEdicionActiva(editable);
+            AgregarActividadController controllerVentana = loader.getController();
+
+            controllerVentana.setGestionActividadesController(controller);
+
+            controllerVentana.verActividad(actividad);
+            controllerVentana.setEdicionActiva(editable);
 
             Stage stage = new Stage();
             stage.setTitle(editable ? "Editar Actividad" : "Ver Actividad");
             stage.setScene(new Scene(root));
+            stage.setMaximized(false);
+            stage.setResizable(false);
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.showAndWait();
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -111,8 +112,7 @@ public class CeldaAccionesActividad extends TableCell<Actividad, Void> {
 
     private boolean eliminarActividad(int id) {
         String sql = "DELETE FROM actividades WHERE id_actividad = ?";
-        try (Connection conn = Conexion.conectar();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = Conexion.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {

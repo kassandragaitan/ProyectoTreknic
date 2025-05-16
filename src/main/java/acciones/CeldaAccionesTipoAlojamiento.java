@@ -10,6 +10,7 @@ package acciones;
  */
 import bbdd.Conexion;
 import controladores.AgregarTipoAlojamientoController;
+import controladores.GestionTipoDeAlojamientoController;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -25,6 +26,7 @@ import modelo.TipoAlojamiento;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import javafx.stage.StageStyle;
 
 public class CeldaAccionesTipoAlojamiento extends TableCell<TipoAlojamiento, Void> {
 
@@ -32,8 +34,10 @@ public class CeldaAccionesTipoAlojamiento extends TableCell<TipoAlojamiento, Voi
     private final Button botonVer = new Button("Ver");
     private final Button botonEditar = new Button("Editar");
     private final Button botonEliminar = new Button("Eliminar");
+    private final GestionTipoDeAlojamientoController controlador;
 
-    public CeldaAccionesTipoAlojamiento() {
+    public CeldaAccionesTipoAlojamiento(GestionTipoDeAlojamientoController controlador) {
+        this.controlador = controlador;
         botonVer.getStyleClass().add("table-button");
         botonEditar.getStyleClass().add("table-button");
         botonEliminar.getStyleClass().addAll("table-button", "red");
@@ -82,11 +86,15 @@ public class CeldaAccionesTipoAlojamiento extends TableCell<TipoAlojamiento, Voi
             AgregarTipoAlojamientoController controller = loader.getController();
             controller.verTipoAlojamiento(tipo);
             controller.setEdicionActiva(editable);
+            controller.setGestionTipoAlojamientoController(controlador);
 
             Stage stage = new Stage();
             stage.setTitle(editable ? "Editar Tipo de Alojamiento" : "Ver Tipo de Alojamiento");
             stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.setMaximized(false);
             stage.initModality(Modality.APPLICATION_MODAL);
+            stage.initStyle(StageStyle.DECORATED);
             stage.showAndWait();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -95,8 +103,7 @@ public class CeldaAccionesTipoAlojamiento extends TableCell<TipoAlojamiento, Voi
 
     private boolean eliminarTipoPorId(int id) {
         String sql = "DELETE FROM tipoalojamiento WHERE id_tipo = ?";
-        try (Connection conn = Conexion.conectar();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = Conexion.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
             return stmt.executeUpdate() > 0;
         } catch (Exception e) {

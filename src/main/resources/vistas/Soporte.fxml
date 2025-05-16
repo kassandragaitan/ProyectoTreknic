@@ -26,7 +26,7 @@
                                                    HBox.hgrow="ALWAYS"
                                                    prefHeight="26"/>
                                         <Button fx:id="botonAgregarPregunta"
-                                                text="+ Nueva Pregunta"
+                                                text="Nueva Pregunta"
                                                 onAction="#abrirFormularioPregunta"
                                                 minHeight="26"
                                                 styleClass="primary"/>
@@ -47,7 +47,7 @@
                                                    HBox.hgrow="ALWAYS"
                                                    prefHeight="26"/>
                                         <Button fx:id="botonNuevaSugerencia"
-                                                text="+ Nueva Sugerencia"
+                                                text="Nueva Sugerencia"
                                                 onAction="#abrirFormularioSugerencia"
                                                 minHeight="26"
                                                 styleClass="primary"/>
@@ -75,7 +75,7 @@
                                                    HBox.hgrow="ALWAYS"
                                                    prefHeight="26"/>
                                         <Button fx:id="botonAgregarPrueba"
-                                                text="+ Nueva Funcionalidad"
+                                                text="Nueva Funcionalidad"
                                                 onAction="#abrirFormularioPrueba"
                                                 minHeight="26"
                                                 styleClass="primary"/>

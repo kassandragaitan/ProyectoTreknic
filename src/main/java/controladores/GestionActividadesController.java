@@ -65,24 +65,36 @@ public class GestionActividadesController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
 
         cargarActividades();
+        botonQuitarFiltro.setDisable(true);
+
         columnaIdActividad.setVisible(false);
 
         tablaActividades.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         campoBuscarActividad.textProperty().addListener((observable, oldValue, newValue) -> {
             buscarActividadesEnTiempoReal(newValue);
+            botonQuitarFiltro.setDisable(newValue.trim().isEmpty()
+                    && (comboValorFiltro.getSelectionModel().getSelectedItem() == null
+                    || comboValorFiltro.getSelectionModel().getSelectedItem().startsWith("Selecciona"))
+            );
         });
+
         inicializarAccionesColumna();
 
-        comboFiltroPor.setPromptText("Selecciona un tipo de filtro...");
-        comboFiltroPor.setItems(FXCollections.observableArrayList("Filtrar por destino"));
-        comboFiltroPor.getSelectionModel().clearSelection();
+        ObservableList<String> filtros = FXCollections.observableArrayList(
+                "Selecciona un tipo de filtro...",
+                "Filtrar por destino"
+        );
+        comboFiltroPor.setItems(filtros);
+        comboFiltroPor.getSelectionModel().selectFirst();
+
         comboValorFiltro.setDisable(true);
 
         comboFiltroPor.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             comboValorFiltro.getItems().clear();
             comboValorFiltro.getSelectionModel().clearSelection();
             comboValorFiltro.setDisable(true);
+            botonQuitarFiltro.setDisable(true);
 
             if (newVal == null) {
                 return;
@@ -93,27 +105,39 @@ public class GestionActividadesController implements Initializable {
 
             if (newVal.equals("Filtrar por destino")) {
                 opciones = ConsultasActividades.cargarNombresDestinos();
-                comboValorFiltro.setItems(opciones);
             }
 
             Conexion.cerrarConexion();
+
+            String placeholder = "Selecciona un destino...";
+            if (!opciones.contains(placeholder)) {
+                opciones.add(0, placeholder);
+            }
+
+            comboValorFiltro.setItems(opciones);
+            comboValorFiltro.getSelectionModel().selectFirst();
             comboValorFiltro.setDisable(false);
         });
 
         comboValorFiltro.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal != null) {
-                ObservableList<Actividad> lista = FXCollections.observableArrayList();
-                Conexion.conectar();
-                ConsultasActividades.cargarActividadesPorDestino(lista, newVal);
-                Conexion.cerrarConexion();
-                tablaActividades.setItems(lista);
+            if (newVal == null || newVal.startsWith("Selecciona")) {
+                botonQuitarFiltro.setDisable(true);
+                return;
             }
+
+            botonQuitarFiltro.setDisable(false);
+
+            ObservableList<Actividad> lista = FXCollections.observableArrayList();
+            Conexion.conectar();
+            ConsultasActividades.cargarActividadesPorDestino(lista, newVal);
+            Conexion.cerrarConexion();
+            tablaActividades.setItems(lista);
         });
 
     }
 
     private void inicializarAccionesColumna() {
-        columnAcciones.setCellFactory(col -> new CeldaAccionesActividad());
+        columnAcciones.setCellFactory(col -> new CeldaAccionesActividad(this));
     }
 
     private void buscarActividadesEnTiempoReal(String texto) {
@@ -165,12 +189,17 @@ public class GestionActividadesController implements Initializable {
 
     @FXML
     private void quitarFiltroActividad(ActionEvent event) {
-        comboFiltroPor.getSelectionModel().clearSelection();
-        comboValorFiltro.getSelectionModel().clearSelection();
+        comboFiltroPor.getSelectionModel().selectFirst();
         comboValorFiltro.getItems().clear();
+        comboValorFiltro.getItems().add("Selecciona un destino...");
+        comboValorFiltro.getSelectionModel().selectFirst();
         comboValorFiltro.setDisable(true);
+
         campoBuscarActividad.clear();
+
         cargarActividades();
+
+        botonQuitarFiltro.setDisable(true);
     }
 
 }

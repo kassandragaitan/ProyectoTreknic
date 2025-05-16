@@ -12,18 +12,13 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.stage.Stage;
 import modelo.Destino;
 import modelo.Usuario;
-
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.util.Date;
-import java.util.List;
 import java.util.ResourceBundle;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import modelo.Resena;
 
 public class FormularioResenaController implements Initializable {
 
@@ -38,22 +33,53 @@ public class FormularioResenaController implements Initializable {
     @FXML
     private Button botonGuardar;
 
+    private Destino destinoSeleccionado;
+    private Usuario usuarioSeleccionado;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        comboDestino.setItems(FXCollections.observableArrayList(ConsultasResenas.obtenerDestinos()));
-        comboUsuario.setItems(FXCollections.observableArrayList(ConsultasResenas.obtenerUsuarios()));
+        ObservableList<Destino> destinos = FXCollections.observableArrayList(
+                ConsultasResenas.obtenerDestinos()
+        );
+        Destino phDest = new Destino();
+        phDest.setId_destino(-1);
+        phDest.setNombre("Seleccione");
+        destinos.add(0, phDest);
+
+        comboDestino.setItems(destinos);
+        comboDestino.getSelectionModel().selectFirst();
+        destinoSeleccionado = null;
+        comboDestino.setOnAction(e -> {
+            Destino sel = comboDestino.getSelectionModel().getSelectedItem();
+            destinoSeleccionado = (sel != null && sel.getId_destino() != -1) ? sel : null;
+        });
+
+        ObservableList<Usuario> usuarios = FXCollections.observableArrayList(
+                ConsultasResenas.obtenerUsuarios()
+        );
+        Usuario comboUsua = new Usuario();
+        comboUsua.setIdUsuario(-1);
+        comboUsua.setNombre("Seleccione");
+        usuarios.add(0, comboUsua);
+
+        comboUsuario.setItems(usuarios);
+        comboUsuario.getSelectionModel().selectFirst();
+        usuarioSeleccionado = null;
+        comboUsuario.setOnAction(e -> {
+            Usuario sel = comboUsuario.getSelectionModel().getSelectedItem();
+            usuarioSeleccionado = (sel != null && sel.getIdUsuario() != -1) ? sel : null;
+        });
 
         spinnerClasificacion.setValueFactory(
                 new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 5, 0)
         );
-
     }
 
     @FXML
     private void guardarResena(ActionEvent event) {
-        if (comboDestino.getValue() == null) {
+        if (destinoSeleccionado == null) {
             Alertas.aviso("Campo vacío", "Debe seleccionar un destino.");
-        } else if (comboUsuario.getValue() == null) {
+        } else if (usuarioSeleccionado == null) {
             Alertas.aviso("Campo vacío", "Debe seleccionar un usuario.");
         } else if (compruebaCampo.compruebaVacio(campoComentario)) {
             Alertas.aviso("Campo vacío", "El comentario no puede estar vacío.");
@@ -70,26 +96,18 @@ public class FormularioResenaController implements Initializable {
             confirmacion.getButtonTypes().setAll(continuar, cancelar);
 
             if (confirmacion.showAndWait().orElse(cancelar) == continuar) {
-                Resena nueva = new Resena(
-                        0,
-                        comboDestino.getValue().getNombre(),
-                        campoComentario.getText().trim(),
-                        0,
-                        comboUsuario.getValue().getNombre()
-                );
-
                 boolean exito = ConsultasResenas.insertarResena(
-                        comboDestino.getValue().getId_destino(),
-                        comboUsuario.getValue().getIdUsuario(),
+                        destinoSeleccionado.getId_destino(),
+                        usuarioSeleccionado.getIdUsuario(),
                         campoComentario.getText().trim(),
                         0
                 );
-
                 if (exito) {
                     ConsultasMovimientos.registrarMovimiento(
-                            "Se registró una reseña sin clasificación para el destino: " + comboDestino.getValue().getNombre(),
+                            "Se registró una reseña sin clasificación para el destino: "
+                            + destinoSeleccionado.getNombre(),
                             new Date(),
-                            comboUsuario.getValue().getIdUsuario()
+                            usuarioSeleccionado.getIdUsuario()
                     );
                     Alertas.informacion("Reseña registrada correctamente.");
                     limpiarFormulario();
@@ -98,27 +116,21 @@ public class FormularioResenaController implements Initializable {
                 }
             }
         } else {
-            Resena nueva = new Resena(
-                    0,
-                    comboDestino.getValue().getNombre(),
-                    campoComentario.getText().trim(),
-                    spinnerClasificacion.getValue(),
-                    comboUsuario.getValue().getNombre()
-            );
-
+            int puntuacion = spinnerClasificacion.getValue();
             boolean exito = ConsultasResenas.insertarResena(
-                    comboDestino.getValue().getId_destino(),
-                    comboUsuario.getValue().getIdUsuario(),
+                    destinoSeleccionado.getId_destino(),
+                    usuarioSeleccionado.getIdUsuario(),
                     campoComentario.getText().trim(),
-                    spinnerClasificacion.getValue()
+                    puntuacion
             );
 
             if (exito) {
                 ConsultasMovimientos.registrarMovimiento(
-                        "Se registró una reseña para el destino: " + comboDestino.getValue().getNombre()
-                        + " con puntuación " + spinnerClasificacion.getValue(),
+                        "Se registró una reseña para el destino: "
+                        + destinoSeleccionado.getNombre()
+                        + " con puntuación " + puntuacion,
                         new Date(),
-                        comboUsuario.getValue().getIdUsuario()
+                        usuarioSeleccionado.getIdUsuario()
                 );
                 Alertas.informacion("Reseña registrada correctamente.");
                 limpiarFormulario();
@@ -129,10 +141,13 @@ public class FormularioResenaController implements Initializable {
     }
 
     private void limpiarFormulario() {
-        comboDestino.getSelectionModel().clearSelection();
-        comboUsuario.getSelectionModel().clearSelection();
+        comboDestino.getSelectionModel().selectFirst();
+        destinoSeleccionado = null;
+
+        comboUsuario.getSelectionModel().selectFirst();
+        usuarioSeleccionado = null;
+
         campoComentario.clear();
         spinnerClasificacion.getValueFactory().setValue(0);
     }
-
 }

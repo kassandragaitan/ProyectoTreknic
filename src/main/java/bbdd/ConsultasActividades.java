@@ -42,64 +42,66 @@ public class ConsultasActividades {
             cerrarConexion();
         }
     }
-public static boolean actualizarActividad(Actividad actividad) {
-    Conexion.conectar();
-    try {
-        String sql = "UPDATE actividades SET nombre = ?, descripcion = ?, id_destino = ? WHERE id_actividad = ?";
-        PreparedStatement stmt = Conexion.conn.prepareStatement(sql);
-        stmt.setString(1, actividad.getNombre());
-        stmt.setString(2, actividad.getDescripcion());
-        stmt.setInt(3, actividad.getIdDestino());
-        stmt.setInt(4, actividad.getIdActividad());
 
-        int filas = stmt.executeUpdate();
-        return filas > 0;
-    } catch (SQLException e) {
-        e.printStackTrace();
-        return false;
-    } finally {
-        Conexion.cerrarConexion();
-    }
-}
-public static ObservableList<String> cargarNombresDestinos() {
-    ObservableList<String> lista = FXCollections.observableArrayList();
-    String sql = "SELECT DISTINCT nombre FROM destinos ORDER BY nombre";
-    try {
-        PreparedStatement ps = Conexion.conn.prepareStatement(sql);
-        ResultSet rs = ps.executeQuery();
-        while (rs.next()) {
-            lista.add(rs.getString("nombre"));
+    public static boolean actualizarActividad(Actividad actividad) {
+        Conexion.conectar();
+        try {
+            String sql = "UPDATE actividades SET nombre = ?, descripcion = ?, id_destino = ? WHERE id_actividad = ?";
+            PreparedStatement stmt = Conexion.conn.prepareStatement(sql);
+            stmt.setString(1, actividad.getNombre());
+            stmt.setString(2, actividad.getDescripcion());
+            stmt.setInt(3, actividad.getIdDestino());
+            stmt.setInt(4, actividad.getIdActividad());
+
+            int filas = stmt.executeUpdate();
+            return filas > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            Conexion.cerrarConexion();
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
     }
-    return lista;
-}
 
-public static void cargarActividadesPorDestino(ObservableList<Actividad> lista, String nombreDestino) {
-    String sql = "SELECT a.id_actividad, a.nombre, a.descripcion, d.nombre AS nombre_destino " +
-                 "FROM actividades a " +
-                 "JOIN destinos d ON a.id_destino = d.id_destino " +
-                 "WHERE d.nombre = ?";
-
-    try {
-        PreparedStatement ps = Conexion.conn.prepareStatement(sql);
-        ps.setString(1, nombreDestino);
-        ResultSet rs = ps.executeQuery();
-
-        while (rs.next()) {
-            Actividad actividad = new Actividad(
-                    rs.getInt("id_actividad"),
-                    rs.getString("nombre"),
-                    rs.getString("descripcion"),
-                    rs.getString("nombre_destino")
-            );
-            lista.add(actividad);
+    public static ObservableList<String> cargarNombresDestinos() {
+        ObservableList<String> lista = FXCollections.observableArrayList();
+        String sql = "SELECT DISTINCT nombre FROM destinos ORDER BY nombre";
+        try {
+            PreparedStatement ps = Conexion.conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                lista.add(rs.getString("nombre"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
+        return lista;
     }
-}
+
+    public static void cargarActividadesPorDestino(ObservableList<Actividad> lista, String nombreDestino) {
+        String sql = "SELECT a.id_actividad, a.nombre, a.descripcion, d.nombre AS nombre_destino "
+                + "FROM actividades a "
+                + "JOIN destinos d ON a.id_destino = d.id_destino "
+                + "WHERE d.nombre = ?";
+
+        try {
+            PreparedStatement ps = Conexion.conn.prepareStatement(sql);
+            ps.setString(1, nombreDestino);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Actividad actividad = new Actividad(
+                        rs.getInt("id_actividad"),
+                        rs.getString("nombre"),
+                        rs.getString("descripcion"),
+                        rs.getString("nombre_destino")
+                );
+                lista.add(actividad);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
     public static void cargarDatosActividadesFiltradas(ObservableList<Actividad> listaActividades, String busqueda) {
         Connection conn = Conexion.conn;
@@ -156,4 +158,25 @@ public static void cargarActividadesPorDestino(ObservableList<Actividad> lista, 
             cerrarConexion();
         }
     }
+
+    public static boolean existeActividadConNombreYDestino(String nombre, int idDestino) {
+        boolean existe = false;
+        try {
+            String sql = "SELECT COUNT(*) FROM actividades WHERE LOWER(nombre) = LOWER(?) AND id_destino = ?";
+            PreparedStatement ps = Conexion.conectar().prepareStatement(sql);
+            ps.setString(1, nombre.trim());
+            ps.setInt(2, idDestino);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                existe = rs.getInt(1) > 0;
+            }
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return existe;
+    }
+
 }

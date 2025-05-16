@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import java.net.URL?>
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
@@ -11,8 +10,9 @@
             prefWidth="1000.0" prefHeight="600.0">
 
     <stylesheets>
-      <URL value="@/Estilos/gestion.css" />
+        <URL value="@/Estilos/gestion.css" />
     </stylesheets>
+
     <HBox alignment="CENTER"
           AnchorPane.topAnchor="20"
           AnchorPane.leftAnchor="0"
@@ -22,11 +22,7 @@
         <VBox spacing="15" maxWidth="800.0" HBox.hgrow="ALWAYS">
 
             <Label text="Gestión de Categorías"
-                   styleClass="labelTitulo">
-                <stylesheets>
-                    <URL value="@gestioncategoria.css" />
-                </stylesheets>
-            </Label>
+                   styleClass="labelTitulo" />
 
             <HBox spacing="10">
                 <TextField fx:id="campoBuscarCategoria"
@@ -35,19 +31,27 @@
                 <Button fx:id="botonNuevaCategoria"
                         text="Nueva Categoría"
                         onAction="#nuevaCategoria"
-                        styleClass="primary">
-                    <stylesheets>
-                        <URL value="@gestioncategoria.css" />
-                    </stylesheets>
-                </Button>
+                        styleClass="primary" />
             </HBox>
 
             <TableView fx:id="tablaCategoria" VBox.vgrow="ALWAYS">
                 <columns>
-                    <TableColumn fx:id="columnaIdCategoria" text="ID" visible="false" />
-                    <TableColumn fx:id="columnaNombre" text="Nombre" />
-                    <TableColumn fx:id="columnaDescripcion" text="Descripción" />
-                    <TableColumn fx:id="columnaInvisible" visible="false" prefWidth="0" maxWidth="0" minWidth="0" />
+                    <TableColumn fx:id="columnaIdCategoria"
+                                 text="ID"
+                                 visible="false" />
+                    <TableColumn fx:id="columnaNombre"
+                                 text="Nombre" />
+                    <TableColumn fx:id="columnaDescripcion"
+                                 text="Descripción" />
+
+                    <TableColumn fx:id="columnaAcciones"
+                                 text="Acciones" />
+
+                    <TableColumn fx:id="columnaInvisible"
+                                 visible="false"
+                                 prefWidth="0"
+                                 minWidth="0"
+                                 maxWidth="0" />
                 </columns>
             </TableView>
 

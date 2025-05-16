@@ -5,15 +5,17 @@
 package Utilidades;
 
 public class validarTelefonoGlobal {
- /**
-     * Valida un número de teléfono internacional:
-     * - Permite con o sin "+" al inicio
-     * - Solo dígitos (sin espacios, guiones ni letras)
-     * - Longitud entre 8 y 15 dígitos
-     * - Incluye soporte para Nicaragua (números de 8 dígitos que empiezan con 2, 5, 7 u 8)
+
+    /**
+     * Valida un número de teléfono internacional: - Permite con o sin "+" al
+     * inicio - Solo dígitos (sin espacios, guiones ni letras) - Longitud entre
+     * 8 y 15 dígitos - Incluye soporte para Nicaragua (números de 8 dígitos que
+     * empiezan con 2, 5, 7 u 8)
      */
     public static boolean esTelefonoValido(String telefono) {
-        if (telefono == null || telefono.isEmpty()) return false;
+        if (telefono == null || telefono.isEmpty()) {
+            return false;
+        }
 
         if (!telefono.matches("^\\+?[0-9]{8,15}$")) {
             return false;
@@ -24,4 +26,9 @@ public class validarTelefonoGlobal {
         }
         return true;
     }
+
+    public static boolean esTelefonoNicaraguenseValido(String numero) {
+        return numero.matches("^[2578]\\d{7}$");
+    }
+
 }

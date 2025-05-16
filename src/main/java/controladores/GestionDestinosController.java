@@ -50,54 +50,86 @@ public class GestionDestinosController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        configurarFiltros();
         cargarDestinos();
 
-        campoBuscarDestino.textProperty().addListener((obs, oldVal, newVal) -> aplicarBusqueda(newVal));
+        botonQuitarFiltro.setDisable(true);
+
+        ObservableList<String> filtros = FXCollections.observableArrayList(
+                "Selecciona un tipo de filtro...",
+                "Filtrar por nombre",
+                "Filtrar por fecha",
+                "Filtrar por categoría"
+        );
+        comboFiltroPor.setItems(filtros);
+        comboFiltroPor.getSelectionModel().selectFirst();
+        comboValorFiltro.setDisable(true);
+
+        campoBuscarDestino.textProperty().addListener((obs, oldV, newV) -> {
+            aplicarBusqueda(newV);
+            botonQuitarFiltro.setDisable(
+                    newV.trim().isEmpty()
+                    && (comboValorFiltro.getValue() == null || comboValorFiltro.getValue().startsWith("Selecciona"))
+            );
+        });
+
+        comboFiltroPor.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            comboValorFiltro.getItems().clear();
+            comboValorFiltro.getSelectionModel().clearSelection();
+            comboValorFiltro.setDisable(true);
+
+            if (newVal == null || newVal.equals("Selecciona un tipo de filtro...")) {
+                botonQuitarFiltro.setDisable(campoBuscarDestino.getText().trim().isEmpty());
+                return;
+            }
+
+            ObservableList<String> opciones = FXCollections.observableArrayList();
+            String placeholderValor = "";
+            if ("Filtrar por nombre".equals(newVal)) {
+                opciones = ConsultasDestinos.obtenerNombresDestinos();
+                placeholderValor = "Selecciona un nombre...";
+            } else if ("Filtrar por fecha".equals(newVal)) {
+                opciones = ConsultasDestinos.obtenerFechasDestinos();
+                placeholderValor = "Selecciona una fecha...";
+            } else if ("Filtrar por categoría".equals(newVal)) {
+                opciones = ConsultasDestinos.obtenerCategorias();
+                placeholderValor = "Selecciona una categoría...";
+            }
+
+            if (!opciones.contains(placeholderValor)) {
+                opciones.add(0, placeholderValor);
+            }
+            comboValorFiltro.setItems(opciones);
+            comboValorFiltro.getSelectionModel().selectFirst();
+            comboValorFiltro.setDisable(false);
+
+            botonQuitarFiltro.setDisable(
+                    campoBuscarDestino.getText().trim().isEmpty()
+                    && (comboValorFiltro.getValue() == null || comboValorFiltro.getValue().startsWith("Selecciona"))
+            );
+        });
+
+        comboValorFiltro.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal == null || newVal.startsWith("Selecciona")) {
+                aplicarBusqueda(campoBuscarDestino.getText());
+                botonQuitarFiltro.setDisable(campoBuscarDestino.getText().trim().isEmpty());
+                return;
+            }
+
+            botonQuitarFiltro.setDisable(false);
+            List<Destino> filtrados = ConsultasDestinos.filtrarDestinos(
+                    comboFiltroPor.getValue(), newVal
+            );
+            mostrarDestinos(filtrados);
+        });
 
         botonQuitarFiltro.setOnAction(e -> {
-            comboFiltroPor.getSelectionModel().clearSelection();
+            comboFiltroPor.getSelectionModel().selectFirst();
             comboValorFiltro.getSelectionModel().clearSelection();
             comboValorFiltro.getItems().clear();
             comboValorFiltro.setDisable(true);
             campoBuscarDestino.clear();
             cargarDestinos();
-        });
-    }
-
-    private void configurarFiltros() {
-        ObservableList<String> filtros = FXCollections.observableArrayList(
-                "Filtrar por nombre", "Filtrar por fecha", "Filtrar por categoría"
-        );
-        comboFiltroPor.setItems(filtros);
-        comboFiltroPor.setPromptText("Selecciona filtro...");
-        comboFiltroPor.setDisable(false);
-
-        comboFiltroPor.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-            comboValorFiltro.getItems().clear();
-            comboValorFiltro.setDisable(true);
-            if (newVal == null) {
-                return;
-            }
-
-            ObservableList<String> opciones = FXCollections.observableArrayList();
-            if ("Filtrar por nombre".equals(newVal)) {
-                opciones = ConsultasDestinos.obtenerNombresDestinos();
-            } else if ("Filtrar por fecha".equals(newVal)) {
-                opciones = ConsultasDestinos.obtenerFechasDestinos();
-            } else if ("Filtrar por categoría".equals(newVal)) {
-                opciones = ConsultasDestinos.obtenerCategorias();
-            }
-
-            comboValorFiltro.setItems(opciones);
-            comboValorFiltro.setDisable(false);
-        });
-
-        comboValorFiltro.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal != null && comboFiltroPor.getValue() != null) {
-                List<Destino> filtrados = ConsultasDestinos.filtrarDestinos(comboFiltroPor.getValue(), newVal);
-                mostrarDestinos(filtrados);
-            }
+            botonQuitarFiltro.setDisable(true);
         });
     }
 
@@ -112,7 +144,9 @@ public class GestionDestinosController implements Initializable {
             return;
         }
         List<Destino> destinos = ConsultasDestinos.obtenerDestinos();
-        destinos.removeIf(d -> !d.getNombre().toLowerCase().contains(texto.toLowerCase()));
+        destinos.removeIf(d
+                -> !d.getNombre().toLowerCase().contains(texto.toLowerCase())
+        );
         mostrarDestinos(destinos);
     }
 

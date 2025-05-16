@@ -120,3 +120,9 @@
     -fx-border-color: #ccc;
     -fx-background-radius: 4;
 }
+#botonNuevoDestino {
+  -fx-min-height: 24px;
+  -fx-pref-height: 24px;
+  -fx-padding: 4px 12px;   
+  -fx-font-size: 12px;
+}

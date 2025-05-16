@@ -1,9 +1,6 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package controladores;
 
+import acciones.CeldaAccionesCategoria;
 import bbdd.Conexion;
 import bbdd.ConsultasCategoria;
 import java.net.URL;
@@ -17,6 +14,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -26,81 +24,74 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import modelo.Categoria;
 
-/**
- * FXML Controller class
- *
- * @author k0343
- */
 public class GestionCategoriaController implements Initializable {
 
-    @FXML
-    private TableView<Categoria> tablaCategoria;
-    @FXML
-    private TableColumn<Categoria, Integer> columnaIdCategoria;
-    @FXML
-    private TableColumn<Categoria, String> columnaNombre;
-    @FXML
-    private TableColumn<Categoria, String> columnaDescripcion;
-    @FXML
-    private TextField campoBuscarCategoria;
-    @FXML
-    private Button botonNuevaCategoria;
+    @FXML private TableView<Categoria> tablaCategoria;
+    @FXML private TableColumn<Categoria, Integer> columnaIdCategoria;
+    @FXML private TableColumn<Categoria, String> columnaNombre;
+    @FXML private TableColumn<Categoria, String> columnaDescripcion;
+    @FXML private TableColumn<Categoria, Void> columnaAcciones;
+    @FXML private TableColumn<Categoria, Void> columnaInvisible;
+    @FXML private TextField campoBuscarCategoria;
+    @FXML private Button botonNuevaCategoria;
 
-    /**
-     * Initializes the controller class.
-     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        // 1) placeholder vacío y estirado
+        tablaCategoria.setPlaceholder(new Label(""));
+        tablaCategoria.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-        campoBuscarCategoria.textProperty().addListener((observable, oldValue, newValue) -> {
-            buscarCategoriasEnTiempoReal(newValue);
-        });
+        // 2) listener buscar en tiempo real
+        campoBuscarCategoria.textProperty().addListener((obs, oldV, newV) ->
+            buscarCategoriasEnTiempoReal(newV)
+        );
+
+        // 3) fábrica de la columna de acciones
+        columnaAcciones.setCellFactory(col -> new CeldaAccionesCategoria(this));
+
+        // 4) carga inicial
         recargarTabla();
     }
 
-    public void cargarDatosCategorias() {
-        ObservableList<Categoria> listaCategorias = FXCollections.observableArrayList();
-        Conexion.conectar();
-        ConsultasCategoria.cargarDatosCategorias(listaCategorias);
-        Conexion.cerrarConexion();
-        tablaCategoria.setItems(listaCategorias);
-        columnaIdCategoria.setCellValueFactory(new PropertyValueFactory<>("idCategoria"));
-        columnaNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
-        columnaDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
-    }
-
     public void recargarTabla() {
-        cargarDatosCategorias();
+        ObservableList<Categoria> lista = FXCollections.observableArrayList();
+        Conexion.conectar();
+        ConsultasCategoria.cargarDatosCategorias(lista);
+        Conexion.cerrarConexion();
+
+        tablaCategoria.setItems(lista);
+        columnaIdCategoria.setCellValueFactory(new PropertyValueFactory<>("idCategoria"));
+        columnaNombre    .setCellValueFactory(new PropertyValueFactory<>("nombre"));
+        columnaDescripcion
+                         .setCellValueFactory(new PropertyValueFactory<>("descripcion"));
     }
 
     private void buscarCategoriasEnTiempoReal(String texto) {
-        ObservableList<Categoria> listaCategorias = FXCollections.observableArrayList();
+        ObservableList<Categoria> lista = FXCollections.observableArrayList();
         Conexion.conectar();
-        ConsultasCategoria.cargarDatosCategoriasFiltradas(listaCategorias, texto);
+        ConsultasCategoria.cargarDatosCategoriasFiltradas(lista, texto);
         Conexion.cerrarConexion();
-        tablaCategoria.setItems(listaCategorias);
+        tablaCategoria.setItems(lista);
     }
 
     @FXML
     private void nuevaCategoria(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/AgregarCategoria.fxml"));
+            FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("/vistas/AgregarCategoria.fxml"));
             Parent root = loader.load();
+            AgregarCategoriaController ctrl = loader.getController();
+            ctrl.setGestionCategoriaController(this);
 
-            AgregarCategoriaController controlador = loader.getController();
-            controlador.setGestionCategoriaController(this);
-
-            Stage stage = new Stage();
-            stage.initStyle(StageStyle.DECORATED);
-            stage.setMaximized(false);
-            stage.setResizable(false);
-            stage.setTitle("Agregar Categoría");
-            stage.setScene(new Scene(root));
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.showAndWait();
+            Stage st = new Stage(StageStyle.DECORATED);
+            st.setTitle("Agregar Categoría");
+            st.setScene(new Scene(root));
+            st.initModality(Modality.APPLICATION_MODAL);
+            st.setResizable(false);
+            st.showAndWait();
+            recargarTabla();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
 }

@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package controladores;
 
 import Utilidades.Alertas;
@@ -11,9 +7,7 @@ import bbdd.ConsultasCategoria;
 import bbdd.ConsultasMovimientos;
 import java.net.URL;
 import java.sql.Date;
-import java.sql.Time;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -23,14 +17,10 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.Stage;
 import modelo.Categoria;
 import modelo.Usuario;
 
-/**
- * FXML Controller class
- *
- * @author k0343
- */
 public class AgregarCategoriaController implements Initializable {
 
     @FXML
@@ -42,53 +32,106 @@ public class AgregarCategoriaController implements Initializable {
     @FXML
     private ImageView imagenTrekNic;
 
-    /**
-     * Initializes the controller class.
-     */
+    private GestionCategoriaController gestionCategoriaController;
+    private Categoria categoriaActual;
+    private boolean esEdicion = false;
+    private boolean modificado = false;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         Image imagen = new Image(getClass().getResourceAsStream("/img/Encabezado.png"));
         imagenTrekNic.setImage(imagen);
     }
 
-    private GestionCategoriaController gestionCategoriaController;  
+    public void verCategoria(Categoria cat) {
+        this.categoriaActual = cat;
+        this.esEdicion = true;
+        campoNombre.setText(cat.getNombre());
+        campoDescripcion.setText(cat.getDescripcion());
+        botonRegistrar.setText("Actualizar");
+    }
+
+    public void setEdicionActiva(boolean editable) {
+        campoNombre.setEditable(editable);
+        campoDescripcion.setEditable(editable);
+        botonRegistrar.setVisible(editable);
+
+        double op = editable ? 1.0 : 0.75;
+        campoNombre.setOpacity(op);
+        campoDescripcion.setOpacity(op);
+    }
+
+    public boolean getModificado() {
+        return modificado;
+    }
 
     public void setGestionCategoriaController(GestionCategoriaController controller) {
         this.gestionCategoriaController = controller;
     }
-    private int idUsuarioActivo = Usuario.getUsuarioActual().getIdUsuario();
 
     @FXML
     private void RegistrarCategoria(ActionEvent event) {
         if (compruebaCampo.compruebaVacio(campoNombre)) {
             Alertas.aviso("Campo vacío", "El nombre no puede estar vacío.");
-        } else if (compruebaCampo.compruebaVacio(campoDescripcion)) {
+            return;
+        }else  if (compruebaCampo.compruebaVacio(campoDescripcion)) {
             Alertas.aviso("Campo vacío", "La descripción no puede estar vacía.");
-        } else if (ConsultasCategoria.existeCategoria(campoNombre.getText())) {
+            return;
+        }
+        String nombre = campoNombre.getText().trim();
+        String descripcion = campoDescripcion.getText().trim();
+
+        if (!esEdicion && ConsultasCategoria.existeCategoria(nombre)) {
             Alertas.aviso("Duplicado", "Ya existe una categoría con ese nombre.");
+            return;
+        }
+
+        boolean exito;
+        if (esEdicion) {
+            categoriaActual.setNombre(nombre);
+            categoriaActual.setDescripcion(descripcion);
+            exito = ConsultasCategoria.actualizarCategoria(categoriaActual);
         } else {
+            Categoria nueva = new Categoria(nombre, descripcion);
+            exito = ConsultasCategoria.registrarCategoria(nueva);
+        }
 
-            Categoria categoria = new Categoria(campoNombre.getText(), campoDescripcion.getText());
+        if (exito) {
+            Conexion.conectar();
+            String accion = esEdicion
+                    ? "Ha actualizado la categoría " + nombre
+                    : "Ha registrado la categoría " + nombre;
+            ConsultasMovimientos.registrarMovimiento(
+                    accion,
+                    Date.valueOf(LocalDate.now()),
+                    Usuario.getUsuarioActual().getIdUsuario()
+            );
+            Conexion.cerrarConexion();
 
-            if (ConsultasCategoria.registrarCategoria(categoria)) {
-                Conexion.conectar();
-                ConsultasMovimientos.registrarMovimiento("Ha registrado la categoria " + campoNombre.getText(),
-                        Date.valueOf(LocalDate.now()), Usuario.getUsuarioActual().getIdUsuario());
-                Alertas.informacion("Categoría registrada exitosamente.");
+            Alertas.informacion(esEdicion
+                    ? "Categoría actualizada correctamente."
+                    : "Categoría registrada exitosamente."
+            );
+
+            modificado = true;
+
+            if (gestionCategoriaController != null) {
+                gestionCategoriaController.recargarTabla();
+            }
+
+            if (esEdicion) {
+                ((Stage) botonRegistrar.getScene().getWindow()).close(); 
+            } else {
                 campoNombre.clear();
                 campoDescripcion.clear();
-
-                recargarTabla();
-            } else {
-                Alertas.error("Error en el registro", "Ocurrió un error al registrar la categoría.");
             }
-        }
-    }
 
-    private void recargarTabla() {
-        if (gestionCategoriaController != null) {
-            gestionCategoriaController.recargarTabla();
+        } else {
+            Alertas.error("Error", esEdicion
+                    ? "No se pudo actualizar la categoría."
+                    : "No se pudo registrar la categoría."
+            );
         }
-    }
 
+    }
 }

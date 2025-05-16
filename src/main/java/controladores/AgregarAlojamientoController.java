@@ -62,17 +62,49 @@ public class AgregarAlojamientoController implements Initializable {
     private Alojamiento alojamientoActual;
     private boolean esEdicion = false;
     private File archivoImagenSeleccionado;
+    private TipoAlojamiento tipoSeleccionado;
+    private Destino destinoSeleccionado;
+    @FXML
+    private Button botonSeleccionar;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         campoImagen.setEditable(false);
+
         Conexion.conectar();
         ConsultasTipoAlojamiento.cargarDatosTiposAlojamientoRegistrar(comboTipo);
         ConsultasDestinos.cargarComboDestino(comboDestino);
         Conexion.cerrarConexion();
 
-        Image imagen = new Image(getClass().getResourceAsStream("/img/Encabezado.png"));
-        imagenTrekNic.setImage(imagen);
+        imagenTrekNic.setImage(new Image(getClass().getResourceAsStream("/img/Encabezado.png")));
+
+        TipoAlojamiento phTipo = new TipoAlojamiento(-1, "Seleccione");
+        comboTipo.getItems().add(0, phTipo);
+        comboTipo.getSelectionModel().selectFirst();
+        tipoSeleccionado = null;
+        comboTipo.setOnAction(e -> {
+            TipoAlojamiento sel = comboTipo.getSelectionModel().getSelectedItem();
+            if (sel != null && sel.getIdTipo() != -1) {
+                tipoSeleccionado = sel;
+            } else {
+                tipoSeleccionado = null;
+            }
+        });
+
+        Destino phDest = new Destino();
+        phDest.setId_destino(-1);
+        phDest.setNombre("Seleccione");
+        comboDestino.getItems().add(0, phDest);
+        comboDestino.getSelectionModel().selectFirst();
+        destinoSeleccionado = null;
+        comboDestino.setOnAction(e -> {
+            Destino sel = comboDestino.getSelectionModel().getSelectedItem();
+            if (sel != null && sel.getId_destino() != -1) {
+                destinoSeleccionado = sel;
+            } else {
+                destinoSeleccionado = null;
+            }
+        });
     }
 
     private GestionAlojamientoController gestionAlojamientoController;
@@ -85,70 +117,113 @@ public class AgregarAlojamientoController implements Initializable {
     private void RegistrarAlojamiento(ActionEvent event) {
         if (compruebaCampo.compruebaVacio(campoNombre)) {
             Alertas.aviso("Campo vacío", "El nombre no puede estar vacío.");
-        } else if (comboTipo.getValue() == null) {
+        } else if (!esEdicion && ConsultasAlojamientos.existeNombreAlojamiento(campoNombre.getText().trim())) {
+            Alertas.aviso("Nombre duplicado", "Ya existe un alojamiento con ese nombre.");
+        } else if (tipoSeleccionado == null) {
             Alertas.aviso("Campo vacío", "Debe seleccionar el tipo de alojamiento.");
         } else if (compruebaCampo.compruebaVacio(campoContacto)) {
             Alertas.aviso("Campo vacío", "El contacto no puede estar vacío.");
+        } else if (!Utilidades.validarTelefonoGlobal.esTelefonoNicaraguenseValido(campoContacto.getText().trim())) {
+            Alertas.aviso("Teléfono inválido", "El contacto debe tener 8 dígitos y empezar por 2, 5, 7 u 8 (formato nicaragüense).");
         } else if (compruebaCampo.compruebaVacio(campoImagen)) {
             Alertas.aviso("Campo vacío", "Debe seleccionar una imagen.");
-        } else if (comboDestino.getValue() == null) {
+        } else if (destinoSeleccionado == null) {
             Alertas.aviso("Campo vacío", "Debe seleccionar un destino.");
         } else {
-            String nombreImagenRemota;
-            if (!esEdicion) {
-                // obtener extensión
+            String nombreImagenParaBD;
+            if (esEdicion && archivoImagenSeleccionado != null) {
                 String ext = archivoImagenSeleccionado.getName()
                         .substring(archivoImagenSeleccionado.getName().lastIndexOf('.'));
-                // generar nombre único
-                nombreImagenRemota = System.currentTimeMillis() + ext;
-                // conectar y subir
-                if (!ConexionFtp.conectar() || !ConexionFtp.subirArchivo(archivoImagenSeleccionado, nombreImagenRemota)) {
-                    Alertas.error("Error FTP", "No se pudo subir la imagen al servidor.");
+                String remotoNuevo = System.currentTimeMillis() + ext;
+                if (!ConexionFtp.conectar()
+                        || !ConexionFtp.subirArchivo(archivoImagenSeleccionado, remotoNuevo)) {
+                    Alertas.error("Error FTP", "No se pudo subir la nueva imagen.");
                     return;
                 }
                 ConexionFtp.desconectar();
+                String remotoAntiguo = alojamientoActual.getImagen();
+                if (remotoAntiguo != null && !remotoAntiguo.isBlank()) {
+                    ConexionFtp.eliminarArchivo(remotoAntiguo);
+                }
+                nombreImagenParaBD = remotoNuevo;
+
+            } else if (!esEdicion) {
+                String ext = archivoImagenSeleccionado.getName()
+                        .substring(archivoImagenSeleccionado.getName().lastIndexOf('.'));
+                String remoto = System.currentTimeMillis() + ext;
+                if (!ConexionFtp.conectar()
+                        || !ConexionFtp.subirArchivo(archivoImagenSeleccionado, remoto)) {
+                    Alertas.error("Error FTP", "No se pudo subir la imagen.");
+                    return;
+                }
+                ConexionFtp.desconectar();
+                nombreImagenParaBD = remoto;
+
             } else {
-                // en edición mantenemos la imagen existente
-                nombreImagenRemota = alojamientoActual.getImagen();
+                nombreImagenParaBD = alojamientoActual.getImagen();
             }
 
-            // 3) Crear objeto Alojamiento con el nombre remoto de la imagen
             Alojamiento dto = new Alojamiento(
                     esEdicion ? alojamientoActual.getIdAlojamiento() : 0,
                     campoNombre.getText().trim(),
                     comboTipo.getValue().getIdTipo(),
                     campoContacto.getText().trim(),
-                    nombreImagenRemota,
+                    nombreImagenParaBD,
                     comboDestino.getValue().getId_destino()
             );
-
-            // 4) Guardar en base de datos (alta o edición)
             boolean exito = esEdicion
                     ? ConsultasAlojamientos.actualizarAlojamiento(dto)
                     : ConsultasAlojamientos.registrarAlojamiento(dto);
-
             if (!exito) {
-                Alertas.error("Error", "No se pudo guardar el alojamiento.");
+                Alertas.error("Error", esEdicion
+                        ? "No se pudo actualizar el alojamiento."
+                        : "No se pudo registrar el alojamiento."
+                );
                 return;
             }
 
-            // 5) Registrar movimiento
             Conexion.conectar();
-            String mensaje = (esEdicion ? "Ha actualizado el alojamiento " : "Ha registrado el alojamiento ")
-                    + campoNombre.getText().trim();
+            String accion = esEdicion
+                    ? "Ha actualizado el alojamiento "
+                    : "Ha registrado el alojamiento ";
             ConsultasMovimientos.registrarMovimiento(
-                    mensaje,
+                    accion + campoNombre.getText().trim(),
                     new java.util.Date(),
                     Usuario.getUsuarioActual().getIdUsuario()
             );
             Conexion.cerrarConexion();
 
-            // 6) Feedback al usuario y refrescar vista
             Alertas.informacion(esEdicion
                     ? "Alojamiento actualizado correctamente."
-                    : "Alojamiento registrado correctamente.");
-            gestionAlojamientoController.cargarAlojamientos();
-            cerrarVentana();
+                    : "Alojamiento registrado correctamente."
+            );
+
+            if (esEdicion) {
+                cerrarVentana();
+                if (gestionAlojamientoController != null) {
+                    gestionAlojamientoController.cargarAlojamientos();
+                    gestionAlojamientoController.cargarAlojamientosFavoritos();
+                }
+            } else {
+                if (gestionAlojamientoController != null) {
+                    gestionAlojamientoController.cargarAlojamientos();
+                    gestionAlojamientoController.cargarAlojamientosFavoritos();
+                }
+                campoNombre.clear();
+                comboTipo.getSelectionModel().selectFirst();
+                tipoSeleccionado = null;
+
+                comboDestino.getSelectionModel().selectFirst();
+                destinoSeleccionado = null;
+
+                campoContacto.clear();
+                campoImagen.clear();
+                archivoImagenSeleccionado = null;
+
+                imagenTrekNic.setImage(
+                        new Image(getClass().getResourceAsStream("/img/Encabezado.png"))
+                );
+            }
         }
     }
 
@@ -167,6 +242,7 @@ public class AgregarAlojamientoController implements Initializable {
         for (TipoAlojamiento tipo : comboTipo.getItems()) {
             if (tipo.getIdTipo() == a.getIdTipo()) {
                 comboTipo.setValue(tipo);
+                tipoSeleccionado = tipo;
                 break;
             }
         }
@@ -174,6 +250,7 @@ public class AgregarAlojamientoController implements Initializable {
         for (Destino dest : comboDestino.getItems()) {
             if (dest.getId_destino() == a.getIdDestino()) {
                 comboDestino.setValue(dest);
+                destinoSeleccionado = dest;
                 break;
             }
         }
@@ -188,6 +265,7 @@ public class AgregarAlojamientoController implements Initializable {
         campoImagen.setEditable(editable);
         comboDestino.setDisable(!editable);
         comboTipo.setDisable(!editable);
+        botonSeleccionar.setDisable(!editable);
         botonRegistrar.setVisible(editable);
 
         double opacidad = editable ? 1.0 : 0.75;
@@ -212,7 +290,7 @@ public class AgregarAlojamientoController implements Initializable {
         File fichero = chooser.showOpenDialog(null);
         if (fichero != null) {
             archivoImagenSeleccionado = fichero;
-            campoImagen.setText(fichero.getName()); // provisional
+            campoImagen.setText(fichero.getName());
         }
     }
 

@@ -25,6 +25,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import modelo.Categoria;
 import modelo.ConexionFtp;
 import modelo.Destino;
@@ -56,16 +57,28 @@ public class AgregarDestinoController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         campoRutaArchivo.setEditable(false);
 
-        Image imagen = new Image(getClass().getResourceAsStream("/img/Encabezado.png"));
-        imagenTrekNic.setImage(imagen);
+        imagenTrekNic.setImage(new Image(getClass().getResourceAsStream("/img/Encabezado.png")));
 
         Conexion.conectar();
         ObservableList<Categoria> lista = FXCollections.observableArrayList();
         ConsultasCategoria.cargarDatosCategorias(lista);
-        comboCategoria.setItems(lista);
         Conexion.cerrarConexion();
 
-        comboCategoria.setOnAction(e -> categoriaSeleccionada = comboCategoria.getSelectionModel().getSelectedItem());
+        Categoria placeholder = new Categoria(-1, "Seleccione");
+        lista.add(0, placeholder);
+
+        comboCategoria.setItems(lista);
+        comboCategoria.getSelectionModel().selectFirst();
+        categoriaSeleccionada = null;
+
+        comboCategoria.setOnAction(e -> {
+            Categoria sel = comboCategoria.getSelectionModel().getSelectedItem();
+            if (sel != null && sel.getIdCategoria() != -1) {
+                categoriaSeleccionada = sel;
+            } else {
+                categoriaSeleccionada = null;
+            }
+        });
     }
 
     public void setGestionDestinosController(GestionDestinosController controller) {
@@ -85,7 +98,7 @@ public class AgregarDestinoController implements Initializable {
 
         for (Categoria cat : comboCategoria.getItems()) {
             if (cat.getNombre().equals(destino.getCategoria())) {
-                comboCategoria.getSelectionModel().select(cat); 
+                comboCategoria.getSelectionModel().select(cat);
                 categoriaSeleccionada = cat;
                 break;
             }
@@ -93,11 +106,12 @@ public class AgregarDestinoController implements Initializable {
     }
 
     String nuevoNombre = String.valueOf(System.currentTimeMillis());
+
     @FXML
     private void seleccionarImagen(ActionEvent event) {
         FileChooser selector = new FileChooser();
         selector.getExtensionFilters().add(
-            new FileChooser.ExtensionFilter("Imágenes", "*.png", "*.jpg", "*.jpeg")
+                new FileChooser.ExtensionFilter("Imágenes", "*.png", "*.jpg", "*.jpeg")
         );
         File file = selector.showOpenDialog(null);
         if (file != null) {
@@ -106,9 +120,9 @@ public class AgregarDestinoController implements Initializable {
         }
     }
 
-      private String subirImagenAlFTP(File localFile) {
+    private String subirImagenAlFTP(File localFile) {
         String ext = localFile.getName()
-                              .substring(localFile.getName().lastIndexOf('.'));
+                .substring(localFile.getName().lastIndexOf('.'));
         String remoteName = System.currentTimeMillis() + ext;
 
         if (!ConexionFtp.conectar()) {
@@ -123,7 +137,7 @@ public class AgregarDestinoController implements Initializable {
         }
         return remoteName;
     }
-      
+
     @FXML
     private void RegistrarDestino(ActionEvent event) {
         if (compruebaCampo.compruebaVacio(campoNombre)) {
@@ -149,56 +163,79 @@ public class AgregarDestinoController implements Initializable {
                 }
 
                 String nombreFicheroBD;
-        if (edicionActiva) {
-            nombreFicheroBD = destinoEditando.getImagen();
-        } else {
-            String remoto = subirImagenAlFTP(archivoImagenSeleccionado);
-            if (remoto == null) {
-                Alertas.error("Error FTP", "No se pudo subir la imagen al servidor.");
-                return;
-            }
-            nombreFicheroBD = remoto;
-        }
+                if (!edicionActiva) {
+                    String remoto = subirImagenAlFTP(archivoImagenSeleccionado);
+                    if (remoto == null) {
+                        Alertas.error("Error FTP", "No se pudo subir la imagen al servidor.");
+                        return;
+                    }
+                    nombreFicheroBD = remoto;
+                } else {
+                    if (archivoImagenSeleccionado != null) {
+                        String remoto = subirImagenAlFTP(archivoImagenSeleccionado);
+                        if (remoto == null) {
+                            Alertas.error("Error FTP", "No se pudo subir la nueva imagen al servidor.");
+                            return;
+                        }
+                        ConexionFtp.conectar();
+                        ConexionFtp.eliminarArchivo(destinoEditando.getImagen());
+                        ConexionFtp.desconectar();
 
-        Conexion.conectar();
-        boolean exito;
-        if (edicionActiva) {
-            exito = ConsultasDestinos.actualizarDestino(
-                destinoEditando.getId_destino(),
-                campoNombre.getText(),
-                campoDescripcion.getText(),
-                nombreFicheroBD,
-                categoriaSeleccionada.getIdCategoria()
-            );
-        } else {
-            exito = ConsultasDestinos.registrarDestino(
-                campoNombre.getText(),
-                campoDescripcion.getText(),
-                nombreFicheroBD,
-                null,
-                categoriaSeleccionada.getIdCategoria()
-            );
-        }
-        Conexion.cerrarConexion();
+                        nombreFicheroBD = remoto;
+                    } else {
+                        nombreFicheroBD = destinoEditando.getImagen();
+                    }
+                }
 
-        if (exito) {
-            Alertas.informacion(
-                edicionActiva ? 
-                  "Destino actualizado correctamente." : 
-                  "Destino registrado exitosamente."
-            );
-            if (gestionDestinosController != null) {
-                gestionDestinosController.recargarTabla();
+                Conexion.conectar();
+                boolean exito;
+                if (!edicionActiva) {
+                    exito = ConsultasDestinos.registrarDestino(
+                            campoNombre.getText().trim(),
+                            campoDescripcion.getText().trim(),
+                            nombreFicheroBD,
+                            null,
+                            categoriaSeleccionada.getIdCategoria()
+                    );
+                } else {
+                    exito = ConsultasDestinos.actualizarDestino(
+                            destinoEditando.getId_destino(),
+                            campoNombre.getText().trim(),
+                            campoDescripcion.getText().trim(),
+                            nombreFicheroBD,
+                            categoriaSeleccionada.getIdCategoria()
+                    );
+                }
+                Conexion.cerrarConexion();
+
+                if (exito) {
+                    Alertas.informacion(edicionActiva
+                            ? "Destino actualizado correctamente."
+                            : "Destino registrado exitosamente."
+                    );
+                    if (gestionDestinosController != null) {
+                        gestionDestinosController.recargarTabla();
+                    }
+                    if (edicionActiva) {
+                        ((Stage) botonRegistrar.getScene().getWindow()).close();
+                    } else {
+                        campoNombre.clear();
+                        campoDescripcion.clear();
+                        campoRutaArchivo.clear();
+                        archivoImagenSeleccionado = null;
+                        comboCategoria.getSelectionModel().selectFirst();
+                        categoriaSeleccionada = null;
+                        imagenTrekNic.setImage(new Image(
+                                getClass().getResourceAsStream("/img/Encabezado.png")
+                        ));
+                    }
+                } else {
+                    Alertas.error("Error", edicionActiva
+                            ? "No se pudo actualizar el destino."
+                            : "No se pudo registrar el destino."
+                    );
+                }
             }
-            botonRegistrar.getScene().getWindow().hide();
-        } else {
-            Alertas.error(
-                "Error", 
-                edicionActiva ? 
-                  "No se pudo actualizar el destino." : 
-                  "No se pudo registrar el destino."
-            );
         }
     }
 }
-    }}

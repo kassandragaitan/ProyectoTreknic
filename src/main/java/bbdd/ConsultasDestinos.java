@@ -77,7 +77,9 @@ public class ConsultasDestinos {
         List<Destino> lista = new ArrayList<>();
         conectar();
         try {
-            String sql = "SELECT * FROM destinos";
+            String sql = "SELECT d.*, c.nombre AS categoria "
+                    + "FROM destinos d "
+                    + "JOIN categorias c ON d.id_categoria_fk = c.id_categoria";
             PreparedStatement stmt = conn.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery();
 
@@ -88,6 +90,7 @@ public class ConsultasDestinos {
                 destino.setDescripcion(rs.getString("descripcion"));
                 destino.setImagen(rs.getString("imagen"));
                 destino.setFecha_creacion(rs.getTimestamp("fecha_creacion"));
+                destino.setCategoria(rs.getString("categoria")); 
                 lista.add(destino);
             }
         } catch (SQLException e) {
@@ -115,7 +118,7 @@ public class ConsultasDestinos {
         }
     }
 
-    public static void cargarDatosDestinos(ObservableList<Destino> listado) {//CREO QUE L PUEDO BORRAR 
+    public static void cargarDatosDestinos(ObservableList<Destino> listado) {
         conectar();
         try {
             String consulta = "SELECT d.id_destino, d.nombre, d.descripcion, d.fecha_creacion, d.imagen, "
@@ -311,105 +314,112 @@ public class ConsultasDestinos {
         }
         return lista;
     }
-    
-   public static boolean tieneElementosAsociados(int idDestino) {
-    boolean tieneResena = false;
-    boolean tieneAlojamiento = false;
-    boolean tieneActividad = false;
-    
-    String sqlResenas = "SELECT COUNT(*) FROM resenas WHERE id_destino = ?";
-    try (Connection conn = Conexion.conectar(); PreparedStatement stmtResenas = conn.prepareStatement(sqlResenas)) {
-        stmtResenas.setInt(1, idDestino);
-        ResultSet rsResenas = stmtResenas.executeQuery();
-        if (rsResenas.next()) {
-            tieneResena = rsResenas.getInt(1) > 0;
-        }
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
 
-    String sqlAlojamientos = "SELECT COUNT(*) FROM alojamientos WHERE id_destino_fk = ?";
-    try (Connection conn = Conexion.conectar(); PreparedStatement stmtAlojamientos = conn.prepareStatement(sqlAlojamientos)) {
-        stmtAlojamientos.setInt(1, idDestino);
-        ResultSet rsAlojamientos = stmtAlojamientos.executeQuery();
-        if (rsAlojamientos.next()) {
-            tieneAlojamiento = rsAlojamientos.getInt(1) > 0;
-        }
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
+    public static boolean tieneElementosAsociados(int idDestino) {
+        boolean tieneResena = false;
+        boolean tieneAlojamiento = false;
+        boolean tieneActividad = false;
 
-    String sqlActividad = "SELECT COUNT(*) FROM actividades WHERE id_destino = ?";
-    try (Connection conn = Conexion.conectar(); PreparedStatement stmtActividad = conn.prepareStatement(sqlActividad)) {
-        stmtActividad.setInt(1, idDestino);
-        ResultSet rsActividad = stmtActividad.executeQuery();
-        if (rsActividad.next()) {
-            tieneActividad = rsActividad.getInt(1) > 0;
-        }
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-
-    return tieneResena || tieneAlojamiento || tieneActividad;
-}
-
-
-
-public static boolean eliminarDestino(int idDestino) {
-    String sqlEliminar = "DELETE FROM destinos WHERE id_destino = ?";
-    try (Connection conn = Conexion.conectar(); PreparedStatement stmtEliminar = conn.prepareStatement(sqlEliminar)) {
-        stmtEliminar.setInt(1, idDestino);
-        return stmtEliminar.executeUpdate() > 0;
-    } catch (SQLException e) {
-        e.printStackTrace();
-        return false;
-    }
-}
-
-public static boolean eliminarDestinoConAsociados(int idDestino) {
-    Connection conn = null;
-    PreparedStatement stmtEliminarActividades = null;
-    PreparedStatement stmtEliminarResenas = null;
-    PreparedStatement stmtEliminarAlojamientos = null;
-    PreparedStatement stmtEliminarDestino = null;
-
-    try {
-        conn = Conexion.conectar();
-
-        String sqlEliminarActividades = "DELETE FROM actividades WHERE id_destino = ?";
-        stmtEliminarActividades = conn.prepareStatement(sqlEliminarActividades);
-        stmtEliminarActividades.setInt(1, idDestino);
-        stmtEliminarActividades.executeUpdate();  // Eliminar actividades asociadas
-
-        String sqlEliminarResenas = "DELETE FROM resenas WHERE id_destino = ?";
-        stmtEliminarResenas = conn.prepareStatement(sqlEliminarResenas);
-        stmtEliminarResenas.setInt(1, idDestino);
-        stmtEliminarResenas.executeUpdate();  // Eliminar reseñas asociadas
-
-        String sqlEliminarAlojamientos = "DELETE FROM alojamientos WHERE id_destino_fk = ?";
-        stmtEliminarAlojamientos = conn.prepareStatement(sqlEliminarAlojamientos);
-        stmtEliminarAlojamientos.setInt(1, idDestino);
-        stmtEliminarAlojamientos.executeUpdate();  // Eliminar alojamientos asociados
-
-        String sqlEliminarDestino = "DELETE FROM destinos WHERE id_destino = ?";
-        stmtEliminarDestino = conn.prepareStatement(sqlEliminarDestino);
-        stmtEliminarDestino.setInt(1, idDestino);
-        return stmtEliminarDestino.executeUpdate() > 0;  // Eliminar el destino
-    } catch (SQLException e) {
-        e.printStackTrace();
-        return false; 
-    } finally {
-        try {
-            if (stmtEliminarActividades != null) stmtEliminarActividades.close();
-            if (stmtEliminarResenas != null) stmtEliminarResenas.close();
-            if (stmtEliminarAlojamientos != null) stmtEliminarAlojamientos.close();
-            if (stmtEliminarDestino != null) stmtEliminarDestino.close();
-            if (conn != null) conn.close();
+        String sqlResenas = "SELECT COUNT(*) FROM resenas WHERE id_destino = ?";
+        try (Connection conn = Conexion.conectar(); PreparedStatement stmtResenas = conn.prepareStatement(sqlResenas)) {
+            stmtResenas.setInt(1, idDestino);
+            ResultSet rsResenas = stmtResenas.executeQuery();
+            if (rsResenas.next()) {
+                tieneResena = rsResenas.getInt(1) > 0;
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
-}
 
+        String sqlAlojamientos = "SELECT COUNT(*) FROM alojamientos WHERE id_destino_fk = ?";
+        try (Connection conn = Conexion.conectar(); PreparedStatement stmtAlojamientos = conn.prepareStatement(sqlAlojamientos)) {
+            stmtAlojamientos.setInt(1, idDestino);
+            ResultSet rsAlojamientos = stmtAlojamientos.executeQuery();
+            if (rsAlojamientos.next()) {
+                tieneAlojamiento = rsAlojamientos.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        String sqlActividad = "SELECT COUNT(*) FROM actividades WHERE id_destino = ?";
+        try (Connection conn = Conexion.conectar(); PreparedStatement stmtActividad = conn.prepareStatement(sqlActividad)) {
+            stmtActividad.setInt(1, idDestino);
+            ResultSet rsActividad = stmtActividad.executeQuery();
+            if (rsActividad.next()) {
+                tieneActividad = rsActividad.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return tieneResena || tieneAlojamiento || tieneActividad;
+    }
+
+    public static boolean eliminarDestino(int idDestino) {
+        String sqlEliminar = "DELETE FROM destinos WHERE id_destino = ?";
+        try (Connection conn = Conexion.conectar(); PreparedStatement stmtEliminar = conn.prepareStatement(sqlEliminar)) {
+            stmtEliminar.setInt(1, idDestino);
+            return stmtEliminar.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean eliminarDestinoConAsociados(int idDestino) {
+        Connection conn = null;
+        PreparedStatement stmtEliminarActividades = null;
+        PreparedStatement stmtEliminarResenas = null;
+        PreparedStatement stmtEliminarAlojamientos = null;
+        PreparedStatement stmtEliminarDestino = null;
+
+        try {
+            conn = Conexion.conectar();
+
+            String sqlEliminarActividades = "DELETE FROM actividades WHERE id_destino = ?";
+            stmtEliminarActividades = conn.prepareStatement(sqlEliminarActividades);
+            stmtEliminarActividades.setInt(1, idDestino);
+            stmtEliminarActividades.executeUpdate();  // Eliminar actividades asociadas
+
+            String sqlEliminarResenas = "DELETE FROM resenas WHERE id_destino = ?";
+            stmtEliminarResenas = conn.prepareStatement(sqlEliminarResenas);
+            stmtEliminarResenas.setInt(1, idDestino);
+            stmtEliminarResenas.executeUpdate();  // Eliminar reseñas asociadas
+
+            String sqlEliminarAlojamientos = "DELETE FROM alojamientos WHERE id_destino_fk = ?";
+            stmtEliminarAlojamientos = conn.prepareStatement(sqlEliminarAlojamientos);
+            stmtEliminarAlojamientos.setInt(1, idDestino);
+            stmtEliminarAlojamientos.executeUpdate();  // Eliminar alojamientos asociados
+
+            String sqlEliminarDestino = "DELETE FROM destinos WHERE id_destino = ?";
+            stmtEliminarDestino = conn.prepareStatement(sqlEliminarDestino);
+            stmtEliminarDestino.setInt(1, idDestino);
+            return stmtEliminarDestino.executeUpdate() > 0;  // Eliminar el destino
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            try {
+                if (stmtEliminarActividades != null) {
+                    stmtEliminarActividades.close();
+                }
+                if (stmtEliminarResenas != null) {
+                    stmtEliminarResenas.close();
+                }
+                if (stmtEliminarAlojamientos != null) {
+                    stmtEliminarAlojamientos.close();
+                }
+                if (stmtEliminarDestino != null) {
+                    stmtEliminarDestino.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
 }

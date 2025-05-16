@@ -31,7 +31,7 @@
                                                    HBox.hgrow="ALWAYS"
                                                    prefHeight="26"/>
                                         <Button fx:id="botonAgregarResena"
-                                                text="+ Nueva Reseña"
+                                                text="Nueva Reseña"
                                                 onAction="#abrirFormularioResena"
                                                 minHeight="26"
                                                 styleClass="primary"/>
@@ -60,7 +60,7 @@
                                                    HBox.hgrow="ALWAYS"
                                                    prefHeight="26"/>
                                         <Button fx:id="botonAgregarResenaUsuario"
-                                                text="+ Nueva Reseña"
+                                                text="Nueva Reseña"
                                                 onAction="#abrirFormularioResena"
                                                 minHeight="26"
                                                 styleClass="primary"/>
