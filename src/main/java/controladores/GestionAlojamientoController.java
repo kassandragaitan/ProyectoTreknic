@@ -87,11 +87,14 @@ public class GestionAlojamientoController implements Initializable {
         tablaAlojamientos.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         campoBuscarAlojamiento.textProperty().addListener((obs, oldV, newV) -> {
+            comboFiltroPor.getSelectionModel().selectFirst();
+            comboValorFiltro.getItems().clear();
+            comboValorFiltro.getSelectionModel().clearSelection();
+            comboValorFiltro.setDisable(true);
             buscarAlojamientosEnTiempoReal(newV);
-            botonQuitarFiltro.setDisable(
-                    newV.trim().isEmpty()
-                    && (comboValorFiltro.getValue() == null || comboValorFiltro.getValue().startsWith("Selecciona"))
-            );
+            botonQuitarFiltro.setDisable(newV.trim().isEmpty());
+            comboFiltroPor.setVisible(false);
+            comboFiltroPor.setVisible(true);
         });
 
         columnAcciones.setCellFactory(col -> new CeldaAccionesAlojamiento(this));
@@ -179,6 +182,25 @@ public class GestionAlojamientoController implements Initializable {
                         Usuario.getUsuarioActual().getIdUsuario()
                 );
 
+        if (favoritos.isEmpty()) {
+            Label texto = new Label("No hay alojamientos en favoritos aún.");
+            texto.setStyle("-fx-text-fill: #999999; -fx-font-size: 15px; -fx-font-weight: normal;");
+            texto.setWrapText(true);
+            texto.setMaxWidth(400);
+            texto.setAlignment(Pos.CENTER);
+
+            VBox contenedorTexto = new VBox(texto);
+            contenedorTexto.setAlignment(Pos.TOP_CENTER);
+            contenedorTexto.setPrefHeight(260);
+            contenedorTexto.setPadding(new javafx.geometry.Insets(40, 0, 0, 0));
+
+            contenedorFavoritos.setAlignment(Pos.TOP_CENTER);
+            contenedorFavoritos.getChildren().add(contenedorTexto);
+            return;
+        }
+
+        contenedorFavoritos.setAlignment(Pos.TOP_LEFT);
+
         for (Alojamiento aloj : favoritos) {
             VBox tarjeta = new VBox(5);
             tarjeta.setStyle(
@@ -189,28 +211,7 @@ public class GestionAlojamientoController implements Initializable {
             tarjeta.setAlignment(Pos.CENTER);
             tarjeta.setPrefWidth(200);
             tarjeta.setMaxWidth(200);
-            tarjeta.setPrefHeight(260);
-
-            ImageView imagen = new ImageView();
-            imagen.setFitWidth(180);
-            imagen.setFitHeight(120);
-            imagen.setPreserveRatio(true);
-
-            String nombreImg = aloj.getImagen();
-            if (nombreImg != null && !nombreImg.isBlank()) {
-                try {
-                    ConexionFtp.cargarImagen(nombreImg, imagen);
-                } catch (Exception ex) {
-                    System.err.println("Error cargando imagen favorito: " + ex.getMessage());
-                    imagen.setImage(new Image(
-                            getClass().getResourceAsStream("/img/default-image.png")
-                    ));
-                }
-            } else {
-                imagen.setImage(new Image(
-                        getClass().getResourceAsStream("/img/default-image.png")
-                ));
-            }
+            tarjeta.setPrefHeight(180);
 
             Label lblNombre = new Label(aloj.getNombre());
             lblNombre.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
@@ -234,7 +235,7 @@ public class GestionAlojamientoController implements Initializable {
                 }
             });
 
-            tarjeta.getChildren().addAll(imagen, lblNombre, lblDestino, btnQuitar);
+            tarjeta.getChildren().addAll(lblNombre, lblDestino, btnQuitar);
             contenedorFavoritos.getChildren().add(tarjeta);
         }
     }
@@ -253,6 +254,7 @@ public class GestionAlojamientoController implements Initializable {
         ConsultasAlojamientos.cargarDatosAlojamientos(lista);
         Conexion.cerrarConexion();
         tablaAlojamientos.setItems(lista);
+        tablaAlojamientos.setPlaceholder(new Label("No hay alojamientos registrados."));
         columnaIdAlojamiento.setCellValueFactory(new PropertyValueFactory<>("idAlojamiento"));
         columnaNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         columnaTipo.setCellValueFactory(new PropertyValueFactory<>("nombreTipo"));

@@ -25,13 +25,10 @@ import modelo.PreferenciasNotificacion;
 public class ConsultasNotificaciones {
 
     public static void cargarDatosNotificaciones(ObservableList<Notificacion> listaNotificaciones) {
-        conectar();
-        try {
-            String consulta = "SELECT n.id_notificacion, n.descripcion, n.fecha, n.notificacion, u.nombre AS destinatario, n.tipo_notificacion, n.prioridad, n.leido "
-                    + "FROM notificaciones n "
-                    + "INNER JOIN usuarios u ON n.id_usuario = u.id_usuario";
-            Statement st = conn.createStatement();
-            ResultSet rs = st.executeQuery(consulta);
+        String consulta = "SELECT n.id_notificacion, n.descripcion, n.fecha, n.notificacion, u.nombre AS destinatario, n.tipo_notificacion, n.prioridad, n.leido "
+                + "FROM notificaciones n "
+                + "INNER JOIN usuarios u ON n.id_usuario = u.id_usuario";
+        try (Connection conn = Conexion.conectar(); Statement st = conn.createStatement(); ResultSet rs = st.executeQuery(consulta)) {
             while (rs.next()) {
                 Notificacion notificacion = new Notificacion(
                         rs.getInt("id_notificacion"),
@@ -47,31 +44,24 @@ public class ConsultasNotificaciones {
             }
         } catch (SQLException e) {
             Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, e);
-        } finally {
-            cerrarConexion();
         }
     }
 
     public static void marcarComoLeido(int idNotificacion) {
-        conectar();
-        try {
-            String consulta = "UPDATE notificaciones SET leido = 1 WHERE id_notificacion = ?";
-            PreparedStatement pst = conn.prepareStatement(consulta);
+        String consulta = "UPDATE notificaciones SET leido = 1 WHERE id_notificacion = ?";
+        try (Connection conn = Conexion.conectar(); PreparedStatement pst = conn.prepareStatement(consulta)) {
             pst.setInt(1, idNotificacion);
             pst.executeUpdate();
         } catch (SQLException e) {
             Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, e);
-        } finally {
-            cerrarConexion();
         }
     }
 
     public static PreferenciasNotificacion cargarPreferencias(int idUsuario) {
-        conectar();
         PreferenciasNotificacion preferencias = new PreferenciasNotificacion();
-        try {
-            String consulta = "SELECT notificaciones_correo, notificaciones_sistema, resumen_diario, hora_inicio, hora_fin, dias FROM configuracion_notificaciones WHERE id_usuario = ? LIMIT 1";
-            PreparedStatement ps = conn.prepareStatement(consulta);
+        String consulta = "SELECT notificaciones_correo, notificaciones_sistema, resumen_diario, hora_inicio, hora_fin, dias "
+                + "FROM configuracion_notificaciones WHERE id_usuario = ? LIMIT 1";
+        try (Connection conn = Conexion.conectar(); PreparedStatement ps = conn.prepareStatement(consulta)) {
             ps.setInt(1, idUsuario);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
@@ -84,17 +74,13 @@ public class ConsultasNotificaciones {
             }
         } catch (SQLException e) {
             Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, e);
-        } finally {
-            cerrarConexion();
         }
         return preferencias;
     }
 
     public static boolean guardarPreferencias(int idUsuario, PreferenciasNotificacion preferencias) {
-        conectar();
-        try {
-            String consultaCheck = "SELECT COUNT(*) FROM configuracion_notificaciones WHERE id_usuario = ?";
-            PreparedStatement psCheck = conn.prepareStatement(consultaCheck);
+        String consultaCheck = "SELECT COUNT(*) FROM configuracion_notificaciones WHERE id_usuario = ?";
+        try (Connection conn = Conexion.conectar(); PreparedStatement psCheck = conn.prepareStatement(consultaCheck)) {
             psCheck.setInt(1, idUsuario);
             ResultSet rsCheck = psCheck.executeQuery();
             rsCheck.next();
@@ -102,34 +88,49 @@ public class ConsultasNotificaciones {
 
             if (existe > 0) {
                 String consultaUpdate = "UPDATE configuracion_notificaciones SET notificaciones_correo = ?, notificaciones_sistema = ?, resumen_diario = ?, hora_inicio = ?, hora_fin = ?, dias = ? WHERE id_usuario = ?";
-                PreparedStatement pst = conn.prepareStatement(consultaUpdate);
-                pst.setBoolean(1, preferencias.isCorreo());
-                pst.setBoolean(2, preferencias.isSistema());
-                pst.setBoolean(3, preferencias.isResumen());
-                pst.setString(4, preferencias.getHoraInicio());
-                pst.setString(5, preferencias.getHoraFin());
-                pst.setString(6, preferencias.getDias());
-                pst.setInt(7, idUsuario);
-                pst.executeUpdate();
+                try (PreparedStatement pst = conn.prepareStatement(consultaUpdate)) {
+                    pst.setBoolean(1, preferencias.isCorreo());
+                    pst.setBoolean(2, preferencias.isSistema());
+                    pst.setBoolean(3, preferencias.isResumen());
+                    pst.setString(4, preferencias.getHoraInicio());
+                    pst.setString(5, preferencias.getHoraFin());
+                    pst.setString(6, preferencias.getDias());
+                    pst.setInt(7, idUsuario);
+                    pst.executeUpdate();
+                }
             } else {
                 String consultaInsert = "INSERT INTO configuracion_notificaciones (id_usuario, notificaciones_correo, notificaciones_sistema, resumen_diario, hora_inicio, hora_fin, dias) VALUES (?, ?, ?, ?, ?, ?, ?)";
-                PreparedStatement pst = conn.prepareStatement(consultaInsert);
-                pst.setInt(1, idUsuario);
-                pst.setBoolean(2, preferencias.isCorreo());
-                pst.setBoolean(3, preferencias.isSistema());
-                pst.setBoolean(4, preferencias.isResumen());
-                pst.setString(5, preferencias.getHoraInicio());
-                pst.setString(6, preferencias.getHoraFin());
-                pst.setString(7, preferencias.getDias());
-                pst.executeUpdate();
+                try (PreparedStatement pst = conn.prepareStatement(consultaInsert)) {
+                    pst.setInt(1, idUsuario);
+                    pst.setBoolean(2, preferencias.isCorreo());
+                    pst.setBoolean(3, preferencias.isSistema());
+                    pst.setBoolean(4, preferencias.isResumen());
+                    pst.setString(5, preferencias.getHoraInicio());
+                    pst.setString(6, preferencias.getHoraFin());
+                    pst.setString(7, preferencias.getDias());
+                    pst.executeUpdate();
+                }
             }
             return true;
         } catch (SQLException e) {
             Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, e);
             return false;
-        } finally {
-            cerrarConexion();
         }
+    }
+
+    public static boolean eliminarNotificacion(int idNotificacion) {
+        boolean eliminado = false;
+        try {
+            String sql = "DELETE FROM notificaciones WHERE id_notificacion = ?";
+            PreparedStatement pst = Conexion.conectar().prepareStatement(sql);
+            pst.setInt(1, idNotificacion);
+            eliminado = pst.executeUpdate() > 0;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        } finally {
+            Conexion.cerrarConexion();
+        }
+        return eliminado;
     }
 
 }

@@ -25,54 +25,43 @@ import modelo.TipoAlojamiento;
 public class ConsultasTipoAlojamiento {
 
     public static boolean registrarTipoAlojamiento(TipoAlojamiento tipo) {
-        conectar();
-        try {
-            String consulta = "INSERT INTO tipoalojamiento (tipo) VALUES (?)";
-            PreparedStatement pst = conn.prepareStatement(consulta);
-            pst.setString(1, tipo.getTipo());
+        String consulta = "INSERT INTO tipoalojamiento (tipo) VALUES (?)";
+        try (Connection conn = Conexion.conectar(); PreparedStatement pst = conn.prepareStatement(consulta)) {
 
-            int resultado = pst.executeUpdate();
-            return resultado > 0;
+            pst.setString(1, tipo.getTipo());
+            return pst.executeUpdate() > 0;
+
         } catch (SQLException ex) {
             Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
             return false;
-        } finally {
-            cerrarConexion();
         }
     }
 
     public static boolean actualizarTipoAlojamiento(TipoAlojamiento tipo) {
-        conectar();
         String sql = "UPDATE tipoalojamiento SET tipo = ? WHERE id_tipo = ?";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = Conexion.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setString(1, tipo.getTipo());
             stmt.setInt(2, tipo.getIdTipo());
+            return stmt.executeUpdate() > 0;
 
-            int filas = stmt.executeUpdate();
-            return filas > 0;
         } catch (SQLException ex) {
             ex.printStackTrace();
             return false;
-        } finally {
-            cerrarConexion();
         }
     }
 
     public static void cargarDatosTiposAlojamientoFiltrados(ObservableList<TipoAlojamiento> listaTipos, String busqueda) {
-        Connection conn = Conexion.conn;
-
         String consulta = "SELECT id_tipo, tipo FROM tipoalojamiento WHERE tipo LIKE ?";
+        try (Connection conn = Conexion.conectar(); PreparedStatement ps = conn.prepareStatement(consulta)) {
 
-        try (PreparedStatement ps = conn.prepareStatement(consulta)) {
             String wildcard = "%" + busqueda + "%";
             ps.setString(1, wildcard);
-
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     TipoAlojamiento tipoAloj = new TipoAlojamiento();
                     tipoAloj.setIdTipo(rs.getInt("id_tipo"));
                     tipoAloj.setTipo(rs.getString("tipo"));
-
                     listaTipos.add(tipoAloj);
                 }
             }
@@ -83,59 +72,47 @@ public class ConsultasTipoAlojamiento {
     }
 
     public static void cargarDatosTiposAlojamientoRegistrar(ComboBox<TipoAlojamiento> comboTipo) {
-        conectar();
-        try {
-            String consultaCarga = "SELECT id_tipo, tipo FROM tipoalojamiento";
-            Statement st = conn.createStatement();
-            ResultSet rs = st.executeQuery(consultaCarga);
+        String consultaCarga = "SELECT id_tipo, tipo FROM tipoalojamiento";
+        try (Connection conn = Conexion.conectar(); Statement st = conn.createStatement(); ResultSet rs = st.executeQuery(consultaCarga)) {
+
             while (rs.next()) {
                 TipoAlojamiento tipo = new TipoAlojamiento(rs.getInt("id_tipo"), rs.getString("tipo"));
                 comboTipo.getItems().add(tipo);
             }
+
         } catch (SQLException ex) {
             Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            cerrarConexion();
         }
     }
 
     public static void cargarDatosTiposAlojamiento(ObservableList<TipoAlojamiento> listado) {
-        conectar();
-        try {
-            String consultaCarga = "SELECT id_tipo, tipo FROM tipoalojamiento";
-            try (Statement st = conn.createStatement(); ResultSet rs = st.executeQuery(consultaCarga)) {
-                while (rs.next()) {
-                    listado.add(new TipoAlojamiento(
-                            rs.getInt("id_tipo"),
-                            rs.getString("tipo")
-                    ));
-                }
+        String consultaCarga = "SELECT id_tipo, tipo FROM tipoalojamiento";
+        try (Connection conn = Conexion.conectar(); Statement st = conn.createStatement(); ResultSet rs = st.executeQuery(consultaCarga)) {
+
+            while (rs.next()) {
+                listado.add(new TipoAlojamiento(
+                        rs.getInt("id_tipo"),
+                        rs.getString("tipo")
+                ));
             }
+
         } catch (SQLException ex) {
             Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            cerrarConexion();
         }
     }
 
     public static boolean existeTipoAlojamiento(String tipo) {
-        boolean existe = false;
-        try {
-            String sql = "SELECT COUNT(*) FROM tipoalojamiento WHERE tipo = ?";
-            PreparedStatement stmt = Conexion.conectar().prepareStatement(sql);
-            stmt.setString(1, tipo.trim());
+        String sql = "SELECT COUNT(*) FROM tipoalojamiento WHERE tipo = ?";
+        try (Connection conn = Conexion.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next() && rs.getInt(1) > 0) {
-                existe = true;
+            stmt.setString(1, tipo.trim());
+            try (ResultSet rs = stmt.executeQuery()) {
+                return rs.next() && rs.getInt(1) > 0;
             }
 
-            rs.close();
-            stmt.close();
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
-        return existe;
     }
-
 }

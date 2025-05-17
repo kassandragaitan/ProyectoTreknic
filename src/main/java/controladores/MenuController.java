@@ -128,7 +128,7 @@ public class MenuController implements Initializable {
 
     @FXML
     private void irAGestionUsuarios(ActionEvent event) {
-        cargarEcena("/vistas/AdministracionUsuario.fxml");
+        cargarEcena("/vistas/GestionUsuario.fxml");
     }
 
     @FXML

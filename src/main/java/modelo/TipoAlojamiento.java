@@ -16,7 +16,6 @@ public class TipoAlojamiento {
     public TipoAlojamiento() {
     }
 
-    
     public TipoAlojamiento(String tipo) {
         this.tipo = tipo;
     }

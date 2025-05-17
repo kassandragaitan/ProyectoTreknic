@@ -15,6 +15,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -56,20 +57,21 @@ public class GestionDestinosController implements Initializable {
 
         ObservableList<String> filtros = FXCollections.observableArrayList(
                 "Selecciona un tipo de filtro...",
-                "Filtrar por nombre",
                 "Filtrar por fecha",
                 "Filtrar por categoría"
         );
+
         comboFiltroPor.setItems(filtros);
         comboFiltroPor.getSelectionModel().selectFirst();
         comboValorFiltro.setDisable(true);
 
         campoBuscarDestino.textProperty().addListener((obs, oldV, newV) -> {
+            comboFiltroPor.getSelectionModel().selectFirst();
+            comboValorFiltro.getItems().clear();
+            comboValorFiltro.getSelectionModel().clearSelection();
+            comboValorFiltro.setDisable(true);
             aplicarBusqueda(newV);
-            botonQuitarFiltro.setDisable(
-                    newV.trim().isEmpty()
-                    && (comboValorFiltro.getValue() == null || comboValorFiltro.getValue().startsWith("Selecciona"))
-            );
+            botonQuitarFiltro.setDisable(newV.trim().isEmpty());
         });
 
         comboFiltroPor.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
@@ -84,10 +86,7 @@ public class GestionDestinosController implements Initializable {
 
             ObservableList<String> opciones = FXCollections.observableArrayList();
             String placeholderValor = "";
-            if ("Filtrar por nombre".equals(newVal)) {
-                opciones = ConsultasDestinos.obtenerNombresDestinos();
-                placeholderValor = "Selecciona un nombre...";
-            } else if ("Filtrar por fecha".equals(newVal)) {
+            if ("Filtrar por fecha".equals(newVal)) {
                 opciones = ConsultasDestinos.obtenerFechasDestinos();
                 placeholderValor = "Selecciona una fecha...";
             } else if ("Filtrar por categoría".equals(newVal)) {
@@ -152,6 +151,21 @@ public class GestionDestinosController implements Initializable {
 
     public void mostrarDestinos(List<Destino> destinos) {
         destinationsPane.getChildren().clear();
+
+        if (destinos == null || destinos.isEmpty()) {
+            Label mensaje = new Label("No hay destinos registrados.");
+            mensaje.setStyle("-fx-text-fill: #888888; -fx-font-size: 15px;");
+            mensaje.setWrapText(true);
+            mensaje.setMaxWidth(400);
+            mensaje.setAlignment(Pos.CENTER);
+
+            destinationsPane.setAlignment(Pos.CENTER);
+            destinationsPane.setPrefHeight(300);
+            destinationsPane.getChildren().add(mensaje);
+            return;
+        }
+
+        destinationsPane.setAlignment(Pos.TOP_LEFT);
         for (Destino destino : destinos) {
             crearTarjetaDestino(destino);
         }
@@ -161,21 +175,24 @@ public class GestionDestinosController implements Initializable {
         VBox tarjetaDestino = new VBox(8);
         tarjetaDestino.getStyleClass().add("destination-card");
         tarjetaDestino.setAlignment(Pos.TOP_CENTER);
-
-        ImageView vistaImagen = new ImageView();
-        vistaImagen.setFitWidth(130);
-        vistaImagen.setFitHeight(75);
-        vistaImagen.setPreserveRatio(true);
-
+        Node vistaContenido;
         if (destino.getImagen() != null && !destino.getImagen().isBlank()) {
+            ImageView vistaImagen = new ImageView();
+            vistaImagen.setFitWidth(130);
+            vistaImagen.setFitHeight(75);
+            vistaImagen.setPreserveRatio(true);
             try {
                 ConexionFtp.cargarImagen(destino.getImagen(), vistaImagen);
+                vistaContenido = vistaImagen;
             } catch (Exception ex) {
-                System.err.println("⚠️ Error cargando imagen: " + ex.getMessage());
-                vistaImagen.setImage(new Image(getClass().getResourceAsStream("/img/default-image.png")));
+                Label sinImagen = new Label("Error al cargar imagen");
+                sinImagen.setStyle("-fx-text-fill: #999999; -fx-font-size: 12px;");
+                vistaContenido = sinImagen;
             }
         } else {
-            vistaImagen.setImage(new Image(getClass().getResourceAsStream("/img/default-image.png")));
+            Label sinImagen = new Label("Sin imagen disponible");
+            sinImagen.setStyle("-fx-text-fill: #999999; -fx-font-size: 12px;");
+            vistaContenido = sinImagen;
         }
 
         Label etiquetaNombre = new Label(destino.getNombre());
@@ -209,7 +226,7 @@ public class GestionDestinosController implements Initializable {
                     if (nombreImagen != null && !nombreImagen.isBlank()) {
                         ConexionFtp.eliminarArchivo(nombreImagen);
                     }
-                    Alertas.informacion("Destino eliminados correctamente.");
+                    Alertas.informacion("Destino eliminado correctamente.");
                     recargarTabla();
                 } else {
                     Alertas.error("Error", "No se pudo eliminar el destino.");
@@ -221,7 +238,7 @@ public class GestionDestinosController implements Initializable {
         cajaBotones.setAlignment(Pos.CENTER);
 
         tarjetaDestino.getChildren().addAll(
-                vistaImagen,
+                vistaContenido,
                 etiquetaNombre,
                 etiquetaDescripcion,
                 etiquetaFecha,

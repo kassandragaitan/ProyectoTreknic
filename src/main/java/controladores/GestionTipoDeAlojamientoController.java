@@ -74,6 +74,7 @@ public class GestionTipoDeAlojamientoController implements Initializable {
         Conexion.cerrarConexion();
 
         tablaTipoAlojamiento.setItems(listaTipos);
+        tablaTipoAlojamiento.setPlaceholder(new Label("No hay tipos de alojamientos registrados."));
         columnaIdTipo.setCellValueFactory(new PropertyValueFactory<>("idTipo"));
         columnaTipo.setCellValueFactory(new PropertyValueFactory<>("tipo"));
     }

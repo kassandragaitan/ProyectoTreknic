@@ -28,8 +28,4 @@ public class ConsultasMovimientos {
             ex.printStackTrace();
         }
     }
-    
-  
-
-
 }

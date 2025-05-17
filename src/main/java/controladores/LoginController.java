@@ -141,7 +141,7 @@ public class LoginController implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/GestionUsuarios.fxml"));
             Parent root = loader.load();
-            GestionUsuariosController controller = loader.getController();
+            AgregarUsuarioController controller = loader.getController();
             controller.setAbiertoDesdeLogin(true);
             Stage stage = new Stage();
             stage.setResizable(false);

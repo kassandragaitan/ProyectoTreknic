@@ -68,7 +68,9 @@
                                   visible="false" />
                     </children>
                 </StackPane>
-                <HBox alignment="CENTER" spacing="10.0" AnchorPane.topAnchor="/* la posición que quieras */">
+
+                <!-- Corregido: posición válida en AnchorPane -->
+                <HBox alignment="CENTER" spacing="10.0" AnchorPane.topAnchor="10.0">
                     <children>
                         <Button fx:id="botonGenerarPdf"
                                 text="Generar PDF"

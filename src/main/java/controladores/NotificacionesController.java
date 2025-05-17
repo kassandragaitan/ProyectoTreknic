@@ -5,9 +5,11 @@
 package controladores;
 
 import Utilidades.Animacion;
+import acciones.CeldaAccionesNotificacion;
 import bbdd.Conexion;
 import bbdd.ConsultasMovimientos;
 import bbdd.ConsultasNotificaciones;
+import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.Date;
@@ -16,15 +18,22 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import modelo.Notificacion;
 import modelo.PreferenciasNotificacion;
 import modelo.Usuario;
@@ -45,7 +54,7 @@ public class NotificacionesController implements Initializable {
     @FXML
     private TableColumn<Notificacion, Date> columnaFecha;
     @FXML
-    private TableColumn<Notificacion, String> Acciones;
+    private TableColumn<Notificacion, Void> Acciones;
     @FXML
     private TableView<Notificacion> tablaNotificaciones;
     @FXML
@@ -95,6 +104,7 @@ public class NotificacionesController implements Initializable {
                 tablaNotificaciones.refresh();
             }
         });
+        Acciones.setCellFactory(col -> new CeldaAccionesNotificacion());
 
         columnaLeido.setCellValueFactory(new PropertyValueFactory<>("leido"));
         columnaLeido.setCellFactory(col -> new javafx.scene.control.cell.TextFieldTableCell<Notificacion, Boolean>() {
@@ -135,6 +145,7 @@ public class NotificacionesController implements Initializable {
         ObservableList<Notificacion> listaNotificaciones = FXCollections.observableArrayList();
         ConsultasNotificaciones.cargarDatosNotificaciones(listaNotificaciones);
         tablaNotificaciones.setItems(listaNotificaciones);
+        tablaNotificaciones.setPlaceholder(new Label("No hay notificaciones disponibles."));
     }
 
     private int idUsuarioActivo = Usuario.getUsuarioActual().getIdUsuario();

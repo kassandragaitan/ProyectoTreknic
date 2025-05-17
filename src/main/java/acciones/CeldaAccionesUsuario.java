@@ -5,7 +5,8 @@
 package acciones;
 
 import bbdd.Conexion;
-import controladores.GestionUsuariosController;
+import controladores.GestionUsuarioController;
+import controladores.AgregarUsuarioController;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -21,6 +22,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import modelo.Usuario;
 
 /**
@@ -28,12 +30,15 @@ import modelo.Usuario;
  * @author k0343
  */
 public class CeldaAccionesUsuario extends TableCell<Usuario, Void> {
+
     private final HBox contenedor = new HBox(10);
     private final Button botonVer = new Button("Ver");
     private final Button botonEditar = new Button("Editar");
     private final Button botonEliminar = new Button("Eliminar");
+    private GestionUsuarioController controller;
 
-    public CeldaAccionesUsuario() {
+    public CeldaAccionesUsuario(GestionUsuarioController controller) {
+        this.controller = controller;
         botonVer.getStyleClass().add("table-button");
         botonEditar.getStyleClass().add("table-button");
         botonEliminar.getStyleClass().addAll("table-button", "red");
@@ -51,7 +56,10 @@ public class CeldaAccionesUsuario extends TableCell<Usuario, Void> {
         botonEditar.setOnAction(e -> {
             Usuario usuario = getTableRow().getItem();
             if (usuario != null) {
-                abrirVentanaGestionUsuario(usuario, true); 
+                boolean modificado = abrirVentanaGestionUsuario(usuario, true);
+                if (modificado) {
+                    controller.recargarTabla();
+                }
             }
         });
 
@@ -89,29 +97,37 @@ public class CeldaAccionesUsuario extends TableCell<Usuario, Void> {
         }
     }
 
-    private void abrirVentanaGestionUsuario(Usuario usuario, boolean editable) {
+    private boolean abrirVentanaGestionUsuario(Usuario usuario, boolean editable) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/GestionUsuarios.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/AgregarUsuario.fxml"));
             Parent root = loader.load();
 
-            GestionUsuariosController controller = loader.getController();
-            controller.VerCamposUsuario(usuario);
+            AgregarUsuarioController controller = loader.getController();
+            controller.setAdministracionUsuarioController((GestionUsuarioController) getTableView().getScene().getUserData());
+            controller.verUsuario(usuario);
+            controller.setEdicionActiva(editable);
             controller.EditarCamposUsuario(editable);
 
             Stage stage = new Stage();
-            stage.setTitle(editable ? "Editar usuario" : "Ver usuario");
-            stage.setScene(new Scene(root));
+            stage.setTitle(editable ? "Editar Usuario" : "Ver Usuario");
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
             stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setResizable(false);
+            stage.initStyle(StageStyle.DECORATED);
             stage.showAndWait();
+
+            return editable && controller.getModificado();
+
         } catch (Exception ex) {
             ex.printStackTrace();
+            return false;
         }
     }
 
     private boolean eliminarUsuarioPorId(int idUsuario) {
         String sql = "DELETE FROM usuarios WHERE id_usuario = ?";
-        try (Connection conn = Conexion.conectar();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = Conexion.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, idUsuario);
             int filas = stmt.executeUpdate();
             return filas > 0;

@@ -26,6 +26,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import modelo.Actividad;
 import acciones.CeldaAccionesActividad;
+import javafx.scene.control.Label;
 import javafx.stage.StageStyle;
 
 /**
@@ -72,11 +73,12 @@ public class GestionActividadesController implements Initializable {
         tablaActividades.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         campoBuscarActividad.textProperty().addListener((observable, oldValue, newValue) -> {
+            comboFiltroPor.getSelectionModel().selectFirst();
+            comboValorFiltro.getItems().clear();
+            comboValorFiltro.getSelectionModel().clearSelection();
+            comboValorFiltro.setDisable(true);
             buscarActividadesEnTiempoReal(newValue);
-            botonQuitarFiltro.setDisable(newValue.trim().isEmpty()
-                    && (comboValorFiltro.getSelectionModel().getSelectedItem() == null
-                    || comboValorFiltro.getSelectionModel().getSelectedItem().startsWith("Selecciona"))
-            );
+            botonQuitarFiltro.setDisable(newValue.trim().isEmpty());
         });
 
         inicializarAccionesColumna();
@@ -155,6 +157,7 @@ public class GestionActividadesController implements Initializable {
         Conexion.cerrarConexion();
 
         tablaActividades.setItems(listaActividades);
+        tablaActividades.setPlaceholder(new Label("No hay actividades registradas."));
         columnaIdActividad.setCellValueFactory(new PropertyValueFactory<>("idActividad"));
         columnaNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         columnaDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));

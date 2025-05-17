@@ -5,8 +5,6 @@
 package bbdd;
 
 import static bbdd.Conexion.cerrarConexion;
-import static bbdd.Conexion.conectar;
-import static bbdd.Conexion.conn;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -29,10 +27,8 @@ import modelo.TipoAlojamiento;
 public class ConsultasAlojamientos {
 
     public static boolean registrarAlojamiento(Alojamiento alojamiento) {
-        conectar();
-        try {
-            String consulta = "INSERT INTO alojamientos (nombre, id_tipo_fk, contacto, imagen, id_destino_fk) VALUES (?, ?, ?, ?, ?)";
-            PreparedStatement pst = conn.prepareStatement(consulta);
+        String consulta = "INSERT INTO alojamientos (nombre, id_tipo_fk, contacto, imagen, id_destino_fk) VALUES (?, ?, ?, ?, ?)";
+        try (Connection conn = Conexion.conectar(); PreparedStatement pst = conn.prepareStatement(consulta)) {
             pst.setString(1, alojamiento.getNombre());
             pst.setInt(2, alojamiento.getIdTipo());
             pst.setString(3, alojamiento.getContacto());

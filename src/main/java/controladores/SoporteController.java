@@ -105,7 +105,16 @@ public class SoporteController implements Initializable {
 
     private void cargarPreguntas(String filtro) {
         listaPreguntas.getItems().clear();
-        listaPreguntas.getItems().addAll(ConsultasSoporte.obtenerPreguntasFiltradas(filtro));
+        ObservableList<PreguntaFrecuente> preguntas = FXCollections.observableArrayList(
+                ConsultasSoporte.obtenerPreguntasFiltradas(filtro)
+        );
+        listaPreguntas.setItems(preguntas);
+
+        if (preguntas.isEmpty()) {
+            Label placeholder = new Label("No hay preguntas frecuentes disponibles.");
+            placeholder.setStyle("-fx-text-fill: #888; -fx-font-size: 14px;");
+            listaPreguntas.setPlaceholder(placeholder);
+        }
 
         listaPreguntas.setCellFactory(param -> new ListCell<>() {
             @Override
@@ -132,11 +141,25 @@ public class SoporteController implements Initializable {
         datosSugerencias.clear();
         datosSugerencias.addAll(ConsultasSoporte.obtenerSugerenciasFiltradas(filtro));
         tablaSugerencias.setItems(datosSugerencias);
+
+        if (datosSugerencias.isEmpty()) {
+            Label placeholder = new Label("No hay sugerencias disponibles.");
+            placeholder.setStyle("-fx-text-fill: #888; -fx-font-size: 14px;");
+            tablaSugerencias.setPlaceholder(placeholder);
+        }
     }
 
     private void cargarCentroPruebas(String filtro) {
-        ObservableList<PruebaFuncionalidad> pruebas = ConsultasSoporte.obtenerPruebasFiltradas(filtro);
+        ObservableList<PruebaFuncionalidad> pruebas = FXCollections.observableArrayList(
+                ConsultasSoporte.obtenerPruebasFiltradas(filtro)
+        );
         listaCentroPruebas.setItems(pruebas);
+
+        if (pruebas.isEmpty()) {
+            Label placeholder = new Label("No hay funcionalidades de prueba disponibles.");
+            placeholder.setStyle("-fx-text-fill: #888; -fx-font-size: 14px;");
+            listaCentroPruebas.setPlaceholder(placeholder);
+        }
 
         listaCentroPruebas.setCellFactory(param -> new ListCell<>() {
             @Override

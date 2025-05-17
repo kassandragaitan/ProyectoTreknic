@@ -1,4 +1,5 @@
 package controladores;
+
 import Utilidades.Alertas;
 import Utilidades.Animacion;
 import bbdd.ConsultasReportes;
@@ -129,6 +130,17 @@ public class ReportesController implements Initializable {
 
     private void cargarGraficoUsuarios(String idioma) {
         Map<String, Integer> datos = ConsultasReportes.obtenerUsuariosPorMesYIdioma(idioma);
+        lineChart.getData().clear();
+
+        if (datos == null || datos.isEmpty()) {
+            lineChart.setTitle("No hay datos para mostrar");
+            labelTotal.setText("0");
+            labelPromedio.setText("0");
+            labelMaximo.setText("0");
+            labelCrecimiento.setText("0%");
+            return;
+        }
+
         XYChart.Series<String, Number> serie = new XYChart.Series<>();
         serie.setName("Usuarios por mes: " + idioma);
 
@@ -150,12 +162,12 @@ public class ReportesController implements Initializable {
             anterior = valor;
         }
 
-        double promedio = datos.isEmpty() ? 0 : (double) total / datos.size();
+        double promedio = (double) total / datos.size();
 
-        lineChart.getData().clear();
+        lineChart.setTitle("");
         lineChart.getData().add(serie);
-
         Animacion.transicionGrafico(lineChart);
+
         for (XYChart.Data<String, Number> data : serie.getData()) {
             Animacion.animarDatosGrafico(data.getNode());
         }
@@ -172,8 +184,18 @@ public class ReportesController implements Initializable {
             datos = ConsultasReportes.obtenerDatosTiposAlojamientoPorTipo(tipo);
         }
 
-        ObservableList<PieChart.Data> pieData = FXCollections.observableArrayList();
+        graficoTipos.getData().clear();
 
+        if (datos == null || datos.isEmpty()) {
+            graficoTipos.setTitle("No hay datos para mostrar");
+            labelTotal.setText("0");
+            labelPromedio.setText("0");
+            labelMaximo.setText("0");
+            labelCrecimiento.setText("0%");
+            return;
+        }
+
+        ObservableList<PieChart.Data> pieData = FXCollections.observableArrayList();
         int total = 0;
         int maximo = 0;
 
@@ -186,8 +208,9 @@ public class ReportesController implements Initializable {
             }
         }
 
-        double promedio = datos.isEmpty() ? 0 : (double) total / datos.size();
+        double promedio = (double) total / datos.size();
 
+        graficoTipos.setTitle(""); 
         graficoTipos.setLegendVisible(true);
         graficoTipos.setLabelsVisible(true);
         graficoTipos.setClockwise(true);
@@ -196,16 +219,12 @@ public class ReportesController implements Initializable {
 
         for (PieChart.Data data : pieData) {
             double porcentaje = (data.getPieValue() / total) * 100;
-            Tooltip tooltip = new Tooltip(
-                    data.getName() + ": " + (int) data.getPieValue() + " (" + String.format("%.1f", porcentaje) + "%)"
-            );
+            Tooltip tooltip = new Tooltip(data.getName() + ": " + (int) data.getPieValue() + " (" + String.format("%.1f", porcentaje) + "%)");
             Tooltip.install(data.getNode(), tooltip);
-
             Animacion.animarDatosGrafico(data.getNode());
         }
 
         Animacion.transicionGrafico(graficoTipos);
-
         actualizarEstadisticas(total, promedio, maximo, 0);
     }
 
@@ -280,5 +299,5 @@ public class ReportesController implements Initializable {
 //            ex.printStackTrace();
 //            Alertas.error("Error generando PDF", ex.getMessage());
 //        }
-   }
+    }
 }

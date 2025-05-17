@@ -31,7 +31,6 @@ C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\GestionActividadesCon
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\AgregarAlojamientoController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\GestionCategoriaController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\Categoria.java
-C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\GestionUsuariosController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\bbdd\ConsultasReportes.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\bbdd\ConsultasUsuario.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\Usuario.java
@@ -41,6 +40,8 @@ C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\AgregarCategoriaContr
 C:\Users\k0343\ProyectoTreknic\src\main\java\bbdd\ConsultasTipoAlojamiento.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\acciones\CeldaAccionesUsuario.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\SoporteController.java
+C:\Users\k0343\ProyectoTreknic\src\main\java\acciones\CeldaAccionesNotificacion.java
+C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\GestionUsuarioController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\AgregarDestinoController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\Utilidades\ConfiguracionSistema.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\module-info.java
@@ -59,6 +60,7 @@ C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\AgregarTipoAlojamient
 C:\Users\k0343\ProyectoTreknic\src\main\java\bbdd\ConsultasAlojamientos.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\Destino.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\PreferenciasNotificacion.java
+C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\AgregarUsuarioController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\AgregarItinerarioController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\Itinerario.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\bbdd\ConsultasItinerario.java
@@ -70,7 +72,6 @@ C:\Users\k0343\ProyectoTreknic\src\main\java\bbdd\ConsultasActividades.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\com\kgr\proyectotreknic\App.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\ReportesController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\TipoAlojamiento.java
-C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\AdministracionUsuarioController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\ConfiguracionController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\MenuController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\Utilidades\Alertas.java

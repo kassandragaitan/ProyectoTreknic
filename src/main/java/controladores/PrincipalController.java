@@ -43,6 +43,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import modelo.Alojamiento;
+import modelo.ConexionFtp;
 import modelo.ConfiguracionSistema;
 import modelo.Destino;
 import modelo.InformeActividadDestino;
@@ -95,7 +96,7 @@ public class PrincipalController implements Initializable {
         columnaDestino.prefWidthProperty().bind(tablaDestinos.widthProperty().divide(3));
         columnaVisitas.prefWidthProperty().bind(tablaDestinos.widthProperty().divide(3));
         columnaValoracion.prefWidthProperty().bind(tablaDestinos.widthProperty().divide(3));
-
+        tablaDestinos.setPlaceholder(new Label("No hay destinos registrados."));
         ejeXActividad.setTickLabelRotation(0);
         ejeXActividad.setTickLabelGap(10);
         ejeXActividad.setTickLength(10);
@@ -200,33 +201,14 @@ public class PrincipalController implements Initializable {
                 flowDestinos.setVgap(15);
                 flowDestinos.setAlignment(Pos.CENTER);
 
-                // Cálculo dinámico para 2 tarjetas por fila:
                 int tarjetasPorFila = 2;
                 double anchoTarjeta = 200;
                 double espacioEntre = flowDestinos.getHgap();
                 double wrapLength = tarjetasPorFila * anchoTarjeta + (tarjetasPorFila - 1) * espacioEntre;
-                flowDestinos.setPrefWrapLength(wrapLength); // Fuerza a 2 por fila
+                flowDestinos.setPrefWrapLength(wrapLength);
 
                 for (Destino destino : destinos) {
-                    VBox tarjeta = new VBox(8);
-                    tarjeta.setPrefWidth(anchoTarjeta);
-                    tarjeta.setPrefHeight(220);
-                    tarjeta.setAlignment(Pos.TOP_CENTER);
-                    tarjeta.setStyle("-fx-background-color: white; -fx-padding: 10px; -fx-background-radius: 10px; "
-                            + "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0.2, 0, 1);");
-
-                    String urlImagen = "http://localhost/carpetaimg/" + destino.getImagen();
-                    ImageView imagen = new ImageView(new Image(urlImagen, true));
-                    imagen.setFitWidth(180);
-                    imagen.setFitHeight(120);
-                    imagen.setPreserveRatio(true);
-                    imagen.setSmooth(true);
-                    imagen.setCache(true);
-
-                    Label nombre = new Label(destino.getNombre());
-                    nombre.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
-
-                    tarjeta.getChildren().addAll(imagen, nombre);
+                    VBox tarjeta = crearTarjetaDestino(destino);
                     flowDestinos.getChildren().add(tarjeta);
                 }
 
@@ -264,13 +246,27 @@ public class PrincipalController implements Initializable {
     private VBox crearTarjetaAlojamiento(Alojamiento aloj) {
         VBox tarjeta = new VBox(8);
         tarjeta.setPrefWidth(200);
-        tarjeta.setPrefHeight(220);
+        tarjeta.setPrefHeight(200);
         tarjeta.setAlignment(Pos.TOP_CENTER);
         tarjeta.setStyle("-fx-background-color: white; -fx-padding: 10px; -fx-background-radius: 10px; "
                 + "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0.2, 0, 1);");
 
-        String urlImagen = "http://localhost/carpetaimg/" + aloj.getImagen();
-        ImageView imagen = new ImageView(new Image(urlImagen, true));
+        ImageView imagen = new ImageView();
+        imagen.setFitWidth(180);
+        imagen.setFitHeight(120);
+        imagen.setPreserveRatio(true);
+
+        if (aloj.getImagen() != null && !aloj.getImagen().isBlank()) {
+            try {
+                ConexionFtp.cargarImagen(aloj.getImagen(), imagen);
+            } catch (Exception ex) {
+                System.err.println("Error cargando imagen desde FTP: " + ex.getMessage());
+                imagen.setImage(new Image(getClass().getResourceAsStream("/img/default-image.png")));
+            }
+        } else {
+            imagen.setImage(new Image(getClass().getResourceAsStream("/img/default-image.png")));
+        }
+
         imagen.setFitWidth(180);
         imagen.setFitHeight(120);
         imagen.setPreserveRatio(true);
@@ -294,32 +290,34 @@ public class PrincipalController implements Initializable {
         if (categoria != null) {
             List<Destino> destinos = ConsultasDestinos.obtenerDestinosPorNombreCategoria(categoria);
 
-            for (Destino destino : destinos) {
-                VBox tarjeta = new VBox(8);
-                tarjeta.setPrefWidth(200);
-                tarjeta.setPrefHeight(220);
-                tarjeta.setAlignment(Pos.TOP_CENTER);
-                tarjeta.setStyle("-fx-background-color: white; -fx-padding: 10px; -fx-background-radius: 10px; "
-                        + "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0.2, 0, 1);");
+            if (!destinos.isEmpty()) {
+                VBox bloqueCategoria = new VBox(10);
+                bloqueCategoria.setAlignment(Pos.TOP_CENTER);
 
-                String urlImagen = "http://localhost/carpetaimg/" + destino.getImagen();
-                ImageView imagen = new ImageView(new Image(urlImagen, true));
-                imagen.setFitWidth(180);
-                imagen.setFitHeight(120);
-                imagen.setPreserveRatio(true);
-                imagen.setSmooth(true);
-                imagen.setCache(true);
+                Label tituloCategoria = new Label(categoria);
+                tituloCategoria.setStyle("-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: #2F6EB5;");
 
-                Label nombre = new Label(destino.getNombre());
-                nombre.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+                FlowPane flowDestinos = new FlowPane();
+                flowDestinos.setHgap(15);
+                flowDestinos.setVgap(15);
+                flowDestinos.setAlignment(Pos.CENTER);
 
-                tarjeta.getChildren().addAll(imagen, nombre);
-                contenedorCategorias.getChildren().add(tarjeta);
+                int tarjetasPorFila = 2;
+                double anchoTarjeta = 200;
+                double espacioEntre = flowDestinos.getHgap();
+                double wrapLength = tarjetasPorFila * anchoTarjeta + (tarjetasPorFila - 1) * espacioEntre;
+                flowDestinos.setPrefWrapLength(wrapLength);
 
-                FadeTransition ft = new FadeTransition(Duration.millis(400), tarjeta);
-                ft.setFromValue(0);
-                ft.setToValue(1);
-                ft.play();
+                for (Destino destino : destinos) {
+                    VBox tarjeta = crearTarjetaDestino(destino);
+                    flowDestinos.getChildren().add(tarjeta);
+                }
+
+                HBox contenedorFlow = new HBox(flowDestinos);
+                contenedorFlow.setAlignment(Pos.CENTER);
+
+                bloqueCategoria.getChildren().addAll(tituloCategoria, contenedorFlow);
+                contenedorCategorias.getChildren().add(bloqueCategoria);
             }
         }
     }
@@ -335,6 +333,29 @@ public class PrincipalController implements Initializable {
         Conexion.conectar();
         actividadesPorDestino = Conexion.cargarActividadesPorDestino();
         Conexion.cerrarConexion();
+
+        barChartActividad.setVisible(!actividadesPorDestino.isEmpty());
+
+        if (actividadesPorDestino.isEmpty()) {
+            Label sinDatos = new Label("No hay actividad reciente registrada.");
+            sinDatos.setStyle("-fx-text-fill: #888888; -fx-font-size: 14px;");
+            sinDatos.setAlignment(Pos.CENTER);
+
+            VBox contenedorLabel = new VBox(sinDatos);
+            contenedorLabel.setAlignment(Pos.CENTER);
+            contenedorLabel.setPrefHeight(390);
+
+            if (barChartActividad.getParent() instanceof VBox) {
+                VBox contenedorPadre = (VBox) barChartActividad.getParent();
+
+                contenedorPadre.getChildren().removeIf(n
+                        -> n instanceof Label && ((Label) n).getText().contains("actividad reciente"));
+
+                contenedorPadre.getChildren().add(contenedorLabel);
+            }
+
+            return;
+        }
 
         barChartActividad.getData().clear();
 
@@ -396,6 +417,42 @@ public class PrincipalController implements Initializable {
         labelItinerarioActivo.setText(totalItinerarios + " Itinerarios");
         labelDestinosPopulares.setText(totalDestinosP + " Destinos");
         labelActividadesMen.setText(totalActividadesMen + " Actividades");
+    }
+
+    private VBox crearTarjetaDestino(Destino destino) {
+        VBox tarjeta = new VBox(6);
+        tarjeta.setPrefWidth(200);
+        tarjeta.setPrefHeight(200);
+        tarjeta.setAlignment(Pos.TOP_CENTER);
+        tarjeta.setStyle("-fx-background-color: white; -fx-padding: 10px; -fx-background-radius: 10px; "
+                + "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0.2, 0, 1);");
+
+        ImageView imagen = new ImageView();
+        imagen.setFitWidth(180);
+        imagen.setFitHeight(100);
+        imagen.setPreserveRatio(true);
+
+        if (destino.getImagen() != null && !destino.getImagen().isBlank()) {
+            try {
+                ConexionFtp.cargarImagen(destino.getImagen(), imagen);
+            } catch (Exception ex) {
+                System.err.println("Error cargando imagen desde FTP: " + ex.getMessage());
+                imagen.setImage(new Image(getClass().getResourceAsStream("/img/default-image.png")));
+            }
+        } else {
+            imagen.setImage(new Image(getClass().getResourceAsStream("/img/default-image.png")));
+        }
+
+        Label nombre = new Label(destino.getNombre());
+        nombre.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+
+        Label descripcion = new Label(destino.getDescripcion());
+        descripcion.setWrapText(true);
+        descripcion.setStyle("-fx-text-fill: gray; -fx-font-size: 12px;");
+        descripcion.setMaxWidth(180);
+
+        tarjeta.getChildren().addAll(imagen, nombre, descripcion);
+        return tarjeta;
     }
 
 }

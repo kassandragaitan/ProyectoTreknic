@@ -26,30 +26,29 @@ import modelo.Categoria;
 
 public class GestionCategoriaController implements Initializable {
 
-    @FXML private TableView<Categoria> tablaCategoria;
-    @FXML private TableColumn<Categoria, Integer> columnaIdCategoria;
-    @FXML private TableColumn<Categoria, String> columnaNombre;
-    @FXML private TableColumn<Categoria, String> columnaDescripcion;
-    @FXML private TableColumn<Categoria, Void> columnaAcciones;
-    @FXML private TableColumn<Categoria, Void> columnaInvisible;
-    @FXML private TextField campoBuscarCategoria;
-    @FXML private Button botonNuevaCategoria;
+    @FXML
+    private TableView<Categoria> tablaCategoria;
+    @FXML
+    private TableColumn<Categoria, Integer> columnaIdCategoria;
+    @FXML
+    private TableColumn<Categoria, String> columnaNombre;
+    @FXML
+    private TableColumn<Categoria, String> columnaDescripcion;
+    @FXML
+    private TableColumn<Categoria, Void> columnaAcciones;
+    @FXML
+    private TableColumn<Categoria, Void> columnaInvisible;
+    @FXML
+    private TextField campoBuscarCategoria;
+    @FXML
+    private Button botonNuevaCategoria;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // 1) placeholder vacío y estirado
         tablaCategoria.setPlaceholder(new Label(""));
         tablaCategoria.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-
-        // 2) listener buscar en tiempo real
-        campoBuscarCategoria.textProperty().addListener((obs, oldV, newV) ->
-            buscarCategoriasEnTiempoReal(newV)
-        );
-
-        // 3) fábrica de la columna de acciones
+        campoBuscarCategoria.textProperty().addListener((obs, oldV, newV) -> buscarCategoriasEnTiempoReal(newV));
         columnaAcciones.setCellFactory(col -> new CeldaAccionesCategoria(this));
-
-        // 4) carga inicial
         recargarTabla();
     }
 
@@ -60,10 +59,10 @@ public class GestionCategoriaController implements Initializable {
         Conexion.cerrarConexion();
 
         tablaCategoria.setItems(lista);
+        tablaCategoria.setPlaceholder(new Label("No hay categorias registradas."));
         columnaIdCategoria.setCellValueFactory(new PropertyValueFactory<>("idCategoria"));
-        columnaNombre    .setCellValueFactory(new PropertyValueFactory<>("nombre"));
-        columnaDescripcion
-                         .setCellValueFactory(new PropertyValueFactory<>("descripcion"));
+        columnaNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+        columnaDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
     }
 
     private void buscarCategoriasEnTiempoReal(String texto) {
@@ -78,7 +77,7 @@ public class GestionCategoriaController implements Initializable {
     private void nuevaCategoria(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/vistas/AgregarCategoria.fxml"));
+                    getClass().getResource("/vistas/AgregarCategoria.fxml"));
             Parent root = loader.load();
             AgregarCategoriaController ctrl = loader.getController();
             ctrl.setGestionCategoriaController(this);

@@ -3,8 +3,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package bbdd;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -13,17 +15,23 @@ import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import modelo.InformeActividadDestino;
+
 /**
  *
  * @author k0343
  */
 public class Conexion {
 
-    static Connection conn;
-    public static final String URL = "jdbc:mysql://145.14.151.1/u812167471_kassandra";
-    public static final String USERNAME = "u812167471_kassandra";
-    public static final String PASSWORD = "2025-Kassandra";
+//    static Connection conn;
+//    public static final String URL = "jdbc:mysql://145.14.151.1/u812167471_kassandra";
+//    public static final String USERNAME = "u812167471_kassandra";
+//    public static final String PASSWORD = "2025-Kassandra";
     
+    public static Connection conn;
+    public static final String URL = "jdbc:mysql://localhost:3306/remota_kassandra";
+    public static final String USERNAME = "root"; 
+    public static final String PASSWORD = "";
+
     public static Connection conectar() {
         try {
             Class.forName("com.mysql.jdbc.Driver");
@@ -78,6 +86,31 @@ public class Conexion {
             Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
         }
         return listado;
+    }
+
+    public static int contarPorMes(String tabla, String campoFecha, int mes, int anio) {
+        conectar();
+        int cantidad = 0;
+        String sql = "SELECT COUNT(*) FROM " + tabla + " WHERE MONTH(" + campoFecha + ") = ? AND YEAR(" + campoFecha + ") = ?";
+
+        try {
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setInt(1, mes);
+            pst.setInt(2, anio);
+
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                cantidad = rs.getInt(1);
+            }
+
+            rs.close();
+            pst.close();
+        } catch (SQLException e) {
+            System.err.println("Error al contar por mes: " + e.getMessage());
+        }
+
+        cerrarConexion();
+        return cantidad;
     }
 
 }

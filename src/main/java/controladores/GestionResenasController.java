@@ -18,6 +18,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
@@ -75,7 +76,8 @@ public class GestionResenasController implements Initializable {
         List<Resena> resenas = ConsultasResenas.obtenerResenas();
         destinosTable.setItems(FXCollections.observableArrayList(resenas));
         usuariosTable.setItems(FXCollections.observableArrayList(resenas));
-
+        destinosTable.setPlaceholder(new Label("No hay reseñas de destinos registradas."));
+        usuariosTable.setPlaceholder(new Label("No hay reseñas de usuarios registradas."));
         campoBuscarResenasDestino.textProperty().addListener((obs, oldVal, newVal) -> {
             buscarResenasPorDestino(newVal);
         });

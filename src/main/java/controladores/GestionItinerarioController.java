@@ -80,7 +80,6 @@ public class GestionItinerarioController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         cargarItinerarios();
         botonQuitarFiltro.setDisable(true);
-        tablaItinerario.setPlaceholder(new Label("Tabla sin contenido"));
 
         inicializarAccionesColumna();
         tablaItinerario.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -89,7 +88,12 @@ public class GestionItinerarioController implements Initializable {
         Conexion.conectar();
         ObservableList<String> duraciones = ConsultasItinerario.cargarDuracionesItinerarios();
         Conexion.cerrarConexion();
+
         campoBuscarItinerario.textProperty().addListener((observable, oldValue, newValue) -> {
+            comboFiltroPor.getSelectionModel().selectFirst();
+            comboValorFiltro.getItems().clear();
+            comboValorFiltro.getSelectionModel().clearSelection();
+            comboValorFiltro.setDisable(true);
             buscarItinerariosEnTiempoReal(newValue);
             botonQuitarFiltro.setDisable(newValue.trim().isEmpty());
         });
@@ -201,6 +205,7 @@ public class GestionItinerarioController implements Initializable {
         Conexion.cerrarConexion();
 
         tablaItinerario.setItems(listaItinerarios);
+        tablaItinerario.setPlaceholder(new Label("No hay itinerarios registrados."));
         columnaIdItinerario.setCellValueFactory(new PropertyValueFactory<>("idItinerario"));
         columnaNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         columaDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
