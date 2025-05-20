@@ -16,6 +16,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -36,7 +37,8 @@ public class AgregarTipoAlojamientoController implements Initializable {
     private Button botonRegistrar;
     @FXML
     private ImageView imagenTrekNic;
-
+    @FXML
+    private Label labelTitulo;
     /**
      * Initializes the controller class.
      */
@@ -47,6 +49,15 @@ public class AgregarTipoAlojamientoController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         Image imagen = new Image(getClass().getResourceAsStream("/img/Encabezado.png"));
         imagenTrekNic.setImage(imagen);
+    }
+
+    public void setTitulo(String titulo) {
+        labelTitulo.setText(titulo);
+    }
+    private GestionTipoDeAlojamientoController gestionTipoAlojamientoController;
+
+    public void setGestionTipoAlojamientoController(GestionTipoDeAlojamientoController controller) {
+        this.gestionTipoAlojamientoController = controller;
     }
 
     public void verTipoAlojamiento(TipoAlojamiento tipo) {
@@ -60,16 +71,6 @@ public class AgregarTipoAlojamientoController implements Initializable {
         campoTipo.setEditable(editable);
         botonRegistrar.setVisible(editable);
         campoTipo.setOpacity(editable ? 1.0 : 0.75);
-    }
-
-    private void cerrarVentana() {
-        Stage stage = (Stage) botonRegistrar.getScene().getWindow();
-        stage.close();
-    }
-    private GestionTipoDeAlojamientoController gestionTipoAlojamientoController;
-
-    public void setGestionTipoAlojamientoController(GestionTipoDeAlojamientoController controller) {
-        this.gestionTipoAlojamientoController = controller;
     }
 
     @FXML
@@ -132,5 +133,10 @@ public class AgregarTipoAlojamientoController implements Initializable {
         if (gestionTipoAlojamientoController != null) {
             gestionTipoAlojamientoController.recargarTabla();
         }
+    }
+
+    private void cerrarVentana() {
+        Stage stage = (Stage) botonRegistrar.getScene().getWindow();
+        stage.close();
     }
 }

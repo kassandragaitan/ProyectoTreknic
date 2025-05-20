@@ -20,7 +20,7 @@
               alignment="TOP_LEFT" prefWidth="320.0">
 
             <children>
-                <Label text="Agregar Categoría" styleClass="titulo-registro"/>
+                <Label fx:id="labelTitulo" text="Agregar Categoría" styleClass="titulo-registro"/>
 
                 <HBox spacing="10" alignment="CENTER_LEFT">
                     <Label text="Nombre" styleClass="label-campo" prefWidth="90.0"/>

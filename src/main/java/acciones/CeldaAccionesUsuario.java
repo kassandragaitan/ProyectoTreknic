@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package acciones;
 
 import bbdd.Conexion;
@@ -15,30 +11,28 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableCell;
+import javafx.scene.control.Tooltip;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import modelo.Usuario;
 
-/**
- *
- * @author k0343
- */
 public class CeldaAccionesUsuario extends TableCell<Usuario, Void> {
 
     private final HBox contenedor = new HBox(10);
     private final Button botonVer = new Button("Ver");
     private final Button botonEditar = new Button("Editar");
     private final Button botonEliminar = new Button("Eliminar");
-    private GestionUsuarioController controller;
+    private final GestionUsuarioController controller;
 
     public CeldaAccionesUsuario(GestionUsuarioController controller) {
         this.controller = controller;
+
         botonVer.getStyleClass().add("table-button");
         botonEditar.getStyleClass().add("table-button");
         botonEliminar.getStyleClass().addAll("table-button", "red");
@@ -93,6 +87,18 @@ public class CeldaAccionesUsuario extends TableCell<Usuario, Void> {
         if (empty || getTableRow().getItem() == null) {
             setGraphic(null);
         } else {
+            Usuario usuarioFila = getTableRow().getItem();
+            Usuario usuarioActual = Usuario.getUsuarioActual();
+
+            if (usuarioActual != null && usuarioFila.getIdUsuario() == usuarioActual.getIdUsuario()) {
+                botonEliminar.setDisable(true);
+                botonEliminar.setVisible(true); 
+            } else {
+                botonEliminar.setDisable(false);
+                botonEliminar.setVisible(true);
+                botonEliminar.setTooltip(null);
+            }
+
             setGraphic(contenedor);
         }
     }
@@ -102,11 +108,12 @@ public class CeldaAccionesUsuario extends TableCell<Usuario, Void> {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/AgregarUsuario.fxml"));
             Parent root = loader.load();
 
-            AgregarUsuarioController controller = loader.getController();
-            controller.setAdministracionUsuarioController((GestionUsuarioController) getTableView().getScene().getUserData());
-            controller.verUsuario(usuario);
-            controller.setEdicionActiva(editable);
-            controller.EditarCamposUsuario(editable);
+            AgregarUsuarioController agregarController = loader.getController();
+            agregarController.setAdministracionUsuarioController(this.controller);
+            agregarController.setTitulo(editable ? "Editar Usuario" : "Ver Usuario");
+            agregarController.verUsuario(usuario);
+            agregarController.setEdicionActiva(editable);
+            agregarController.EditarCamposUsuario(editable);
 
             Stage stage = new Stage();
             stage.setTitle(editable ? "Editar Usuario" : "Ver Usuario");
@@ -117,7 +124,7 @@ public class CeldaAccionesUsuario extends TableCell<Usuario, Void> {
             stage.initStyle(StageStyle.DECORATED);
             stage.showAndWait();
 
-            return editable && controller.getModificado();
+            return editable && agregarController.getModificado();
 
         } catch (Exception ex) {
             ex.printStackTrace();

@@ -175,6 +175,7 @@ public class GestionActividadesController implements Initializable {
             Parent root = loader.load();
 
             AgregarActividadController controlador = loader.getController();
+                    controlador.setTitulo("Agregar Actividad");
             controlador.setGestionActividadesController(this);
 
             Stage stage = new Stage();

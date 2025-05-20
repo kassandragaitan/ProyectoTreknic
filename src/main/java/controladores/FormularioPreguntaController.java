@@ -61,7 +61,7 @@ public class FormularioPreguntaController implements Initializable {
                         Usuario.getUsuarioActual().getIdUsuario()
                 );
 
-                Alertas.informacion("¡Pregunta guardada correctamente!");
+                Alertas.informacion("Pregunta guardada correctamente");
                 limpiarFormulario();
             } else {
                 Alertas.error("Error", "No se pudo guardar la pregunta.");

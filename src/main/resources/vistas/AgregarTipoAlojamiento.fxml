@@ -15,19 +15,19 @@
 
     <children>
 
-<ImageView fx:id="imagenTrekNic"
-           fitHeight="60.0" fitWidth="100.0"
-           preserveRatio="true" pickOnBounds="true"
-           layoutX="160.0" layoutY="2.0"
-           style="-fx-translate-y: 15;" />
+        <ImageView fx:id="imagenTrekNic"
+                   fitHeight="60.0" fitWidth="100.0"
+                   preserveRatio="true" pickOnBounds="true"
+                   layoutX="160.0" layoutY="2.0"
+                   style="-fx-translate-y: 15;" />
 
 
-        <VBox layoutX="70.0" layoutY="70.0" spacing="15.0" styleClass="panel-registro"
-              alignment="TOP_LEFT" prefWidth="280.0">
+        <VBox layoutX="50.0" layoutY="70.0" spacing="15.0"
+              styleClass="panel-registro" alignment="TOP_LEFT"
+              prefWidth="320.0">
 
             <children>
-                <Label text="Tipo de Alojamiento" styleClass="titulo-registro"/>
-
+                <Label fx:id="labelTitulo" text="Tipo de Alojamiento" styleClass="titulo-registro"/>
                 <HBox spacing="10" alignment="CENTER_LEFT">
                     <Label text="Tipo" styleClass="label-campo" prefWidth="80.0"/>
                     <TextField fx:id="campoTipo" styleClass="campo-registro" prefWidth="160.0"/>
@@ -36,7 +36,7 @@
                 <VBox alignment="CENTER" spacing="5.0">
                     <Button fx:id="botonRegistrar" text="Registrar"
                             onAction="#RegistrarTipoAlojamiento" styleClass="boton-registro"/>
-                             </VBox>
+                </VBox>
             </children>
         </VBox>
     </children>

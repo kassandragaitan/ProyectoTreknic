@@ -5,6 +5,7 @@ import Utilidades.compruebaCampo;
 import bbdd.Conexion;
 import bbdd.ConsultasCategoria;
 import bbdd.ConsultasDestinos;
+import bbdd.ConsultasMovimientos;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -29,6 +30,7 @@ import javafx.stage.Stage;
 import modelo.Categoria;
 import modelo.ConexionFtp;
 import modelo.Destino;
+import modelo.Usuario;
 
 public class AgregarDestinoController implements Initializable {
 
@@ -150,92 +152,95 @@ public class AgregarDestinoController implements Initializable {
             Alertas.aviso("Campo vacío", "Debe seleccionar una imagen.");
         } else {
             Conexion.conectar();
-            if (!edicionActiva && ConsultasDestinos.existeDestino(campoNombre.getText())) {
+            if (!edicionActiva && ConsultasDestinos.existeDestino(campoNombre.getText().trim())) {
                 Alertas.aviso("Duplicado", "Ya existe un destino con ese nombre.");
                 Conexion.cerrarConexion();
+                return;
+            }
 
-            } else {
-                Conexion.conectar();
-                if (!edicionActiva && ConsultasDestinos.existeDestino(campoNombre.getText())) {
-                    Alertas.aviso("Duplicado", "Ya existe un destino con ese nombre.");
+            String nombreFicheroBD;
+            if (!edicionActiva) {
+                String remoto = subirImagenAlFTP(archivoImagenSeleccionado);
+                if (remoto == null) {
+                    Alertas.error("Error FTP", "No se pudo subir la imagen al servidor.");
                     Conexion.cerrarConexion();
                     return;
                 }
-
-                String nombreFicheroBD;
-                if (!edicionActiva) {
+                nombreFicheroBD = remoto;
+            } else {
+                if (archivoImagenSeleccionado != null) {
                     String remoto = subirImagenAlFTP(archivoImagenSeleccionado);
                     if (remoto == null) {
-                        Alertas.error("Error FTP", "No se pudo subir la imagen al servidor.");
+                        Alertas.error("Error FTP", "No se pudo subir la nueva imagen al servidor.");
+                        Conexion.cerrarConexion();
                         return;
                     }
+                    ConexionFtp.conectar();
+                    ConexionFtp.eliminarArchivo(destinoEditando.getImagen());
+                    ConexionFtp.desconectar();
                     nombreFicheroBD = remoto;
                 } else {
-                    if (archivoImagenSeleccionado != null) {
-                        String remoto = subirImagenAlFTP(archivoImagenSeleccionado);
-                        if (remoto == null) {
-                            Alertas.error("Error FTP", "No se pudo subir la nueva imagen al servidor.");
-                            return;
-                        }
-                        ConexionFtp.conectar();
-                        ConexionFtp.eliminarArchivo(destinoEditando.getImagen());
-                        ConexionFtp.desconectar();
-
-                        nombreFicheroBD = remoto;
-                    } else {
-                        nombreFicheroBD = destinoEditando.getImagen();
-                    }
+                    nombreFicheroBD = destinoEditando.getImagen();
                 }
+            }
 
-                Conexion.conectar();
-                boolean exito;
-                if (!edicionActiva) {
-                    exito = ConsultasDestinos.registrarDestino(
-                            campoNombre.getText().trim(),
-                            campoDescripcion.getText().trim(),
-                            nombreFicheroBD,
-                            null,
-                            categoriaSeleccionada.getIdCategoria()
-                    );
+            boolean exito;
+            if (!edicionActiva) {
+                exito = ConsultasDestinos.registrarDestino(
+                        campoNombre.getText().trim(),
+                        campoDescripcion.getText().trim(),
+                        nombreFicheroBD,
+                        null,
+                        categoriaSeleccionada.getIdCategoria()
+                );
+            } else {
+                exito = ConsultasDestinos.actualizarDestino(
+                        destinoEditando.getId_destino(),
+                        campoNombre.getText().trim(),
+                        campoDescripcion.getText().trim(),
+                        nombreFicheroBD,
+                        categoriaSeleccionada.getIdCategoria()
+                );
+            }
+
+            if (exito && !edicionActiva) {
+                ConsultasMovimientos.registrarMovimiento(
+                        "Ha registrado el destino \"" + campoNombre.getText().trim() + "\"",
+                        new java.sql.Date(System.currentTimeMillis()),
+                        Usuario.getUsuarioActual().getIdUsuario()
+                );
+            }
+
+            Conexion.cerrarConexion();
+
+            if (exito) {
+                Alertas.informacion(edicionActiva
+                        ? "Destino actualizado correctamente."
+                        : "Destino registrado exitosamente."
+                );
+                if (gestionDestinosController != null) {
+                    gestionDestinosController.recargarTabla();
+                }
+                if (edicionActiva) {
+                    ((Stage) botonRegistrar.getScene().getWindow()).close();
                 } else {
-                    exito = ConsultasDestinos.actualizarDestino(
-                            destinoEditando.getId_destino(),
-                            campoNombre.getText().trim(),
-                            campoDescripcion.getText().trim(),
-                            nombreFicheroBD,
-                            categoriaSeleccionada.getIdCategoria()
-                    );
+                    campoNombre.clear();
+                    campoDescripcion.clear();
+                    campoRutaArchivo.clear();
+                    archivoImagenSeleccionado = null;
+                    comboCategoria.getSelectionModel().selectFirst();
+                    categoriaSeleccionada = null;
+                    imagenTrekNic.setImage(new Image(
+                            getClass().getResourceAsStream("/img/Encabezado.png")
+                    ));
                 }
-                Conexion.cerrarConexion();
-
-                if (exito) {
-                    Alertas.informacion(edicionActiva
-                            ? "Destino actualizado correctamente."
-                            : "Destino registrado exitosamente."
-                    );
-                    if (gestionDestinosController != null) {
-                        gestionDestinosController.recargarTabla();
-                    }
-                    if (edicionActiva) {
-                        ((Stage) botonRegistrar.getScene().getWindow()).close();
-                    } else {
-                        campoNombre.clear();
-                        campoDescripcion.clear();
-                        campoRutaArchivo.clear();
-                        archivoImagenSeleccionado = null;
-                        comboCategoria.getSelectionModel().selectFirst();
-                        categoriaSeleccionada = null;
-                        imagenTrekNic.setImage(new Image(
-                                getClass().getResourceAsStream("/img/Encabezado.png")
-                        ));
-                    }
-                } else {
-                    Alertas.error("Error", edicionActiva
-                            ? "No se pudo actualizar el destino."
-                            : "No se pudo registrar el destino."
-                    );
-                }
+            } else {
+                Alertas.error("Error", edicionActiva
+                        ? "No se pudo actualizar el destino."
+                        : "No se pudo registrar el destino."
+                );
             }
         }
     }
+
 }

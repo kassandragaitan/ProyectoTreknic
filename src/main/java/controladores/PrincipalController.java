@@ -201,21 +201,14 @@ public class PrincipalController implements Initializable {
                 flowDestinos.setVgap(15);
                 flowDestinos.setAlignment(Pos.CENTER);
 
-                int tarjetasPorFila = 2;
-                double anchoTarjeta = 200;
-                double espacioEntre = flowDestinos.getHgap();
-                double wrapLength = tarjetasPorFila * anchoTarjeta + (tarjetasPorFila - 1) * espacioEntre;
-                flowDestinos.setPrefWrapLength(wrapLength);
+                flowDestinos.setPrefWrapLength(500); // o ajustable según ancho contenedor
 
                 for (Destino destino : destinos) {
                     VBox tarjeta = crearTarjetaDestino(destino);
                     flowDestinos.getChildren().add(tarjeta);
                 }
 
-                HBox contenedorFlow = new HBox(flowDestinos);
-                contenedorFlow.setAlignment(Pos.CENTER);
-
-                bloqueCategoria.getChildren().addAll(tituloCategoria, contenedorFlow);
+                bloqueCategoria.getChildren().addAll(tituloCategoria, flowDestinos);
                 contenedorCategorias.getChildren().add(bloqueCategoria);
             }
         }
@@ -334,10 +327,8 @@ public class PrincipalController implements Initializable {
         actividadesPorDestino = Conexion.cargarActividadesPorDestino();
         Conexion.cerrarConexion();
 
-        barChartActividad.setVisible(!actividadesPorDestino.isEmpty());
-
-        if (actividadesPorDestino.isEmpty()) {
-            Label sinDatos = new Label("No hay actividad reciente registrada.");
+        if (actividadesPorDestino.size() < 4) {
+            Label sinDatos = new Label("Aún no hay suficientes datos para mostrar el ranking.");
             sinDatos.setStyle("-fx-text-fill: #888888; -fx-font-size: 14px;");
             sinDatos.setAlignment(Pos.CENTER);
 
@@ -345,22 +336,22 @@ public class PrincipalController implements Initializable {
             contenedorLabel.setAlignment(Pos.CENTER);
             contenedorLabel.setPrefHeight(390);
 
+            barChartActividad.setVisible(false);
+
             if (barChartActividad.getParent() instanceof VBox) {
                 VBox contenedorPadre = (VBox) barChartActividad.getParent();
-
-                contenedorPadre.getChildren().removeIf(n
-                        -> n instanceof Label && ((Label) n).getText().contains("actividad reciente"));
-
+                contenedorPadre.getChildren().removeIf(n -> n instanceof Label);
                 contenedorPadre.getChildren().add(contenedorLabel);
             }
 
             return;
         }
 
+        barChartActividad.setVisible(true);
         barChartActividad.getData().clear();
 
         XYChart.Series<String, Integer> serieDatos = new XYChart.Series<>();
-        serieDatos.setName("ACTIVIDADES POR DESTINO");
+        serieDatos.setName("Top 5 destinos con más actividades");
 
         for (InformeActividadDestino elemento : actividadesPorDestino) {
             XYChart.Data<String, Integer> dato = new XYChart.Data<>(elemento.getDestino(), elemento.getActividades());
@@ -393,6 +384,71 @@ public class PrincipalController implements Initializable {
         });
     }
 
+//    private void cargarGraficoActividadReciente() {
+//        ObservableList<InformeActividadDestino> actividadesPorDestino;
+//
+//        Conexion.conectar();
+//        actividadesPorDestino = Conexion.cargarActividadesPorDestino();
+//        Conexion.cerrarConexion();
+//
+//        barChartActividad.setVisible(!actividadesPorDestino.isEmpty());
+//
+//        if (actividadesPorDestino.isEmpty()) {
+//            Label sinDatos = new Label("No hay actividad reciente registrada.");
+//            sinDatos.setStyle("-fx-text-fill: #888888; -fx-font-size: 14px;");
+//            sinDatos.setAlignment(Pos.CENTER);
+//
+//            VBox contenedorLabel = new VBox(sinDatos);
+//            contenedorLabel.setAlignment(Pos.CENTER);
+//            contenedorLabel.setPrefHeight(390);
+//
+//            if (barChartActividad.getParent() instanceof VBox) {
+//                VBox contenedorPadre = (VBox) barChartActividad.getParent();
+//
+//                contenedorPadre.getChildren().removeIf(n
+//                        -> n instanceof Label && ((Label) n).getText().contains("actividad reciente"));
+//
+//                contenedorPadre.getChildren().add(contenedorLabel);
+//            }
+//
+//            return;
+//        }
+//
+//        barChartActividad.getData().clear();
+//
+//        XYChart.Series<String, Integer> serieDatos = new XYChart.Series<>();
+//        serieDatos.setName("ACTIVIDADES POR DESTINO");
+//
+//        for (InformeActividadDestino elemento : actividadesPorDestino) {
+//            XYChart.Data<String, Integer> dato = new XYChart.Data<>(elemento.getDestino(), elemento.getActividades());
+//            serieDatos.getData().add(dato);
+//        }
+//
+//        barChartActividad.getData().add(serieDatos);
+//
+//        Platform.runLater(() -> {
+//            for (XYChart.Data<String, Integer> data : serieDatos.getData()) {
+//                Node barra = data.getNode();
+//                if (barra instanceof StackPane) {
+//                    barra.setStyle("-fx-bar-fill: #daeafe;");
+//
+//                    Tooltip tooltip = new Tooltip(data.getXValue().toUpperCase() + ": " + data.getYValue());
+//                    tooltip.setStyle("-fx-background-color: rgba(0, 0, 0, 0.8); -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 12px; -fx-padding: 6px;");
+//                    Tooltip.install(barra, tooltip);
+//
+//                    Label etiqueta = new Label(String.valueOf(data.getYValue()));
+//                    etiqueta.setStyle("-fx-background-color: white; -fx-text-fill: black; -fx-font-weight: bold; -fx-font-size: 12px; -fx-padding: 2px 6px; -fx-border-radius: 4px; -fx-background-radius: 4px;");
+//
+//                    StackPane stack = (StackPane) barra;
+//                    stack.getChildren().add(etiqueta);
+//
+//                    barra.boundsInParentProperty().addListener((obs, oldVal, newVal) -> {
+//                        etiqueta.setTranslateY(-newVal.getHeight() - 10);
+//                    });
+//                }
+//            }
+//        });
+//    }
     private String generarEstrellas(double valoracion) {
         StringBuilder estrellas = new StringBuilder();
         for (int i = 0; i < 5; i++) {

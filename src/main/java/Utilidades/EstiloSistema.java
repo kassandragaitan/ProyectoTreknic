@@ -11,12 +11,10 @@ import javafx.scene.paint.Color;
  * @author k0343
  */
 public class EstiloSistema {
-
     private static EstiloSistema instancia;
-    private Color colorFondo = Color.WHITE; 
+    private Color colorFondo = Color.WHITE;
 
-    private EstiloSistema() {
-    }
+    private EstiloSistema() {}
 
     public static EstiloSistema getInstancia() {
         if (instancia == null) {
@@ -34,9 +32,9 @@ public class EstiloSistema {
     }
 
     public String getColorFondoHex() {
-        return String.format("#%02x%02x%02x",
-                (int) (colorFondo.getRed() * 255),
-                (int) (colorFondo.getGreen() * 255),
-                (int) (colorFondo.getBlue() * 255));
+        return String.format("#%02X%02X%02X",
+            (int)(colorFondo.getRed() * 255),
+            (int)(colorFondo.getGreen() * 255),
+            (int)(colorFondo.getBlue() * 255));
     }
 }

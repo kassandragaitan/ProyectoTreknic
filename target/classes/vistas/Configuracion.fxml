@@ -147,9 +147,8 @@
                                         </VBox>
 
                                         <Button fx:id="botonGuardarCambio" text="Guardar Cambios"
-                                                onAction="#guardarConfiguracionApariencia"
                                                 prefWidth="200"/>
-                                        <Button text="Subir CSS Personalizado" onAction="#subirCssPersonalizado" prefWidth="200"/>
+                                        <Button text="Subir CSS Personalizado" prefWidth="200"/>
                                     </children>
                                 </VBox>
                             </AnchorPane>

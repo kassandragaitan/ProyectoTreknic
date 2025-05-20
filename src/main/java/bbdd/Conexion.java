@@ -22,14 +22,13 @@ import modelo.InformeActividadDestino;
  */
 public class Conexion {
 
-//    static Connection conn;
+    static Connection conn;
 //    public static final String URL = "jdbc:mysql://145.14.151.1/u812167471_kassandra";
 //    public static final String USERNAME = "u812167471_kassandra";
 //    public static final String PASSWORD = "2025-Kassandra";
-    
-    public static Connection conn;
-    public static final String URL = "jdbc:mysql://localhost:3306/remota_kassandra";
-    public static final String USERNAME = "root"; 
+//    public static Connection conn;
+    public static final String URL = "jdbc:mysql://localhost:3306/kgr_reknic";
+    public static final String USERNAME = "root";
     public static final String PASSWORD = "";
 
     public static Connection conectar() {
@@ -71,7 +70,9 @@ public class Conexion {
         String consulta = "SELECT d.nombre AS DESTINO, COUNT(a.id_actividad) AS ACTIVIDADES "
                 + "FROM actividades a "
                 + "JOIN destinos d ON a.id_destino = d.id_destino "
-                + "GROUP BY d.nombre;";
+                + "GROUP BY d.nombre "
+                + "ORDER BY ACTIVIDADES ASC "
+                + "LIMIT 5";
         try {
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery(consulta);

@@ -65,26 +65,6 @@
                             </AnchorPane>
                         </Tab>
 
-                        <Tab fx:id="tabPruebas" text="Centro de Pruebas">
-                            <AnchorPane>
-                                <VBox spacing="10.0" AnchorPane.topAnchor="10.0" AnchorPane.leftAnchor="10.0"
-                                      AnchorPane.rightAnchor="10.0" AnchorPane.bottomAnchor="10.0">
-                                    <HBox spacing="10" alignment="CENTER">
-                                        <TextField fx:id="campoBuscarPruebas"
-                                                   promptText="Buscar funcionalidades..."
-                                                   HBox.hgrow="ALWAYS"
-                                                   prefHeight="26"/>
-                                        <Button fx:id="botonAgregarPrueba"
-                                                text="Nueva Funcionalidad"
-                                                onAction="#abrirFormularioPrueba"
-                                                minHeight="26"
-                                                styleClass="primary"/>
-                                    </HBox>
-
-                                    <ListView fx:id="listaCentroPruebas" VBox.vgrow="ALWAYS"/>
-                                </VBox>
-                            </AnchorPane>
-                        </Tab>
                     </tabs>
                 </TabPane>
             </VBox>

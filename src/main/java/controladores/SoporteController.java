@@ -32,8 +32,6 @@ public class SoporteController implements Initializable {
     @FXML
     private Tab tabSugerencias;
     @FXML
-    private Tab tabPruebas;
-    @FXML
     private ListView<PreguntaFrecuente> listaPreguntas;
     @FXML
     private TextField campoBuscarPreguntas;
@@ -50,23 +48,17 @@ public class SoporteController implements Initializable {
     @FXML
     private TextField campoBuscarSugerencias;
     @FXML
-    private ListView<PruebaFuncionalidad> listaCentroPruebas;
-    @FXML
-    private TextField campoBuscarPruebas;
-    @FXML
     private Button botonAgregarPregunta;
     @FXML
     private Button botonNuevaSugerencia;
-    @FXML
-    private Button botonAgregarPrueba;
 
     private final ObservableList<Sugerencia> datosSugerencias = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        columnaIDSugerencia.setVisible(false);
         cargarPreguntas("");
         cargarSugerencias("");
-        cargarCentroPruebas("");
 
         columnaIDSugerencia.setCellValueFactory(cell -> new SimpleStringProperty(String.valueOf(cell.getValue().getId())));
         columnaTituloSugerencia.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getTitulo()));
@@ -75,7 +67,6 @@ public class SoporteController implements Initializable {
 
         campoBuscarPreguntas.textProperty().addListener((obs, oldVal, newVal) -> cargarPreguntas(newVal));
         campoBuscarSugerencias.textProperty().addListener((obs, oldVal, newVal) -> cargarSugerencias(newVal));
-        campoBuscarPruebas.textProperty().addListener((obs, oldVal, newVal) -> cargarCentroPruebas(newVal));
 
         panelPestanas.getSelectionModel().selectedItemProperty().addListener((obs, oldTab, newTab) -> {
             if (newTab != null) {
@@ -92,10 +83,6 @@ public class SoporteController implements Initializable {
                     case "tabSugerencias":
                         campoBuscarSugerencias.clear();
                         cargarSugerencias("");
-                        break;
-                    case "tabPruebas":
-                        campoBuscarPruebas.clear();
-                        cargarCentroPruebas("");
                         break;
                 }
 
@@ -149,51 +136,11 @@ public class SoporteController implements Initializable {
         }
     }
 
-    private void cargarCentroPruebas(String filtro) {
-        ObservableList<PruebaFuncionalidad> pruebas = FXCollections.observableArrayList(
-                ConsultasSoporte.obtenerPruebasFiltradas(filtro)
-        );
-        listaCentroPruebas.setItems(pruebas);
-
-        if (pruebas.isEmpty()) {
-            Label placeholder = new Label("No hay funcionalidades de prueba disponibles.");
-            placeholder.setStyle("-fx-text-fill: #888; -fx-font-size: 14px;");
-            listaCentroPruebas.setPlaceholder(placeholder);
-        }
-
-        listaCentroPruebas.setCellFactory(param -> new ListCell<>() {
-            @Override
-            protected void updateItem(PruebaFuncionalidad item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setGraphic(null);
-                } else {
-                    try {
-                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/Soporte_Item.fxml"));
-                        Node node = loader.load();
-                        Soporte_ItemController controller = loader.getController();
-                        controller.setItem(item);
-                        setGraphic(node);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
-    }
-
     @FXML
     private void abrirFormularioSugerencia(ActionEvent event) {
         abrirFormulario("/vistas/FormularioSugerencia.fxml", "Nueva Sugerencia");
         campoBuscarSugerencias.clear();
         cargarSugerencias("");
-    }
-
-    @FXML
-    private void abrirFormularioPrueba(ActionEvent event) {
-        abrirFormulario("/vistas/FormularioPrueba.fxml", "Nueva Funcionalidad de Prueba");
-        campoBuscarPruebas.clear();
-        cargarCentroPruebas("");
     }
 
     @FXML

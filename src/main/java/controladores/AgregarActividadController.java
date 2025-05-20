@@ -19,6 +19,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -45,7 +46,8 @@ public class AgregarActividadController implements Initializable {
     private Button botonRegistrar;
     @FXML
     private ImageView imagenTrekNic;
-
+    @FXML
+    private Label labelTitulo;
     /**
      * Initializes the controller class.
      */
@@ -78,6 +80,10 @@ public class AgregarActividadController implements Initializable {
                 destinoSeleccionado = null;
             }
         });
+    }
+
+    public void setTitulo(String titulo) {
+        labelTitulo.setText(titulo);
     }
 
     public void setGestionActividadesController(GestionActividadesController controller) {
@@ -184,7 +190,8 @@ public class AgregarActividadController implements Initializable {
         campoDescripcion.clear();
         comboDestino.getSelectionModel().selectFirst();
         destinoSeleccionado = null;
-        botonRegistrar.setText("Guardar");
+        botonRegistrar.setText("Registrar");
+
     }
 
     private void cerrarVentana() {

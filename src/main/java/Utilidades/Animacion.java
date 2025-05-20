@@ -70,16 +70,7 @@ public class Animacion {
         timeline.play();
     }
 
-    public static void animarCheckBox(CheckBox checkBox) {
-        FadeTransition ft = new FadeTransition(Duration.millis(300), checkBox);
-        ft.setFromValue(0.5);
-        ft.setToValue(1.0);
-        ft.play();
-    }
 
-    public static void aplicarAnimaciones(CheckBox checkBox) {
-        checkBox.selectedProperty().addListener((obs, wasSelected, isNowSelected) -> {
-            animarCheckBox(checkBox);
-        });
-    }
+
+
 }

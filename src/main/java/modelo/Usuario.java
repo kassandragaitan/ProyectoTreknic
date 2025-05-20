@@ -21,7 +21,6 @@ public class Usuario {
     private String tipoViajero;
     private String idioma;
     private String telefono;
-    private boolean activo;
     private static Usuario usuarioActual;
 
     public Usuario() {
@@ -56,7 +55,6 @@ public class Usuario {
         this.tipoViajero = tipoViajero;
         this.idioma = idioma;
         this.telefono = telefono;
-        this.activo = true;
     }
 
     public int getIdUsuario() {
@@ -129,14 +127,6 @@ public class Usuario {
 
     public void setTelefono(String telefono) {
         this.telefono = telefono;
-    }
-
-    public boolean getActivo() {
-        return activo;
-    }
-
-    public void setActivo(boolean activo) {
-        this.activo = activo;
     }
 
     public static Usuario getUsuarioActual() {

@@ -3,7 +3,6 @@ package controladores;
 import Utilidades.Alertas;
 import Utilidades.compruebaCampo;
 import bbdd.ConsultasLogin;
-import controladores.MenuController;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -63,6 +62,13 @@ public class LoginController implements Initializable {
                     Usuario usuario = ConsultasLogin.obtenerUsuarioPorEmail(email);
                     Usuario.setUsuarioActual(usuario);
 
+                    if (!"Admin".equalsIgnoreCase(usuario.getTipoUsuario())) {
+                        Alertas.error("Acceso denegado", "Solo el administrador puede acceder.");
+                        campoUsuario.clear();
+                        campoContrasena.clear();
+                        return;
+                    }
+
                     try {
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/Menu.fxml"));
                         Parent root = loader.load();
@@ -97,12 +103,6 @@ public class LoginController implements Initializable {
                     campoContrasena.clear();
                     break;
 
-                case 3:
-                    Alertas.error("Error", "Tu cuenta está inactiva.");
-                    campoUsuario.clear();
-                    campoContrasena.clear();
-                    break;
-
                 default:
                     Alertas.error("Error", "Ha ocurrido un error inesperado.");
                     campoUsuario.clear();
@@ -114,8 +114,7 @@ public class LoginController implements Initializable {
     }
 
     @FXML
-    private void abrirVentanaRecuperar(ActionEvent event
-    ) {
+    private void abrirVentanaRecuperar(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/RecuperarPassword.fxml"));
             Parent root = loader.load();
@@ -137,12 +136,13 @@ public class LoginController implements Initializable {
 
     @FXML
     private void abrirVentanaRegistro(ActionEvent event) {
-
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/GestionUsuarios.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/AgregarUsuario.fxml"));
             Parent root = loader.load();
             AgregarUsuarioController controller = loader.getController();
             controller.setAbiertoDesdeLogin(true);
+            controller.setLoginController(this);
+
             Stage stage = new Stage();
             stage.setResizable(false);
             stage.setMaximized(false);
@@ -152,9 +152,14 @@ public class LoginController implements Initializable {
             stage.setScene(new Scene(root));
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.showAndWait();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    public void limpiarCamposLogin() {
+        campoUsuario.clear();
+        campoContrasena.clear();
+    }
 }

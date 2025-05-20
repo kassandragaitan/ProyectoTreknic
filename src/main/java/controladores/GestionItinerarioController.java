@@ -9,7 +9,6 @@ import bbdd.Conexion;
 import bbdd.ConsultasItinerario;
 import java.io.IOException;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
@@ -18,22 +17,15 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -85,9 +77,6 @@ public class GestionItinerarioController implements Initializable {
         tablaItinerario.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         columnaIdItinerario.setVisible(false);
-        Conexion.conectar();
-        ObservableList<String> duraciones = ConsultasItinerario.cargarDuracionesItinerarios();
-        Conexion.cerrarConexion();
 
         campoBuscarItinerario.textProperty().addListener((observable, oldValue, newValue) -> {
             comboFiltroPor.getSelectionModel().selectFirst();
@@ -101,7 +90,7 @@ public class GestionItinerarioController implements Initializable {
         ObservableList<String> filtros = FXCollections.observableArrayList(
                 "Selecciona un tipo de filtro...",
                 "Filtrar por duración",
-                "Filtrar por usuario"
+                "Filtrar por fecha"
         );
         comboFiltroPor.setItems(filtros);
         comboFiltroPor.getSelectionModel().selectFirst();
@@ -114,6 +103,8 @@ public class GestionItinerarioController implements Initializable {
             comboValorFiltro.setDisable(true);
 
             if (newVal == null || newVal.equals("Selecciona un tipo de filtro...")) {
+                campoBuscarItinerario.clear();
+                cargarItinerarios();
                 botonQuitarFiltro.setDisable(true);
                 return;
             }
@@ -124,12 +115,12 @@ public class GestionItinerarioController implements Initializable {
             Conexion.conectar();
             switch (newVal) {
                 case "Filtrar por duración":
-                    opciones = ConsultasItinerario.cargarDuracionesItinerarios();
+                    opciones = ConsultasItinerario.cargarTodasLasDuracionesEnum();
                     textoPlaceholder = "Selecciona una duración...";
                     break;
-                case "Filtrar por usuario":
-                    opciones = ConsultasItinerario.cargarUsuariosDeItinerarios();
-                    textoPlaceholder = "Selecciona un usuario...";
+                case "Filtrar por fecha":
+                    opciones = ConsultasItinerario.cargarFechasItinerarios();
+                    textoPlaceholder = "Selecciona una fecha...";
                     break;
             }
             Conexion.cerrarConexion();
@@ -142,10 +133,10 @@ public class GestionItinerarioController implements Initializable {
             comboValorFiltro.getSelectionModel().selectFirst();
             comboValorFiltro.setDisable(false);
         });
-
         comboValorFiltro.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal == null || newVal.startsWith("Selecciona")) {
                 botonQuitarFiltro.setDisable(true);
+                cargarItinerarios();
                 return;
             }
 
@@ -157,14 +148,14 @@ public class GestionItinerarioController implements Initializable {
             Conexion.conectar();
             if ("Filtrar por duración".equals(filtro)) {
                 ConsultasItinerario.cargarItinerariosPorDuracion(lista, newVal);
-            } else if ("Filtrar por usuario".equals(filtro)) {
-                ConsultasItinerario.cargarItinerariosPorUsuario(lista, newVal);
+            } else if ("Filtrar por fecha".equals(filtro)) {
+                ConsultasItinerario.cargarItinerariosPorFecha(lista, newVal);
             }
             Conexion.cerrarConexion();
             tablaItinerario.setItems(lista);
 
             if (lista.isEmpty()) {
-                tablaItinerario.setPlaceholder(new Label("No se encontraron itinerarios con esa duración."));
+                tablaItinerario.setPlaceholder(new Label("No se encontraron coincidencias con ese filtro."));
             } else {
                 tablaItinerario.setPlaceholder(new Label(""));
             }
@@ -221,8 +212,8 @@ public class GestionItinerarioController implements Initializable {
 
         Conexion.conectar();
 
-        if ("Filtrar por usuario".equals(filtro) && valor != null && !valor.startsWith("Selecciona")) {
-            ConsultasItinerario.cargarItinerariosPorUsuario(lista, valor);
+        if ("Filtrar por fecha".equals(filtro) && valor != null && !valor.startsWith("Selecciona")) {
+            ConsultasItinerario.cargarItinerariosPorFecha(lista, valor);
         } else if ("Filtrar por duración".equals(filtro) && valor != null && !valor.startsWith("Selecciona")) {
             ConsultasItinerario.cargarItinerariosPorDuracion(lista, valor);
         } else {
@@ -245,6 +236,7 @@ public class GestionItinerarioController implements Initializable {
             Parent root = loader.load();
 
             AgregarItinerarioController controlador = loader.getController();
+            controlador.setTitulo("Agregar Itinerario");
             controlador.setGestionItinerarioController(this);
 
             Stage stage = new Stage();

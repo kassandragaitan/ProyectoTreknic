@@ -80,6 +80,7 @@ public class GestionCategoriaController implements Initializable {
                     getClass().getResource("/vistas/AgregarCategoria.fxml"));
             Parent root = loader.load();
             AgregarCategoriaController ctrl = loader.getController();
+            ctrl.setTitulo("Agregar Categoría");
             ctrl.setGestionCategoriaController(this);
 
             Stage st = new Stage(StageStyle.DECORATED);

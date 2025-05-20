@@ -48,7 +48,7 @@
                     <TableColumn fx:id="columnaIdAlojamiento" text="ID" />
                     <TableColumn fx:id="columnaNombre" text="Nombre" />
                     <TableColumn fx:id="columnaTipo" text="Tipo de Alojamiento" />
-                    <TableColumn fx:id="columnaContacto" text="Contacto" />
+                    <TableColumn fx:id="columnaContacto" text="Teléfono" />
                     <TableColumn fx:id="columnaImagen" text="Imagen" />
                     <TableColumn fx:id="columnaIdDestino" text="Destino" />
                     <TableColumn fx:id="columnAcciones" text="Acciones" />

@@ -175,3 +175,35 @@
     -fx-background-radius: 6;
   -fx-text-fill: #333333;
 }
+/* Panel contenedor tipo tarjeta */
+.filtro-panel {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e0e0e0;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 15;
+    -fx-spacing: 10;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 8, 0, 0, 2);
+}
+
+.combo-filtro {
+    -fx-background-color: #f9f9f9;
+    -fx-border-color: #ccd6e0;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-pref-width: 160px;
+    -fx-pref-height: 36px;
+    -fx-font-size: 13px;
+}
+
+.boton-filtro {
+    -fx-background-color: #4B6EAF;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 18;
+    -fx-padding: 8 20;
+    -fx-cursor: hand;
+}
+.boton-filtro:hover {
+    -fx-background-color: #3d5c94;
+}

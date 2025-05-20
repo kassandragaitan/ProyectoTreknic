@@ -13,6 +13,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -31,6 +32,8 @@ public class AgregarCategoriaController implements Initializable {
     private Button botonRegistrar;
     @FXML
     private ImageView imagenTrekNic;
+    @FXML
+    private Label labelTitulo;
 
     private GestionCategoriaController gestionCategoriaController;
     private Categoria categoriaActual;
@@ -41,6 +44,18 @@ public class AgregarCategoriaController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         Image imagen = new Image(getClass().getResourceAsStream("/img/Encabezado.png"));
         imagenTrekNic.setImage(imagen);
+    }
+
+    public void setTitulo(String titulo) {
+        labelTitulo.setText(titulo);
+    }
+
+    public boolean getModificado() {
+        return modificado;
+    }
+
+    public void setGestionCategoriaController(GestionCategoriaController controller) {
+        this.gestionCategoriaController = controller;
     }
 
     public void verCategoria(Categoria cat) {
@@ -61,20 +76,12 @@ public class AgregarCategoriaController implements Initializable {
         campoDescripcion.setOpacity(op);
     }
 
-    public boolean getModificado() {
-        return modificado;
-    }
-
-    public void setGestionCategoriaController(GestionCategoriaController controller) {
-        this.gestionCategoriaController = controller;
-    }
-
     @FXML
     private void RegistrarCategoria(ActionEvent event) {
         if (compruebaCampo.compruebaVacio(campoNombre)) {
             Alertas.aviso("Campo vacío", "El nombre no puede estar vacío.");
             return;
-        }else  if (compruebaCampo.compruebaVacio(campoDescripcion)) {
+        } else if (compruebaCampo.compruebaVacio(campoDescripcion)) {
             Alertas.aviso("Campo vacío", "La descripción no puede estar vacía.");
             return;
         }
@@ -120,7 +127,7 @@ public class AgregarCategoriaController implements Initializable {
             }
 
             if (esEdicion) {
-                ((Stage) botonRegistrar.getScene().getWindow()).close(); 
+                ((Stage) botonRegistrar.getScene().getWindow()).close();
             } else {
                 campoNombre.clear();
                 campoDescripcion.clear();

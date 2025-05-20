@@ -4,9 +4,6 @@
  */
 package bbdd;
 
-import static bbdd.Conexion.cerrarConexion;
-import static bbdd.Conexion.conectar;
-import static bbdd.Conexion.conn;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -23,17 +20,15 @@ public class ConsultasLogin {
 
     public static int validarLogin(String email, String password) {
         try (Connection con = Conexion.conectar()) {
-            PreparedStatement ps = con.prepareStatement("SELECT contrasena, activo FROM usuarios WHERE email = ?");
+            PreparedStatement ps = con.prepareStatement("SELECT contrasena FROM usuarios WHERE email = ?");
             ps.setString(1, email);
             ResultSet rs = ps.executeQuery();
 
             if (!rs.next()) return 1;
             String contrasenaBD = rs.getString("contrasena");
-            boolean activo = rs.getBoolean("activo");
 
             if (!contrasenaBD.equals(password)) return 2;
-            if (!activo) return 3;
-
+    
             return 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -61,7 +56,6 @@ public class ConsultasLogin {
                         rs.getString("idioma_preferido"),
                         rs.getString("telefono")
                 );
-                usuario.setActivo(rs.getBoolean("activo"));
             }
         } catch (SQLException e) {
             e.printStackTrace();

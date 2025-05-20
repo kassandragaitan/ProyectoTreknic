@@ -21,8 +21,7 @@
               alignment="TOP_LEFT" prefWidth="300.0">
 
             <children>
-                <Label text="Agregar Actividad" styleClass="titulo-registro"/>
-                
+               <Label fx:id="labelTitulo" text="Agregar Actividad" styleClass="titulo-registro"/>
                 <HBox spacing="10" alignment="CENTER_LEFT">
                     <Label text="Nombre" styleClass="label-campo" prefWidth="90.0"/>
                     <TextField fx:id="campoNombre" styleClass="campo-registro" prefWidth="170.0"/>

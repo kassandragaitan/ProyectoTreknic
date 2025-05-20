@@ -15,22 +15,22 @@
                    layoutX="160.0" layoutY="5.0"
                    preserveRatio="true" pickOnBounds="true" />
 
-        <VBox layoutX="60.0" layoutY="60.0" spacing="12.0"
+        <VBox layoutX="30.0" layoutY="60.0" spacing="12.0"
               styleClass="panel-registro" alignment="TOP_LEFT"
-              prefWidth="300.0" prefHeight="250.0">
+              prefWidth="360.0" prefHeight="300.0">
             <children>
                 <Label text="Agregar Reporte" styleClass="titulo-registro"/>
 
-                <HBox spacing="10" alignment="CENTER_LEFT">
-                    <Label text="Tipo de Reporte" styleClass="label-campo" prefWidth="90.0"/>
+                <HBox spacing="10" alignment="CENTER_LEFT" prefWidth="350.0">
+                    <Label text="Tipo de Reporte" styleClass="label-campo" prefWidth="120.0"/>
                     <ComboBox fx:id="comboTipoReporte" styleClass="combo-registro"
-                              prefWidth="180.0" promptText="Seleccione"/>
+                              prefWidth="200.0" promptText="Seleccione"/>
                 </HBox>
 
-                <HBox spacing="10" alignment="CENTER_LEFT">
-                    <Label text="Descripción" styleClass="label-campo" prefWidth="90.0"/>
+                <HBox spacing="10" alignment="CENTER_LEFT" prefWidth="350.0">
+                    <Label text="Descripción" styleClass="label-campo" prefWidth="120.0"/>
                     <TextArea fx:id="campoDescripcion" styleClass="campo-registro"
-                              prefWidth="180.0" prefHeight="70.0" wrapText="true"/>
+                              prefWidth="200.0" prefHeight="100.0" wrapText="true"/>
                 </HBox>
 
                 <VBox alignment="CENTER" spacing="5.0">

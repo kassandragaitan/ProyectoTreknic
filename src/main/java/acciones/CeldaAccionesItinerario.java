@@ -11,7 +11,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableCell;
@@ -101,6 +100,10 @@ public class CeldaAccionesItinerario extends TableCell<Itinerario, Void> {
 
             AgregarItinerarioController controller = loader.getController();
             controller.setGestionItinerarioController(gestionItinerarioController);
+            String tituloPanel = editable
+                    ? "Editar Itinerario"
+                    : "Ver Itinerario";
+            controller.setTitulo(tituloPanel);
             controller.verItinerario(itinerario);
             controller.setEdicionActiva(editable);
 

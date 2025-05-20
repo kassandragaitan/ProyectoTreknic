@@ -21,34 +21,34 @@
                    preserveRatio="true" pickOnBounds="true"
                    layoutX="160.0" layoutY="5.0" />
 
-     <VBox layoutX="60.0" layoutY="60.0" spacing="12.0" styleClass="panel-registro"
-      alignment="TOP_LEFT" prefWidth="300.0" prefHeight="250.0">
-    <children>
-        <Label text="Agregar Itinerario" styleClass="titulo-registro"/>
+        <VBox layoutX="60.0" layoutY="60.0" spacing="12.0" styleClass="panel-registro"
+              alignment="TOP_LEFT" prefWidth="300.0" prefHeight="250.0">
+            <children>
+                <Label fx:id="labelTitulo" text="Agregar Itinerario" styleClass="titulo-registro"/>
 
-        <HBox spacing="10" alignment="CENTER_LEFT">
-            <Label text="Nombre" styleClass="label-campo" prefWidth="90.0"/>
-            <TextField fx:id="campoNombre" styleClass="campo-registro" prefWidth="180.0"/>
-        </HBox>
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="Nombre" styleClass="label-campo" prefWidth="90.0"/>
+                    <TextField fx:id="campoNombre" styleClass="campo-registro" prefWidth="180.0"/>
+                </HBox>
 
-        <HBox spacing="10" alignment="CENTER_LEFT">
-            <Label text="Descripción" styleClass="label-campo" prefWidth="90.0"/>
-            <TextArea fx:id="campoDescripcion" styleClass="campo-registro"
-                      prefWidth="180.0" prefHeight="70.0" wrapText="true"/>
-        </HBox>
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="Descripción" styleClass="label-campo" prefWidth="90.0"/>
+                    <TextArea fx:id="campoDescripcion" styleClass="campo-registro"
+                              prefWidth="180.0" prefHeight="70.0" wrapText="true"/>
+                </HBox>
 
-        <HBox spacing="10" alignment="CENTER_LEFT">
-            <Label text="Duración" styleClass="label-campo" prefWidth="90.0"/>
-            <ComboBox fx:id="comboDuracion" styleClass="combo-registro"
-                      prefWidth="180.0" promptText="Seleccione"/>
-        </HBox>
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="Duración" styleClass="label-campo" prefWidth="90.0"/>
+                    <ComboBox fx:id="comboDuracion" styleClass="combo-registro"
+                              prefWidth="180.0" promptText="Seleccione"/>
+                </HBox>
 
-        <VBox alignment="CENTER" spacing="5.0">
-            <Button fx:id="botonRegistrar" text="Registrar"
-                    onAction="#RegistrarItinerario" styleClass="boton-registro"/>
+                <VBox alignment="CENTER" spacing="5.0">
+                    <Button fx:id="botonRegistrar" text="Registrar"
+                            onAction="#RegistrarItinerario" styleClass="boton-registro"/>
+                </VBox>
+            </children>
         </VBox>
-    </children>
-</VBox>
 
     </children>
 </AnchorPane>

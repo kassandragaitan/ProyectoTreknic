@@ -57,12 +57,12 @@ public class ConsultasItinerario {
         }
     }
 
-    public static ObservableList<String> cargarUsuariosDeItinerarios() {
+    public static ObservableList<String> cargarFechasItinerarios() {
         ObservableList<String> lista = FXCollections.observableArrayList();
-        String consulta = "SELECT DISTINCT u.nombre FROM itinerarios i JOIN usuarios u ON i.id_usuario = u.id_usuario";
+        String consulta = "SELECT DISTINCT DATE_FORMAT(fecha_creacion, '%Y-%m-%d') AS fecha FROM itinerarios ORDER BY fecha DESC";
         try (Connection conn = Conexion.conectar(); PreparedStatement ps = conn.prepareStatement(consulta); ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
-                lista.add(rs.getString("nombre"));
+                lista.add(rs.getString("fecha"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -70,11 +70,11 @@ public class ConsultasItinerario {
         return lista;
     }
 
-    public static void cargarItinerariosPorUsuario(ObservableList<Itinerario> lista, String nombreUsuario) {
-        String consulta = "SELECT i.*, u.nombre AS nombre_usuario FROM itinerarios i JOIN usuarios u ON i.id_usuario = u.id_usuario WHERE u.nombre = ?";
-        try (Connection conn = Conexion.conectar(); PreparedStatement ps = conn.prepareStatement(consulta)) {
-            ps.setString(1, nombreUsuario);
-            ResultSet rs = ps.executeQuery();
+    public static void cargarItinerariosPorFecha(ObservableList<Itinerario> lista, String fecha) {
+        String consulta = "SELECT i.*, u.nombre AS nombre_usuario FROM itinerarios i JOIN usuarios u ON i.id_usuario = u.id_usuario WHERE DATE(i.fecha_creacion) = ?";
+        try (Connection conn = Conexion.conectar(); PreparedStatement stmt = conn.prepareStatement(consulta)) {
+            stmt.setString(1, fecha);
+            ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 Itinerario it = new Itinerario(
                         rs.getInt("id_itinerario"),
@@ -92,31 +92,19 @@ public class ConsultasItinerario {
         }
     }
 
-    public static List<Integer> obtenerDuraciones() {
-        List<Integer> lista = new ArrayList<>();
-        String sql = "SELECT DISTINCT duracion FROM itinerarios ORDER BY duracion";
-        try (Connection conn = Conexion.conectar(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                try {
-                    lista.add(Integer.parseInt(rs.getString("duracion")));
-                } catch (NumberFormatException ignored) {
+    public static ObservableList<String> cargarTodasLasDuracionesEnum() {
+        ObservableList<String> duraciones = FXCollections.observableArrayList();
+        String consulta = "SHOW COLUMNS FROM itinerarios WHERE Field = 'duracion'";
+        try (Connection conn = Conexion.conectar(); Statement st = conn.createStatement(); ResultSet rs = st.executeQuery(consulta)) {
+            if (rs.next()) {
+                String tipo = rs.getString("Type");
+                tipo = tipo.substring(5, tipo.length() - 1);
+                for (String val : tipo.replace("'", "").split(",")) {
+                    duraciones.add(val.trim());
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        }
-        return lista;
-    }
-
-    public static ObservableList<String> cargarDuracionesItinerarios() {
-        ObservableList<String> duraciones = FXCollections.observableArrayList();
-        String consulta = "SELECT DISTINCT duracion FROM itinerarios ORDER BY duracion";
-        try (Connection conn = Conexion.conectar(); PreparedStatement ps = conn.prepareStatement(consulta); ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                duraciones.add(rs.getString("duracion"));
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
         }
         return duraciones;
     }
@@ -124,18 +112,7 @@ public class ConsultasItinerario {
     public static void cargarComboDuracionItinerario(ComboBox<String> comboDuracion) {
         comboDuracion.getItems().clear();
         comboDuracion.getItems().add("Seleccione");
-        String consulta = "SHOW COLUMNS FROM itinerarios WHERE Field = 'duracion'";
-        try (Connection conn = Conexion.conectar(); Statement st = conn.createStatement(); ResultSet rs = st.executeQuery(consulta)) {
-            if (rs.next()) {
-                String tipo = rs.getString("Type");
-                tipo = tipo.substring(5, tipo.length() - 1).replace("'", "");
-                for (String val : tipo.split(",")) {
-                    comboDuracion.getItems().add(val.trim());
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        comboDuracion.getItems().addAll(cargarTodasLasDuracionesEnum());
         comboDuracion.getSelectionModel().selectFirst();
     }
 
@@ -162,7 +139,7 @@ public class ConsultasItinerario {
     }
 
     public static void cargarDatosItinerariosFiltrados(ObservableList<Itinerario> lista, String texto) {
-        String consulta = "SELECT i.*, u.nombre AS nombre_usuario FROM itinerarios i JOIN usuarios u ON i.id_usuario = u.id_usuario WHERE i.nombre LIKE ? OR i.descripcion LIKE ? OR CAST(i.duracion AS CHAR) LIKE ? OR u.nombre LIKE ? OR DATE_FORMAT(i.fecha_creacion, '%Y-%m-%d') LIKE ?";
+        String consulta = "SELECT i.*, u.nombre AS nombre_usuario FROM itinerarios i JOIN usuarios u ON i.id_usuario = u.id_usuario WHERE i.nombre LIKE ? OR i.descripcion LIKE ? OR CAST(i.duracion AS CHAR) LIKE ? OR DATE_FORMAT(i.fecha_creacion, '%Y-%m-%d') LIKE ? OR u.nombre LIKE ?";
         try (Connection conn = Conexion.conectar(); PreparedStatement ps = conn.prepareStatement(consulta)) {
             String comodin = "%" + texto + "%";
             for (int i = 1; i <= 5; i++) {

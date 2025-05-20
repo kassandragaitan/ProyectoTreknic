@@ -1,45 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import java.net.URL?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="700.0" prefWidth="1000.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controladores.GestionUsuarioController">
+<AnchorPane prefHeight="700.0" prefWidth="1000.0"
+            styleClass="mainFxmlClass"
+            xmlns="http://javafx.com/javafx/23.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controladores.GestionUsuarioController">
 
     <stylesheets>
         <URL value="@/Estilos/gestion.css" />
     </stylesheets>
 
-    <Label layoutX="30.0" layoutY="30.0" styleClass="labelTitulo" text="Gestion de Usuarios" />
+    <children>
+        <Label layoutX="30.0" layoutY="30.0"
+               styleClass="labelTitulo"
+               text="Gestión de Usuarios" />
 
-    <HBox layoutX="30.0" layoutY="70.0" prefHeight="42.0" spacing="10.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="70.0">
-        <children>
-            <TextField fx:id="campoBuscarUsuario" promptText="Buscar usuarios..." HBox.hgrow="ALWAYS" />
-            <ComboBox fx:id="comboFiltroPor" prefWidth="210.0" promptText="Selecciona un tipo de filtro..." />
-            <ComboBox fx:id="comboValorFiltro" prefWidth="150.0" />
-            <Button fx:id="botonQuitarFiltro" text="Quitar Filtro" />
-        </children>
-    </HBox>
+        <HBox layoutX="30.0" layoutY="70.0" spacing="10.0"
+              AnchorPane.leftAnchor="30.0"
+              AnchorPane.rightAnchor="30.0"
+              AnchorPane.topAnchor="70.0"
+              prefHeight="42.0">
+            <children>
+                <TextField fx:id="campoBuscarUsuario"
+                           promptText="Buscar usuarios..."
+                           HBox.hgrow="ALWAYS" />
+                <ComboBox fx:id="comboFiltroPor"
+                          prefWidth="210.0"
+                          promptText="Selecciona un tipo de filtro..." />
+                <ComboBox fx:id="comboValorFiltro"
+                          prefWidth="150.0" />
+                <Button fx:id="botonQuitarFiltro"
+                        text="Quitar Filtro" />
+            </children>
+        </HBox>
 
+        <Button fx:id="botonNuevoUsuario"
+                layoutY="25.0"
+                text="Nuevo Usuario"
+                onAction="#irAnuevoUsuario"
+                AnchorPane.rightAnchor="30.0"
+                styleClass="primary"
+                stylesheets="@/Estilos/gestiondestinos.css" />
 
-    <Button fx:id="botonNuevoUsuario" layoutY="25.0" onAction="#irAnuevoUsuario" styleClass="primary" stylesheets="@/Estilos/gestiondestinos.css" text="Nuevo Usuario" AnchorPane.rightAnchor="30.0" />
-
-    <TableView fx:id="tablaUsuarios" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="130.0">
-        <columns>
-            <TableColumn fx:id="columnUsuario" prefWidth="140" text="USUARIO" />
-            <TableColumn fx:id="columnCorreo" prefWidth="170" text="CORREO" />
-            <TableColumn fx:id="columnContrasena" prefWidth="170" text="CONTRASEÑA" />
-            <TableColumn fx:id="columnRol" prefWidth="100" text="ROL" />
-            <TableColumn fx:id="columnTelefono" prefWidth="100" text="TELÉFONO" />
-            <TableColumn fx:id="columnIdioma" prefWidth="100" text="IDIOMA" />
-            <TableColumn fx:id="columnViajero" prefWidth="120" text="TIPO COMPAÑIA" />
-            <TableColumn fx:id="columnFechaRegistro" prefWidth="130" text="REGISTRADO" />
-            <TableColumn fx:id="columnAcciones" prefWidth="200" text="ACCIONES" />
-        </columns>
-    </TableView>
+        <TableView fx:id="tablaUsuarios"
+                   AnchorPane.topAnchor="130.0"
+                   AnchorPane.leftAnchor="30.0"
+                   AnchorPane.rightAnchor="30.0"
+                   AnchorPane.bottomAnchor="30.0">
+            <columns>
+                <TableColumn fx:id="columnUsuario" prefWidth="140" text="Usuario" />
+                <TableColumn fx:id="columnCorreo" prefWidth="170" text="Correo" />
+                <TableColumn fx:id="columnContrasena" prefWidth="170" text="Contraseña" />
+                <TableColumn fx:id="columnRol" prefWidth="100" text="Rol" />
+                <TableColumn fx:id="columnTelefono" prefWidth="100" text="Teléfono" />
+                <TableColumn fx:id="columnIdioma" prefWidth="100" text="Idioma" />
+                <TableColumn fx:id="columnViajero" prefWidth="120" text="Tipo compañía" />
+                <TableColumn fx:id="columnFechaRegistro" prefWidth="130" text="Registrado" />
+                <TableColumn fx:id="columnAcciones" prefWidth="200" text="Acciones" />
+            </columns>
+        </TableView>
+    </children>
 </AnchorPane>

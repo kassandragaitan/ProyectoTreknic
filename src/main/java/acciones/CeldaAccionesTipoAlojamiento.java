@@ -84,6 +84,7 @@ public class CeldaAccionesTipoAlojamiento extends TableCell<TipoAlojamiento, Voi
             Parent root = loader.load();
 
             AgregarTipoAlojamientoController controller = loader.getController();
+            controller.setTitulo(editable ? "Editar Tipo de Alojamiento" : "Ver Tipo de Alojamiento");
             controller.verTipoAlojamiento(tipo);
             controller.setEdicionActiva(editable);
             controller.setGestionTipoAlojamientoController(controlador);

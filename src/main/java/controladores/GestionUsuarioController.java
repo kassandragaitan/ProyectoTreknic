@@ -212,7 +212,8 @@ public class GestionUsuarioController implements Initializable {
     public ObservableList<Usuario> generarDatosUsuario() {
         ObservableList<Usuario> listaUsuarios = FXCollections.observableArrayList();
         try (Connection conn = Conexion.conectar()) {
-            String query = "SELECT id_usuario, nombre, email, contrasena, tipo_usuario, idioma_preferido, tipo_viajero, telefono, fecha_registro, activo FROM usuarios";
+            String query = "SELECT id_usuario, nombre, email, contrasena, tipo_usuario, idioma_preferido, tipo_viajero, telefono, fecha_registro FROM usuarios";
+
             PreparedStatement stmt = conn.prepareStatement(query);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
@@ -227,7 +228,6 @@ public class GestionUsuarioController implements Initializable {
                         rs.getString("idioma_preferido"),
                         rs.getString("telefono")
                 );
-                usuario.setActivo(rs.getBoolean("activo"));
                 listaUsuarios.add(usuario);
             }
         } catch (SQLException ex) {
@@ -307,6 +307,7 @@ public class GestionUsuarioController implements Initializable {
             Parent root = loader.load();
 
             AgregarUsuarioController controlador = loader.getController();
+            controlador.setTitulo("Agregar Usuario");
             controlador.setAdministracionUsuarioController(this);
 
             Stage stage = new Stage();

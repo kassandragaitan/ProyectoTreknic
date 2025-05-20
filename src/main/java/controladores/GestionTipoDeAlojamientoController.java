@@ -97,6 +97,7 @@ public class GestionTipoDeAlojamientoController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/AgregarTipoAlojamiento.fxml"));
             Parent root = loader.load();
             AgregarTipoAlojamientoController controlador = loader.getController();
+            controlador.setTitulo("Agregar Tipo de Alojamiento");
             controlador.setGestionTipoAlojamientoController(this);
 
             Stage stage = new Stage();

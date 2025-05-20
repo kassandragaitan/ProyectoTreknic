@@ -67,30 +67,4 @@ public class ConsultasSoporte {
         return lista;
     }
 
-    public static ObservableList<PruebaFuncionalidad> obtenerPruebasFiltradas(String filtro) {
-        ObservableList<PruebaFuncionalidad> lista = FXCollections.observableArrayList();
-        String sql = "SELECT id_funcionalidad, titulo, descripcion FROM funcionalidades_prueba "
-                + "WHERE titulo LIKE ? OR descripcion LIKE ?";
-
-        try (Connection conn = Conexion.conectar(); PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            String wildcard = "%" + filtro + "%";
-            ps.setString(1, wildcard);
-            ps.setString(2, wildcard);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    lista.add(new PruebaFuncionalidad(
-                            rs.getInt("id_funcionalidad"),
-                            rs.getString("titulo"),
-                            rs.getString("descripcion")
-                    ));
-                }
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return lista;
-    }
 }

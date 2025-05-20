@@ -20,6 +20,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -45,13 +46,17 @@ public class AgregarItinerarioController implements Initializable {
     private ComboBox<String> comboDuracion;
     @FXML
     private ImageView imagenTrekNic;
+    @FXML
+    private Label labelTitulo;
+
+    private GestionItinerarioController gestionItinerarioController;
+    private boolean modificado = false;
+    private Itinerario itinerarioActual;
+    private boolean esEdicion = false;
 
     /**
      * Initializes the controller class.
      */
-    private Itinerario itinerarioActual;
-    private boolean esEdicion = false;
-
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         Conexion.conectar();
@@ -63,8 +68,9 @@ public class AgregarItinerarioController implements Initializable {
         imagenTrekNic.setImage(imagen);
     }
 
-    private GestionItinerarioController gestionItinerarioController;
-    private boolean modificado = false;
+    public void setTitulo(String titulo) {
+        labelTitulo.setText(titulo);
+    }
 
     public void setGestionItinerarioController(GestionItinerarioController controller) {
         this.gestionItinerarioController = controller;

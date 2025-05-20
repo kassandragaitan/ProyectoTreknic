@@ -23,6 +23,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -55,6 +56,10 @@ public class AgregarAlojamientoController implements Initializable {
     private Button botonRegistrar;
     @FXML
     private ImageView imagenTrekNic;
+    @FXML
+    private Button botonSeleccionar;
+    @FXML
+    private Label labelTitulo;
 
     /**
      * Initializes the controller class.
@@ -64,8 +69,7 @@ public class AgregarAlojamientoController implements Initializable {
     private File archivoImagenSeleccionado;
     private TipoAlojamiento tipoSeleccionado;
     private Destino destinoSeleccionado;
-    @FXML
-    private Button botonSeleccionar;
+    private GestionAlojamientoController gestionAlojamientoController;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -107,7 +111,9 @@ public class AgregarAlojamientoController implements Initializable {
         });
     }
 
-    private GestionAlojamientoController gestionAlojamientoController;
+    public void setTitulo(String titulo) {
+        labelTitulo.setText(titulo);
+    }
 
     public void setGestionAlojamientoController(GestionAlojamientoController controller) {
         this.gestionAlojamientoController = controller;
@@ -125,6 +131,7 @@ public class AgregarAlojamientoController implements Initializable {
             Alertas.aviso("Campo vacío", "El contacto no puede estar vacío.");
         } else if (!Utilidades.validarTelefonoGlobal.esTelefonoNicaraguenseValido(campoContacto.getText().trim())) {
             Alertas.aviso("Teléfono inválido", "El contacto debe tener 8 dígitos y empezar por 2, 5, 7 u 8 (formato nicaragüense).");
+            campoContacto.clear();
         } else if (compruebaCampo.compruebaVacio(campoImagen)) {
             Alertas.aviso("Campo vacío", "Debe seleccionar una imagen.");
         } else if (destinoSeleccionado == null) {
@@ -262,16 +269,19 @@ public class AgregarAlojamientoController implements Initializable {
     public void setEdicionActiva(boolean editable) {
         campoNombre.setEditable(editable);
         campoContacto.setEditable(editable);
-        campoImagen.setEditable(editable);
+        campoImagen.setEditable(false);
+
         comboDestino.setDisable(!editable);
         comboTipo.setDisable(!editable);
+
         botonSeleccionar.setDisable(!editable);
+
         botonRegistrar.setVisible(editable);
 
         double opacidad = editable ? 1.0 : 0.75;
         campoNombre.setOpacity(opacidad);
         campoContacto.setOpacity(opacidad);
-        campoImagen.setOpacity(opacidad);
+        campoImagen.setOpacity(0.75);
         comboDestino.setOpacity(opacidad);
         comboTipo.setOpacity(opacidad);
     }

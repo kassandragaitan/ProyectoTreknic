@@ -4,38 +4,23 @@
  */
 package controladores;
 
-import Utilidades.Animacion;
 import acciones.CeldaAccionesNotificacion;
-import bbdd.Conexion;
-import bbdd.ConsultasMovimientos;
 import bbdd.ConsultasNotificaciones;
-import java.io.IOException;
 import java.net.URL;
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.DatePicker;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import modelo.Notificacion;
-import modelo.PreferenciasNotificacion;
 import modelo.Usuario;
 
 /**
@@ -46,11 +31,9 @@ import modelo.Usuario;
 public class NotificacionesController implements Initializable {
 
     @FXML
-    private Button botonGuardarCambios;
-    @FXML
     private TableColumn<Notificacion, String> columnaDescripcion;
     @FXML
-    private TableColumn<Notificacion, String> columnaDestinatario;
+    private TableColumn<Notificacion, String> columnaUsuario;
     @FXML
     private TableColumn<Notificacion, Date> columnaFecha;
     @FXML
@@ -58,44 +41,24 @@ public class NotificacionesController implements Initializable {
     @FXML
     private TableView<Notificacion> tablaNotificaciones;
     @FXML
-    private TextField campoHoraInicio;
-    @FXML
-    private TextField campoHoraFin;
-    @FXML
-    private CheckBox diaLunes;
-    @FXML
-    private CheckBox diaMartes;
-    @FXML
-    private CheckBox diaMiercoles;
-    @FXML
-    private CheckBox diaJueves;
-    @FXML
-    private CheckBox diaViernes;
-    @FXML
-    private CheckBox diaSabado;
-    @FXML
-    private CheckBox diaDomingo;
-    @FXML
-    private TableColumn<Notificacion, String> columnaTipo;
-    @FXML
-    private TableColumn<Notificacion, String> columnaPrioridad;
-    @FXML
     private TableColumn<Notificacion, Boolean> columnaLeido;
     @FXML
-    private CheckBox switchCorreo;
+    private ComboBox<?> comboFiltro1;
     @FXML
-    private CheckBox switchSistema;
+    private ComboBox<?> comboFiltro2;
     @FXML
-    private CheckBox switchResumen;
+    private ComboBox<?> comboLeido;
+    @FXML
+    private Button botonFiltrar;
 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        tablaNotificaciones.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         initializeTableView();
         cargarNotificaciones();
-        cargarPreferencias();
         tablaNotificaciones.setOnMouseClicked(event -> {
             Notificacion notificacionSeleccionada = tablaNotificaciones.getSelectionModel().getSelectedItem();
             if (notificacionSeleccionada != null && !notificacionSeleccionada.isLeido()) {
@@ -118,26 +81,12 @@ public class NotificacionesController implements Initializable {
                 }
             }
         });
-
-        Animacion.aplicarAnimaciones(switchCorreo);
-        Animacion.aplicarAnimaciones(switchSistema);
-        Animacion.aplicarAnimaciones(switchResumen);
-        Animacion.aplicarAnimaciones(diaLunes);
-        Animacion.aplicarAnimaciones(diaMartes);
-        Animacion.aplicarAnimaciones(diaMiercoles);
-        Animacion.aplicarAnimaciones(diaJueves);
-        Animacion.aplicarAnimaciones(diaViernes);
-        Animacion.aplicarAnimaciones(diaSabado);
-        Animacion.aplicarAnimaciones(diaDomingo);
-
     }
 
     private void initializeTableView() {
         columnaDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
-        columnaDestinatario.setCellValueFactory(new PropertyValueFactory<>("nombreDestinatario"));
+        columnaUsuario.setCellValueFactory(new PropertyValueFactory<>("nombreUsuario"));
         columnaFecha.setCellValueFactory(new PropertyValueFactory<>("fecha"));
-        columnaTipo.setCellValueFactory(new PropertyValueFactory<>("tipoNotificacion"));
-        columnaPrioridad.setCellValueFactory(new PropertyValueFactory<>("prioridad"));
         columnaLeido.setCellValueFactory(new PropertyValueFactory<>("leido"));
     }
 
@@ -148,87 +97,7 @@ public class NotificacionesController implements Initializable {
         tablaNotificaciones.setPlaceholder(new Label("No hay notificaciones disponibles."));
     }
 
-    private int idUsuarioActivo = Usuario.getUsuarioActual().getIdUsuario();
-
-    private void cargarPreferencias() {
-        PreferenciasNotificacion preferencias = ConsultasNotificaciones.cargarPreferencias(idUsuarioActivo);
-
-        switchCorreo.setSelected(preferencias.isCorreo());
-        switchSistema.setSelected(preferencias.isSistema());
-        switchResumen.setSelected(preferencias.isResumen());
-
-        campoHoraInicio.setText(preferencias.getHoraInicio());
-        campoHoraFin.setText(preferencias.getHoraFin());
-
-        if (preferencias.getDias() != null) {
-            for (char dia : preferencias.getDias().toCharArray()) {
-                switch (dia) {
-                    case 'L':
-                        diaLunes.setSelected(true);
-                        break;
-                    case 'M':
-                        diaMartes.setSelected(true);
-                        break;
-                    case 'X':
-                        diaMiercoles.setSelected(true);
-                        break;
-                    case 'J':
-                        diaJueves.setSelected(true);
-                        break;
-                    case 'V':
-                        diaViernes.setSelected(true);
-                        break;
-                    case 'S':
-                        diaSabado.setSelected(true);
-                        break;
-                    case 'D':
-                        diaDomingo.setSelected(true);
-                        break;
-                }
-            }
-        }
-
-    }
-
     @FXML
-    private void guardarPreferencias() {
-
-        PreferenciasNotificacion preferencias = new PreferenciasNotificacion();
-
-        preferencias.setCorreo(switchCorreo.isSelected());
-        preferencias.setSistema(switchSistema.isSelected());
-        preferencias.setResumen(switchResumen.isSelected());
-        preferencias.setHoraInicio(campoHoraInicio.getText());
-        preferencias.setHoraFin(campoHoraFin.getText());
-
-        StringBuilder diasActivos = new StringBuilder();
-        if (diaLunes.isSelected()) {
-            diasActivos.append("L");
-        }
-        if (diaMartes.isSelected()) {
-            diasActivos.append("M");
-        }
-        if (diaMiercoles.isSelected()) {
-            diasActivos.append("X");
-        }
-        if (diaJueves.isSelected()) {
-            diasActivos.append("J");
-        }
-        if (diaViernes.isSelected()) {
-            diasActivos.append("V");
-        }
-        if (diaSabado.isSelected()) {
-            diasActivos.append("S");
-        }
-        if (diaDomingo.isSelected()) {
-            diasActivos.append("D");
-        }
-
-        preferencias.setDias(diasActivos.toString());
-
-        ConsultasNotificaciones.guardarPreferencias(idUsuarioActivo, preferencias);
-
-        ConsultasMovimientos.registrarMovimiento("Actualizó sus preferencias de notificación", java.sql.Date.valueOf(LocalDate.now()), idUsuarioActivo);
+    private void filtrar(ActionEvent event) {
     }
-
 }

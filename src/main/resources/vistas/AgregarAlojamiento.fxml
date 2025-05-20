@@ -20,8 +20,7 @@
               alignment="TOP_LEFT" prefWidth="400.0">
 
             <children>
-                <Label text="Agregar Alojamiento" styleClass="titulo-registro"/>
-
+                <Label fx:id="labelTitulo" text="Agregar Alojamiento" styleClass="titulo-registro"/>
                 <HBox spacing="10" alignment="CENTER_LEFT">
                     <Label text="Nombre" styleClass="label-campo" prefWidth="90.0"/>
                     <TextField fx:id="campoNombre" styleClass="campo-registro" prefWidth="260.0"/>
@@ -33,7 +32,7 @@
                 </HBox>
 
                 <HBox spacing="10" alignment="CENTER_LEFT">
-                    <Label text="Contacto" styleClass="label-campo" prefWidth="90.0"/>
+                    <Label text="Teléfono" styleClass="label-campo" prefWidth="90.0"/>
                     <TextField fx:id="campoContacto" styleClass="campo-registro" prefWidth="260.0"/>
                 </HBox>
 

@@ -67,7 +67,7 @@
                         <Label styleClass="data-change-positive-box"/>
                     </HBox>
                     <VBox spacing="5">
-                        <Label styleClass="data-title" text="Itinerarios Activos" />
+                        <Label styleClass="data-title" text="Itinerarios Registrados" />
                         <Label fx:id="labelItinerarioActivo" styleClass="data-value"/>
                     </VBox>
                 </VBox>
@@ -84,7 +84,7 @@
                         <Label styleClass="data-change-negative-box"/>
                     </HBox>
                     <VBox spacing="5">
-                        <Label styleClass="data-title" text="Destinos Populares" />
+                        <Label styleClass="data-title" text="Destinos Registrados" />
                         <Label fx:id="labelDestinosPopulares" styleClass="data-value"/>
                     </VBox>
                 </VBox>
@@ -101,7 +101,7 @@
                         <Label styleClass="data-change-positive-box"/>
                     </HBox>
                     <VBox spacing="5">
-                        <Label styleClass="data-title" text="Reservas Mensuales" />
+                        <Label styleClass="data-title" text="Actividades registradas" />
                         <Label fx:id="labelActividadesMen" styleClass="data-value"/>
                     </VBox>
                 </VBox>
@@ -109,7 +109,7 @@
 
             <HBox alignment="CENTER" spacing="20">
                 <VBox prefWidth="530" spacing="10" styleClass="chart-panel">
-                    <Label styleClass="chart-title" text="Actividad Reciente" />
+                    <Label styleClass="chart-title" text="Top 5 destinos con más actividades" />
                     <BarChart fx:id="barChartActividad" prefHeight="300" prefWidth="520">
                         <xAxis>
                             <CategoryAxis fx:id="ejeXActividad" label="Destino" />

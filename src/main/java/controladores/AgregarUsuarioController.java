@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package controladores;
 
 import Utilidades.Alertas;
@@ -9,20 +5,12 @@ import Utilidades.compruebaCampo;
 import Utilidades.validarEmail;
 import Utilidades.validarTelefonoGlobal;
 import bbdd.Conexion;
-import bbdd.ConsultasConfiguracion;
 import bbdd.ConsultasUsuario;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Cursor;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -30,16 +18,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import modelo.ConfiguracionSistema;
 import modelo.Usuario;
 
-/**
- * FXML Controller class
- *
- * @author k0343
- */
 public class AgregarUsuarioController implements Initializable {
 
     @FXML
@@ -59,36 +40,40 @@ public class AgregarUsuarioController implements Initializable {
     @FXML
     private ComboBox<String> campoTipoCompania;
     @FXML
-    private CheckBox checkActivo;
-    @FXML
     private ImageView imagenTrekNic;
+    @FXML
+    private Label labelTitulo;
 
-    /**
-     * Initializes the controller class.
-     */
- private boolean edicionActiva = false;
+    private boolean edicionActiva = false;
     private Usuario usuarioActual;
     private Usuario usuarioEnEdicion = null;
     private GestionUsuarioController administracionUsuarioController;
     private boolean abiertoDesdeLogin = false;
     private boolean modificado = false;
+    private LoginController loginController;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         Conexion.conectar();
-        checkActivo.setSelected(true);
-        checkActivo.setDisable(true);
         ConsultasUsuario.cargarComboIdioma(campoIdioma);
         ConsultasUsuario.cargarComboTipoUsuario(campoTipoUsuario);
         ConsultasUsuario.cargarComboTipoCompania(campoTipoCompania);
         Conexion.cerrarConexion();
-
+        campoTipoUsuario.getItems().remove("Admin");
         Image imagen = new Image(getClass().getResourceAsStream("/img/Encabezado.png"));
         imagenTrekNic.setImage(imagen);
     }
 
+    public void setTitulo(String titulo) {
+        labelTitulo.setText(titulo);
+    }
+
     public void setAdministracionUsuarioController(GestionUsuarioController controller) {
         this.administracionUsuarioController = controller;
+    }
+
+    public void setLoginController(LoginController controller) {
+        this.loginController = controller;
     }
 
     public void setAbiertoDesdeLogin(boolean valor) {
@@ -111,7 +96,6 @@ public class AgregarUsuarioController implements Initializable {
         campoTipoUsuario.setValue(usuario.getTipoUsuario());
         campoIdioma.setValue(usuario.getIdioma());
         campoTipoCompania.setValue(usuario.getTipoViajero());
-        checkActivo.setSelected(usuario.getActivo());
     }
 
     public void EditarCamposUsuario(boolean editable) {
@@ -122,7 +106,6 @@ public class AgregarUsuarioController implements Initializable {
         campoIdioma.setDisable(!editable);
         campoTipoUsuario.setDisable(!editable);
         campoTipoCompania.setDisable(!editable);
-        checkActivo.setDisable(!editable);
         botonRegistrar.setDisable(!editable);
     }
 
@@ -167,7 +150,6 @@ public class AgregarUsuarioController implements Initializable {
             usuario.setTipoViajero(campoTipoCompania.getValue());
             usuario.setIdioma(campoIdioma.getValue());
             usuario.setTipoUsuario(campoTipoUsuario.getValue());
-            usuario.setActivo(checkActivo.isSelected());
 
             boolean resultado;
             if (usuarioEnEdicion == null) {
@@ -196,6 +178,9 @@ public class AgregarUsuarioController implements Initializable {
                 if (usuarioEnEdicion == null) {
                     limpiarFormulario();
                     if (abiertoDesdeLogin) {
+                        if (loginController != null) {
+                            loginController.limpiarCamposLogin();
+                        }
                         Stage ventanaActual = (Stage) botonRegistrar.getScene().getWindow();
                         ventanaActual.close();
                     }
@@ -221,6 +206,5 @@ public class AgregarUsuarioController implements Initializable {
         campoTipoUsuario.getSelectionModel().selectFirst();
         campoTipoCompania.getSelectionModel().selectFirst();
         campoIdioma.getSelectionModel().selectFirst();
-        checkActivo.setSelected(true);
     }
 }

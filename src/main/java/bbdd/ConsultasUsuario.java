@@ -1,12 +1,5 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package bbdd;
 
-import static bbdd.Conexion.cerrarConexion;
-import static bbdd.Conexion.conectar;
-import static bbdd.Conexion.conn;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,14 +13,10 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.ComboBox;
 import modelo.Usuario;
 
-/**
- *
- * @author k0343
- */
 public class ConsultasUsuario {
 
     public static boolean registrarUsuario(Usuario usuario) {
-        String consulta = "INSERT INTO usuarios (nombre, email, contrasena, tipo_usuario, idioma_preferido, tipo_viajero, telefono, fecha_registro, activo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String consulta = "INSERT INTO usuarios (nombre, email, contrasena, tipo_usuario, idioma_preferido, tipo_viajero, telefono, fecha_registro) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = Conexion.conectar(); PreparedStatement pst = conn.prepareStatement(consulta)) {
             pst.setString(1, usuario.getNombre());
             pst.setString(2, usuario.getEmail());
@@ -37,7 +26,6 @@ public class ConsultasUsuario {
             pst.setString(6, usuario.getTipoViajero());
             pst.setString(7, usuario.getTelefono());
             pst.setTimestamp(8, new Timestamp(System.currentTimeMillis()));
-            pst.setBoolean(9, usuario.getActivo());
 
             return pst.executeUpdate() > 0;
         } catch (SQLException ex) {
@@ -60,25 +48,6 @@ public class ConsultasUsuario {
         }
 
         return roles;
-    }
-
-    public static ObservableList<String> cargarEstadosUsuarios() {
-        ObservableList<String> estados = FXCollections.observableArrayList();
-        estados.add("Todos los estados");
-        String consulta = "SELECT DISTINCT activo FROM usuarios";
-
-        try (Connection conn = Conexion.conectar(); PreparedStatement st = conn.prepareStatement(consulta); ResultSet rs = st.executeQuery()) {
-            while (rs.next()) {
-                String estado = rs.getBoolean("activo") ? "Activo" : "Inactivo";
-                if (!estados.contains(estado)) {
-                    estados.add(estado);
-                }
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        return estados;
     }
 
     public static void cargarUsuariosPorRol(ObservableList<Usuario> listaUsuarios, String rolSeleccionado) {
@@ -104,7 +73,6 @@ public class ConsultasUsuario {
                         rs.getString("idioma_preferido"),
                         rs.getString("telefono")
                 );
-                usuario.setActivo(rs.getBoolean("activo"));
                 listaUsuarios.add(usuario);
             }
         } catch (SQLException ex) {
@@ -129,7 +97,6 @@ public class ConsultasUsuario {
                         rs.getString("idioma_preferido"),
                         rs.getString("telefono")
                 );
-                usuario.setActivo(rs.getBoolean("activo"));
                 listaUsuarios.add(usuario);
             }
         } catch (SQLException e) {
@@ -138,7 +105,7 @@ public class ConsultasUsuario {
     }
 
     public static void cargarDatosUsuariosFiltrados(ObservableList<Usuario> listaUsuarios, String busqueda) {
-        String consulta = "SELECT id_usuario, nombre, email, tipo_usuario, idioma_preferido, tipo_viajero, telefono, activo, fecha_registro "
+        String consulta = "SELECT id_usuario, nombre, email, tipo_usuario, idioma_preferido, tipo_viajero, telefono, fecha_registro "
                 + "FROM usuarios "
                 + "WHERE nombre LIKE ? OR email LIKE ? OR tipo_usuario LIKE ? OR idioma_preferido LIKE ? "
                 + "OR tipo_viajero LIKE ? OR telefono LIKE ? OR DATE_FORMAT(fecha_registro, '%Y-%m-%d') LIKE ?";
@@ -159,7 +126,6 @@ public class ConsultasUsuario {
                 usuario.setIdioma(rs.getString("idioma_preferido"));
                 usuario.setTipoViajero(rs.getString("tipo_viajero"));
                 usuario.setTelefono(rs.getString("telefono"));
-                usuario.setActivo(rs.getBoolean("activo"));
                 usuario.setFechaRegistro(rs.getDate("fecha_registro"));
                 listaUsuarios.add(usuario);
             }
@@ -218,7 +184,7 @@ public class ConsultasUsuario {
     }
 
     public static boolean actualizarUsuario(Usuario usuario) {
-        String consulta = "UPDATE usuarios SET nombre = ?, email = ?, contrasena = ?, tipo_usuario = ?, idioma_preferido = ?, tipo_viajero = ?, telefono = ?, activo = ? WHERE id_usuario = ?";
+        String consulta = "UPDATE usuarios SET nombre = ?, email = ?, contrasena = ?, tipo_usuario = ?, idioma_preferido = ?, tipo_viajero = ?, telefono = ? WHERE id_usuario = ?";
         try (Connection conn = Conexion.conectar(); PreparedStatement pst = conn.prepareStatement(consulta)) {
             pst.setString(1, usuario.getNombre());
             pst.setString(2, usuario.getEmail());
@@ -227,8 +193,7 @@ public class ConsultasUsuario {
             pst.setString(5, usuario.getIdioma());
             pst.setString(6, usuario.getTipoViajero());
             pst.setString(7, usuario.getTelefono());
-            pst.setBoolean(8, usuario.getActivo());
-            pst.setInt(9, usuario.getIdUsuario());
+            pst.setInt(8, usuario.getIdUsuario());
 
             return pst.executeUpdate() > 0;
         } catch (SQLException ex) {

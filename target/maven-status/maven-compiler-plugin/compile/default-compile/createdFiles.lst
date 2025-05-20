@@ -1,11 +1,9 @@
 modelo\InformeTipoAlojamiento.class
 controladores\LoginController.class
-controladores\VerificacionCodigoController.class
 bbdd\ConsultasNotificaciones.class
 bbdd\ConsultasDestinos.class
 controladores\AgregarAlojamientoController.class
 modelo\Itinerario.class
-controladores\SoporteController$2.class
 controladores\ReportesController.class
 controladores\AgregarActividadController.class
 controladores\Resenas_ItemController.class
@@ -19,11 +17,9 @@ Utilidades\Alertas.class
 controladores\GestionUsuarioController$2.class
 controladores\SoporteController.class
 modelo\Categoria.class
-modelo\SolicitarVerificacionCodigo.class
 modelo\TipoAlojamiento.class
 bbdd\ConsultasActividades.class
 modelo\ConfiguracionSistema.class
-Utilidades\ConfiguracionSistema.class
 modelo\Usuario.class
 controladores\MenuController.class
 modelo\Actividad.class
@@ -31,7 +27,6 @@ bbdd\ConsultasAlojamientos.class
 controladores\AgregarReporteController.class
 Utilidades\Animacion.class
 controladores\SoporteController$1.class
-modelo\SeguridadLogin.class
 module-info.class
 modelo\EmailUtil.class
 modelo\PreguntaFrecuente.class
@@ -39,10 +34,8 @@ bbdd\ConsultasReportes.class
 bbdd\ConsultasUsuario.class
 Utilidades\validarEmail.class
 bbdd\ConsultasMovimientos.class
-modelo\PreferenciasNotificacion.class
 bbdd\Conexion.class
 controladores\ConfiguracionController.class
-controladores\FormularioPruebaController.class
 controladores\AgregarItinerarioController.class
 controladores\AgregarUsuarioController.class
 bbdd\ConsultasResenas.class
@@ -74,7 +67,6 @@ controladores\GestionUsuarioController$1.class
 controladores\GestionUsuarioController.class
 controladores\GestionCategoriaController.class
 bbdd\ConsultasCategoria.class
-bbdd\ConsultasConfiguracion.class
 controladores\PrincipalController.class
 controladores\GestionDestinosController.class
 bbdd\ConsultasSugerencias.class

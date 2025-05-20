@@ -19,6 +19,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.ComboBox;
 import modelo.Alojamiento;
 import modelo.TipoAlojamiento;
+import modelo.Usuario;
 
 /**
  *
@@ -148,33 +149,39 @@ public class ConsultasAlojamientos {
     }
 
     public static void cargarDatosAlojamientosFiltrados(ObservableList<Alojamiento> listaAlojamientos, String busqueda) {
+        int idUsuario = Usuario.getUsuarioActual().getIdUsuario();
+
         String consulta = "SELECT a.id_alojamiento, a.nombre, a.contacto, a.imagen, "
-                + "a.id_destino_fk, d.nombre AS nombre_destino, a.id_tipo_fk, t.tipo AS nombre_tipo "
+                + "a.id_destino_fk, d.nombre AS nombre_destino, "
+                + "a.id_tipo_fk, t.tipo AS nombre_tipo, "
+                + "IF(f.id_usuario IS NOT NULL, 1, 0) AS es_favorito "
                 + "FROM alojamientos a "
                 + "JOIN destinos d ON a.id_destino_fk = d.id_destino "
                 + "JOIN tipoalojamiento t ON a.id_tipo_fk = t.id_tipo "
+                + "LEFT JOIN favoritos f ON a.id_alojamiento = f.id_alojamiento AND f.id_usuario = ? "
                 + "WHERE a.nombre LIKE ? OR a.contacto LIKE ? OR d.nombre LIKE ? OR t.tipo LIKE ?";
 
         try (Connection conn = Conexion.conectar(); PreparedStatement ps = conn.prepareStatement(consulta)) {
             String wildcard = "%" + busqueda + "%";
-            ps.setString(1, wildcard);
+            ps.setInt(1, idUsuario);
             ps.setString(2, wildcard);
             ps.setString(3, wildcard);
             ps.setString(4, wildcard);
+            ps.setString(5, wildcard);
 
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    Alojamiento al = new Alojamiento();
-                    al.setIdAlojamiento(rs.getInt("id_alojamiento"));
-                    al.setNombre(rs.getString("nombre"));
-                    al.setContacto(rs.getString("contacto"));
-                    al.setImagen(rs.getString("imagen"));
-                    al.setIdDestino(rs.getInt("id_destino_fk"));
-                    al.setNombreDestino(rs.getString("nombre_destino"));
-                    al.setIdTipo(rs.getInt("id_tipo_fk"));
-                    al.setNombreTipo(rs.getString("nombre_tipo"));
-                    listaAlojamientos.add(al);
-                }
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Alojamiento al = new Alojamiento();
+                al.setIdAlojamiento(rs.getInt("id_alojamiento"));
+                al.setNombre(rs.getString("nombre"));
+                al.setContacto(rs.getString("contacto"));
+                al.setImagen(rs.getString("imagen"));
+                al.setIdDestino(rs.getInt("id_destino_fk"));
+                al.setNombreDestino(rs.getString("nombre_destino"));
+                al.setIdTipo(rs.getInt("id_tipo_fk"));
+                al.setNombreTipo(rs.getString("nombre_tipo"));
+                al.setFavorito(rs.getInt("es_favorito") == 1);
+                listaAlojamientos.add(al);
             }
         } catch (SQLException e) {
             System.err.println("Error al cargar alojamientos filtrados:");
@@ -196,12 +203,21 @@ public class ConsultasAlojamientos {
     }
 
     public static void cargarDatosAlojamientos(ObservableList<Alojamiento> listado) {
-        String consultaCarga = "SELECT a.id_alojamiento, a.nombre, a.contacto, a.imagen, "
-                + "a.id_destino_fk, d.nombre AS nombre_destino, a.id_tipo_fk, t.tipo AS nombre_tipo "
+        int idUsuario = Usuario.getUsuarioActual().getIdUsuario();
+
+        String sql = "SELECT a.id_alojamiento, a.nombre, a.contacto, a.imagen, "
+                + "a.id_destino_fk, d.nombre AS nombre_destino, "
+                + "a.id_tipo_fk, t.tipo AS nombre_tipo, "
+                + "IF(f.id_usuario IS NOT NULL, 1, 0) AS es_favorito "
                 + "FROM alojamientos a "
                 + "JOIN destinos d ON a.id_destino_fk = d.id_destino "
-                + "JOIN tipoalojamiento t ON a.id_tipo_fk = t.id_tipo";
-        try (Connection conn = Conexion.conectar(); Statement st = conn.createStatement(); ResultSet rs = st.executeQuery(consultaCarga)) {
+                + "JOIN tipoalojamiento t ON a.id_tipo_fk = t.id_tipo "
+                + "LEFT JOIN favoritos f ON a.id_alojamiento = f.id_alojamiento AND f.id_usuario = ?";
+
+        try (Connection conn = Conexion.conectar(); PreparedStatement pst = conn.prepareStatement(sql)) {
+
+            pst.setInt(1, idUsuario);
+            ResultSet rs = pst.executeQuery();
 
             while (rs.next()) {
                 Alojamiento al = new Alojamiento();
@@ -213,8 +229,10 @@ public class ConsultasAlojamientos {
                 al.setNombreDestino(rs.getString("nombre_destino"));
                 al.setIdTipo(rs.getInt("id_tipo_fk"));
                 al.setNombreTipo(rs.getString("nombre_tipo"));
+                al.setFavorito(rs.getInt("es_favorito") == 1);
                 listado.add(al);
             }
+
         } catch (SQLException ex) {
             Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
         }

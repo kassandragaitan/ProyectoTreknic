@@ -181,7 +181,6 @@ public class GestionAlojamientoController implements Initializable {
                 .obtenerAlojamientosFavoritosPorUsuario(
                         Usuario.getUsuarioActual().getIdUsuario()
                 );
-
         if (favoritos.isEmpty()) {
             Label texto = new Label("No hay alojamientos en favoritos aún.");
             texto.setStyle("-fx-text-fill: #999999; -fx-font-size: 15px; -fx-font-weight: normal;");
@@ -200,7 +199,6 @@ public class GestionAlojamientoController implements Initializable {
         }
 
         contenedorFavoritos.setAlignment(Pos.TOP_LEFT);
-
         for (Alojamiento aloj : favoritos) {
             VBox tarjeta = new VBox(5);
             tarjeta.setStyle(
@@ -211,7 +209,28 @@ public class GestionAlojamientoController implements Initializable {
             tarjeta.setAlignment(Pos.CENTER);
             tarjeta.setPrefWidth(200);
             tarjeta.setMaxWidth(200);
-            tarjeta.setPrefHeight(180);
+            tarjeta.setPrefHeight(260);
+
+            ImageView imagen = new ImageView();
+            imagen.setFitWidth(180);
+            imagen.setFitHeight(120);
+            imagen.setPreserveRatio(true);
+
+            String nombreImg = aloj.getImagen();
+            if (nombreImg != null && !nombreImg.isBlank()) {
+                try {
+                    ConexionFtp.cargarImagen(nombreImg, imagen);
+                } catch (Exception ex) {
+                    System.err.println("Error cargando imagen favorito: " + ex.getMessage());
+                    imagen.setImage(new Image(
+                            getClass().getResourceAsStream("/img/default-image.png")
+                    ));
+                }
+            } else {
+                imagen.setImage(new Image(
+                        getClass().getResourceAsStream("/img/default-image.png")
+                ));
+            }
 
             Label lblNombre = new Label(aloj.getNombre());
             lblNombre.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
@@ -230,12 +249,14 @@ public class GestionAlojamientoController implements Initializable {
                 if (ok) {
                     Alertas.informacion("El alojamiento ha sido eliminado de favoritos.");
                     cargarAlojamientosFavoritos();
+                    cargarAlojamientos();
+                    tablaAlojamientos.refresh();
                 } else {
                     Alertas.error("Error", "No se pudo eliminar de favoritos.");
                 }
             });
 
-            tarjeta.getChildren().addAll(lblNombre, lblDestino, btnQuitar);
+            tarjeta.getChildren().addAll(imagen, lblNombre, lblDestino, btnQuitar);
             contenedorFavoritos.getChildren().add(tarjeta);
         }
     }
@@ -269,6 +290,7 @@ public class GestionAlojamientoController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/AgregarAlojamiento.fxml"));
             Parent root = loader.load();
             AgregarAlojamientoController ctrl = loader.getController();
+            ctrl.setTitulo("Agregar Alojamiento");
             ctrl.setGestionAlojamientoController(this);
             Stage stage = new Stage();
             stage.initStyle(StageStyle.DECORATED);

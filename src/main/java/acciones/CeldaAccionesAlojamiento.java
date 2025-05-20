@@ -102,18 +102,23 @@ public class CeldaAccionesAlojamiento extends TableCell<Alojamiento, Void> {
             int idAloj = alojamiento.getIdAlojamiento();
             int idUsr = usuario.getIdUsuario();
 
-            boolean yaEsFavorito = ConsultasAlojamientos.existeFavorito(idUsr, idAloj);
+            boolean yaEsFavorito = alojamiento.isFavorito();
             boolean exito;
+
             if (yaEsFavorito) {
                 exito = ConsultasAlojamientos.eliminarDeFavoritos(idAloj, idUsr);
                 if (exito) {
+                    alojamiento.setFavorito(false);
                     botonFavorito.setText("♡");
+                    botonFavorito.setStyle("-fx-font-size: 16px; -fx-text-fill: gray;");
                     Alertas.informacion("Alojamiento eliminado de favoritos.");
                 }
             } else {
                 exito = ConsultasAlojamientos.agregarAFavoritos(idAloj, idUsr);
                 if (exito) {
+                    alojamiento.setFavorito(true);
                     botonFavorito.setText("❤");
+                    botonFavorito.setStyle("-fx-font-size: 16px; -fx-text-fill: red;");
                     Alertas.informacion("Alojamiento añadido a favoritos.");
                 }
             }
@@ -127,26 +132,20 @@ public class CeldaAccionesAlojamiento extends TableCell<Alojamiento, Void> {
     }
 
     @Override
-    protected void updateItem(Void item, boolean empty) {
+    protected void updateItem(Void item, boolean empty
+    ) {
         super.updateItem(item, empty);
 
         if (empty || getTableRow().getItem() == null) {
             setGraphic(null);
         } else {
             Alojamiento alojamiento = getTableRow().getItem();
-            Usuario usuario = Usuario.getUsuarioActual();
-
-            if (alojamiento != null && usuario != null) {
-                boolean esFavorito = ConsultasAlojamientos.existeFavorito(
-                        usuario.getIdUsuario(),
-                        alojamiento.getIdAlojamiento()
-                );
-
-                botonFavorito.setText(esFavorito ? "❤" : "♡");
+            if (alojamiento != null) {
+                botonFavorito.setText(alojamiento.isFavorito() ? "❤" : "♡");
                 botonFavorito.setStyle(
-                        esFavorito
-                                ? "-fx-font-size: 16px; -fx-text-fill: red;"
-                                : "-fx-font-size: 16px; -fx-text-fill: gray;"
+                        alojamiento.isFavorito()
+                        ? "-fx-font-size: 16px; -fx-text-fill: red;"
+                        : "-fx-font-size: 16px; -fx-text-fill: gray;"
                 );
             }
 
@@ -161,10 +160,10 @@ public class CeldaAccionesAlojamiento extends TableCell<Alojamiento, Void> {
             Parent root = loader.load();
 
             AgregarAlojamientoController ctrl = loader.getController();
+            ctrl.setTitulo(editable ? "Editar Alojamiento" : "Ver Alojamiento");
             ctrl.verAlojamiento(alojamiento);
             ctrl.setEdicionActiva(editable);
 
-            
             Stage stage = new Stage();
             stage.setTitle(editable ? "Editar Alojamiento" : "Ver Alojamiento");
             stage.setScene(new Scene(root));

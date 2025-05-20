@@ -83,6 +83,7 @@ public class CeldaAccionesCategoria extends TableCell<Categoria, Void> {
             Parent root = loader.load();
 
             AgregarCategoriaController c = loader.getController();
+            c.setTitulo(editable ? "Editar Categoría" : "Ver Categoría");
             c.setGestionCategoriaController(controller);
             c.verCategoria(cat);
             c.setEdicionActiva(editable);

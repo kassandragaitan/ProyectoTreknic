@@ -18,6 +18,7 @@ public class Alojamiento {
     private int idDestino;
     private String nombreDestino;
     private String nombreTipo;
+    private boolean favorito;
 
     public Alojamiento() {
     }
@@ -46,6 +47,14 @@ public class Alojamiento {
 
     public void setNombreTipo(String nombreTipo) {
         this.nombreTipo = nombreTipo;
+    }
+
+    public boolean isFavorito() {
+        return favorito;
+    }
+
+    public void setFavorito(boolean favorito) {
+        this.favorito = favorito;
     }
 
     public String getNombreDestino() {

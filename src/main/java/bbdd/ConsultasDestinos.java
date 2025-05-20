@@ -25,7 +25,6 @@ import modelo.Destino;
  *
  * @author k0343
  */
-
 public class ConsultasDestinos {
 
     public static boolean registrarDestino(String nombre, String descripcion, String imagen, String fecha, int idCategoria) {
@@ -104,8 +103,16 @@ public class ConsultasDestinos {
     }
 
     public static void cargarDatosDestinos(ObservableList<Destino> listado) {
-        String consulta = "SELECT d.id_destino, d.nombre, d.descripcion, d.fecha_creacion, d.imagen, COUNT(r.id_resena) as visitas, COALESCE(AVG(r.clasificacion), 0) as valoracion FROM destinos d LEFT JOIN resenas r ON d.id_destino = r.id_destino GROUP BY d.id_destino";
+        String consulta = "SELECT d.id_destino, d.nombre, d.descripcion, d.fecha_creacion, d.imagen, "
+                + "COUNT(r.id_resena) AS visitas, "
+                + "COALESCE(AVG(r.clasificacion), 0) AS valoracion "
+                + "FROM destinos d "
+                + "LEFT JOIN resenas r ON d.id_destino = r.id_destino "
+                + "GROUP BY d.id_destino "
+                + "ORDER BY valoracion DESC";
+
         try (Connection conn = Conexion.conectar(); Statement st = conn.createStatement(); ResultSet rs = st.executeQuery(consulta)) {
+
             while (rs.next()) {
                 listado.add(new Destino(
                         rs.getInt("id_destino"),
@@ -175,7 +182,6 @@ public class ConsultasDestinos {
         return lista;
     }
 
-
     public static ObservableList<String> obtenerFechasDestinos() {
         ObservableList<String> fechas = FXCollections.observableArrayList();
         String consulta = "SELECT DISTINCT DATE(fecha_creacion) AS fecha FROM destinos ORDER BY fecha DESC";
@@ -237,10 +243,7 @@ public class ConsultasDestinos {
         boolean tieneAlojamiento = false;
         boolean tieneActividad = false;
 
-        try (Connection conn = Conexion.conectar();
-             PreparedStatement stmtResenas = conn.prepareStatement(sqlResenas);
-             PreparedStatement stmtAlojamientos = conn.prepareStatement(sqlAlojamientos);
-             PreparedStatement stmtActividad = conn.prepareStatement(sqlActividad)) {
+        try (Connection conn = Conexion.conectar(); PreparedStatement stmtResenas = conn.prepareStatement(sqlResenas); PreparedStatement stmtAlojamientos = conn.prepareStatement(sqlAlojamientos); PreparedStatement stmtActividad = conn.prepareStatement(sqlActividad)) {
 
             stmtResenas.setInt(1, idDestino);
             ResultSet rsResenas = stmtResenas.executeQuery();
@@ -280,10 +283,7 @@ public class ConsultasDestinos {
 
     public static boolean eliminarDestinoConAsociados(int idDestino) {
         try (Connection conn = Conexion.conectar()) {
-            try (PreparedStatement stmtEliminarActividades = conn.prepareStatement("DELETE FROM actividades WHERE id_destino = ?");
-                 PreparedStatement stmtEliminarResenas = conn.prepareStatement("DELETE FROM resenas WHERE id_destino = ?");
-                 PreparedStatement stmtEliminarAlojamientos = conn.prepareStatement("DELETE FROM alojamientos WHERE id_destino_fk = ?");
-                 PreparedStatement stmtEliminarDestino = conn.prepareStatement("DELETE FROM destinos WHERE id_destino = ?")) {
+            try (PreparedStatement stmtEliminarActividades = conn.prepareStatement("DELETE FROM actividades WHERE id_destino = ?"); PreparedStatement stmtEliminarResenas = conn.prepareStatement("DELETE FROM resenas WHERE id_destino = ?"); PreparedStatement stmtEliminarAlojamientos = conn.prepareStatement("DELETE FROM alojamientos WHERE id_destino_fk = ?"); PreparedStatement stmtEliminarDestino = conn.prepareStatement("DELETE FROM destinos WHERE id_destino = ?")) {
 
                 stmtEliminarActividades.setInt(1, idDestino);
                 stmtEliminarActividades.executeUpdate();

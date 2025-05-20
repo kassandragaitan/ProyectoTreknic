@@ -28,6 +28,7 @@ import modelo.Actividad;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+
 public class CeldaAccionesActividad extends TableCell<Actividad, Void> {
 
     private final HBox contenedor = new HBox(10);
@@ -48,7 +49,9 @@ public class CeldaAccionesActividad extends TableCell<Actividad, Void> {
 
         botonVer.setOnAction(e -> {
             Actividad actividad = getTableRow().getItem();
-            if (actividad != null) abrirVentana(actividad, false);
+            if (actividad != null) {
+                abrirVentana(actividad, false);
+            }
         });
 
         botonEditar.setOnAction(e -> {
@@ -68,13 +71,12 @@ public class CeldaAccionesActividad extends TableCell<Actividad, Void> {
                 confirm.setHeaderText("Confirmar eliminación");
                 confirm.showAndWait().ifPresent(r -> {
                     if (r == ButtonType.OK && eliminarActividad(actividad.getIdActividad())) {
-                        controller.recargarTabla(); 
+                        controller.recargarTabla();
                     }
                 });
             }
         });
     }
-
 
     @Override
     protected void updateItem(Void item, boolean empty) {
@@ -91,7 +93,7 @@ public class CeldaAccionesActividad extends TableCell<Actividad, Void> {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/AgregarActividad.fxml"));
             Parent root = loader.load();
             AgregarActividadController controllerVentana = loader.getController();
-
+            controllerVentana.setTitulo(editable ? "Editar Actividad" : "Ver Actividad");
             controllerVentana.setGestionActividadesController(controller);
 
             controllerVentana.verActividad(actividad);
