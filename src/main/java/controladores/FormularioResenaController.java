@@ -79,13 +79,13 @@ public class FormularioResenaController implements Initializable {
     @FXML
     private void guardarResena(ActionEvent event) {
         if (destinoSeleccionado == null) {
-            Alertas.aviso("Campo vacío", "Debe seleccionar un destino.");
+            Alertas.error("Selección inválida", "Debe seleccionar un destino.");
         } else if (usuarioSeleccionado == null) {
-            Alertas.aviso("Campo vacío", "Debe seleccionar un usuario.");
+          Alertas.error("Selección inválida", "Debe seleccionar un usuario.");
         } else if (compruebaCampo.compruebaVacio(campoComentario)) {
-            Alertas.aviso("Campo vacío", "El comentario no puede estar vacío.");
+            Alertas.error("Campo vacío", "El comentario no puede estar vacío.");
         } else if (spinnerClasificacion.getValue() < 0 || spinnerClasificacion.getValue() > 5) {
-            Alertas.aviso("Clasificación inválida", "La clasificación debe estar entre 0 y 5.");
+            Alertas.error("Clasificación inválida", "La clasificación debe estar entre 0 y 5.");
         } else if (spinnerClasificacion.getValue() == 0) {
             Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION);
             confirmacion.setTitle("Confirmar clasificación");

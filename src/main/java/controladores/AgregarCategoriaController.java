@@ -80,17 +80,17 @@ public class AgregarCategoriaController implements Initializable {
     @FXML
     private void RegistrarCategoria(ActionEvent event) {
         if (compruebaCampo.compruebaVacio(campoNombre)) {
-            Alertas.aviso("Campo vacío", "El nombre no puede estar vacío.");
+            Alertas.error("Campo vacío", "El nombre no puede estar vacío.");
             return;
         } else if (compruebaCampo.compruebaVacio(campoDescripcion)) {
-            Alertas.aviso("Campo vacío", "La descripción no puede estar vacía.");
+            Alertas.error("Campo vacío", "La descripción no puede estar vacía.");
             return;
         }
         String nombre = campoNombre.getText().trim();
         String descripcion = campoDescripcion.getText().trim();
 
         if (!esEdicion && ConsultasCategoria.existeCategoria(nombre)) {
-            Alertas.aviso("Duplicado", "Ya existe una categoría con ese nombre.");
+            Alertas.error("Categoría duplicada", "Ya existe una categoría con ese nombre.");
             campoNombre.clear();
             return;
         }

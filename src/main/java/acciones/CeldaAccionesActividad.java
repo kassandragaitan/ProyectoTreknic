@@ -68,7 +68,7 @@ public class CeldaAccionesActividad extends TableCell<Actividad, Void> {
                 Alert confirm = new Alert(AlertType.CONFIRMATION,
                         "¿Eliminar actividad \"" + actividad.getNombre() + "\"?",
                         ButtonType.OK, ButtonType.CANCEL);
-                confirm.setHeaderText("Confirmar eliminación");
+                confirm.setHeaderText("¿Estás seguro que quieres eliminar esta actividad?");
                 confirm.showAndWait().ifPresent(r -> {
                     if (r == ButtonType.OK && eliminarActividad(actividad.getIdActividad())) {
                         controller.recargarTabla();

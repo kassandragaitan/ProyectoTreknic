@@ -77,4 +77,15 @@ public class ConsultasSoporte {
         }
     }
 
+    public static boolean eliminarSugerencia(int idSugerencia) {
+        String sql = "DELETE FROM sugerencias WHERE id_sugerencia = ?";
+        try (Connection conn = Conexion.conectar(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, idSugerencia);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }

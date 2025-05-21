@@ -59,6 +59,7 @@
                                             <TableColumn fx:id="columnaTituloSugerencia" text="Título" prefWidth="200.0"/>
                                             <TableColumn fx:id="columnaMensajeSugerencia" text="Mensaje" prefWidth="350.0"/>
                                             <TableColumn fx:id="columnaFechaSugerencia" text="Fecha" prefWidth="150.0"/>
+                                            <TableColumn fx:id="columnaAccionesSugerencia" text="Acciones" prefWidth="100" />
                                         </columns>
                                     </TableView>
                                 </VBox>

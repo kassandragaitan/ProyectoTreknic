@@ -88,11 +88,10 @@
 .list-cell:filled:selected,
 .list-cell:filled:selected:hover {
     -fx-background-color: #e8f0fe;
-    -fx-text-fill: #212529;
 }
 
-.list-cell:hover {
-    -fx-background-color: #f1f3f5;
+.list-cell:filled:selected * {
+    -fx-text-fill: #212529;
 }
 
 .table-view {
@@ -145,4 +144,39 @@
 .table-view .table-cell {
     -fx-padding: 4 8;
     -fx-alignment: CENTER_LEFT;
+}
+
+.boton-eliminar {
+    -fx-background-color: #e0f2ff;
+    -fx-text-fill: #0b5394;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-border-color: transparent;
+    -fx-padding: 5 14;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.03), 1, 0.1, 0, 0.5);
+}
+
+.boton-eliminar:hover {
+    -fx-background-color: #d0e7fc;
+    -fx-text-fill: #093e74;
+}
+
+.boton-eliminar:pressed {
+    -fx-background-color: #b2d9f7;
+    -fx-text-fill: #062f5f;
+}
+#tablaSugerencias .table-cell {
+    -fx-alignment: CENTER;
+}
+
+#tablaSugerencias .column-header .label {
+    -fx-alignment: CENTER;
+}
+
+#tablaSugerencias .table-row-cell:selected .table-cell {
+    -fx-text-fill: inherit; /* mantiene color del texto */
+    -fx-alignment: CENTER;
 }

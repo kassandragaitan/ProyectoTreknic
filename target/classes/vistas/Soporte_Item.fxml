@@ -6,37 +6,42 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 
-<HBox xmlns="http://javafx.com/javafx/23.0.1"
-      xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="controladores.Soporte_ItemController"
-      spacing="10"
-      alignment="CENTER_LEFT"
-      AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
-      AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
-  
-    <ImageView fx:id="iconoImagen"
-               fitWidth="28" fitHeight="28"
-               preserveRatio="true"
-               pickOnBounds="true">
-        <image>
-            <Image url="@../img/documento.png"/>
-        </image>
-    </ImageView>
+<AnchorPane xmlns="http://javafx.com/javafx/23.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            stylesheets="@/Estilos/soporte.css"
+            fx:controller="controladores.Soporte_ItemController">
 
-    <VBox spacing="2" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
-        <Label fx:id="etiquetaTitulo"
-               text="Título de la pregunta"
-               style="-fx-font-weight: bold;"
-               wrapText="true"
-               maxWidth="Infinity" />
-        <Label fx:id="etiquetaDescripcion"
-               text="Respuesta o explicación de la pregunta frecuente."
-               wrapText="true"
-               maxWidth="Infinity" />
-    </VBox>
+    <children>
+        <HBox spacing="10"
+              alignment="CENTER_LEFT"
+              AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
+              AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
 
-    <Button fx:id="botonEliminar"
-            text="Eliminar"
-            onAction="#eliminarPregunta"
-            styleClass="table-button red"/>
-</HBox>
+            <ImageView fx:id="iconoImagen"
+                       fitWidth="28" fitHeight="28"
+                       preserveRatio="true"
+                       pickOnBounds="true">
+                <image>
+                    <Image url="@../img/documento.png"/>
+                </image>
+            </ImageView>
+
+            <VBox spacing="2" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+                <Label fx:id="etiquetaTitulo"
+                       text="Título de la pregunta"
+                       style="-fx-font-weight: bold;"
+                       wrapText="true"
+                       maxWidth="Infinity" />
+                <Label fx:id="etiquetaDescripcion"
+                       text="Respuesta o explicación de la pregunta frecuente."
+                       wrapText="true"
+                       maxWidth="Infinity" />
+            </VBox>
+
+            <Button fx:id="botonEliminar"
+                    text="Eliminar"
+                    onAction="#eliminarPregunta"
+                    styleClass="boton-eliminar"/>
+        </HBox>
+    </children>
+</AnchorPane>

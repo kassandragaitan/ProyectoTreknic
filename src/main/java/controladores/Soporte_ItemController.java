@@ -65,7 +65,8 @@ public class Soporte_ItemController implements Initializable {
             if (confirmacion) {
                 boolean eliminada = ConsultasSoporte.eliminarPregunta(preguntaActual.getPregunta());
                 if (eliminada) {
-                    Alertas.aviso("Eliminada", "La pregunta ha sido eliminada correctamente.");
+                    Alertas.informacion("La pregunta ha sido eliminada correctamente.");
+
                     if (recargarPreguntas != null) {
                         recargarPreguntas.run();
                     }

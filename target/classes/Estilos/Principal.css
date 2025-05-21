@@ -174,7 +174,7 @@
     -fx-table-cell-border-color: transparent;
 }
 .table-view .column-header-background {
-    -fx-background-color: #e6f0ff; 
+    -fx-background-color: #e6f0ff;
     -fx-background-radius: 8 8 0 0;
     -fx-border-color: transparent;
 }
@@ -245,4 +245,11 @@
     -fx-padding: 4 8;
     -fx-font-weight: bold;
     -fx-text-fill: #001f4d;
+}
+.table-view .table-row-cell:selected .table-cell {
+    -fx-text-fill: #1a1a1a;
+}
+
+.table-view .table-cell:filled:selected {
+    -fx-text-fill: #1a1a1a;
 }

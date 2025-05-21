@@ -68,9 +68,9 @@ public class AgregarReporteController implements Initializable {
     @FXML
     private void RegistrarReporte(ActionEvent event) {
         if (tipoSeleccionado == null) {
-            Alertas.aviso("Campo vacío", "Debe seleccionar un tipo de reporte.");
+               Alertas.error("Selección inválida", "Debe seleccionar un tipo de reporte.");
         } else if (compruebaCampo.compruebaVacio(campoDescripcion)) {
-            Alertas.aviso("Campo vacío", "La descripción no puede estar vacía.");
+            Alertas.error("Campo vacío", "La descripción no puede estar vacía.");
         } else {
             Reporte nuevo = new Reporte();
             nuevo.setTipo(tipoSeleccionado);

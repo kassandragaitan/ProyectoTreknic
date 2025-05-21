@@ -260,3 +260,20 @@
     -fx-background-color: #b3d4fc;
     -fx-text-fill: #0d47a1;
 }
+.button.boton-eliminar {
+  -fx-background-color: transparent;    
+  -fx-border-color: transparent;  
+  -fx-padding: 0;                  
+  -fx-text-fill: #dc3545;             
+  -fx-cursor: hand;
+  -fx-focus-color: transparent;         
+  -fx-faint-focus-color: transparent;
+}
+
+.button.boton-eliminar:hover {
+  -fx-text-fill: #bb2d3b;
+}
+
+.button.boton-eliminar:pressed {
+  -fx-text-fill: #842029;
+}

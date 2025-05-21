@@ -77,14 +77,14 @@ public class AgregarTipoAlojamientoController implements Initializable {
     @FXML
     private void RegistrarTipoAlojamiento(ActionEvent event) {
         if (compruebaCampo.compruebaVacio(campoTipo)) {
-            Alertas.aviso("Campo vacío", "El tipo de alojamiento no puede estar vacío.");
+            Alertas.error("Campo vacío", "El tipo de alojamiento no puede estar vacío.");
             return;
         }
 
         String tipoTexto = campoTipo.getText().trim();
 
         if (!esEdicion && ConsultasTipoAlojamiento.existeTipoAlojamiento(tipoTexto)) {
-            Alertas.aviso("Duplicado", "Ya existe un tipo de alojamiento con ese nombre.");
+            Alertas.error("Tipo duplicado","Ya existe un tipo de alojamiento con ese nombre.");
             campoTipo.clear();
             return;
         }

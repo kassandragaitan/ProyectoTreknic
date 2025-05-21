@@ -8,12 +8,8 @@ import bbdd.ConsultasDestinos;
 import bbdd.ConsultasMovimientos;
 import bbdd.ConsultasNotificaciones;
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.util.ResourceBundle;
-import java.util.UUID;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -21,7 +17,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -144,17 +139,17 @@ public class AgregarDestinoController implements Initializable {
     @FXML
     private void RegistrarDestino(ActionEvent event) {
         if (compruebaCampo.compruebaVacio(campoNombre)) {
-            Alertas.aviso("Campo vacío", "El nombre no puede estar vacío.");
+            Alertas.error("Campo vacío", "El nombre no puede estar vacío.");
         } else if (compruebaCampo.compruebaVacio(campoDescripcion)) {
-            Alertas.aviso("Campo vacío", "La descripción no puede estar vacía.");
+            Alertas.error("Campo vacío", "La descripción no puede estar vacía.");
         } else if (categoriaSeleccionada == null) {
-            Alertas.aviso("Combo vacío", "Debe seleccionar una categoría.");
+            Alertas.error("Selección inválida", "Debe seleccionar una categoría.");
         } else if (!edicionActiva && compruebaCampo.compruebaVacio(campoRutaArchivo)) {
-            Alertas.aviso("Campo vacío", "Debe seleccionar una imagen.");
+            Alertas.error("Campo vacío", "Debe seleccionar una imagen.");
         } else {
             Conexion.conectar();
             if (!edicionActiva && ConsultasDestinos.existeDestino(campoNombre.getText().trim())) {
-                Alertas.aviso("Duplicado", "Ya existe un destino con ese nombre.");
+                Alertas.error("Destino duplicado", "Ya existe un destino con ese nombre.");
                 campoNombre.clear();
                 Conexion.cerrarConexion();
                 return;

@@ -6,6 +6,8 @@ package bbdd;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  *
@@ -28,4 +30,25 @@ public class ConsultasSugerencias {
             return false;
         }
     }
+
+    /**
+     * Devuelve true si el usuario ya envió antes una sugerencia con ese título.
+     */
+    public static boolean existeTitulo(int idUsuario, String titulo) {
+        String sql = "SELECT COUNT(*) FROM sugerencias WHERE id_usuario = ? AND LOWER(titulo) = LOWER(?)";
+        try (
+                Connection conn = Conexion.conectar(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, idUsuario);
+            ps.setString(2, titulo.trim());
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 }

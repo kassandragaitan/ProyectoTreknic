@@ -2,7 +2,6 @@ package controladores;
 
 import Utilidades.Alertas;
 import bbdd.ConsultasDestinos;
-import java.io.File;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -19,7 +18,6 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;

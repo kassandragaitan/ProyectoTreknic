@@ -42,6 +42,7 @@
                                             <TableColumn fx:id="destinoColumn" text="Destino" prefWidth="200"/>
                                             <TableColumn fx:id="comentarioDestinoColumn" text="Comentario" prefWidth="400"/>
                                             <TableColumn fx:id="clasificacionDestinoColumn" text="Clasificación" prefWidth="200"/>
+                                            <TableColumn fx:id="accionesDestinoColumn" text="Acciones" prefWidth="100" />
                                         </columns>
                                     </TableView>
                                 </VBox>
@@ -71,6 +72,7 @@
                                             <TableColumn fx:id="usuarioColumn" text="Usuario" prefWidth="200"/>
                                             <TableColumn fx:id="comentarioUsuarioColumn" text="Comentario" prefWidth="400"/>
                                             <TableColumn fx:id="clasificacionUsuarioColumn" text="Clasificación" prefWidth="200"/>
+                                            <TableColumn fx:id="accionesUsuarioColumn" text="Acciones" prefWidth="100" />
                                         </columns>
                                     </TableView>
                                 </VBox>

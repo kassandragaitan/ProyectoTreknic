@@ -38,7 +38,7 @@
                 </HBox>
 
                 <VBox alignment="CENTER" spacing="10">
-                    <Button fx:id="botonGuardar" text="Guardar"
+                    <Button fx:id="botonGuardar" text="Registrar"
                             onAction="#guardarResena" styleClass="boton-registro"/>
                 </VBox>
 

@@ -57,6 +57,7 @@ C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\AgregarUsuarioControl
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\AgregarItinerarioController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\Itinerario.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\bbdd\ConsultasItinerario.java
+C:\Users\k0343\ProyectoTreknic\src\main\java\acciones\CeldaAccionesSugerencia.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\bbdd\ConsultasNotificaciones.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\GestionDestinosController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\PruebaFuncionalidad.java
@@ -65,6 +66,7 @@ C:\Users\k0343\ProyectoTreknic\src\main\java\bbdd\ConsultasActividades.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\com\kgr\proyectotreknic\App.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\ReportesController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\TipoAlojamiento.java
+C:\Users\k0343\ProyectoTreknic\src\main\java\acciones\CeldaAccionesResena.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\ConfiguracionController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\MenuController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\Utilidades\Alertas.java

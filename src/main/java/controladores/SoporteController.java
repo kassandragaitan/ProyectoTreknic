@@ -1,6 +1,7 @@
 package controladores;
 
 import Utilidades.Alertas;
+import acciones.CeldaAccionesSugerencia;
 import bbdd.ConsultasSoporte;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -52,6 +53,8 @@ public class SoporteController implements Initializable {
     private Button botonNuevaSugerencia;
 
     private final ObservableList<Sugerencia> datosSugerencias = FXCollections.observableArrayList();
+    @FXML
+    private TableColumn<Sugerencia, Void> columnaAccionesSugerencia;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -63,7 +66,9 @@ public class SoporteController implements Initializable {
         columnaTituloSugerencia.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getTitulo()));
         columnaMensajeSugerencia.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getMensaje()));
         columnaFechaSugerencia.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getFechaEnvio()));
+        columnaAccionesSugerencia.setCellFactory(col -> new CeldaAccionesSugerencia());
 
+        
         campoBuscarPreguntas.textProperty().addListener((obs, oldVal, newVal) -> cargarPreguntas(newVal));
         campoBuscarSugerencias.textProperty().addListener((obs, oldVal, newVal) -> cargarSugerencias(newVal));
 

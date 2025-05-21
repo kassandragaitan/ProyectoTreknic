@@ -49,9 +49,9 @@ public class FormularioPreguntaController implements Initializable {
         String respuesta = txtRespuesta.getText().trim();
 
         if (compruebaCampo.compruebaVacio(txtPregunta)) {
-            Alertas.aviso("Campo vacío", "La pregunta no puede estar vacía.");
+            Alertas.error("Campo vacío", "La pregunta no puede estar vacía.");
         } else if (compruebaCampo.compruebaVacio(txtRespuesta)) {
-            Alertas.aviso("Campo vacío", "La respuesta no puede estar vacía.");
+            Alertas.error("Campo vacío", "La respuesta no puede estar vacía.");
         } else {
             boolean exito = ConsultasPreguntasFrecuentes.insertarPregunta(pregunta, respuesta);
             if (exito) {

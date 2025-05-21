@@ -38,17 +38,14 @@ public class CeldaAccionesCategoria extends TableCell<Categoria, Void> {
         contenedor.setAlignment(Pos.CENTER);
         contenedor.getChildren().addAll(botonVer, botonEditar, botonEliminar);
 
-        // VER
         botonVer.setOnAction(e -> abrirDialog(getTableRow().getItem(), false));
 
-        // EDITAR
         botonEditar.setOnAction(e -> {
             if (abrirDialog(getTableRow().getItem(), true)) {
                 controller.recargarTabla();
             }
         });
 
-        // ELIMINAR
         botonEliminar.setOnAction(e -> {
             Categoria cat = getTableRow().getItem();
             if (cat == null) {
@@ -57,7 +54,7 @@ public class CeldaAccionesCategoria extends TableCell<Categoria, Void> {
             Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
                     "¿Eliminar categoría \"" + cat.getNombre() + "\"?",
                     ButtonType.OK, ButtonType.CANCEL);
-            confirm.setHeaderText("Confirmar eliminación");
+            confirm.setHeaderText("¿Estás seguro que quieres eliminar esta categoria?");
             confirm.initOwner(botonEliminar.getScene().getWindow());
             confirm.showAndWait().ifPresent(r -> {
                 if (r == ButtonType.OK && ConsultasCategoria.eliminarPorId(cat.getIdCategoria())) {

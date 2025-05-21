@@ -4,6 +4,7 @@
  */
 package controladores;
 
+import acciones.CeldaAccionesResena;
 import bbdd.Conexion;
 import bbdd.ConsultasResenas;
 import java.net.URL;
@@ -19,7 +20,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -62,17 +62,23 @@ public class GestionResenasController implements Initializable {
     private TextField campoBuscarResenasUsuario;
     @FXML
     private Button botonAgregarResenaUsuario;
+    @FXML
+    private TableColumn<Resena, Void> accionesDestinoColumn;
+    @FXML
+    private TableColumn<Resena, Void> accionesUsuarioColumn;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         destinoColumn.setCellValueFactory(new PropertyValueFactory<>("nombreDestino"));
         comentarioDestinoColumn.setCellValueFactory(new PropertyValueFactory<>("comentario"));
         clasificacionDestinoColumn.setCellValueFactory(new PropertyValueFactory<>("clasificacion"));
+        accionesDestinoColumn.setCellFactory(col -> new CeldaAccionesResena());
 
         usuarioColumn.setCellValueFactory(new PropertyValueFactory<>("nombreUsuario"));
         comentarioUsuarioColumn.setCellValueFactory(new PropertyValueFactory<>("comentario"));
         clasificacionUsuarioColumn.setCellValueFactory(new PropertyValueFactory<>("clasificacion"));
-
+        accionesUsuarioColumn.setCellFactory(col -> new CeldaAccionesResena());
+        
         List<Resena> resenas = ConsultasResenas.obtenerResenas();
         destinosTable.setItems(FXCollections.observableArrayList(resenas));
         usuariosTable.setItems(FXCollections.observableArrayList(resenas));

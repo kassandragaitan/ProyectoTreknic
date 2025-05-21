@@ -17,6 +17,7 @@ Utilidades\Alertas.class
 controladores\GestionUsuarioController$2.class
 controladores\SoporteController.class
 modelo\Categoria.class
+acciones\CeldaAccionesSugerencia.class
 modelo\TipoAlojamiento.class
 bbdd\ConsultasActividades.class
 modelo\ConfiguracionSistema.class
@@ -35,6 +36,7 @@ bbdd\ConsultasUsuario.class
 Utilidades\validarEmail.class
 bbdd\ConsultasMovimientos.class
 bbdd\Conexion.class
+acciones\CeldaAccionesResena.class
 controladores\ConfiguracionController.class
 controladores\AgregarItinerarioController.class
 controladores\AgregarUsuarioController.class

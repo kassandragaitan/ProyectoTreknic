@@ -12,12 +12,8 @@ import bbdd.ConsultasDestinos;
 import bbdd.ConsultasMovimientos;
 import bbdd.ConsultasTipoAlojamiento;
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.util.ResourceBundle;
-import java.util.UUID;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -123,27 +119,27 @@ public class AgregarAlojamientoController implements Initializable {
     @FXML
     private void RegistrarAlojamiento(ActionEvent event) {
         if (compruebaCampo.compruebaVacio(campoNombre)) {
-            Alertas.aviso("Campo vacío", "El nombre no puede estar vacío.");
+            Alertas.error("Campo vacío", "El nombre no puede estar vacío.");
         } else if (!esEdicion && ConsultasAlojamientos.existeNombreAlojamiento(campoNombre.getText().trim())) {
-            Alertas.aviso("Nombre duplicado", "Ya existe un alojamiento con ese nombre.");
+            Alertas.error("Nombre duplicado", "Ya existe un alojamiento con ese nombre.");
             campoNombre.clear();
         } else if (tipoSeleccionado == null) {
-            Alertas.aviso("Campo vacío", "Debe seleccionar el tipo de alojamiento.");
+            Alertas.error("Selección inválida", "Debe seleccionar el tipo de alojamiento.");
         } else if (compruebaCampo.compruebaVacio(campoContacto)) {
-            Alertas.aviso("Campo vacío", "El teléfono no puede estar vacío.");
+            Alertas.error("Campo vacío", "El teléfono no puede estar vacío.");
         } else if (!Utilidades.validarTelefono.esSoloNumeros(campoContacto.getText().trim())) {
-            Alertas.aviso("Teléfono inválido", "El teléfono solo debe contener números.");
+            Alertas.error("Formato inválido", "El teléfono solo debe contener números.");
             campoContacto.clear();
         } else if (!Utilidades.validarTelefono.esTelefonoNicaraguenseValido(campoContacto.getText().trim())) {
-            Alertas.aviso("Teléfono inválido", "El teléfono debe tener 8 dígitos y empezar por 2, 5, 7 u 8 (formato nicaragüense).");
+            Alertas.error("Formato inválido", "El teléfono debe tener 8 dígitos y empezar por 2, 5, 7 u 8 (formato nicaragüense).");
             campoContacto.clear();
         } else if (compruebaCampo.compruebaVacio(campoImagen)) {
-            Alertas.aviso("Campo vacío", "Debe seleccionar una imagen.");
+            Alertas.error("Campo vacío", "Debe seleccionar una imagen.");
         } else if (!esEdicion && archivoImagenSeleccionado == null) {
-            Alertas.aviso("Imagen no válida", "Debe seleccionar una imagen válida.");
+            Alertas.error("Imagen no válida", "Debe seleccionar una imagen válida.");
             campoImagen.clear();
         } else if (destinoSeleccionado == null) {
-            Alertas.aviso("Campo vacío", "Debe seleccionar un destino.");
+            Alertas.error("Selección inválida", "Debe seleccionar un destino.");
         } else {
             String nombreImagenParaBD;
             if (esEdicion && archivoImagenSeleccionado != null) {

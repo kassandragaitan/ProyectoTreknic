@@ -13,8 +13,6 @@ import bbdd.ConsultasMovimientos;
 import bbdd.ConsultasNotificaciones;
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -94,11 +92,11 @@ public class AgregarActividadController implements Initializable {
     @FXML
     private void RegistrarActividad(ActionEvent event) {
         if (compruebaCampo.compruebaVacio(campoNombre)) {
-            Alertas.aviso("Campo vacío", "El nombre no puede estar vacío.");
+            Alertas.error("Campo vacío", "El nombre no puede estar vacío.");
         } else if (compruebaCampo.compruebaVacio(campoDescripcion)) {
-            Alertas.aviso("Campo vacío", "La descripción no puede estar vacía.");
+            Alertas.error("Campo vacío", "La descripción no puede estar vacía.");
         } else if (destinoSeleccionado == null) {
-            Alertas.aviso("Combo vacío", "Debe seleccionar un destino válido.");
+            Alertas.error("Selección inválida", "Debe seleccionar un destino válido.");
         } else {
             Destino destinoSeleccionado = comboDestino.getValue();
             int idUsuario = Usuario.getUsuarioActual().getIdUsuario();
@@ -136,7 +134,7 @@ public class AgregarActividadController implements Initializable {
                         campoNombre.getText().trim(),
                         destinoSeleccionado.getId_destino()
                 )) {
-                    Alertas.aviso("Duplicado", "Ya existe una actividad con ese nombre para el destino seleccionado.");
+                    Alertas.error("Actividad duplicada", "Ya existe una actividad con ese nombre para el destino seleccionado.");
                     campoNombre.clear();
                     return;
                 }

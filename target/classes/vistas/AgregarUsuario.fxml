@@ -54,7 +54,7 @@
                 </HBox>
 
                 <HBox spacing="10" alignment="CENTER_LEFT">
-                    <Label text="Tipo usuario" styleClass="label-campo" prefWidth="80.0"/>
+                    <Label text="Tipo" styleClass="label-campo" prefWidth="80.0"/>
                     <ComboBox fx:id="campoTipoUsuario" styleClass="combo-registro" prefWidth="160.0"/>
                 </HBox>
 

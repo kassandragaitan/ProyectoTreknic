@@ -150,4 +150,16 @@ public class ConsultasResenas {
             e.printStackTrace();
         }
     }
+
+    public static boolean eliminarResena(int idResena) {
+        String sql = "DELETE FROM resenas WHERE id_resena = ?";
+        try (Connection conn = Conexion.conectar(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, idResena);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }

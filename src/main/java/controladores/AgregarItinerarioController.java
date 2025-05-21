@@ -13,12 +13,9 @@ import bbdd.ConsultasNotificaciones;
 import java.net.URL;
 import java.util.Date;
 import java.util.ResourceBundle;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -26,7 +23,6 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.stage.Stage;
 import modelo.Itinerario;
 import modelo.Usuario;
 
@@ -84,13 +80,13 @@ public class AgregarItinerarioController implements Initializable {
     @FXML
     private void RegistrarItinerario(ActionEvent event) {
         if (compruebaCampo.compruebaVacio(campoNombre)) {
-            Alertas.aviso("Campo vacío", "El nombre no puede estar vacío.");
+            Alertas.error("Campo vacío", "El nombre no puede estar vacío.");
         } else if (compruebaCampo.compruebaVacio(campoDescripcion)) {
-            Alertas.aviso("Campo vacío", "La descripción no puede estar vacía.");
+            Alertas.error("Campo vacío", "La descripción no puede estar vacía.");
         } else if (comboDuracion.getValue() == null || comboDuracion.getValue().equals("Seleccione")) {
-            Alertas.aviso("Campo vacío", "Debe seleccionar una duración válida.");
+            Alertas.error("Selección inválida", "Debe seleccionar una duración válida.");
         } else if (!esEdicion && ConsultasItinerario.existeItinerarioConNombre(campoNombre.getText())) {
-            Alertas.aviso("Nombre duplicado", "Ya existe un itinerario con ese nombre.");
+            Alertas.error("Itinerario duplicado", "Ya existe un itinerario con ese nombre.");
             campoNombre.clear();
         } else {
             Conexion.conectar();

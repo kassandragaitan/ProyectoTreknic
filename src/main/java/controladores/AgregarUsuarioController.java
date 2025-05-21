@@ -3,7 +3,6 @@ package controladores;
 import Utilidades.Alertas;
 import Utilidades.compruebaCampo;
 import Utilidades.validarEmail;
-import Utilidades.validarTelefono;
 import bbdd.Conexion;
 import bbdd.ConsultasMovimientos;
 import bbdd.ConsultasNotificaciones;
@@ -14,7 +13,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -116,35 +114,35 @@ public class AgregarUsuarioController implements Initializable {
         Conexion.conectar();
 
         if (compruebaCampo.compruebaVacio(campoNombre)) {
-            Alertas.aviso("Campo vacío", "El nombre no puede estar vacío.");
+            Alertas.error("Campo vacío", "El nombre no puede estar vacío.");
         } else if (compruebaCampo.compruebaVacio(campoTelefono)) {
-            Alertas.aviso("Campo vacío", "El teléfono no puede estar vacío.");
+            Alertas.error("Campo vacío", "El teléfono no puede estar vacío.");
         } else if (!Utilidades.validarTelefono.esSoloNumeros(campoTelefono.getText().trim())) {
-            Alertas.aviso("Teléfono inválido", "El teléfono solo debe contener números.");
+            Alertas.error("Formato inválido", "El teléfono solo debe contener números.");
             campoTelefono.clear();
         } else if (!Utilidades.validarTelefono.esTelefonoNicaraguenseValido(campoTelefono.getText().trim())) {
-            Alertas.aviso("Teléfono inválido", "El teléfono debe tener 8 dígitos y empezar por 2, 5, 7 u 8 (formato nicaragüense).");
+            Alertas.error("Formato inválido", "El teléfono debe tener 8 dígitos y empezar por 2, 5, 7 u 8 (formato nicaragüense).");
             campoTelefono.clear();
         } else if (compruebaCampo.compruebaVacio(campoEmail)) {
-            Alertas.aviso("Campo vacío", "El email no puede estar vacío.");
+            Alertas.error("Campo vacío", "El email no puede estar vacío.");
         } else if (!validarEmail.esEmailValido(campoEmail.getText())) {
-            Alertas.aviso("Email inválido", "Ingrese un correo electrónico válido.");
+            Alertas.error("Email inválido", "Ingrese un correo electrónico válido.");
             campoEmail.clear();
         } else if (compruebaCampo.compruebaVacio(campoContrasena)) {
-            Alertas.aviso("Campo vacío", "La contraseña no puede estar vacía.");
+            Alertas.error("Campo vacío", "La contraseña no puede estar vacía.");
         } else if (campoTipoCompania.getValue() == null || campoTipoCompania.getValue().equals("Seleccione")) {
-            Alertas.aviso("Combo vacío", "Debe seleccionar un tipo de viajero.");
+            Alertas.error("Selección inválida", "Debe seleccionar un tipo de viajero.");
         } else if (campoTipoUsuario.getValue() == null || campoTipoUsuario.getValue().equals("Seleccione")) {
-            Alertas.aviso("Combo vacío", "Debe seleccionar un tipo de usuario.");
+            Alertas.error("Selección inválida", "Debe seleccionar un tipo de usuario.");
         } else if (campoIdioma.getValue() == null || campoIdioma.getValue().equals("Seleccione")) {
-            Alertas.aviso("Combo vacío", "Debe seleccionar un idioma.");
+            Alertas.error("Selección inválida", "Debe seleccionar un idioma.");
         } else {
             String emailLimpio = campoEmail.getText().trim().toLowerCase();
             String telefonoLimpio = campoTelefono.getText().replaceAll("[^0-9]", "");
 
             if (usuarioEnEdicion == null) {
                 if (ConsultasUsuario.existeEmail(emailLimpio)) {
-                    Alertas.aviso("Email duplicado", "El correo ya está registrado. Use otro diferente.");
+                    Alertas.error("Email duplicado", "El correo ya está registrado. Use otro diferente.");
                     campoEmail.clear();
                     Conexion.cerrarConexion();
                     return;
@@ -152,7 +150,7 @@ public class AgregarUsuarioController implements Initializable {
             } else {
                 if (!emailLimpio.equalsIgnoreCase(usuarioEnEdicion.getEmail())
                         && ConsultasUsuario.existeEmail(emailLimpio)) {
-                    Alertas.aviso("Email duplicado", "Este correo ya está registrado.");
+                    Alertas.error("Email duplicado", "Este correo ya está registrado.");
                     campoEmail.clear();
                     Conexion.cerrarConexion();
                     return;
