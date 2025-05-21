@@ -1,12 +1,8 @@
 package acciones;
 
-import bbdd.Conexion;
 import bbdd.ConsultasCategoria;
 import controladores.AgregarCategoriaController;
 import controladores.GestionCategoriaController;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -20,6 +16,10 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import modelo.Categoria;
 
+/**
+ * Celda personalizada para mostrar botones de acciones (ver, editar, eliminar)
+ * en cada fila de la tabla de categorías.
+ */
 public class CeldaAccionesCategoria extends TableCell<Categoria, Void> {
 
     private final HBox contenedor = new HBox(10);
@@ -28,6 +28,11 @@ public class CeldaAccionesCategoria extends TableCell<Categoria, Void> {
     private final Button botonEliminar = new Button("Eliminar");
     private final GestionCategoriaController controller;
 
+    /**
+     * Constructor que configura los botones de acción para la categoría.
+     *
+     * @param controller Controlador de la vista de gestión de categorías.
+     */
     public CeldaAccionesCategoria(GestionCategoriaController controller) {
         this.controller = controller;
 
@@ -54,25 +59,53 @@ public class CeldaAccionesCategoria extends TableCell<Categoria, Void> {
             Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
                     "¿Eliminar categoría \"" + cat.getNombre() + "\"?",
                     ButtonType.OK, ButtonType.CANCEL);
-            confirm.setHeaderText("¿Estás seguro que quieres eliminar esta categoria?");
+            confirm.setHeaderText("¿Estás seguro que quieres eliminar esta categoría?");
             confirm.initOwner(botonEliminar.getScene().getWindow());
+
             confirm.showAndWait().ifPresent(r -> {
-                if (r == ButtonType.OK && ConsultasCategoria.eliminarPorId(cat.getIdCategoria())) {
-                    controller.recargarTabla();
-                    new Alert(Alert.AlertType.INFORMATION,
-                            "Categoría eliminada.", ButtonType.OK)
-                            .showAndWait();
+                if (r == ButtonType.OK) {
+                    boolean eliminado = ConsultasCategoria.eliminarPorId(cat.getIdCategoria());
+                    if (eliminado) {
+                        bbdd.Conexion.conectar();
+                        String mensaje = "Ha eliminado la categoría: " + cat.getNombre();
+                        int idUsuario = modelo.Usuario.getUsuarioActual().getIdUsuario();
+
+                        bbdd.ConsultasNotificaciones.registrarMovimiento(mensaje, new java.util.Date(), idUsuario);
+                        bbdd.Conexion.cerrarConexion();
+
+                        controller.recargarTabla();
+                        new Alert(Alert.AlertType.INFORMATION,
+                                "Categoría eliminada.", ButtonType.OK).showAndWait();
+                    } else {
+                        new Alert(Alert.AlertType.ERROR,
+                                "No se pudo eliminar la categoría.", ButtonType.OK).showAndWait();
+                    }
                 }
             });
         });
     }
 
+    /**
+     * Actualiza el contenido visual de la celda dependiendo si contiene datos o
+     * no.
+     *
+     * @param item Elemento nulo (no se usa).
+     * @param empty true si la celda está vacía, false si tiene contenido.
+     */
     @Override
     protected void updateItem(Void item, boolean empty) {
         super.updateItem(item, empty);
         setGraphic(empty || getTableRow().getItem() == null ? null : contenedor);
     }
 
+    /**
+     * Abre una ventana modal para ver o editar la categoría especificada.
+     *
+     * @param cat Categoría a visualizar o editar.
+     * @param editable true si se debe permitir la edición, false para solo
+     * vista.
+     * @return true si la categoría fue modificada, false en caso contrario.
+     */
     private boolean abrirDialog(Categoria cat, boolean editable) {
         try {
             FXMLLoader loader = new FXMLLoader(
@@ -99,6 +132,5 @@ public class CeldaAccionesCategoria extends TableCell<Categoria, Void> {
             return false;
         }
     }
-
 
 }

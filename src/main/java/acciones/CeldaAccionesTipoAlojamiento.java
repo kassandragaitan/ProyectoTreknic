@@ -4,11 +4,8 @@
  */
 package acciones;
 
-/**
- *
- * @author k0343
- */
 import bbdd.Conexion;
+import bbdd.ConsultasNotificaciones;
 import controladores.AgregarTipoAlojamientoController;
 import controladores.GestionTipoDeAlojamientoController;
 import javafx.fxml.FXMLLoader;
@@ -23,11 +20,20 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import modelo.TipoAlojamiento;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.util.Date;
 import javafx.stage.StageStyle;
+import modelo.Usuario;
 
+/**
+ *
+ * @author k0343
+ */
+/**
+ * Celda personalizada para la tabla de tipos de alojamiento. Proporciona
+ * botones para ver, editar o eliminar cada tipo de alojamiento.
+ */
 public class CeldaAccionesTipoAlojamiento extends TableCell<TipoAlojamiento, Void> {
 
     private final HBox contenedor = new HBox(10);
@@ -36,6 +42,13 @@ public class CeldaAccionesTipoAlojamiento extends TableCell<TipoAlojamiento, Voi
     private final Button botonEliminar = new Button("Eliminar");
     private final GestionTipoDeAlojamientoController controlador;
 
+    /**
+     * Constructor que inicializa los botones de acción y define su
+     * comportamiento.
+     *
+     * @param controlador Controlador de la vista de gestión de tipos de
+     * alojamiento.
+     */
     public CeldaAccionesTipoAlojamiento(GestionTipoDeAlojamientoController controlador) {
         this.controlador = controlador;
         botonVer.getStyleClass().add("table-button");
@@ -72,12 +85,26 @@ public class CeldaAccionesTipoAlojamiento extends TableCell<TipoAlojamiento, Voi
         });
     }
 
+    /**
+     * Actualiza el contenido de la celda gráfica dependiendo de si está vacía o
+     * tiene datos.
+     *
+     * @param item Elemento del tipo Void (no utilizado).
+     * @param empty true si la celda está vacía, false si contiene datos.
+     */
     @Override
     protected void updateItem(Void item, boolean empty) {
         super.updateItem(item, empty);
         setGraphic(empty || getTableRow().getItem() == null ? null : contenedor);
     }
 
+    /**
+     * Abre una ventana para ver o editar un tipo de alojamiento.
+     *
+     * @param tipo Objeto TipoAlojamiento que se desea ver o editar.
+     * @param editable true para permitir edición, false para solo
+     * visualización.
+     */
     private void abrirVentana(TipoAlojamiento tipo, boolean editable) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/AgregarTipoAlojamiento.fxml"));
@@ -102,14 +129,35 @@ public class CeldaAccionesTipoAlojamiento extends TableCell<TipoAlojamiento, Voi
         }
     }
 
+    /**
+     * Elimina un tipo de alojamiento de la base de datos por su ID. También
+     * registra el movimiento en el sistema de notificaciones.
+     *
+     * @param id ID del tipo de alojamiento a eliminar.
+     * @return true si se eliminó correctamente, false si hubo un error.
+     */
     private boolean eliminarTipoPorId(int id) {
         String sql = "DELETE FROM tipoalojamiento WHERE id_tipo = ?";
+        TipoAlojamiento tipo = getTableRow().getItem();
         try (Connection conn = Conexion.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
-            return stmt.executeUpdate() > 0;
+            boolean eliminado = stmt.executeUpdate() > 0;
+            if (eliminado && tipo != null) {
+                String mensaje = "Ha eliminado el tipo de alojamiento " + tipo.getTipo();
+                int idUsuario = Usuario.getUsuarioActual().getIdUsuario();
+                ConsultasNotificaciones.registrarMovimiento(
+                        mensaje,
+                        new Date(),
+                        idUsuario
+                );
+            }
+            return eliminado;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
+        } finally {
+            Conexion.cerrarConexion();
         }
     }
+
 }

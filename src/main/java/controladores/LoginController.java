@@ -99,7 +99,6 @@ public class LoginController implements Initializable {
 
                 case 2:
                     Alertas.error("Error", "La contraseña es incorrecta.");
-                    ConsultasLogin.registrarIntentoFallido(email);
                     campoContrasena.clear();
                     break;
 

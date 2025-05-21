@@ -17,20 +17,48 @@ import javafx.collections.ObservableList;
 import modelo.InformeActividadDestino;
 
 /**
+ * Clase encargada de gestionar la conexión con la base de datos MySQL. Contiene
+ * métodos para conectar, cerrar conexión, realizar conteos y cargar informes
+ * específicos usados en estadísticas y reportes.
+ *
+ * Uso típico en toda la aplicación para operaciones simples y centralizadas.
  *
  * @author k0343
  */
 public class Conexion {
 
-    static Connection conn;
+//    static Connection conn;
 //    public static final String URL = "jdbc:mysql://145.14.151.1/u812167471_kassandra";
 //    public static final String USERNAME = "u812167471_kassandra";
 //    public static final String PASSWORD = "2025-Kassandra";
 //    public static Connection conn;
+    /**
+     * Objeto de conexión a la base de datos.
+     */
+    static Connection conn;
+
+    /**
+     * URL de conexión a la base de datos local o remota.
+     */
     public static final String URL = "jdbc:mysql://localhost:3306/kgr_reknic";
+
+    /**
+     * Usuario de la base de datos.
+     */
     public static final String USERNAME = "root";
+
+    /**
+     * Contraseña del usuario de la base de datos.
+     */
     public static final String PASSWORD = "";
 
+    /**
+     * Establece la conexión con la base de datos utilizando los parámetros
+     * definidos.
+     *
+     * @return Objeto {@link Connection} si la conexión es exitosa, o null si
+     * falla.
+     */
     public static Connection conectar() {
         try {
             Class.forName("com.mysql.jdbc.Driver");
@@ -41,6 +69,9 @@ public class Conexion {
         return conn;
     }
 
+    /**
+     * Cierra la conexión actual a la base de datos.
+     */
     public static void cerrarConexion() {
         try {
             conn.close();
@@ -49,6 +80,12 @@ public class Conexion {
         }
     }
 
+    /**
+     * Realiza un conteo total de registros en una tabla específica.
+     *
+     * @param tabla Nombre de la tabla a contar.
+     * @return Número total de registros encontrados.
+     */
     public static int contar(String tabla) {
         int total = 0;
         conectar();
@@ -65,6 +102,12 @@ public class Conexion {
         return total;
     }
 
+    /**
+     * Carga los cinco destinos con menor cantidad de actividades registradas.
+     * Usado normalmente para gráficas de análisis o reportes.
+     *
+     * @return Lista observable con objetos {@link InformeActividadDestino}.
+     */
     public static ObservableList<InformeActividadDestino> cargarActividadesPorDestino() {
         ObservableList<InformeActividadDestino> listado = FXCollections.observableArrayList();
         String consulta = "SELECT d.nombre AS DESTINO, COUNT(a.id_actividad) AS ACTIVIDADES "
@@ -89,29 +132,6 @@ public class Conexion {
         return listado;
     }
 
-    public static int contarPorMes(String tabla, String campoFecha, int mes, int anio) {
-        conectar();
-        int cantidad = 0;
-        String sql = "SELECT COUNT(*) FROM " + tabla + " WHERE MONTH(" + campoFecha + ") = ? AND YEAR(" + campoFecha + ") = ?";
 
-        try {
-            PreparedStatement pst = conn.prepareStatement(sql);
-            pst.setInt(1, mes);
-            pst.setInt(2, anio);
-
-            ResultSet rs = pst.executeQuery();
-            if (rs.next()) {
-                cantidad = rs.getInt(1);
-            }
-
-            rs.close();
-            pst.close();
-        } catch (SQLException e) {
-            System.err.println("Error al contar por mes: " + e.getMessage());
-        }
-
-        cerrarConexion();
-        return cantidad;
-    }
 
 }

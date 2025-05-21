@@ -23,7 +23,7 @@
 
                     <HBox spacing="10">
                         <TextField fx:id="campoBuscarDestino"
-                                   promptText="Buscar destinos..."
+                                   promptText="Buscar destinos por nombre..."
                                    HBox.hgrow="ALWAYS"
                                    prefWidth="360.0" />
                         <ComboBox fx:id="comboFiltroPor" promptText="Selecciona filtro..." prefWidth="220.0" />

@@ -7,27 +7,43 @@ package modelo;
 import Utilidades.Alertas;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 
 /**
+ * Clase que gestiona la conexión y operaciones FTP con el servidor donde se
+ * almacenan imágenes.
+ *
+ * Permite conectar al servidor FTP, subir archivos, cargar imágenes desde una
+ * URL pública, y eliminar archivos remotos.
+ *
+ * El servidor está configurado para uso en el dominio reynaldomd.com bajo el
+ * proyecto Kassandra.
+ *
+ * <p>
+ * Requiere la librería Apache Commons Net.</p>
  *
  * @author k0343
  */
 public class ConexionFtp {
-     public static FTPClient clienteFtp;
 
+    public static FTPClient clienteFtp;
+
+    /**
+     * Establece la conexión con el servidor FTP usando credenciales
+     * predefinidas.
+     *
+     * @return true si la conexión fue exitosa, false si ocurrió un error.
+     */
     public static boolean conectar() {
         String servidorFtp = "ftp.reynaldomd.com";
         String user = "u812167471.kassandra";
         String pass = "2025-Kassandra";
 
-        clienteFtp = new FTPClient(); 
+        clienteFtp = new FTPClient();
         try {
 
             clienteFtp.connect(servidorFtp);
@@ -43,17 +59,29 @@ public class ConexionFtp {
         return false;
     }
 
-    
+    /**
+     * Sube un archivo local al servidor FTP.
+     *
+     * @param localFile Archivo local a subir.
+     * @param remoteFileName Nombre del archivo en el servidor FTP.
+     * @return true si el archivo fue subido correctamente, false si falló.
+     */
     public static boolean subirArchivo(File localFile, String remoteFileName) {
-    try (FileInputStream fis = new FileInputStream(localFile)) {
-        return clienteFtp.storeFile(remoteFileName, fis);
-    } catch (IOException ex) {
-        ex.printStackTrace();
-        return false;
+        try (FileInputStream fis = new FileInputStream(localFile)) {
+            return clienteFtp.storeFile(remoteFileName, fis);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return false;
+        }
     }
-}
 
-
+    /**
+     * Carga una imagen desde la URL pública del servidor y la establece en un
+     * ImageView.
+     *
+     * @param imagen Nombre del archivo de imagen en el servidor.
+     * @param img ImageView donde se cargará la imagen.
+     */
     public static void cargarImagen(String imagen, ImageView img) {
 
         String urlImagen = "https://reynaldomd.com/kassandra/" + imagen;
@@ -61,14 +89,22 @@ public class ConexionFtp {
         img.setImage(image);
     }
 
+    /**
+     * Cierra la sesión actual con el servidor FTP.
+     */
     public static void desconectar() {
         try {
             clienteFtp.logout();
-        } catch (IOException ex) {  
+        } catch (IOException ex) {
             ex.printStackTrace();
         }
     }
 
+    /**
+     * Elimina un archivo del servidor FTP.
+     *
+     * @param nombreImagen Nombre del archivo a eliminar.
+     */
     public static void eliminarArchivo(String nombreImagen) {
         conectar();
         try {

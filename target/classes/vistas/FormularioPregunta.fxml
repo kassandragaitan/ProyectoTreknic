@@ -1,16 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-<?import javafx.geometry.Insets?>
 
 <AnchorPane prefWidth="500.0" prefHeight="400.0"
             styleClass="fondo-registro"
+            xmlns="http://javafx.com/javafx/23.0.1"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="controladores.FormularioPreguntaController"
             stylesheets="@/Estilos/estilos.css">
 
     <children>
-        <VBox layoutX="40.0" layoutY="60.0" spacing="15.0"
+
+        <ImageView fx:id="imagenTrekNic"
+                   fitHeight="60.0" fitWidth="100.0"
+                   preserveRatio="true" pickOnBounds="true"
+                   layoutX="200.0" layoutY="25.0" />
+
+        <VBox layoutX="40.0" layoutY="80.0" spacing="15.0"
               styleClass="panel-registro" prefWidth="420.0"
               alignment="TOP_CENTER">
 

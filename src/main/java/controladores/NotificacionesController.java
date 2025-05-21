@@ -69,7 +69,7 @@ public class NotificacionesController implements Initializable {
         comboFiltro2.getItems().addAll(ConsultasNotificaciones.obtenerFechasNotificaciones());
         comboFiltro2.getSelectionModel().selectFirst();
 
-        comboLeido.setItems(FXCollections.observableArrayList("Todos", "Sí", "No"));
+        comboLeido.setItems(FXCollections.observableArrayList("Mostrar todas las notificaciones", "Solo leídas", "Solo no leídas"));
         comboLeido.getSelectionModel().selectFirst();
 
         tablaNotificaciones.setOnMouseClicked(event -> {
@@ -122,8 +122,12 @@ public class NotificacionesController implements Initializable {
         if ("Todas las fechas...".equals(fecha)) {
             fecha = null;
         }
-        if ("Todos".equals(leido)) {
+        if ("Mostrar todas las notificaciones".equals(leido)) {
             leido = null;
+        } else if ("Solo leídas".equals(leido)) {
+            leido = "Sí";
+        } else if ("Solo no leídas".equals(leido)) {
+            leido = "No";
         }
 
         ObservableList<Notificacion> lista = FXCollections.observableArrayList();

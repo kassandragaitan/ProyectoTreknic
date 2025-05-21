@@ -17,11 +17,24 @@ import modelo.InformeTipoAlojamiento;
 import modelo.Reporte;
 
 /**
+ * Clase que contiene métodos para manejar la lógica de reportes y consultas
+ * estadísticas relacionadas con alojamientos, usuarios y sus preferencias.
+ *
+ * Utiliza la clase {@link Conexion} para establecer conexiones con la base de
+ * datos. Proporciona métodos para registrar reportes, obtener datos para
+ * gráficos, y filtrar estadísticas según idioma o tipo de alojamiento.
  *
  * @author k0343
  */
 public class ConsultasReportes {
 
+    /**
+     * Registra un nuevo reporte en la base de datos.
+     *
+     * @param reporte Objeto {@link Reporte} con los datos del reporte.
+     * @return {@code true} si se insertó correctamente, {@code false} en caso
+     * de error.
+     */
     public static boolean registrarReporte(Reporte reporte) {
         String sql = "INSERT INTO reportes (tipo, descripcion, fecha, id_usuario) VALUES (?, ?, ?, ?)";
         try (Connection conn = Conexion.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -36,6 +49,12 @@ public class ConsultasReportes {
         }
     }
 
+    /**
+     * Obtiene una lista con la cantidad de alojamientos por tipo.
+     *
+     * @return Lista observable de {@link InformeTipoAlojamiento} ordenada por
+     * cantidad descendente.
+     */
     public static ObservableList<InformeTipoAlojamiento> obtenerDatosTiposAlojamiento() {
         ObservableList<InformeTipoAlojamiento> lista = FXCollections.observableArrayList();
         String sql = "SELECT tipoalojamiento.tipo, COUNT(*) AS cantidad "
@@ -57,6 +76,11 @@ public class ConsultasReportes {
         return lista;
     }
 
+    /**
+     * Devuelve una lista de idiomas únicos registrados por los usuarios.
+     *
+     * @return Lista observable con los idiomas preferidos.
+     */
     public static ObservableList<String> obtenerIdiomasUsuarios() {
         ObservableList<String> lista = FXCollections.observableArrayList();
         String sql = "SELECT DISTINCT idioma_preferido FROM usuarios";
@@ -71,6 +95,12 @@ public class ConsultasReportes {
         return lista;
     }
 
+    /**
+     * Devuelve una lista de tipos de alojamiento disponibles.
+     *
+     * @return Lista observable con los tipos. El primer valor es "Todos los
+     * tipos".
+     */
     public static ObservableList<String> obtenerTiposAlojamiento() {
         ObservableList<String> lista = FXCollections.observableArrayList();
         lista.add("Todos los tipos");
@@ -86,6 +116,14 @@ public class ConsultasReportes {
         return lista;
     }
 
+    /**
+     * Obtiene la cantidad de usuarios registrados por mes para un idioma
+     * específico.
+     *
+     * @param idioma Idioma preferido seleccionado.
+     * @return Mapa con los nombres de los meses como clave y la cantidad de
+     * usuarios como valor.
+     */
     public static Map<String, Integer> obtenerUsuariosPorMesYIdioma(String idioma) {
         Map<String, Integer> datos = new LinkedHashMap<>();
         String sql = "SELECT MONTH(fecha_registro) AS mes, COUNT(*) AS cantidad "
@@ -106,6 +144,13 @@ public class ConsultasReportes {
         return datos;
     }
 
+    /**
+     * Obtiene la cantidad de alojamientos para un tipo de alojamiento
+     * específico.
+     *
+     * @param tipo Tipo de alojamiento a filtrar.
+     * @return Lista observable con los resultados del conteo por tipo.
+     */
     public static ObservableList<InformeTipoAlojamiento> obtenerDatosTiposAlojamientoPorTipo(String tipo) {
         ObservableList<InformeTipoAlojamiento> lista = FXCollections.observableArrayList();
         String sql = "SELECT tipoalojamiento.tipo, COUNT(*) AS cantidad "

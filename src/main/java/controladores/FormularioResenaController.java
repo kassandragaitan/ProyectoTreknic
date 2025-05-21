@@ -6,7 +6,6 @@ package controladores;
 
 import Utilidades.Alertas;
 import Utilidades.compruebaCampo;
-import bbdd.ConsultasMovimientos;
 import bbdd.ConsultasNotificaciones;
 import bbdd.ConsultasResenas;
 import javafx.collections.FXCollections;
@@ -20,6 +19,8 @@ import java.util.Date;
 import java.util.ResourceBundle;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 public class FormularioResenaController implements Initializable {
 
@@ -33,12 +34,16 @@ public class FormularioResenaController implements Initializable {
     private Spinner<Integer> spinnerClasificacion;
     @FXML
     private Button botonGuardar;
-
+    @FXML
+    private ImageView imagenTrekNic;
     private Destino destinoSeleccionado;
     private Usuario usuarioSeleccionado;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        Image imagen = new Image(getClass().getResourceAsStream("/img/Encabezado.png"));
+        imagenTrekNic.setImage(imagen);
+
         ObservableList<Destino> destinos = FXCollections.observableArrayList(
                 ConsultasResenas.obtenerDestinos()
         );
@@ -81,7 +86,7 @@ public class FormularioResenaController implements Initializable {
         if (destinoSeleccionado == null) {
             Alertas.error("Selección inválida", "Debe seleccionar un destino.");
         } else if (usuarioSeleccionado == null) {
-          Alertas.error("Selección inválida", "Debe seleccionar un usuario.");
+            Alertas.error("Selección inválida", "Debe seleccionar un usuario.");
         } else if (compruebaCampo.compruebaVacio(campoComentario)) {
             Alertas.error("Campo vacío", "El comentario no puede estar vacío.");
         } else if (spinnerClasificacion.getValue() < 0 || spinnerClasificacion.getValue() > 5) {
@@ -107,14 +112,9 @@ public class FormularioResenaController implements Initializable {
                     String mensaje = "Se registró una reseña sin clasificación para el destino: " + destinoSeleccionado.getNombre();
                     int idUsuario = usuarioSeleccionado.getIdUsuario();
 
-                    ConsultasMovimientos.registrarMovimiento(
+                    ConsultasNotificaciones.registrarMovimiento(
                             mensaje,
                             new Date(),
-                            idUsuario
-                    );
-
-                    ConsultasNotificaciones.registrarNotificacion(
-                            mensaje,
                             idUsuario
                     );
 
@@ -140,17 +140,11 @@ public class FormularioResenaController implements Initializable {
                         + " con puntuación " + puntuacion;
                 int idUsuario = usuarioSeleccionado.getIdUsuario();
 
-                ConsultasMovimientos.registrarMovimiento(
+                ConsultasNotificaciones.registrarMovimiento(
                         mensaje,
                         new Date(),
                         idUsuario
                 );
-
-                ConsultasNotificaciones.registrarNotificacion(
-                        mensaje,
-                        idUsuario
-                );
-
                 Alertas.informacion("Reseña registrada correctamente.");
                 limpiarFormulario();
             } else {

@@ -4,7 +4,6 @@ import Utilidades.Alertas;
 import Utilidades.compruebaCampo;
 import Utilidades.validarEmail;
 import bbdd.Conexion;
-import bbdd.ConsultasMovimientos;
 import bbdd.ConsultasNotificaciones;
 import bbdd.ConsultasUsuario;
 import java.net.URL;
@@ -173,17 +172,11 @@ public class AgregarUsuarioController implements Initializable {
                     String mensaje = "Ha registrado el usuario \"" + usuario.getNombre() + "\"";
                     int idUsuario = Usuario.getUsuarioActual() != null ? Usuario.getUsuarioActual().getIdUsuario() : 0;
 
-                    ConsultasMovimientos.registrarMovimiento(
+                    ConsultasNotificaciones.registrarMovimiento(
                             mensaje,
                             new java.sql.Date(System.currentTimeMillis()),
                             idUsuario
                     );
-
-                    ConsultasNotificaciones.registrarNotificacion(
-                            mensaje,
-                            idUsuario
-                    );
-
                     Alertas.informacion("Usuario registrado exitosamente.");
                 } else {
                     Alertas.error("Error en el registro", "Ocurrió un error al registrar el usuario.");
@@ -195,17 +188,11 @@ public class AgregarUsuarioController implements Initializable {
                     String mensaje = "Ha actualizado el usuario \"" + usuario.getNombre() + "\"";
                     int idUsuario = Usuario.getUsuarioActual() != null ? Usuario.getUsuarioActual().getIdUsuario() : 0;
 
-                    ConsultasMovimientos.registrarMovimiento(
+                    ConsultasNotificaciones.registrarMovimiento(
                             mensaje,
                             new java.sql.Date(System.currentTimeMillis()),
                             idUsuario
                     );
-
-                    ConsultasNotificaciones.registrarNotificacion(
-                            mensaje,
-                            idUsuario
-                    );
-
                     Alertas.informacion("Usuario actualizado correctamente.");
                 } else {
                     Alertas.error("Error al actualizar", "Ocurrió un error al actualizar el usuario.");

@@ -18,11 +18,13 @@
                 <Label text="Configuración de Notificaciones" styleClass="tituloPrincipal"/>
                 <Separator prefWidth="850.0" />
 
-                <HBox spacing="10" alignment="CENTER" styleClass="filtro-panel">
-                    <ComboBox fx:id="comboFiltro1" styleClass="combo-filtro" />
-                    <ComboBox fx:id="comboFiltro2" styleClass="combo-filtro" />
-                    <ComboBox fx:id="comboLeido" styleClass="combo-filtro" />
-                    <Button fx:id="botonFiltrar" text="Filtrar" onAction="#filtrar" styleClass="boton-filtro"/>
+                <HBox spacing="12" alignment="CENTER" styleClass="filtro-panel" prefWidth="850">
+                    <ComboBox fx:id="comboFiltro1" styleClass="combo-filtro" prefWidth="220" maxWidth="Infinity"/>
+                    <ComboBox fx:id="comboFiltro2" styleClass="combo-filtro" prefWidth="180" maxWidth="Infinity"/>
+                    <ComboBox fx:id="comboLeido"
+                              style="-fx-pref-width: 240px !important;"
+                              styleClass="combo-filtro"/>
+                    <Button fx:id="botonFiltrar" text="Filtrar" onAction="#filtrar" styleClass="boton-filtro" prefWidth="100"/>
                 </HBox>
 
                 <VBox styleClass="tarjeta" spacing="10" prefWidth="850" VBox.vgrow="ALWAYS">

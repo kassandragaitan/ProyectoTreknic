@@ -22,11 +22,23 @@ import modelo.TipoAlojamiento;
 import modelo.Usuario;
 
 /**
+ * Clase que proporciona métodos para gestionar los alojamientos en la base de
+ * datos. Incluye operaciones de registro, actualización, consulta, filtrado y
+ * gestión de favoritos.
+ *
+ * Esta clase interactúa con las tablas `alojamientos`, `tipoalojamiento`,
+ * `destinos` y `favoritos`.
  *
  * @author k0343
  */
 public class ConsultasAlojamientos {
 
+    /**
+     * Inserta un nuevo alojamiento en la base de datos.
+     *
+     * @param alojamiento Objeto a registrar.
+     * @return true si se registró correctamente, false si ocurrió un error.
+     */
     public static boolean registrarAlojamiento(Alojamiento alojamiento) {
         String consulta = "INSERT INTO alojamientos (nombre, id_tipo_fk, contacto, imagen, id_destino_fk) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = Conexion.conectar(); PreparedStatement pst = conn.prepareStatement(consulta)) {
@@ -45,6 +57,12 @@ public class ConsultasAlojamientos {
         }
     }
 
+    /**
+     * Actualiza los datos de un alojamiento existente.
+     *
+     * @param alojamiento Alojamiento con los datos modificados.
+     * @return true si se actualizó correctamente, false en caso de error.
+     */
     public static boolean actualizarAlojamiento(Alojamiento alojamiento) {
         String sql = "UPDATE alojamientos SET nombre = ?, id_tipo_fk = ?, contacto = ?, imagen = ?, id_destino_fk = ? WHERE id_alojamiento = ?";
         try (Connection conn = Conexion.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -62,6 +80,11 @@ public class ConsultasAlojamientos {
         }
     }
 
+    /**
+     * Carga una lista de tipos de alojamiento desde la base de datos.
+     *
+     * @return Lista observable de tipos.
+     */
     public static ObservableList<String> cargarTiposAlojamiento() {
         ObservableList<String> lista = FXCollections.observableArrayList();
         String consulta = "SELECT DISTINCT tipo FROM tipoalojamiento";
@@ -79,6 +102,11 @@ public class ConsultasAlojamientos {
         return lista;
     }
 
+    /**
+     * Carga una lista de destinos desde la base de datos.
+     *
+     * @return Lista observable de nombres de destinos.
+     */
     public static ObservableList<String> cargarDestinosAlojamiento() {
         ObservableList<String> lista = FXCollections.observableArrayList();
         String consulta = "SELECT DISTINCT nombre FROM destinos";
@@ -96,6 +124,12 @@ public class ConsultasAlojamientos {
         return lista;
     }
 
+    /**
+     * Carga alojamientos filtrados por tipo.
+     *
+     * @param lista Lista destino donde se cargan los alojamientos.
+     * @param tipo Tipo de alojamiento a filtrar.
+     */
     public static void cargarAlojamientosPorTipo(ObservableList<Alojamiento> lista, String tipo) {
         String sql = "SELECT a.*, t.tipo, d.nombre AS nombre_destino "
                 + "FROM alojamientos a "
@@ -122,6 +156,12 @@ public class ConsultasAlojamientos {
         }
     }
 
+    /**
+     * Carga alojamientos filtrados por destino.
+     *
+     * @param lista Lista destino donde se cargan los alojamientos.
+     * @param destino Nombre del destino a filtrar.
+     */
     public static void cargarAlojamientosPorDestino(ObservableList<Alojamiento> lista, String destino) {
         String sql = "SELECT a.*, t.tipo, d.nombre AS nombre_destino "
                 + "FROM alojamientos a "
@@ -148,6 +188,13 @@ public class ConsultasAlojamientos {
         }
     }
 
+    /**
+     * Carga alojamientos que coincidan con un texto de búsqueda en múltiples
+     * campos.
+     *
+     * @param listaAlojamientos Lista donde se cargarán los resultados.
+     * @param busqueda Texto a buscar (nombre, contacto, destino o tipo).
+     */
     public static void cargarDatosAlojamientosFiltrados(ObservableList<Alojamiento> listaAlojamientos, String busqueda) {
         int idUsuario = Usuario.getUsuarioActual().getIdUsuario();
 
@@ -189,6 +236,11 @@ public class ConsultasAlojamientos {
         }
     }
 
+    /**
+     * Carga datos de tipo de alojamiento en un ComboBox.
+     *
+     * @param comboTipo ComboBox donde se cargarán los tipos.
+     */
     public static void cargarComboTipoAlojamiento(ComboBox<TipoAlojamiento> comboTipo) {
         String consulta = "SELECT id_tipo, tipo FROM tipoalojamiento";
         try (Connection conn = Conexion.conectar(); Statement st = conn.createStatement(); ResultSet rs = st.executeQuery(consulta)) {
@@ -202,6 +254,12 @@ public class ConsultasAlojamientos {
         }
     }
 
+    /**
+     * Carga todos los alojamientos con su información, incluyendo si son
+     * favoritos del usuario actual.
+     *
+     * @param listado Lista destino donde se agregan los alojamientos.
+     */
     public static void cargarDatosAlojamientos(ObservableList<Alojamiento> listado) {
         int idUsuario = Usuario.getUsuarioActual().getIdUsuario();
 
@@ -238,6 +296,13 @@ public class ConsultasAlojamientos {
         }
     }
 
+    /**
+     * Obtiene una lista de alojamientos marcados como favoritos por un usuario
+     * específico.
+     *
+     * @param idUsuario ID del usuario.
+     * @return Lista de alojamientos favoritos.
+     */
     public static List<Alojamiento> obtenerAlojamientosFavoritosPorUsuario(int idUsuario) {
         List<Alojamiento> favoritos = new ArrayList<>();
         String sql = "SELECT a.id_alojamiento, a.nombre, a.imagen, d.nombre AS destino "
@@ -267,6 +332,15 @@ public class ConsultasAlojamientos {
         return favoritos;
     }
 
+    /**
+     * Agrega un alojamiento a la lista de favoritos de un usuario. Ignora si ya
+     * existe la relación para evitar duplicados.
+     *
+     * @param idAlojamiento ID del alojamiento.
+     * @param idUsuario ID del usuario.
+     * @return true si se insertó correctamente, false si no se realizó ningún
+     * cambio.
+     */
     public static boolean agregarAFavoritos(int idAlojamiento, int idUsuario) {
         String sql = "INSERT IGNORE INTO favoritos (id_usuario, id_alojamiento) VALUES (?, ?)";
         try (Connection conn = Conexion.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -279,6 +353,13 @@ public class ConsultasAlojamientos {
         }
     }
 
+    /**
+     * Verifica si un alojamiento ya está marcado como favorito por un usuario.
+     *
+     * @param idUsuario ID del usuario.
+     * @param idAlojamiento ID del alojamiento.
+     * @return true si ya existe la relación, false en caso contrario.
+     */
     public static boolean existeFavorito(int idUsuario, int idAlojamiento) {
         String sql = "SELECT COUNT(*) FROM favoritos WHERE id_usuario = ? AND id_alojamiento = ?";
         try (Connection conn = Conexion.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -294,6 +375,12 @@ public class ConsultasAlojamientos {
         return false;
     }
 
+    /**
+     * Elimina un alojamiento de forma permanente de la base de datos.
+     *
+     * @param idAlojamiento ID del alojamiento a eliminar.
+     * @return true si se eliminó correctamente, false si ocurrió un error.
+     */
     public static boolean eliminarAlojamiento(int idAlojamiento) {
         String sqlEliminar = "DELETE FROM alojamientos WHERE id_alojamiento = ?";
         try (Connection conn = Conexion.conectar(); PreparedStatement stmtEliminar = conn.prepareStatement(sqlEliminar)) {
@@ -305,6 +392,12 @@ public class ConsultasAlojamientos {
         }
     }
 
+    /**
+     * Elimina todas las referencias de un alojamiento en la tabla de favoritos.
+     *
+     * @param idAlojamiento ID del alojamiento a eliminar de favoritos.
+     * @return true si se eliminó correctamente, false si falló.
+     */
     public static boolean eliminarAlojamientoDeFavoritos(int idAlojamiento) {
         String sql = "DELETE FROM favoritos WHERE id_alojamiento = ?";
         try (Connection conn = Conexion.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -316,6 +409,13 @@ public class ConsultasAlojamientos {
         }
     }
 
+    /**
+     * Elimina un alojamiento específico de la lista de favoritos de un usuario.
+     *
+     * @param idAlojamiento ID del alojamiento.
+     * @param idUsuario ID del usuario.
+     * @return true si se eliminó correctamente, false si no se modificó nada.
+     */
     public static boolean eliminarDeFavoritos(int idAlojamiento, int idUsuario) {
         String sql = "DELETE FROM favoritos WHERE id_alojamiento = ? AND id_usuario = ?";
 
@@ -332,6 +432,12 @@ public class ConsultasAlojamientos {
         }
     }
 
+    /**
+     * Verifica si ya existe un alojamiento registrado con el nombre indicado.
+     *
+     * @param nombre Nombre del alojamiento.
+     * @return true si el nombre ya está en uso, false si es único.
+     */
     public static boolean existeNombreAlojamiento(String nombre) {
         String sql = "SELECT COUNT(*) FROM alojamientos WHERE nombre = ?";
         try (Connection conn = Conexion.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {

@@ -169,80 +169,124 @@ public class GestionDestinosController implements Initializable {
         }
     }
 
+//    private void crearTarjetaDestino(Destino destino) {
+//        VBox tarjetaDestino = new VBox(8);
+//        tarjetaDestino.getStyleClass().add("destination-card");
+//        tarjetaDestino.setAlignment(Pos.TOP_CENTER);
+//        Node vistaContenido;
+//        if (destino.getImagen() != null && !destino.getImagen().isBlank()) {
+//            ImageView vistaImagen = new ImageView();
+//            vistaImagen.setFitWidth(130);
+//            vistaImagen.setFitHeight(75);
+//            vistaImagen.setPreserveRatio(true);
+//            try {
+//                ConexionFtp.cargarImagen(destino.getImagen(), vistaImagen);
+//                vistaContenido = vistaImagen;
+//            } catch (Exception ex) {
+//                Label sinImagen = new Label("Error al cargar imagen");
+//                sinImagen.setStyle("-fx-text-fill: #999999; -fx-font-size: 12px;");
+//                vistaContenido = sinImagen;
+//            }
+//        } else {
+//            Label sinImagen = new Label("Sin imagen disponible");
+//            sinImagen.setStyle("-fx-text-fill: #999999; -fx-font-size: 12px;");
+//            vistaContenido = sinImagen;
+//        }
+//
+//        Label etiquetaNombre = new Label(destino.getNombre());
+//        etiquetaNombre.getStyleClass().add("destination-name");
+//
+//        Label etiquetaDescripcion = new Label(destino.getDescripcion());
+//        etiquetaDescripcion.getStyleClass().add("destination-desc");
+//        etiquetaDescripcion.setWrapText(true);
+//
+//        String fechaFormateada = formatoFecha.format(destino.getFecha_creacion());
+//        Label etiquetaFecha = new Label("Fecha: " + fechaFormateada);
+//        etiquetaFecha.getStyleClass().add("destination-date");
+//
+//        Button botonEditar = new Button("Editar");
+//        botonEditar.getStyleClass().add("button-edit");
+//        botonEditar.setOnAction(e -> abrirVentanaEditar(destino));
+//
+//        Button botonEliminar = new Button("Eliminar");
+//        botonEliminar.getStyleClass().add("button-delete");
+//        botonEliminar.setOnAction(e -> {
+//            Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+//            confirm.setTitle("Confirmar eliminación");
+//            confirm.setHeaderText("¿Estás seguro que quieres borrar este destino?");
+//            confirm.setContentText("Destino: " + destino.getNombre());
+//
+//            Optional<ButtonType> resp = confirm.showAndWait();
+//            if (resp.isPresent() && resp.get() == ButtonType.OK) {
+//                boolean ok = ConsultasDestinos.eliminarDestino(destino.getId_destino());
+//                if (ok) {
+//                    String nombreImagen = destino.getImagen();
+//                    if (nombreImagen != null && !nombreImagen.isBlank()) {
+//                        ConexionFtp.eliminarArchivo(nombreImagen);
+//                    }
+//                    Alertas.informacion("Destino eliminado correctamente.");
+//                    recargarTabla();
+//                } else {
+//                    Alertas.error("Error", "No se pudo eliminar el destino.");
+//                }
+//            }
+//        });
+//
+//        HBox cajaBotones = new HBox(10, botonEditar, botonEliminar);
+//        cajaBotones.setAlignment(Pos.CENTER);
+//
+//        tarjetaDestino.getChildren().addAll(
+//                vistaContenido,
+//                etiquetaNombre,
+//                etiquetaDescripcion,
+//                etiquetaFecha,
+//                cajaBotones
+//        );
+//
+//        destinationsPane.getChildren().add(tarjetaDestino);
+//    }
     private void crearTarjetaDestino(Destino destino) {
-        VBox tarjetaDestino = new VBox(8);
+        VBox tarjetaDestino = new VBox(10);
         tarjetaDestino.getStyleClass().add("destination-card");
         tarjetaDestino.setAlignment(Pos.TOP_CENTER);
-        Node vistaContenido;
-        if (destino.getImagen() != null && !destino.getImagen().isBlank()) {
-            ImageView vistaImagen = new ImageView();
-            vistaImagen.setFitWidth(130);
-            vistaImagen.setFitHeight(75);
-            vistaImagen.setPreserveRatio(true);
-            try {
-                ConexionFtp.cargarImagen(destino.getImagen(), vistaImagen);
-                vistaContenido = vistaImagen;
-            } catch (Exception ex) {
-                Label sinImagen = new Label("Error al cargar imagen");
-                sinImagen.setStyle("-fx-text-fill: #999999; -fx-font-size: 12px;");
-                vistaContenido = sinImagen;
-            }
-        } else {
-            Label sinImagen = new Label("Sin imagen disponible");
-            sinImagen.setStyle("-fx-text-fill: #999999; -fx-font-size: 12px;");
-            vistaContenido = sinImagen;
+
+        // Imagen del destino
+        ImageView vistaImagen = new ImageView();
+        vistaImagen.setFitWidth(240);
+        vistaImagen.setFitHeight(135);
+        vistaImagen.setPreserveRatio(false);
+        vistaImagen.setSmooth(true);
+        vistaImagen.setStyle("-fx-background-radius: 12; -fx-border-radius: 12;");
+
+        try {
+            ConexionFtp.cargarImagen(destino.getImagen(), vistaImagen);
+        } catch (Exception ex) {
+            vistaImagen.setImage(new javafx.scene.image.Image(getClass().getResourceAsStream("/img/no-image.png")));
         }
 
+        // Nombre
         Label etiquetaNombre = new Label(destino.getNombre());
-        etiquetaNombre.getStyleClass().add("destination-name");
+        etiquetaNombre.setStyle("-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #222;");
 
+        // Descripción
         Label etiquetaDescripcion = new Label(destino.getDescripcion());
-        etiquetaDescripcion.getStyleClass().add("destination-desc");
         etiquetaDescripcion.setWrapText(true);
+        etiquetaDescripcion.setMaxWidth(220);
+        etiquetaDescripcion.setStyle("-fx-text-fill: #555; -fx-font-size: 13px;");
 
-        String fechaFormateada = formatoFecha.format(destino.getFecha_creacion());
-        Label etiquetaFecha = new Label("Fecha: " + fechaFormateada);
-        etiquetaFecha.getStyleClass().add("destination-date");
-
+        // Botones
         Button botonEditar = new Button("Editar");
-        botonEditar.getStyleClass().add("button-edit");
         botonEditar.setOnAction(e -> abrirVentanaEditar(destino));
+        botonEditar.setStyle("-fx-background-color: #3874b4; -fx-text-fill: white; -fx-background-radius: 18; -fx-padding: 6 16;");
 
         Button botonEliminar = new Button("Eliminar");
-        botonEliminar.getStyleClass().add("button-delete");
-        botonEliminar.setOnAction(e -> {
-            Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
-            confirm.setTitle("Confirmar eliminación");
-            confirm.setHeaderText("¿Estás seguro que quieres borrar este destino?");
-            confirm.setContentText("Destino: " + destino.getNombre());
+        botonEliminar.setOnAction(e -> eliminarDestino(destino));
+        botonEliminar.setStyle("-fx-background-color: #e57373; -fx-text-fill: white; -fx-background-radius: 18; -fx-padding: 6 16;");
 
-            Optional<ButtonType> resp = confirm.showAndWait();
-            if (resp.isPresent() && resp.get() == ButtonType.OK) {
-                boolean ok = ConsultasDestinos.eliminarDestino(destino.getId_destino());
-                if (ok) {
-                    String nombreImagen = destino.getImagen();
-                    if (nombreImagen != null && !nombreImagen.isBlank()) {
-                        ConexionFtp.eliminarArchivo(nombreImagen);
-                    }
-                    Alertas.informacion("Destino eliminado correctamente.");
-                    recargarTabla();
-                } else {
-                    Alertas.error("Error", "No se pudo eliminar el destino.");
-                }
-            }
-        });
+        HBox botones = new HBox(10, botonEditar, botonEliminar);
+        botones.setAlignment(Pos.CENTER);
 
-        HBox cajaBotones = new HBox(10, botonEditar, botonEliminar);
-        cajaBotones.setAlignment(Pos.CENTER);
-
-        tarjetaDestino.getChildren().addAll(
-                vistaContenido,
-                etiquetaNombre,
-                etiquetaDescripcion,
-                etiquetaFecha,
-                cajaBotones
-        );
-
+        tarjetaDestino.getChildren().addAll(vistaImagen, etiquetaNombre, etiquetaDescripcion, botones);
         destinationsPane.getChildren().add(tarjetaDestino);
     }
 
@@ -265,6 +309,26 @@ public class GestionDestinosController implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
             Alertas.error("Error", "No se pudo abrir la ventana de edición: " + e.getMessage());
+        }
+    }
+
+    private void eliminarDestino(Destino destino) {
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Confirmar eliminación");
+        confirm.setHeaderText("¿Eliminar destino " + destino.getNombre() + "?");
+
+        Optional<ButtonType> resp = confirm.showAndWait();
+        if (resp.isPresent() && resp.get() == ButtonType.OK) {
+            boolean ok = ConsultasDestinos.eliminarDestino(destino.getId_destino());
+            if (ok) {
+                if (destino.getImagen() != null && !destino.getImagen().isBlank()) {
+                    ConexionFtp.eliminarArchivo(destino.getImagen());
+                }
+                Alertas.informacion("Destino eliminado correctamente.");
+                recargarTabla();
+            } else {
+                Alertas.error("Error", "No se pudo eliminar el destino.");
+            }
         }
     }
 

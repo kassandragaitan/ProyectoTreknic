@@ -47,7 +47,7 @@
                             </ImageView>
                         </StackPane>
                         <Region HBox.hgrow="ALWAYS" />
-                        <Label styleClass="data-change-positive-box"/>
+                  
                     </HBox>
                     <VBox spacing="5">
                         <Label styleClass="data-title" text="Usuarios Registrados" />
@@ -64,7 +64,7 @@
                             </ImageView>
                         </StackPane>
                         <Region HBox.hgrow="ALWAYS" />
-                        <Label styleClass="data-change-positive-box"/>
+               
                     </HBox>
                     <VBox spacing="5">
                         <Label styleClass="data-title" text="Itinerarios Registrados" />
@@ -81,7 +81,7 @@
                             </ImageView>
                         </StackPane>
                         <Region HBox.hgrow="ALWAYS" />
-                        <Label styleClass="data-change-negative-box"/>
+                 
                     </HBox>
                     <VBox spacing="5">
                         <Label styleClass="data-title" text="Destinos Registrados" />
@@ -98,7 +98,7 @@
                             </ImageView>
                         </StackPane>
                         <Region HBox.hgrow="ALWAYS" />
-                        <Label styleClass="data-change-positive-box"/>
+                   
                     </HBox>
                     <VBox spacing="5">
                         <Label styleClass="data-title" text="Actividades registradas" />

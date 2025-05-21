@@ -102,25 +102,6 @@
     -fx-font-weight: bold;
 }
 
-.data-change-positive-box {
-    -fx-background-color: #d1f7d6;
-    -fx-text-fill: green;
-    -fx-font-weight: bold;
-    -fx-font-size: 12px;
-    -fx-padding: 4 8;
-    -fx-background-radius: 5;
-}
-
-.data-change-negative-box {
-    -fx-background-color: #ffe1e1;
-    -fx-text-fill: red;
-    -fx-font-weight: bold;
-    -fx-padding: 4 8;
-    -fx-background-radius: 5;
-    -fx-font-size: 12px;
-}
-
-
 .chart-panel, .table-panel {
     -fx-background-color: white;
     -fx-border-color: #dcdcdc;

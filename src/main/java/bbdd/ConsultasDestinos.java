@@ -4,9 +4,6 @@
  */
 package bbdd;
 
-import static bbdd.Conexion.cerrarConexion;
-import static bbdd.Conexion.conectar;
-import static bbdd.Conexion.conn;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -22,11 +19,27 @@ import javafx.scene.control.ComboBox;
 import modelo.Destino;
 
 /**
+ * Clase que contiene métodos para gestionar los destinos turísticos del
+ * sistema. Proporciona funciones CRUD, carga de datos relacionados, y manejo de
+ * dependencias con otras entidades como categorías, actividades, alojamientos y
+ * reseñas.
+ *
+ * Esta clase interactúa directamente con la tabla `destinos` y sus relaciones.
  *
  * @author k0343
  */
 public class ConsultasDestinos {
 
+    /**
+     * Registra un nuevo destino en la base de datos.
+     *
+     * @param nombre Nombre del destino.
+     * @param descripcion Descripción del destino.
+     * @param imagen Ruta de la imagen asociada.
+     * @param fecha Fecha de creación (se ignora, se usa NOW()).
+     * @param idCategoria ID de la categoría asociada.
+     * @return true si el registro fue exitoso, false en caso de error.
+     */
     public static boolean registrarDestino(String nombre, String descripcion, String imagen, String fecha, int idCategoria) {
         String sql = "INSERT INTO destinos (nombre, descripcion, imagen, fecha_creacion, id_categoria_fk) VALUES (?, ?, ?, NOW(), ?)";
         try (Connection conn = Conexion.conectar(); PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -41,6 +54,12 @@ public class ConsultasDestinos {
         }
     }
 
+    /**
+     * Verifica si ya existe un destino con el nombre especificado.
+     *
+     * @param nombre Nombre del destino a verificar.
+     * @return true si ya existe, false si es único.
+     */
     public static boolean existeDestino(String nombre) {
         String sql = "SELECT COUNT(*) FROM destinos WHERE nombre = ?";
         try (Connection conn = Conexion.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -55,6 +74,16 @@ public class ConsultasDestinos {
         return false;
     }
 
+    /**
+     * Actualiza un destino existente en la base de datos.
+     *
+     * @param id ID del destino.
+     * @param nombre Nuevo nombre.
+     * @param descripcion Nueva descripción.
+     * @param imagen Nueva imagen.
+     * @param idCategoria Nueva categoría.
+     * @return true si se actualizó con éxito, false si ocurrió un error.
+     */
     public static boolean actualizarDestino(int id, String nombre, String descripcion, String imagen, int idCategoria) {
         String sql = "UPDATE destinos SET nombre = ?, descripcion = ?, imagen = ?, id_categoria_fk = ? WHERE id_destino = ?";
         try (Connection conn = Conexion.conectar(); PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -70,6 +99,12 @@ public class ConsultasDestinos {
         }
     }
 
+    /**
+     * Obtiene todos los destinos con información completa (incluyendo
+     * categoría).
+     *
+     * @return Lista de objetos {@link Destino}.
+     */
     public static List<Destino> obtenerDestinos() {
         List<Destino> lista = new ArrayList<>();
         String sql = "SELECT d.*, c.nombre AS categoria FROM destinos d JOIN categorias c ON d.id_categoria_fk = c.id_categoria";
@@ -90,6 +125,11 @@ public class ConsultasDestinos {
         return lista;
     }
 
+    /**
+     * Carga los destinos en un ComboBox.
+     *
+     * @param comboDestino ComboBox donde se cargarán los destinos.
+     */
     public static void cargarComboDestino(ComboBox<Destino> comboDestino) {
         String consulta = "SELECT id_destino, nombre FROM destinos";
         try (Connection conn = Conexion.conectar(); Statement st = conn.createStatement(); ResultSet rs = st.executeQuery(consulta)) {
@@ -102,6 +142,13 @@ public class ConsultasDestinos {
         }
     }
 
+    /**
+     * Carga información de destinos para mostrar métricas como visitas y
+     * valoración media.
+     *
+     * @param listado Lista observable de destinos donde se agregan los
+     * resultados.
+     */
     public static void cargarDatosDestinos(ObservableList<Destino> listado) {
         String consulta = "SELECT d.id_destino, d.nombre, d.descripcion, d.fecha_creacion, d.imagen, "
                 + "COUNT(r.id_resena) AS visitas, "
@@ -128,6 +175,12 @@ public class ConsultasDestinos {
         }
     }
 
+    /**
+     * Filtra los destinos por nombre de categoría.
+     *
+     * @param nombreCategoria Nombre de la categoría.
+     * @return Lista de destinos que pertenecen a esa categoría.
+     */
     public static List<Destino> obtenerDestinosPorNombreCategoria(String nombreCategoria) {
         List<Destino> lista = new ArrayList<>();
         String sql = "SELECT d.id_destino, d.nombre, d.descripcion, d.imagen, d.fecha_creacion FROM destinos d JOIN categorias c ON d.id_categoria_fk = c.id_categoria WHERE c.nombre = ?";
@@ -149,6 +202,11 @@ public class ConsultasDestinos {
         return lista;
     }
 
+    /**
+     * Obtiene una lista de nombres de todas las categorías disponibles.
+     *
+     * @return Lista de nombres de categorías.
+     */
     public static List<String> obtenerNombresCategorias() {
         List<String> categorias = new ArrayList<>();
         String sql = "SELECT nombre FROM categorias";
@@ -162,6 +220,11 @@ public class ConsultasDestinos {
         return categorias;
     }
 
+    /**
+     * Obtiene todos los destinos activos para su uso en otras vistas.
+     *
+     * @return Lista observable de destinos activos.
+     */
     public static ObservableList<Destino> obtenerTodosLosDestinos() {
         ObservableList<Destino> lista = FXCollections.observableArrayList();
         String sql = "SELECT id_destino, nombre, descripcion, categoria, fecha FROM destinos WHERE activo = 1";
@@ -182,6 +245,11 @@ public class ConsultasDestinos {
         return lista;
     }
 
+    /**
+     * Obtiene las fechas distintas de creación de destinos.
+     *
+     * @return Lista observable con fechas únicas (formato yyyy-mm-dd).
+     */
     public static ObservableList<String> obtenerFechasDestinos() {
         ObservableList<String> fechas = FXCollections.observableArrayList();
         String consulta = "SELECT DISTINCT DATE(fecha_creacion) AS fecha FROM destinos ORDER BY fecha DESC";
@@ -195,6 +263,11 @@ public class ConsultasDestinos {
         return fechas;
     }
 
+    /**
+     * Obtiene los nombres de todas las categorías registradas.
+     *
+     * @return Lista observable de nombres de categorías.
+     */
     public static ObservableList<String> obtenerCategorias() {
         ObservableList<String> categorias = FXCollections.observableArrayList();
         String sql = "SELECT nombre FROM categorias";
@@ -208,6 +281,15 @@ public class ConsultasDestinos {
         return categorias;
     }
 
+    /**
+     * Filtra destinos por tipo de filtro (fecha o categoría) y valor
+     * especificado.
+     *
+     * @param tipoFiltro Tipo de filtro: "Filtrar por fecha" o "Filtrar por
+     * categoría".
+     * @param valor Valor a comparar.
+     * @return Lista de destinos que cumplen el filtro.
+     */
     public static List<Destino> filtrarDestinos(String tipoFiltro, String valor) {
         List<Destino> lista = new ArrayList<>();
         String consulta = "SELECT d.*, c.nombre as categoria FROM destinos d LEFT JOIN categorias c ON d.id_categoria_fk = c.id_categoria WHERE ";
@@ -235,6 +317,13 @@ public class ConsultasDestinos {
         return lista;
     }
 
+    /**
+     * Verifica si un destino tiene elementos asociados en otras tablas
+     * (reseñas, alojamientos, actividades).
+     *
+     * @param idDestino ID del destino.
+     * @return true si tiene elementos asociados, false si no.
+     */
     public static boolean tieneElementosAsociados(int idDestino) {
         String sqlResenas = "SELECT COUNT(*) FROM resenas WHERE id_destino = ?";
         String sqlAlojamientos = "SELECT COUNT(*) FROM alojamientos WHERE id_destino_fk = ?";
@@ -270,6 +359,12 @@ public class ConsultasDestinos {
         return tieneResena || tieneAlojamiento || tieneActividad;
     }
 
+    /**
+     * Elimina un destino sin comprobar elementos asociados.
+     *
+     * @param idDestino ID del destino.
+     * @return true si se eliminó correctamente, false si falló.
+     */
     public static boolean eliminarDestino(int idDestino) {
         String sqlEliminar = "DELETE FROM destinos WHERE id_destino = ?";
         try (Connection conn = Conexion.conectar(); PreparedStatement stmtEliminar = conn.prepareStatement(sqlEliminar)) {
@@ -281,10 +376,24 @@ public class ConsultasDestinos {
         }
     }
 
+    /**
+     * Elimina un destino y todos sus elementos asociados (reseñas,
+     * alojamientos, actividades). Usa transacciones para garantizar integridad.
+     *
+     * @param idDestino ID del destino a eliminar.
+     * @return true si se eliminó todo correctamente, false si ocurrió algún
+     * error.
+     */
     public static boolean eliminarDestinoConAsociados(int idDestino) {
-        try (Connection conn = Conexion.conectar()) {
-            try (PreparedStatement stmtEliminarActividades = conn.prepareStatement("DELETE FROM actividades WHERE id_destino = ?"); PreparedStatement stmtEliminarResenas = conn.prepareStatement("DELETE FROM resenas WHERE id_destino = ?"); PreparedStatement stmtEliminarAlojamientos = conn.prepareStatement("DELETE FROM alojamientos WHERE id_destino_fk = ?"); PreparedStatement stmtEliminarDestino = conn.prepareStatement("DELETE FROM destinos WHERE id_destino = ?")) {
+        Connection conn = null;
+        boolean exito = false;
 
+        try {
+            conn = Conexion.conectar();
+            conn.setAutoCommit(false);
+
+            try (
+                    PreparedStatement stmtEliminarActividades = conn.prepareStatement("DELETE FROM actividades WHERE id_destino = ?"); PreparedStatement stmtEliminarResenas = conn.prepareStatement("DELETE FROM resenas WHERE id_destino = ?"); PreparedStatement stmtEliminarAlojamientos = conn.prepareStatement("DELETE FROM alojamientos WHERE id_destino_fk = ?"); PreparedStatement stmtEliminarDestino = conn.prepareStatement("DELETE FROM destinos WHERE id_destino = ?");) {
                 stmtEliminarActividades.setInt(1, idDestino);
                 stmtEliminarActividades.executeUpdate();
 
@@ -295,11 +404,34 @@ public class ConsultasDestinos {
                 stmtEliminarAlojamientos.executeUpdate();
 
                 stmtEliminarDestino.setInt(1, idDestino);
-                return stmtEliminarDestino.executeUpdate() > 0;
+                int filas = stmtEliminarDestino.executeUpdate();
+
+                if (filas > 0) {
+                    conn.commit();
+                    exito = true;
+                } else {
+                    conn.rollback();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                if (conn != null) {
+                    conn.rollback();
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.setAutoCommit(true);
+                }
+                Conexion.cerrarConexion();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
+
+        return exito;
     }
+
 }

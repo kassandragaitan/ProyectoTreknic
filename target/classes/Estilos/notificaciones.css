@@ -120,7 +120,7 @@
 
 .check-box:selected {
     -fx-background-color: #e8f0fe;
-  -fx-border-color: #e8f0fe;
+    -fx-border-color: #e8f0fe;
     -fx-border-radius: 6;
     -fx-background-radius: 6;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.34), 2, 0, 0, 1);
@@ -162,20 +162,20 @@
     -fx-cursor: hand;
     -fx-padding: 0;
     -fx-alignment: center;
-    -fx-font-size: 12px; 
+    -fx-font-size: 12px;
     -fx-text-fill: #333333;
     -fx-font-weight: bold;
 }
 
 .check-box-dia:selected {
-  -fx-background-color: #e8f0fe;
-  -fx-border-color: #e8f0fe;
-    
+    -fx-background-color: #e8f0fe;
+    -fx-border-color: #e8f0fe;
+
     -fx-border-radius: 6;
     -fx-background-radius: 6;
-  -fx-text-fill: #333333;
+    -fx-text-fill: #333333;
 }
-/* Panel contenedor tipo tarjeta */
+
 .filtro-panel {
     -fx-background-color: #ffffff;
     -fx-border-color: #e0e0e0;
@@ -191,13 +191,11 @@
     -fx-border-color: #ccd6e0;
     -fx-border-radius: 6;
     -fx-background-radius: 6;
-    -fx-pref-width: 160px;
-    -fx-pref-height: 36px;
     -fx-font-size: 13px;
 }
 
 .boton-filtro {
-    -fx-background-color: #4B6EAF;
+    -fx-background-color: #3874b4;
     -fx-text-fill: white;
     -fx-font-weight: bold;
     -fx-background-radius: 18;

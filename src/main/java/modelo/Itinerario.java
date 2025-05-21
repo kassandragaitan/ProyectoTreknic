@@ -2,21 +2,69 @@ package modelo;
 
 import java.util.Date;
 
+/**
+ * Representa un itinerario turístico creado por un usuario en la aplicación.
+ * Contiene detalles como nombre, duración, descripción, fecha de creación, y
+ * datos del usuario que lo creó.
+ *
+ * Esta clase se utiliza tanto para mostrar información en tablas como para
+ * registrar y modificar itinerarios.
+ *
+ * @author k0343
+ */
 public class Itinerario {
 
+    /**
+     * Identificador único del itinerario.
+     */
     private int idItinerario;
+
+    /**
+     * Nombre del itinerario.
+     */
     private String nombre;
+
+    /**
+     * Descripción del itinerario.
+     */
     private String descripcion;
+
+    /**
+     * Duración del itinerario
+     */
     private String duracion;
+
+    /**
+     * Fecha de creación del itinerario.
+     */
     private Date fechaCreacion;
+
+    /**
+     * Estado del itinerario (activo/inactivo).
+     */
     private Boolean isActive;
+
+    /**
+     * Ruta o nombre del archivo de la imagen asociada al itinerario.
+     */
     private String foto;
+
+    /**
+     * Identificador del usuario que creó el itinerario.
+     */
     private int idUsuario;
+
+    /**
+     * Nombre del usuario que creó el itinerario.
+     */
     private String nombreUsuario;
 
     public Itinerario() {
     }
 
+    /**
+     * Constructor completo con todos los campos disponibles.
+     */
     public Itinerario(int idItinerario, String nombre, String descripcion, String duracion, Date fechaCreacion, Boolean isActive, String foto, int idUsuario, String nombreUsuario) {
         this.idItinerario = idItinerario;
         this.nombre = nombre;
@@ -29,7 +77,9 @@ public class Itinerario {
         this.nombreUsuario = nombreUsuario;
     }
 
-    // Constructor básico
+    /**
+     * Constructor básico sin foto ni estado.
+     */
     public Itinerario(int idItinerario, String nombre, Date fechaCreacion, String descripcion, String duracion) {
         this.idItinerario = idItinerario;
         this.nombre = nombre;
@@ -38,7 +88,9 @@ public class Itinerario {
         this.duracion = duracion;
     }
 
-    // Constructor completo
+    /**
+     * Constructor sin nombre de usuario.
+     */
     public Itinerario(int idItinerario, String nombre, Date fechaCreacion, String descripcion, String duracion, int idUsuario, Boolean isActive, String foto) {
         this.idItinerario = idItinerario;
         this.nombre = nombre;
@@ -50,26 +102,19 @@ public class Itinerario {
         this.foto = foto;
     }
 
-    // Constructor sin isActive ni foto
+    /**
+     * Constructor sin estado ni imagen.
+     */
     public Itinerario(int idItinerario, String nombre, Date fechaCreacion, String descripcion, String duracion, int idUsuario) {
         this(idItinerario, nombre, fechaCreacion, descripcion, duracion, idUsuario, null, null);
     }
 
-    // Getters y Setters (estilo JavaBeans)
     public int getIdItinerario() {
         return idItinerario;
     }
 
     public void setIdItinerario(int idItinerario) {
         this.idItinerario = idItinerario;
-    }
-
-    public String getNombreUsuario() {
-        return nombreUsuario;
-    }
-
-    public void setNombreUsuario(String nombreUsuario) {
-        this.nombreUsuario = nombreUsuario;
     }
 
     public String getNombre() {
@@ -126,5 +171,13 @@ public class Itinerario {
 
     public void setIdUsuario(int idUsuario) {
         this.idUsuario = idUsuario;
+    }
+
+    public String getNombreUsuario() {
+        return nombreUsuario;
+    }
+
+    public void setNombreUsuario(String nombreUsuario) {
+        this.nombreUsuario = nombreUsuario;
     }
 }

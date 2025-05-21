@@ -4,7 +4,6 @@ import Utilidades.Alertas;
 import Utilidades.compruebaCampo;
 import bbdd.Conexion;
 import bbdd.ConsultasCategoria;
-import bbdd.ConsultasMovimientos;
 import bbdd.ConsultasNotificaciones;
 import java.net.URL;
 import java.sql.Date;
@@ -110,16 +109,11 @@ public class AgregarCategoriaController implements Initializable {
             String accion = esEdicion
                     ? "Ha actualizado la categoría " + nombre
                     : "Ha registrado la categoría " + nombre;
-            ConsultasMovimientos.registrarMovimiento(
+            ConsultasNotificaciones.registrarMovimiento(
                     accion,
                     Date.valueOf(LocalDate.now()),
                     Usuario.getUsuarioActual().getIdUsuario()
             );
-            ConsultasNotificaciones.registrarNotificacion(
-                    accion,
-                    Usuario.getUsuarioActual().getIdUsuario()
-            );
-
             Conexion.cerrarConexion();
 
             Alertas.informacion(esEdicion

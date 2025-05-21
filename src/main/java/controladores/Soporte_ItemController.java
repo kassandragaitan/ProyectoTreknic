@@ -1,6 +1,8 @@
 package controladores;
 
 import Utilidades.Alertas;
+import bbdd.Conexion;
+import bbdd.ConsultasNotificaciones;
 import bbdd.ConsultasSoporte;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -65,6 +67,17 @@ public class Soporte_ItemController implements Initializable {
             if (confirmacion) {
                 boolean eliminada = ConsultasSoporte.eliminarPregunta(preguntaActual.getPregunta());
                 if (eliminada) {
+                    Conexion.conectar();
+                    String mensaje = "Ha eliminado la pregunta frecuente: " + preguntaActual.getPregunta();
+                    int idUsuario = modelo.Usuario.getUsuarioActual().getIdUsuario();
+
+                    bbdd.ConsultasNotificaciones.registrarMovimiento(
+                            mensaje,
+                            new java.util.Date(),
+                            idUsuario
+                    );
+                    Conexion.cerrarConexion();
+
                     Alertas.informacion("La pregunta ha sido eliminada correctamente.");
 
                     if (recargarPreguntas != null) {
@@ -76,4 +89,5 @@ public class Soporte_ItemController implements Initializable {
             }
         }
     }
+
 }

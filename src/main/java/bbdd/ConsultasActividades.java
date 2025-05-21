@@ -5,8 +5,6 @@
 package bbdd;
 
 import static bbdd.Conexion.cerrarConexion;
-import static bbdd.Conexion.conectar;
-import static bbdd.Conexion.conn;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,11 +17,22 @@ import javafx.collections.ObservableList;
 import modelo.Actividad;
 
 /**
+ * Clase encargada de realizar operaciones CRUD y consultas específicas sobre la
+ * tabla `actividades` en la base de datos.
+ *
+ * Gestiona inserciones, actualizaciones, búsquedas y filtros de actividades y
+ * su relación con destinos.
  *
  * @author k0343
  */
 public class ConsultasActividades {
 
+    /**
+     * Registra una nueva actividad en la base de datos.
+     *
+     * @param actividad Objeto {@link Actividad} a insertar.
+     * @return true si se insertó correctamente, false en caso contrario.
+     */
     public static boolean registrarActividad(Actividad actividad) {
         String consulta = "INSERT INTO actividades (nombre, descripcion, id_destino) VALUES (?, ?, ?)";
         try (Connection conn = Conexion.conectar(); PreparedStatement pst = conn.prepareStatement(consulta)) {
@@ -42,6 +51,12 @@ public class ConsultasActividades {
         }
     }
 
+    /**
+     * Actualiza una actividad existente en la base de datos.
+     *
+     * @param actividad Objeto {@link Actividad} con los nuevos datos.
+     * @return true si se actualizó correctamente, false en caso de error.
+     */
     public static boolean actualizarActividad(Actividad actividad) {
         String sql = "UPDATE actividades SET nombre = ?, descripcion = ?, id_destino = ? WHERE id_actividad = ?";
         try (Connection conn = Conexion.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -56,6 +71,12 @@ public class ConsultasActividades {
         }
     }
 
+    /**
+     * Carga los nombres de todos los destinos disponibles para asociarlos a
+     * actividades.
+     *
+     * @return Lista observable con los nombres de los destinos.
+     */
     public static ObservableList<String> cargarNombresDestinos() {
         ObservableList<String> lista = FXCollections.observableArrayList();
         String sql = "SELECT DISTINCT nombre FROM destinos ORDER BY nombre";
@@ -69,6 +90,12 @@ public class ConsultasActividades {
         return lista;
     }
 
+    /**
+     * Carga las actividades asociadas a un destino específico.
+     *
+     * @param lista Lista donde se almacenarán los resultados.
+     * @param nombreDestino Nombre del destino a filtrar.
+     */
     public static void cargarActividadesPorDestino(ObservableList<Actividad> lista, String nombreDestino) {
         String sql = "SELECT a.id_actividad, a.nombre, a.descripcion, d.nombre AS nombre_destino "
                 + "FROM actividades a JOIN destinos d ON a.id_destino = d.id_destino "
@@ -91,6 +118,13 @@ public class ConsultasActividades {
         }
     }
 
+    /**
+     * Carga actividades filtradas por término de búsqueda (nombre, descripción
+     * o destino).
+     *
+     * @param listaActividades Lista donde se cargarán los resultados.
+     * @param busqueda Texto a buscar en los campos.
+     */
     public static void cargarDatosActividadesFiltradas(ObservableList<Actividad> listaActividades, String busqueda) {
         String consulta = "SELECT a.id_actividad, a.nombre, a.descripcion, a.id_destino, d.nombre AS nombre_destino "
                 + "FROM actividades a JOIN destinos d ON a.id_destino = d.id_destino "
@@ -117,6 +151,12 @@ public class ConsultasActividades {
         }
     }
 
+    /**
+     * Carga todas las actividades existentes junto a sus respectivos destinos.
+     *
+     * @param listado Lista observable donde se agregan las actividades
+     * cargadas.
+     */
     public static void cargarDatosActividades(ObservableList<Actividad> listado) {
         String consultaCarga = "SELECT a.id_actividad, a.nombre, a.descripcion, a.id_destino, d.nombre AS nombre_destino "
                 + "FROM actividades a JOIN destinos d ON a.id_destino = d.id_destino";
@@ -135,6 +175,15 @@ public class ConsultasActividades {
         }
     }
 
+    /**
+     * Verifica si ya existe una actividad con el mismo nombre en un destino
+     * específico.
+     *
+     * @param nombre Nombre de la actividad.
+     * @param idDestino ID del destino donde se busca la coincidencia.
+     * @return true si ya existe una actividad con ese nombre en el destino,
+     * false en caso contrario.
+     */
     public static boolean existeActividadConNombreYDestino(String nombre, int idDestino) {
         String sql = "SELECT COUNT(*) FROM actividades WHERE LOWER(nombre) = LOWER(?) AND id_destino = ?";
         try (Connection conn = Conexion.conectar(); PreparedStatement ps = conn.prepareStatement(sql)) {

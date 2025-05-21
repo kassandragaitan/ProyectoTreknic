@@ -5,7 +5,6 @@ import Utilidades.compruebaCampo;
 import bbdd.Conexion;
 import bbdd.ConsultasCategoria;
 import bbdd.ConsultasDestinos;
-import bbdd.ConsultasMovimientos;
 import bbdd.ConsultasNotificaciones;
 import java.io.File;
 import java.net.URL;
@@ -102,8 +101,6 @@ public class AgregarDestinoController implements Initializable {
             }
         }
     }
-
-    String nuevoNombre = String.valueOf(System.currentTimeMillis());
 
     @FXML
     private void seleccionarImagen(ActionEvent event) {
@@ -207,14 +204,9 @@ public class AgregarDestinoController implements Initializable {
 
                 int idUsuario = Usuario.getUsuarioActual().getIdUsuario();
 
-                ConsultasMovimientos.registrarMovimiento(
+                ConsultasNotificaciones.registrarMovimiento(
                         mensaje,
                         new java.sql.Date(System.currentTimeMillis()),
-                        idUsuario
-                );
-
-                ConsultasNotificaciones.registrarNotificacion(
-                        mensaje,
                         idUsuario
                 );
             }

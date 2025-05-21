@@ -7,7 +7,6 @@ package controladores;
 import Utilidades.Alertas;
 import Utilidades.compruebaCampo;
 import bbdd.Conexion;
-import bbdd.ConsultasMovimientos;
 import bbdd.ConsultasNotificaciones;
 import bbdd.ConsultasPreguntasFrecuentes;
 import java.net.URL;
@@ -19,6 +18,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import modelo.Usuario;
 
 /**
@@ -34,13 +35,16 @@ public class FormularioPreguntaController implements Initializable {
     private TextArea txtRespuesta;
     @FXML
     private Button btnGuardar;
+    @FXML
+    private ImageView imagenTrekNic;
 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        Image imagen = new Image(getClass().getResourceAsStream("/img/Encabezado.png"));
+        imagenTrekNic.setImage(imagen);
     }
 
     @FXML
@@ -60,17 +64,11 @@ public class FormularioPreguntaController implements Initializable {
                 String mensaje = "Ha registrado una nueva pregunta frecuente: " + pregunta;
                 int idUsuario = Usuario.getUsuarioActual().getIdUsuario();
 
-                ConsultasMovimientos.registrarMovimiento(
+                ConsultasNotificaciones.registrarMovimiento(
                         mensaje,
                         new Date(),
                         idUsuario
                 );
-
-                ConsultasNotificaciones.registrarNotificacion(
-                        mensaje,
-                        idUsuario
-                );
-
                 Conexion.cerrarConexion();
 
                 Alertas.informacion("Pregunta guardada correctamente");

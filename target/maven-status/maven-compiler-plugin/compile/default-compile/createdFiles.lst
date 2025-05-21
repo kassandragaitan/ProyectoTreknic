@@ -34,7 +34,6 @@ modelo\PreguntaFrecuente.class
 bbdd\ConsultasReportes.class
 bbdd\ConsultasUsuario.class
 Utilidades\validarEmail.class
-bbdd\ConsultasMovimientos.class
 bbdd\Conexion.class
 acciones\CeldaAccionesResena.class
 controladores\ConfiguracionController.class

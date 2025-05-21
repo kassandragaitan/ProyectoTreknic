@@ -20,13 +20,27 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import modelo.Itinerario;
 
+/**
+ *
+ * @author k0343
+ */
+/**
+ * Celda personalizada para mostrar botones de acción en cada fila de la tabla
+ * de itinerarios. Permite ver, editar y eliminar un itinerario.
+ */
 public class CeldaAccionesItinerario extends TableCell<Itinerario, Void> {
 
     private final HBox contenedor = new HBox(10);
     private final Button botonVer = new Button("Ver");
     private final Button botonEditar = new Button("Editar");
     private final Button botonEliminar = new Button("Eliminar");
+    private final GestionItinerarioController gestionItinerarioController;
 
+    /**
+     * Constructor que inicializa los botones y define sus eventos.
+     *
+     * @param controller Controlador de la vista de gestión de itinerarios.
+     */
     public CeldaAccionesItinerario(GestionItinerarioController controller) {
         this.gestionItinerarioController = controller;
 
@@ -81,6 +95,13 @@ public class CeldaAccionesItinerario extends TableCell<Itinerario, Void> {
         });
     }
 
+    /**
+     * Actualiza el contenido gráfico de la celda si contiene datos.
+     *
+     * @param item Elemento del tipo Void (no se usa).
+     * @param empty true si la celda está vacía, false si contiene un
+     * itinerario.
+     */
     @Override
     protected void updateItem(Void item, boolean empty) {
         super.updateItem(item, empty);
@@ -91,8 +112,13 @@ public class CeldaAccionesItinerario extends TableCell<Itinerario, Void> {
         }
     }
 
-    private final GestionItinerarioController gestionItinerarioController;
-
+    /**
+     * Abre una ventana modal para visualizar o editar un itinerario.
+     *
+     * @param itinerario Itinerario a visualizar o editar.
+     * @param editable true si se permite editar, false si es solo lectura.
+     * @return true si el itinerario fue modificado, false en caso contrario.
+     */
     private boolean abrirVentanaGestionItinerario(Itinerario itinerario, boolean editable) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/AgregarItinerario.fxml"));
@@ -124,15 +150,35 @@ public class CeldaAccionesItinerario extends TableCell<Itinerario, Void> {
         }
     }
 
+    /**
+     * Elimina un itinerario de la base de datos según su ID. También registra
+     * el movimiento como notificación.
+     *
+     * @param idItinerario ID del itinerario a eliminar.
+     * @return true si se eliminó correctamente, false si ocurrió un error.
+     */
     private boolean eliminarItinerarioPorId(int idItinerario) {
         String sql = "DELETE FROM itinerarios WHERE id_itinerario = ?";
+        Itinerario itinerario = getTableRow().getItem();
         try (Connection conn = Conexion.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, idItinerario);
-            int filas = stmt.executeUpdate();
-            return filas > 0;
+            boolean eliminado = stmt.executeUpdate() > 0;
+            if (eliminado && itinerario != null) {
+                String mensaje = "Ha eliminado el itinerario: " + itinerario.getNombre();
+                int idUsuario = modelo.Usuario.getUsuarioActual().getIdUsuario();
+                bbdd.ConsultasNotificaciones.registrarMovimiento(
+                        mensaje,
+                        new java.util.Date(),
+                        idUsuario
+                );
+            }
+            return eliminado;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
+        } finally {
+            Conexion.cerrarConexion();
         }
     }
+
 }

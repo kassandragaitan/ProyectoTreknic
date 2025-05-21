@@ -4,9 +4,6 @@
  */
 package bbdd;
 
-import static bbdd.Conexion.cerrarConexion;
-import static bbdd.Conexion.conectar;
-import static bbdd.Conexion.conn;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,11 +17,25 @@ import modelo.Resena;
 import modelo.Usuario;
 
 /**
+ * Clase encargada de gestionar las operaciones de base de datos relacionadas
+ * con las reseñas de destinos turísticos.
+ *
+ * Permite insertar, listar, filtrar y eliminar reseñas, así como obtener
+ * información básica de usuarios y destinos vinculados.
+ *
+ * Relacionada con las entidades
+ * {@link modelo.Resena}, {@link modelo.Usuario}, {@link modelo.Destino}.
  *
  * @author k0343
  */
 public class ConsultasResenas {
 
+    /**
+     * Obtiene todas las reseñas con información del destino y el usuario
+     * asociado.
+     *
+     * @return Lista de objetos {@link Resena} con los datos obtenidos.
+     */
     public static List<Resena> obtenerResenas() {
         List<Resena> resenas = new ArrayList<>();
         String sql = "SELECT r.id_resena, d.nombre as destino_nombre, r.comentario, r.clasificacion, u.nombre as usuario_nombre "
@@ -49,6 +60,15 @@ public class ConsultasResenas {
         return resenas;
     }
 
+    /**
+     * Inserta una nueva reseña en la base de datos.
+     *
+     * @param idDestino ID del destino al que pertenece la reseña.
+     * @param idUsuario ID del usuario que hizo la reseña.
+     * @param comentario Texto del comentario.
+     * @param clasificacion Puntuación dada (1-5).
+     * @return {@code true} si la operación fue exitosa, {@code false} si falló.
+     */
     public static boolean insertarResena(int idDestino, int idUsuario, String comentario, int clasificacion) {
         String sql = "INSERT INTO resenas (id_destino, id_usuario, comentario, clasificacion) VALUES (?, ?, ?, ?)";
         try (Connection conn = Conexion.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -65,6 +85,11 @@ public class ConsultasResenas {
         }
     }
 
+    /**
+     * Obtiene todos los destinos disponibles para ser asociados a reseñas.
+     *
+     * @return Lista de objetos {@link Destino} con solo ID y nombre.
+     */
     public static List<Destino> obtenerDestinos() {
         List<Destino> lista = new ArrayList<>();
         String sql = "SELECT id_destino, nombre FROM destinos";
@@ -79,6 +104,11 @@ public class ConsultasResenas {
         return lista;
     }
 
+    /**
+     * Obtiene todos los usuarios registrados que pueden crear reseñas.
+     *
+     * @return Lista de objetos {@link Usuario} con solo ID y nombre.
+     */
     public static List<Usuario> obtenerUsuarios() {
         List<Usuario> lista = new ArrayList<>();
         String sql = "SELECT id_usuario, nombre FROM usuarios";
@@ -93,6 +123,14 @@ public class ConsultasResenas {
         return lista;
     }
 
+    /**
+     * Busca reseñas filtrando por nombre de destino, comentario o
+     * clasificación.
+     *
+     * @param lista Lista observable donde se cargan las coincidencias.
+     * @param texto Texto a buscar (puede ser parte del comentario, destino o
+     * puntuación).
+     */
     public static void buscarResenasPorDestino(ObservableList<Resena> lista, String texto) {
         String sql = "SELECT r.*, u.nombre AS nombre_usuario, d.nombre AS nombre_destino "
                 + "FROM resenas r "
@@ -122,6 +160,13 @@ public class ConsultasResenas {
         }
     }
 
+    /**
+     * Busca reseñas filtrando por nombre de usuario, comentario o
+     * clasificación.
+     *
+     * @param lista Lista observable donde se agregan los resultados.
+     * @param texto Texto a buscar (usuario, comentario o puntuación).
+     */
     public static void buscarResenasPorUsuario(ObservableList<Resena> lista, String texto) {
         String sql = "SELECT r.*, u.nombre AS nombre_usuario, d.nombre AS nombre_destino "
                 + "FROM resenas r "
@@ -151,6 +196,13 @@ public class ConsultasResenas {
         }
     }
 
+    /**
+     * Elimina una reseña específica por su ID.
+     *
+     * @param idResena ID de la reseña que se desea eliminar.
+     * @return {@code true} si se eliminó correctamente, {@code false} si
+     * ocurrió un error.
+     */
     public static boolean eliminarResena(int idResena) {
         String sql = "DELETE FROM resenas WHERE id_resena = ?";
         try (Connection conn = Conexion.conectar(); PreparedStatement ps = conn.prepareStatement(sql)) {

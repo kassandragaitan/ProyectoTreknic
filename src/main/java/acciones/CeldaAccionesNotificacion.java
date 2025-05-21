@@ -9,11 +9,19 @@ import javafx.scene.control.TableCell;
 import javafx.scene.layout.HBox;
 import modelo.Notificacion;
 
+/**
+ * Celda personalizada para mostrar un botón de eliminación en la tabla de
+ * notificaciones. Permite eliminar notificaciones directamente desde la
+ * interfaz.
+ */
 public class CeldaAccionesNotificacion extends TableCell<Notificacion, Void> {
 
     private final HBox contenedor = new HBox(10);
     private final Button botonEliminar = new Button("Eliminar");
 
+    /**
+     * Constructor que inicializa el botón de eliminación y su comportamiento.
+     */
     public CeldaAccionesNotificacion() {
         botonEliminar.getStyleClass().addAll("table-button", "red");
         contenedor.setAlignment(Pos.CENTER);
@@ -51,6 +59,13 @@ public class CeldaAccionesNotificacion extends TableCell<Notificacion, Void> {
         });
     }
 
+    /**
+     * Método que actualiza la celda gráfica dependiendo de si está vacía o
+     * contiene una notificación.
+     *
+     * @param item Elemento del tipo Void (no utilizado).
+     * @param empty true si la celda está vacía, false si contiene un elemento.
+     */
     @Override
     protected void updateItem(Void item, boolean empty) {
         super.updateItem(item, empty);

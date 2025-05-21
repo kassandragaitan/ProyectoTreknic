@@ -1,5 +1,6 @@
 package acciones;
 
+import Utilidades.Alertas;
 import bbdd.Conexion;
 import controladores.GestionUsuarioController;
 import controladores.AgregarUsuarioController;
@@ -14,7 +15,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableCell;
-import javafx.scene.control.Tooltip;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
@@ -22,6 +22,10 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import modelo.Usuario;
 
+/**
+ * Celda personalizada para mostrar acciones en la tabla de usuarios. Contiene
+ * botones para ver, editar o eliminar un usuario.
+ */
 public class CeldaAccionesUsuario extends TableCell<Usuario, Void> {
 
     private final HBox contenedor = new HBox(10);
@@ -30,6 +34,12 @@ public class CeldaAccionesUsuario extends TableCell<Usuario, Void> {
     private final Button botonEliminar = new Button("Eliminar");
     private final GestionUsuarioController controller;
 
+    /**
+     * Constructor que define la funcionalidad de los botones y su
+     * comportamiento.
+     *
+     * @param controller Controlador de la vista de gestión de usuarios.
+     */
     public CeldaAccionesUsuario(GestionUsuarioController controller) {
         this.controller = controller;
 
@@ -69,6 +79,8 @@ public class CeldaAccionesUsuario extends TableCell<Usuario, Void> {
                     if (response == ButtonType.OK) {
                         if (eliminarUsuarioPorId(usuario.getIdUsuario())) {
                             getTableView().getItems().remove(usuario);
+                            Alertas.informacion("Usuario eliminado correctamente.");
+                            controller.recargarTabla();
                         } else {
                             Alert error = new Alert(AlertType.ERROR);
                             error.setTitle("Error");
@@ -81,6 +93,13 @@ public class CeldaAccionesUsuario extends TableCell<Usuario, Void> {
         });
     }
 
+    /**
+     * Actualiza la celda gráfica con los botones si la fila contiene un usuario
+     * válido.
+     *
+     * @param item Elemento del tipo Void (no usado).
+     * @param empty true si la celda está vacía, false si contiene un usuario.
+     */
     @Override
     protected void updateItem(Void item, boolean empty) {
         super.updateItem(item, empty);
@@ -92,7 +111,7 @@ public class CeldaAccionesUsuario extends TableCell<Usuario, Void> {
 
             if (usuarioActual != null && usuarioFila.getIdUsuario() == usuarioActual.getIdUsuario()) {
                 botonEliminar.setDisable(true);
-                botonEliminar.setVisible(true); 
+                botonEliminar.setVisible(true);
             } else {
                 botonEliminar.setDisable(false);
                 botonEliminar.setVisible(true);
@@ -103,6 +122,13 @@ public class CeldaAccionesUsuario extends TableCell<Usuario, Void> {
         }
     }
 
+    /**
+     * Abre la ventana para ver o editar los datos de un usuario.
+     *
+     * @param usuario Usuario a mostrar o editar.
+     * @param editable true si se desea edición, false para solo visualización.
+     * @return true si se modificó el usuario, false en caso contrario.
+     */
     private boolean abrirVentanaGestionUsuario(Usuario usuario, boolean editable) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/AgregarUsuario.fxml"));
@@ -132,15 +158,37 @@ public class CeldaAccionesUsuario extends TableCell<Usuario, Void> {
         }
     }
 
+    /**
+     * Elimina un usuario de la base de datos por su ID y registra el
+     * movimiento.
+     *
+     * @param idUsuario ID del usuario a eliminar.
+     * @return true si el usuario fue eliminado correctamente, false en caso de
+     * error.
+     */
     private boolean eliminarUsuarioPorId(int idUsuario) {
         String sql = "DELETE FROM usuarios WHERE id_usuario = ?";
+        Usuario usuario = getTableRow().getItem();
         try (Connection conn = Conexion.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, idUsuario);
-            int filas = stmt.executeUpdate();
-            return filas > 0;
+            boolean eliminado = stmt.executeUpdate() > 0;
+
+            if (eliminado && usuario != null) {
+                String mensaje = "Ha eliminado al usuario " + usuario.getNombre();
+                int idAccionUsuario = Usuario.getUsuarioActual().getIdUsuario();
+                bbdd.ConsultasNotificaciones.registrarMovimiento(
+                        mensaje,
+                        new java.util.Date(),
+                        idAccionUsuario
+                );
+            }
+            return eliminado;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
+        } finally {
+            Conexion.cerrarConexion();
         }
     }
+
 }

@@ -9,7 +9,6 @@ import Utilidades.compruebaCampo;
 import bbdd.Conexion;
 import bbdd.ConsultasAlojamientos;
 import bbdd.ConsultasDestinos;
-import bbdd.ConsultasMovimientos;
 import bbdd.ConsultasTipoAlojamiento;
 import java.io.File;
 import java.net.URL;
@@ -200,14 +199,9 @@ public class AgregarAlojamientoController implements Initializable {
 
             int idUsuario = Usuario.getUsuarioActual().getIdUsuario();
 
-            ConsultasMovimientos.registrarMovimiento(
+            ConsultasNotificaciones.registrarMovimiento(
                     mensaje,
                     new java.util.Date(),
-                    idUsuario
-            );
-
-            ConsultasNotificaciones.registrarNotificacion(
-                    mensaje,
                     idUsuario
             );
 
@@ -244,12 +238,6 @@ public class AgregarAlojamientoController implements Initializable {
                         new Image(getClass().getResourceAsStream("/img/Encabezado.png"))
                 );
             }
-        }
-    }
-
-    private void recargarTabla() {
-        if (gestionAlojamientoController != null) {
-            gestionAlojamientoController.cargarAlojamientos();
         }
     }
 
@@ -316,14 +304,5 @@ public class AgregarAlojamientoController implements Initializable {
             campoImagen.setText(fichero.getName());
         }
     }
-
-    private String subirImagenAlFTP(File localFile) {
-        String ext = localFile.getName().substring(localFile.getName().lastIndexOf('.'));
-        String remoteName = System.currentTimeMillis() + ext;
-        if (!ConexionFtp.conectar() || !ConexionFtp.subirArchivo(localFile, remoteName)) {
-            return null;
-        }
-        ConexionFtp.desconectar();
-        return remoteName;
-    }
+ 
 }

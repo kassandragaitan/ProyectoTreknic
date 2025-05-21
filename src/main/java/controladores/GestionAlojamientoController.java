@@ -17,6 +17,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -174,6 +175,92 @@ public class GestionAlojamientoController implements Initializable {
         cargarAlojamientosFavoritos();
     }
 
+//    public void cargarAlojamientosFavoritos() {
+//        contenedorFavoritos.getChildren().clear();
+//
+//        List<Alojamiento> favoritos = ConsultasAlojamientos
+//                .obtenerAlojamientosFavoritosPorUsuario(
+//                        Usuario.getUsuarioActual().getIdUsuario()
+//                );
+//        if (favoritos.isEmpty()) {
+//            Label texto = new Label("No hay alojamientos en favoritos aún.");
+//            texto.setStyle("-fx-text-fill: #999999; -fx-font-size: 15px; -fx-font-weight: normal;");
+//            texto.setWrapText(true);
+//            texto.setMaxWidth(400);
+//            texto.setAlignment(Pos.CENTER);
+//
+//            VBox contenedorTexto = new VBox(texto);
+//            contenedorTexto.setAlignment(Pos.TOP_CENTER);
+//            contenedorTexto.setPrefHeight(260);
+//            contenedorTexto.setPadding(new javafx.geometry.Insets(40, 0, 0, 0));
+//
+//            contenedorFavoritos.setAlignment(Pos.TOP_CENTER);
+//            contenedorFavoritos.getChildren().add(contenedorTexto);
+//            return;
+//        }
+//
+//        contenedorFavoritos.setAlignment(Pos.TOP_LEFT);
+//        for (Alojamiento aloj : favoritos) {
+//            VBox tarjeta = new VBox(5);
+//            tarjeta.setStyle(
+//                    "-fx-background-color: white; -fx-padding: 10px; "
+//                    + "-fx-background-radius: 10px; "
+//                    + "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0.2, 0, 1);"
+//            );
+//            tarjeta.setAlignment(Pos.CENTER);
+//            tarjeta.setPrefWidth(200);
+//            tarjeta.setMaxWidth(200);
+//            tarjeta.setPrefHeight(260);
+//
+//            ImageView imagen = new ImageView();
+//            imagen.setFitWidth(180);
+//            imagen.setFitHeight(120);
+//            imagen.setPreserveRatio(true);
+//
+//            String nombreImg = aloj.getImagen();
+//            if (nombreImg != null && !nombreImg.isBlank()) {
+//                try {
+//                    ConexionFtp.cargarImagen(nombreImg, imagen);
+//                } catch (Exception ex) {
+//                    System.err.println("Error cargando imagen favorito: " + ex.getMessage());
+//                    imagen.setImage(new Image(
+//                            getClass().getResourceAsStream("/img/default-image.png")
+//                    ));
+//                }
+//            } else {
+//                imagen.setImage(new Image(
+//                        getClass().getResourceAsStream("/img/default-image.png")
+//                ));
+//            }
+//
+//            Label lblNombre = new Label(aloj.getNombre());
+//            lblNombre.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+//
+//            Label lblDestino = new Label("Destino: " + aloj.getNombreDestino());
+//            lblDestino.setStyle("-fx-text-fill: gray; -fx-font-size: 12px;");
+//
+//            Button btnQuitar = new Button("Quitar de Favoritos");
+//            btnQuitar.setStyle("-fx-background-color: #3874b4; -fx-text-fill: white; -fx-background-radius: 6px;");
+//            btnQuitar.setOnAction(evt -> {
+//                boolean ok = ConsultasAlojamientos
+//                        .eliminarDeFavoritos(
+//                                aloj.getIdAlojamiento(),
+//                                Usuario.getUsuarioActual().getIdUsuario()
+//                        );
+//                if (ok) {
+//                    Alertas.informacion("El alojamiento ha sido eliminado de favoritos.");
+//                    cargarAlojamientosFavoritos();
+//                    cargarAlojamientos();
+//                    tablaAlojamientos.refresh();
+//                } else {
+//                    Alertas.error("Error", "No se pudo eliminar de favoritos.");
+//                }
+//            });
+//
+//            tarjeta.getChildren().addAll(imagen, lblNombre, lblDestino, btnQuitar);
+//            contenedorFavoritos.getChildren().add(tarjeta);
+//        }
+//    }
     public void cargarAlojamientosFavoritos() {
         contenedorFavoritos.getChildren().clear();
 
@@ -181,9 +268,10 @@ public class GestionAlojamientoController implements Initializable {
                 .obtenerAlojamientosFavoritosPorUsuario(
                         Usuario.getUsuarioActual().getIdUsuario()
                 );
+
         if (favoritos.isEmpty()) {
             Label texto = new Label("No hay alojamientos en favoritos aún.");
-            texto.setStyle("-fx-text-fill: #999999; -fx-font-size: 15px; -fx-font-weight: normal;");
+            texto.setStyle("-fx-text-fill: #999999; -fx-font-size: 15px;");
             texto.setWrapText(true);
             texto.setMaxWidth(400);
             texto.setAlignment(Pos.CENTER);
@@ -199,53 +287,68 @@ public class GestionAlojamientoController implements Initializable {
         }
 
         contenedorFavoritos.setAlignment(Pos.TOP_LEFT);
+
         for (Alojamiento aloj : favoritos) {
-            VBox tarjeta = new VBox(5);
+            VBox tarjeta = new VBox(12);
             tarjeta.setStyle(
-                    "-fx-background-color: white; -fx-padding: 10px; "
-                    + "-fx-background-radius: 10px; "
-                    + "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0.2, 0, 1);"
+                    "-fx-background-color: white;"
+                    + "-fx-border-color: #a7c6f2;"
+                    + "-fx-border-width: 1.5;"
+                    + "-fx-border-radius: 10;"
+                    + "-fx-background-radius: 10;"
+                    + "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 6, 0.2, 0, 2);"
             );
+            tarjeta.setPadding(new Insets(10, 10, 10, 10));
             tarjeta.setAlignment(Pos.CENTER);
             tarjeta.setPrefWidth(200);
             tarjeta.setMaxWidth(200);
-            tarjeta.setPrefHeight(260);
+            tarjeta.setPrefHeight(240);
 
             ImageView imagen = new ImageView();
             imagen.setFitWidth(180);
             imagen.setFitHeight(120);
-            imagen.setPreserveRatio(true);
+            imagen.setPreserveRatio(false);
+            imagen.setSmooth(true);
+            imagen.setStyle("-fx-background-radius: 8; -fx-border-radius: 8;");
 
             String nombreImg = aloj.getImagen();
             if (nombreImg != null && !nombreImg.isBlank()) {
                 try {
                     ConexionFtp.cargarImagen(nombreImg, imagen);
                 } catch (Exception ex) {
-                    System.err.println("Error cargando imagen favorito: " + ex.getMessage());
-                    imagen.setImage(new Image(
-                            getClass().getResourceAsStream("/img/default-image.png")
-                    ));
+                    imagen.setImage(new Image(getClass().getResourceAsStream("/img/default-image.png")));
                 }
             } else {
-                imagen.setImage(new Image(
-                        getClass().getResourceAsStream("/img/default-image.png")
-                ));
+                imagen.setImage(new Image(getClass().getResourceAsStream("/img/default-image.png")));
             }
 
+            // Nombre del alojamiento
             Label lblNombre = new Label(aloj.getNombre());
-            lblNombre.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+            lblNombre.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #222;");
 
+            // Destino
             Label lblDestino = new Label("Destino: " + aloj.getNombreDestino());
-            lblDestino.setStyle("-fx-text-fill: gray; -fx-font-size: 12px;");
+            lblDestino.setStyle("-fx-text-fill: #555; -fx-font-size: 12px;");
 
+            // Botón "Quitar de Favoritos"
             Button btnQuitar = new Button("Quitar de Favoritos");
-            btnQuitar.setStyle("-fx-background-color: #3874b4; -fx-text-fill: white; -fx-background-radius: 6px;");
+            btnQuitar.setStyle(
+                    "-fx-background-color: #3874b4;"
+                    + "-fx-text-fill: white;"
+                    + "-fx-font-weight: bold;"
+                    + "-fx-background-radius: 6;"
+                    + "-fx-padding: 6 12;"
+                    + "-fx-font-size: 12px;"
+                    + "-fx-focus-color: transparent;"
+                    + "-fx-faint-focus-color: transparent;"
+                    + "-fx-background-insets: 0;"
+            );
+
+
             btnQuitar.setOnAction(evt -> {
-                boolean ok = ConsultasAlojamientos
-                        .eliminarDeFavoritos(
-                                aloj.getIdAlojamiento(),
-                                Usuario.getUsuarioActual().getIdUsuario()
-                        );
+                boolean ok = ConsultasAlojamientos.eliminarDeFavoritos(
+                        aloj.getIdAlojamiento(), Usuario.getUsuarioActual().getIdUsuario()
+                );
                 if (ok) {
                     Alertas.informacion("El alojamiento ha sido eliminado de favoritos.");
                     cargarAlojamientosFavoritos();

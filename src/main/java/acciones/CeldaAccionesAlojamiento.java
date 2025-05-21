@@ -1,13 +1,10 @@
 package acciones;
 
 import Utilidades.Alertas;
-import bbdd.Conexion;
 import bbdd.ConsultasAlojamientos;
+import bbdd.ConsultasNotificaciones;
 import controladores.AgregarAlojamientoController;
 import controladores.GestionAlojamientoController;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -23,6 +20,11 @@ import modelo.Alojamiento;
 import modelo.ConexionFtp;
 import modelo.Usuario;
 
+/**
+ * Clase que representa una celda personalizada con botones de acción para cada
+ * fila de la tabla de alojamientos. Permite ver, editar, eliminar y marcar como
+ * favorito.
+ */
 public class CeldaAccionesAlojamiento extends TableCell<Alojamiento, Void> {
 
     private final HBox contenedor = new HBox(10);
@@ -33,6 +35,12 @@ public class CeldaAccionesAlojamiento extends TableCell<Alojamiento, Void> {
 
     private final GestionAlojamientoController controlador;
 
+    /**
+     * Constructor que inicializa los botones y define su comportamiento.
+     *
+     * @param controlador Controlador principal de la vista de gestión de
+     * alojamientos.
+     */
     public CeldaAccionesAlojamiento(GestionAlojamientoController controlador) {
         this.controlador = controlador;
 
@@ -67,7 +75,6 @@ public class CeldaAccionesAlojamiento extends TableCell<Alojamiento, Void> {
             if (alojamiento == null) {
                 return;
             }
-
             Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
             confirm.setTitle("Confirmar eliminación");
             confirm.setHeaderText("¿Deseas eliminar este alojamiento?");
@@ -77,11 +84,20 @@ public class CeldaAccionesAlojamiento extends TableCell<Alojamiento, Void> {
                 if (resp == ButtonType.OK) {
                     ConsultasAlojamientos.eliminarAlojamientoDeFavoritos(alojamiento.getIdAlojamiento());
                     boolean eliminado = ConsultasAlojamientos.eliminarAlojamiento(alojamiento.getIdAlojamiento());
+
                     if (eliminado) {
                         String img = alojamiento.getImagen();
                         if (img != null && !img.isBlank()) {
                             ConexionFtp.eliminarArchivo(img);
                         }
+
+                        bbdd.Conexion.conectar();
+                        String mensaje = "Ha eliminado el alojamiento: " + alojamiento.getNombre();
+                        int idUsuario = Usuario.getUsuarioActual().getIdUsuario();
+
+                        bbdd.ConsultasNotificaciones.registrarMovimiento(mensaje, new java.util.Date(), idUsuario);
+                        bbdd.Conexion.cerrarConexion();
+
                         Alertas.informacion("Alojamiento eliminado correctamente.");
                         controlador.cargarAlojamientos();
                         controlador.cargarAlojamientosFavoritos();
@@ -98,13 +114,10 @@ public class CeldaAccionesAlojamiento extends TableCell<Alojamiento, Void> {
             if (alojamiento == null || usuario == null) {
                 return;
             }
-
             int idAloj = alojamiento.getIdAlojamiento();
             int idUsr = usuario.getIdUsuario();
-
             boolean yaEsFavorito = alojamiento.isFavorito();
             boolean exito;
-
             if (yaEsFavorito) {
                 exito = ConsultasAlojamientos.eliminarDeFavoritos(idAloj, idUsr);
                 if (exito) {
@@ -112,6 +125,12 @@ public class CeldaAccionesAlojamiento extends TableCell<Alojamiento, Void> {
                     botonFavorito.setText("♡");
                     botonFavorito.setStyle("-fx-font-size: 16px; -fx-text-fill: gray;");
                     Alertas.informacion("Alojamiento eliminado de favoritos.");
+
+                    bbdd.Conexion.conectar();
+                    String mensaje = "Ha eliminado de favoritos el alojamiento: " + alojamiento.getNombre();
+                    bbdd.ConsultasNotificaciones.registrarMovimiento(mensaje, new java.util.Date(), idUsr);
+
+                    bbdd.Conexion.cerrarConexion();
                 }
             } else {
                 exito = ConsultasAlojamientos.agregarAFavoritos(idAloj, idUsr);
@@ -120,6 +139,11 @@ public class CeldaAccionesAlojamiento extends TableCell<Alojamiento, Void> {
                     botonFavorito.setText("❤");
                     botonFavorito.setStyle("-fx-font-size: 16px; -fx-text-fill: red;");
                     Alertas.informacion("Alojamiento añadido a favoritos.");
+
+                    bbdd.Conexion.conectar();
+                    String mensaje = "Ha añadido a favoritos el alojamiento: " + alojamiento.getNombre();
+                    bbdd.ConsultasNotificaciones.registrarMovimiento(mensaje, new java.util.Date(), idUsr);
+                    bbdd.Conexion.cerrarConexion();
                 }
             }
 
@@ -131,6 +155,13 @@ public class CeldaAccionesAlojamiento extends TableCell<Alojamiento, Void> {
         });
     }
 
+    /**
+     * Actualiza el contenido gráfico de la celda según el estado del
+     * alojamiento.
+     *
+     * @param item Elemento vacío (no se usa en esta implementación).
+     * @param empty true si la celda está vacía, false en caso contrario.
+     */
     @Override
     protected void updateItem(Void item, boolean empty
     ) {
@@ -153,6 +184,13 @@ public class CeldaAccionesAlojamiento extends TableCell<Alojamiento, Void> {
         }
     }
 
+    /**
+     * Abre la ventana de visualización o edición del alojamiento.
+     *
+     * @param alojamiento Objeto alojamiento a mostrar o editar.
+     * @param editable True si la ventana debe ser editable, false si solo
+     * visualización.
+     */
     private void mostrarVentanaAlojamiento(Alojamiento alojamiento, boolean editable) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass()
@@ -177,6 +215,11 @@ public class CeldaAccionesAlojamiento extends TableCell<Alojamiento, Void> {
         }
     }
 
+    /**
+     * Muestra un cuadro de error con el mensaje proporcionado.
+     *
+     * @param msg Mensaje de error a mostrar.
+     */
     private void mostrarError(String msg) {
         Alert error = new Alert(Alert.AlertType.ERROR, msg, ButtonType.OK);
         error.setHeaderText(null);

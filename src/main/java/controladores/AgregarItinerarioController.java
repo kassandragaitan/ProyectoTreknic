@@ -8,7 +8,6 @@ import Utilidades.Alertas;
 import Utilidades.compruebaCampo;
 import bbdd.Conexion;
 import bbdd.ConsultasItinerario;
-import bbdd.ConsultasMovimientos;
 import bbdd.ConsultasNotificaciones;
 import java.net.URL;
 import java.util.Date;
@@ -56,7 +55,6 @@ public class AgregarItinerarioController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        Conexion.conectar();
         Conexion.conectar();
         ConsultasItinerario.cargarComboDuracionItinerario(comboDuracion);
         Conexion.cerrarConexion();
@@ -115,14 +113,9 @@ public class AgregarItinerarioController implements Initializable {
             }
 
             if (exito) {
-                ConsultasMovimientos.registrarMovimiento(
+                ConsultasNotificaciones.registrarMovimiento(
                         mensaje,
                         new java.sql.Date(System.currentTimeMillis()),
-                        idUsuario
-                );
-
-                ConsultasNotificaciones.registrarNotificacion(
-                        mensaje,
                         idUsuario
                 );
             }

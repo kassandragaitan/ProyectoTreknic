@@ -9,7 +9,6 @@ import Utilidades.compruebaCampo;
 import bbdd.Conexion;
 import bbdd.ConsultasActividades;
 import bbdd.ConsultasDestinos;
-import bbdd.ConsultasMovimientos;
 import bbdd.ConsultasNotificaciones;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -33,6 +32,11 @@ import modelo.Usuario;
  *
  * @author k0343
  */
+/**
+ * Controlador para la vista AgregarActividad.fxml. Permite registrar y editar
+ * actividades asociadas a destinos turísticos. Aplica validaciones, controla el
+ * formulario y notifica los cambios.
+ */
 public class AgregarActividadController implements Initializable {
 
     @FXML
@@ -55,6 +59,10 @@ public class AgregarActividadController implements Initializable {
     private Destino destinoSeleccionado;
     private GestionActividadesController gestionActividadesController;
 
+    /**
+     * Inicializa la vista. Carga los destinos en el ComboBox, establece un
+     * valor por defecto y configura eventos.
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         imagenTrekNic.setImage(new Image(getClass().getResourceAsStream("/img/Encabezado.png")));
@@ -81,14 +89,29 @@ public class AgregarActividadController implements Initializable {
         });
     }
 
+    /**
+     * Establece el título visible del formulario.
+     *
+     * @param titulo Título que se mostrará.
+     */
     public void setTitulo(String titulo) {
         labelTitulo.setText(titulo);
     }
 
+    /**
+     * Asocia este controlador con el controlador de gestión para recargar
+     * datos.
+     *
+     * @param controller Referencia al controlador de gestión de actividades.
+     */
     public void setGestionActividadesController(GestionActividadesController controller) {
         this.gestionActividadesController = controller;
     }
 
+    /**
+     * Registra o actualiza una actividad según el modo actual. Valida campos
+     * obligatorios y registra notificaciones.
+     */
     @FXML
     private void RegistrarActividad(ActionEvent event) {
         if (compruebaCampo.compruebaVacio(campoNombre)) {
@@ -98,7 +121,6 @@ public class AgregarActividadController implements Initializable {
         } else if (destinoSeleccionado == null) {
             Alertas.error("Selección inválida", "Debe seleccionar un destino válido.");
         } else {
-            Destino destinoSeleccionado = comboDestino.getValue();
             int idUsuario = Usuario.getUsuarioActual().getIdUsuario();
 
             if (esEdicion && actividadActual != null) {
@@ -110,14 +132,9 @@ public class AgregarActividadController implements Initializable {
                     Conexion.conectar();
                     String mensaje = "Ha actualizado la actividad " + campoNombre.getText().trim();
 
-                    ConsultasMovimientos.registrarMovimiento(
+                    ConsultasNotificaciones.registrarMovimiento(
                             mensaje,
                             new java.util.Date(),
-                            idUsuario
-                    );
-
-                    ConsultasNotificaciones.registrarNotificacion(
-                            mensaje,
                             idUsuario
                     );
 
@@ -150,17 +167,11 @@ public class AgregarActividadController implements Initializable {
                     Conexion.conectar();
                     String mensaje = "Ha registrado la actividad " + campoNombre.getText().trim();
 
-                    ConsultasMovimientos.registrarMovimiento(
+                    ConsultasNotificaciones.registrarMovimiento(
                             mensaje,
                             new java.util.Date(),
                             idUsuario
                     );
-
-                    ConsultasNotificaciones.registrarNotificacion(
-                            mensaje,
-                            idUsuario
-                    );
-
                     Conexion.cerrarConexion();
 
                     Alertas.informacion("Actividad registrada exitosamente.");
@@ -173,12 +184,21 @@ public class AgregarActividadController implements Initializable {
         }
     }
 
+    /**
+     * Recarga la tabla en el controlador de gestión si está definido.
+     */
     private void recargarTabla() {
         if (gestionActividadesController != null) {
             gestionActividadesController.recargarTabla();
         }
     }
 
+    /**
+     * Carga los datos de una actividad existente en el formulario para
+     * visualización o edición.
+     *
+     * @param act Actividad a mostrar.
+     */
     public void verActividad(Actividad act) {
         this.actividadActual = act;
         campoNombre.setText(act.getNombre());
@@ -194,6 +214,12 @@ public class AgregarActividadController implements Initializable {
         botonRegistrar.setText("Actualizar");
     }
 
+    /**
+     * Cambia la habilitación de los campos según si está en modo edición o solo
+     * vista.
+     *
+     * @param editable true para edición, false para solo lectura.
+     */
     public void setEdicionActiva(boolean editable) {
         campoNombre.setEditable(editable);
         campoDescripcion.setEditable(editable);
@@ -206,6 +232,9 @@ public class AgregarActividadController implements Initializable {
         comboDestino.setOpacity(opacidad);
     }
 
+    /**
+     * Limpia los campos del formulario y restablece la selección por defecto.
+     */
     private void limpiarFormulario() {
         campoNombre.clear();
         campoDescripcion.clear();
@@ -215,6 +244,9 @@ public class AgregarActividadController implements Initializable {
 
     }
 
+    /**
+     * Cierra la ventana actual del formulario.
+     */
     private void cerrarVentana() {
         Stage stage = (Stage) botonRegistrar.getScene().getWindow();
         stage.close();

@@ -28,7 +28,7 @@
     -fx-background-color: transparent;
     -fx-border-width: 0;
 }
-.destination-card {
+/*.destination-card {
     -fx-padding: 10px;
     -fx-border-color: #3477b5;
     -fx-border-width: 2px;
@@ -39,6 +39,17 @@
     -fx-max-width: 260px;  
     -fx-pref-height: 180px; 
     -fx-text-fill: #333;
+}*/
+.destination-card {
+    -fx-padding: 12;
+    -fx-background-color: #eaf3fd;
+    -fx-border-color: #c0d7f0;
+    -fx-border-width: 1.5;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 2);
+    -fx-min-width: 260px;
+    -fx-max-width: 260px;
 }
 
 .button {

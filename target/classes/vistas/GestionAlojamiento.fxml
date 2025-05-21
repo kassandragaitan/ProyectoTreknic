@@ -9,7 +9,7 @@
             styleClass="mainFxmlClass">
 
     <stylesheets>
-      <URL value="@/Estilos/gestion.css" />
+        <URL value="@/Estilos/gestion.css" />
     </stylesheets>
 
     <VBox spacing="15.0" AnchorPane.topAnchor="20.0" AnchorPane.leftAnchor="20.0"
@@ -63,7 +63,7 @@
             <FlowPane fx:id="contenedorFavoritos"
                       hgap="10.0" vgap="10.0"
                       VBox.vgrow="ALWAYS"
-                      style="-fx-background-color: #f5f5f5;" />
+                      style="-fx-background-color: #f5f5f5; -fx-padding: 15 10 10 10;" />
         </ScrollPane>
     </VBox>
 </AnchorPane>

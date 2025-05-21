@@ -10,7 +10,13 @@
             fx:controller="controladores.FormularioResenaController">
 
     <children>
-        <VBox layoutX="25.0" layoutY="80.0" spacing="20.0"
+
+      <ImageView fx:id="imagenTrekNic"
+           fitHeight="60.0" fitWidth="100.0"
+           preserveRatio="true" pickOnBounds="true"
+           layoutX="178.0" layoutY="38.0" />
+
+        <VBox layoutX="25.0" layoutY="95.0" spacing="20.0"
               styleClass="panel-registro" prefWidth="400.0" alignment="TOP_CENTER">
 
             <children>
@@ -46,4 +52,3 @@
         </VBox>
     </children>
 </AnchorPane>
-

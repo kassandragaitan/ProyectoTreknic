@@ -7,7 +7,6 @@ package controladores;
 import Utilidades.Alertas;
 import Utilidades.compruebaCampo;
 import bbdd.Conexion;
-import bbdd.ConsultasMovimientos;
 import bbdd.ConsultasNotificaciones;
 import bbdd.ConsultasTipoAlojamiento;
 import java.net.URL;
@@ -101,15 +100,12 @@ public class AgregarTipoAlojamientoController implements Initializable {
                 String mensaje = "Ha actualizado el tipo de alojamiento " + tipoTexto;
                 int idUsuario = Usuario.getUsuarioActual().getIdUsuario();
 
-                ConsultasMovimientos.registrarMovimiento(
+                ConsultasNotificaciones.registrarMovimiento(
                         mensaje,
                         new Date(),
                         idUsuario
                 );
-                ConsultasNotificaciones.registrarNotificacion(
-                        mensaje,
-                        idUsuario
-                );
+            
                 Conexion.cerrarConexion();
                 Alertas.informacion("Tipo de Alojamiento actualizado exitosamente.");
                 recargarTabla();
@@ -127,14 +123,9 @@ public class AgregarTipoAlojamientoController implements Initializable {
                 String mensaje = "Ha registrado el tipo de alojamiento " + tipoTexto;
                 int idUsuario = Usuario.getUsuarioActual().getIdUsuario();
 
-                ConsultasMovimientos.registrarMovimiento(
+                ConsultasNotificaciones.registrarMovimiento(
                         mensaje,
                         new Date(),
-                        idUsuario
-                );
-
-                ConsultasNotificaciones.registrarNotificacion(
-                        mensaje,
                         idUsuario
                 );
 
