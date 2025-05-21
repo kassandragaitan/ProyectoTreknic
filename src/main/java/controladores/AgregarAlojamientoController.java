@@ -34,6 +34,7 @@ import modelo.ConexionFtp;
 import modelo.Destino;
 import modelo.TipoAlojamiento;
 import modelo.Usuario;
+import bbdd.ConsultasNotificaciones;
 
 /**
  * FXML Controller class
@@ -125,15 +126,22 @@ public class AgregarAlojamientoController implements Initializable {
             Alertas.aviso("Campo vacío", "El nombre no puede estar vacío.");
         } else if (!esEdicion && ConsultasAlojamientos.existeNombreAlojamiento(campoNombre.getText().trim())) {
             Alertas.aviso("Nombre duplicado", "Ya existe un alojamiento con ese nombre.");
+            campoNombre.clear();
         } else if (tipoSeleccionado == null) {
             Alertas.aviso("Campo vacío", "Debe seleccionar el tipo de alojamiento.");
         } else if (compruebaCampo.compruebaVacio(campoContacto)) {
-            Alertas.aviso("Campo vacío", "El contacto no puede estar vacío.");
-        } else if (!Utilidades.validarTelefonoGlobal.esTelefonoNicaraguenseValido(campoContacto.getText().trim())) {
-            Alertas.aviso("Teléfono inválido", "El contacto debe tener 8 dígitos y empezar por 2, 5, 7 u 8 (formato nicaragüense).");
+            Alertas.aviso("Campo vacío", "El teléfono no puede estar vacío.");
+        } else if (!Utilidades.validarTelefono.esSoloNumeros(campoContacto.getText().trim())) {
+            Alertas.aviso("Teléfono inválido", "El teléfono solo debe contener números.");
+            campoContacto.clear();
+        } else if (!Utilidades.validarTelefono.esTelefonoNicaraguenseValido(campoContacto.getText().trim())) {
+            Alertas.aviso("Teléfono inválido", "El teléfono debe tener 8 dígitos y empezar por 2, 5, 7 u 8 (formato nicaragüense).");
             campoContacto.clear();
         } else if (compruebaCampo.compruebaVacio(campoImagen)) {
             Alertas.aviso("Campo vacío", "Debe seleccionar una imagen.");
+        } else if (!esEdicion && archivoImagenSeleccionado == null) {
+            Alertas.aviso("Imagen no válida", "Debe seleccionar una imagen válida.");
+            campoImagen.clear();
         } else if (destinoSeleccionado == null) {
             Alertas.aviso("Campo vacío", "Debe seleccionar un destino.");
         } else {
@@ -188,16 +196,25 @@ public class AgregarAlojamientoController implements Initializable {
                 );
                 return;
             }
-
             Conexion.conectar();
-            String accion = esEdicion
-                    ? "Ha actualizado el alojamiento "
-                    : "Ha registrado el alojamiento ";
+
+            String mensaje = esEdicion
+                    ? "Ha actualizado el alojamiento " + campoNombre.getText().trim()
+                    : "Ha registrado el alojamiento " + campoNombre.getText().trim();
+
+            int idUsuario = Usuario.getUsuarioActual().getIdUsuario();
+
             ConsultasMovimientos.registrarMovimiento(
-                    accion + campoNombre.getText().trim(),
+                    mensaje,
                     new java.util.Date(),
-                    Usuario.getUsuarioActual().getIdUsuario()
+                    idUsuario
             );
+
+            ConsultasNotificaciones.registrarNotificacion(
+                    mensaje,
+                    idUsuario
+            );
+
             Conexion.cerrarConexion();
 
             Alertas.informacion(esEdicion

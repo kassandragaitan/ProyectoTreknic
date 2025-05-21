@@ -11,7 +11,6 @@ package bbdd;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import modelo.PreguntaFrecuente;
-import modelo.PruebaFuncionalidad;
 import modelo.Sugerencia;
 import java.sql.*;
 
@@ -65,6 +64,17 @@ public class ConsultasSoporte {
         }
 
         return lista;
+    }
+
+    public static boolean eliminarPregunta(String pregunta) {
+        String sql = "DELETE FROM preguntas_frecuentes WHERE pregunta = ?";
+        try (Connection conn = Conexion.conectar(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, pregunta);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
 }

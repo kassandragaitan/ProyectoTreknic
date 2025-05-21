@@ -9,6 +9,7 @@ import Utilidades.compruebaCampo;
 import bbdd.Conexion;
 import bbdd.ConsultasItinerario;
 import bbdd.ConsultasMovimientos;
+import bbdd.ConsultasNotificaciones;
 import java.net.URL;
 import java.util.Date;
 import java.util.ResourceBundle;
@@ -90,10 +91,13 @@ public class AgregarItinerarioController implements Initializable {
             Alertas.aviso("Campo vacío", "Debe seleccionar una duración válida.");
         } else if (!esEdicion && ConsultasItinerario.existeItinerarioConNombre(campoNombre.getText())) {
             Alertas.aviso("Nombre duplicado", "Ya existe un itinerario con ese nombre.");
+            campoNombre.clear();
         } else {
             Conexion.conectar();
             String duracionSeleccionada = comboDuracion.getValue();
             boolean exito;
+            int idUsuario = Usuario.getUsuarioActual().getIdUsuario();
+            String mensaje;
 
             if (esEdicion && itinerarioActual != null) {
                 itinerarioActual.setNombre(campoNombre.getText());
@@ -101,23 +105,30 @@ public class AgregarItinerarioController implements Initializable {
                 itinerarioActual.setDuracion(duracionSeleccionada);
 
                 exito = ConsultasItinerario.actualizarItinerario(itinerarioActual);
+                mensaje = "Ha actualizado el itinerario " + campoNombre.getText().trim();
             } else {
                 Itinerario nuevo = new Itinerario();
                 nuevo.setNombre(campoNombre.getText());
                 nuevo.setDescripcion(campoDescripcion.getText());
                 nuevo.setDuracion(duracionSeleccionada);
                 nuevo.setFechaCreacion(new Date());
-                nuevo.setIdUsuario(Usuario.getUsuarioActual().getIdUsuario());
+                nuevo.setIdUsuario(idUsuario);
 
                 exito = ConsultasItinerario.registrarItinerario(nuevo);
+                mensaje = "Ha registrado el itinerario " + campoNombre.getText().trim();
+            }
 
-                if (exito) {
-                    ConsultasMovimientos.registrarMovimiento(
-                            "Ha registrado el itinerario " + campoNombre.getText(),
-                            new java.sql.Date(System.currentTimeMillis()),
-                            Usuario.getUsuarioActual().getIdUsuario()
-                    );
-                }
+            if (exito) {
+                ConsultasMovimientos.registrarMovimiento(
+                        mensaje,
+                        new java.sql.Date(System.currentTimeMillis()),
+                        idUsuario
+                );
+
+                ConsultasNotificaciones.registrarNotificacion(
+                        mensaje,
+                        idUsuario
+                );
             }
 
             Conexion.cerrarConexion();
@@ -175,8 +186,7 @@ public class AgregarItinerarioController implements Initializable {
         campoNombre.clear();
         campoDescripcion.clear();
         comboDuracion.getSelectionModel().selectFirst();
-
-        botonRegistrar.setText("Guardar");
+        botonRegistrar.setText("Registrar");
     }
 
 }

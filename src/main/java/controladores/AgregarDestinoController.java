@@ -6,6 +6,7 @@ import bbdd.Conexion;
 import bbdd.ConsultasCategoria;
 import bbdd.ConsultasDestinos;
 import bbdd.ConsultasMovimientos;
+import bbdd.ConsultasNotificaciones;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -154,6 +155,7 @@ public class AgregarDestinoController implements Initializable {
             Conexion.conectar();
             if (!edicionActiva && ConsultasDestinos.existeDestino(campoNombre.getText().trim())) {
                 Alertas.aviso("Duplicado", "Ya existe un destino con ese nombre.");
+                campoNombre.clear();
                 Conexion.cerrarConexion();
                 return;
             }
@@ -203,14 +205,24 @@ public class AgregarDestinoController implements Initializable {
                 );
             }
 
-            if (exito && !edicionActiva) {
+            if (exito) {
+                String mensaje = edicionActiva
+                        ? "Ha actualizado el destino \"" + campoNombre.getText().trim() + "\""
+                        : "Ha registrado el destino \"" + campoNombre.getText().trim() + "\"";
+
+                int idUsuario = Usuario.getUsuarioActual().getIdUsuario();
+
                 ConsultasMovimientos.registrarMovimiento(
-                        "Ha registrado el destino \"" + campoNombre.getText().trim() + "\"",
+                        mensaje,
                         new java.sql.Date(System.currentTimeMillis()),
-                        Usuario.getUsuarioActual().getIdUsuario()
+                        idUsuario
+                );
+
+                ConsultasNotificaciones.registrarNotificacion(
+                        mensaje,
+                        idUsuario
                 );
             }
-
             Conexion.cerrarConexion();
 
             if (exito) {

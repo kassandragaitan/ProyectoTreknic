@@ -21,7 +21,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import modelo.Notificacion;
-import modelo.Usuario;
 
 /**
  * FXML Controller class
@@ -43,11 +42,11 @@ public class NotificacionesController implements Initializable {
     @FXML
     private TableColumn<Notificacion, Boolean> columnaLeido;
     @FXML
-    private ComboBox<?> comboFiltro1;
+    private ComboBox<String> comboFiltro1;
     @FXML
-    private ComboBox<?> comboFiltro2;
+    private ComboBox<String> comboFiltro2;
     @FXML
-    private ComboBox<?> comboLeido;
+    private ComboBox<String> comboLeido;
     @FXML
     private Button botonFiltrar;
 
@@ -59,6 +58,20 @@ public class NotificacionesController implements Initializable {
         tablaNotificaciones.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         initializeTableView();
         cargarNotificaciones();
+
+        comboFiltro1.setItems(FXCollections.observableArrayList());
+        comboFiltro1.getItems().add("Todos los usuarios...");
+        comboFiltro1.getItems().addAll(ConsultasNotificaciones.obtenerUsuariosNotificaciones());
+        comboFiltro1.getSelectionModel().selectFirst();
+
+        comboFiltro2.setItems(FXCollections.observableArrayList());
+        comboFiltro2.getItems().add("Todas las fechas...");
+        comboFiltro2.getItems().addAll(ConsultasNotificaciones.obtenerFechasNotificaciones());
+        comboFiltro2.getSelectionModel().selectFirst();
+
+        comboLeido.setItems(FXCollections.observableArrayList("Todos", "Sí", "No"));
+        comboLeido.getSelectionModel().selectFirst();
+
         tablaNotificaciones.setOnMouseClicked(event -> {
             Notificacion notificacionSeleccionada = tablaNotificaciones.getSelectionModel().getSelectedItem();
             if (notificacionSeleccionada != null && !notificacionSeleccionada.isLeido()) {
@@ -99,5 +112,23 @@ public class NotificacionesController implements Initializable {
 
     @FXML
     private void filtrar(ActionEvent event) {
+        String usuario = comboFiltro1.getValue();
+        String fecha = comboFiltro2.getValue();
+        String leido = comboLeido.getValue();
+
+        if ("Todos los usuarios...".equals(usuario)) {
+            usuario = null;
+        }
+        if ("Todas las fechas...".equals(fecha)) {
+            fecha = null;
+        }
+        if ("Todos".equals(leido)) {
+            leido = null;
+        }
+
+        ObservableList<Notificacion> lista = FXCollections.observableArrayList();
+        ConsultasNotificaciones.filtrarNotificaciones(lista, usuario, fecha, leido);
+        tablaNotificaciones.setItems(lista);
     }
+
 }

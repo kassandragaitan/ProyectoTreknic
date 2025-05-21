@@ -20,7 +20,6 @@ C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\GestionAlojamientoCon
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\GestionResenasController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\ConfiguracionSistema.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\Utilidades\compruebaCampo.java
-C:\Users\k0343\ProyectoTreknic\src\main\java\Utilidades\validarTelefonoGlobal.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\controladores\GestionTipoDeAlojamientoController.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\Reporte.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\Alojamiento.java
@@ -77,3 +76,4 @@ C:\Users\k0343\ProyectoTreknic\src\main\java\acciones\CeldaAccionesCategoria.jav
 C:\Users\k0343\ProyectoTreknic\src\main\java\bbdd\ConsultasSugerencias.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\bbdd\Conexion.java
 C:\Users\k0343\ProyectoTreknic\src\main\java\modelo\PreguntaFrecuente.java
+C:\Users\k0343\ProyectoTreknic\src\main\java\Utilidades\validarTelefono.java

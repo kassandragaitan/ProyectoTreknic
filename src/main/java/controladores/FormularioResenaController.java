@@ -7,6 +7,7 @@ package controladores;
 import Utilidades.Alertas;
 import Utilidades.compruebaCampo;
 import bbdd.ConsultasMovimientos;
+import bbdd.ConsultasNotificaciones;
 import bbdd.ConsultasResenas;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -103,17 +104,26 @@ public class FormularioResenaController implements Initializable {
                         0
                 );
                 if (exito) {
+                    String mensaje = "Se registró una reseña sin clasificación para el destino: " + destinoSeleccionado.getNombre();
+                    int idUsuario = usuarioSeleccionado.getIdUsuario();
+
                     ConsultasMovimientos.registrarMovimiento(
-                            "Se registró una reseña sin clasificación para el destino: "
-                            + destinoSeleccionado.getNombre(),
+                            mensaje,
                             new Date(),
-                            usuarioSeleccionado.getIdUsuario()
+                            idUsuario
                     );
+
+                    ConsultasNotificaciones.registrarNotificacion(
+                            mensaje,
+                            idUsuario
+                    );
+
                     Alertas.informacion("Reseña registrada correctamente.");
                     limpiarFormulario();
                 } else {
                     Alertas.error("Error", "No se pudo guardar la reseña.");
                 }
+
             }
         } else {
             int puntuacion = spinnerClasificacion.getValue();
@@ -125,18 +135,28 @@ public class FormularioResenaController implements Initializable {
             );
 
             if (exito) {
-                ConsultasMovimientos.registrarMovimiento(
-                        "Se registró una reseña para el destino: "
+                String mensaje = "Se registró una reseña para el destino: "
                         + destinoSeleccionado.getNombre()
-                        + " con puntuación " + puntuacion,
+                        + " con puntuación " + puntuacion;
+                int idUsuario = usuarioSeleccionado.getIdUsuario();
+
+                ConsultasMovimientos.registrarMovimiento(
+                        mensaje,
                         new Date(),
-                        usuarioSeleccionado.getIdUsuario()
+                        idUsuario
                 );
+
+                ConsultasNotificaciones.registrarNotificacion(
+                        mensaje,
+                        idUsuario
+                );
+
                 Alertas.informacion("Reseña registrada correctamente.");
                 limpiarFormulario();
             } else {
                 Alertas.error("Error", "No se pudo guardar la reseña.");
             }
+
         }
     }
 

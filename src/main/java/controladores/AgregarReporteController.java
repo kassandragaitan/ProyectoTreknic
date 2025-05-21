@@ -7,6 +7,7 @@ package controladores;
 import Utilidades.Alertas;
 import Utilidades.compruebaCampo;
 import bbdd.ConsultasMovimientos;
+import bbdd.ConsultasNotificaciones;
 import bbdd.ConsultasReportes;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -78,11 +79,20 @@ public class AgregarReporteController implements Initializable {
             nuevo.setIdUsuario(Usuario.getUsuarioActual().getIdUsuario());
 
             if (ConsultasReportes.registrarReporte(nuevo)) {
+                String mensaje = "Se ha registrado un reporte de tipo: " + tipoSeleccionado;
+                int idUsuario = Usuario.getUsuarioActual().getIdUsuario();
+
                 ConsultasMovimientos.registrarMovimiento(
-                        "Se ha registrado un reporte de tipo: " + tipoSeleccionado,
+                        mensaje,
                         new java.sql.Date(System.currentTimeMillis()),
-                        Usuario.getUsuarioActual().getIdUsuario()
+                        idUsuario
                 );
+
+                ConsultasNotificaciones.registrarNotificacion(
+                        mensaje,
+                        idUsuario
+                );
+
                 Alertas.informacion("Reporte registrado exitosamente.");
                 limpiarFormulario();
             } else {

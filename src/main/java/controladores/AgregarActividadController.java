@@ -10,6 +10,7 @@ import bbdd.Conexion;
 import bbdd.ConsultasActividades;
 import bbdd.ConsultasDestinos;
 import bbdd.ConsultasMovimientos;
+import bbdd.ConsultasNotificaciones;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
@@ -100,6 +101,7 @@ public class AgregarActividadController implements Initializable {
             Alertas.aviso("Combo vacío", "Debe seleccionar un destino válido.");
         } else {
             Destino destinoSeleccionado = comboDestino.getValue();
+            int idUsuario = Usuario.getUsuarioActual().getIdUsuario();
 
             if (esEdicion && actividadActual != null) {
                 actividadActual.setNombre(campoNombre.getText());
@@ -108,11 +110,21 @@ public class AgregarActividadController implements Initializable {
 
                 if (ConsultasActividades.actualizarActividad(actividadActual)) {
                     Conexion.conectar();
+                    String mensaje = "Ha actualizado la actividad " + campoNombre.getText().trim();
+
                     ConsultasMovimientos.registrarMovimiento(
-                            "Ha actualizado la actividad " + campoNombre.getText(),
+                            mensaje,
                             new java.util.Date(),
-                            Usuario.getUsuarioActual().getIdUsuario()
+                            idUsuario
                     );
+
+                    ConsultasNotificaciones.registrarNotificacion(
+                            mensaje,
+                            idUsuario
+                    );
+
+                    Conexion.cerrarConexion();
+
                     Alertas.informacion("Actividad actualizada exitosamente.");
                     recargarTabla();
                     cerrarVentana();
@@ -125,6 +137,7 @@ public class AgregarActividadController implements Initializable {
                         destinoSeleccionado.getId_destino()
                 )) {
                     Alertas.aviso("Duplicado", "Ya existe una actividad con ese nombre para el destino seleccionado.");
+                    campoNombre.clear();
                     return;
                 }
 
@@ -137,11 +150,21 @@ public class AgregarActividadController implements Initializable {
 
                 if (ConsultasActividades.registrarActividad(actividad)) {
                     Conexion.conectar();
+                    String mensaje = "Ha registrado la actividad " + campoNombre.getText().trim();
+
                     ConsultasMovimientos.registrarMovimiento(
-                            "Ha registrado la actividad " + campoNombre.getText(),
+                            mensaje,
                             new java.util.Date(),
-                            Usuario.getUsuarioActual().getIdUsuario()
+                            idUsuario
                     );
+
+                    ConsultasNotificaciones.registrarNotificacion(
+                            mensaje,
+                            idUsuario
+                    );
+
+                    Conexion.cerrarConexion();
+
                     Alertas.informacion("Actividad registrada exitosamente.");
                     recargarTabla();
                     limpiarFormulario();

@@ -8,6 +8,7 @@ import Utilidades.Alertas;
 import Utilidades.compruebaCampo;
 import bbdd.Conexion;
 import bbdd.ConsultasMovimientos;
+import bbdd.ConsultasNotificaciones;
 import bbdd.ConsultasTipoAlojamiento;
 import java.net.URL;
 import java.util.Date;
@@ -84,6 +85,7 @@ public class AgregarTipoAlojamientoController implements Initializable {
 
         if (!esEdicion && ConsultasTipoAlojamiento.existeTipoAlojamiento(tipoTexto)) {
             Alertas.aviso("Duplicado", "Ya existe un tipo de alojamiento con ese nombre.");
+            campoTipo.clear();
             return;
         }
 
@@ -96,12 +98,19 @@ public class AgregarTipoAlojamientoController implements Initializable {
 
             if (exito) {
                 Conexion.conectar();
-                ConsultasMovimientos.registrarMovimiento(
-                        "Ha actualizado el tipo de alojamiento " + tipoTexto,
-                        new Date(),
-                        Usuario.getUsuarioActual().getIdUsuario()
-                );
+                String mensaje = "Ha actualizado el tipo de alojamiento " + tipoTexto;
+                int idUsuario = Usuario.getUsuarioActual().getIdUsuario();
 
+                ConsultasMovimientos.registrarMovimiento(
+                        mensaje,
+                        new Date(),
+                        idUsuario
+                );
+                ConsultasNotificaciones.registrarNotificacion(
+                        mensaje,
+                        idUsuario
+                );
+                Conexion.cerrarConexion();
                 Alertas.informacion("Tipo de Alojamiento actualizado exitosamente.");
                 recargarTabla();
                 cerrarVentana();
@@ -114,11 +123,22 @@ public class AgregarTipoAlojamientoController implements Initializable {
 
             if (exito) {
                 Conexion.conectar();
+
+                String mensaje = "Ha registrado el tipo de alojamiento " + tipoTexto;
+                int idUsuario = Usuario.getUsuarioActual().getIdUsuario();
+
                 ConsultasMovimientos.registrarMovimiento(
-                        "Ha registrado el tipo de alojamiento " + tipoTexto,
+                        mensaje,
                         new Date(),
-                        Usuario.getUsuarioActual().getIdUsuario()
+                        idUsuario
                 );
+
+                ConsultasNotificaciones.registrarNotificacion(
+                        mensaje,
+                        idUsuario
+                );
+
+                Conexion.cerrarConexion();
 
                 Alertas.informacion("Tipo de Alojamiento registrado exitosamente.");
                 campoTipo.clear();

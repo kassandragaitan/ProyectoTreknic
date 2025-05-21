@@ -6,45 +6,37 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 
-<HBox alignment="CENTER" xmlns="http://javafx.com/javafx/23.0.1"
+<HBox xmlns="http://javafx.com/javafx/23.0.1"
       xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="controladores.Soporte_ItemController">
-   <children>
-      <AnchorPane prefHeight="70.0" prefWidth="720.0" maxWidth="720.0" styleClass="mainFxmlClass">
-         <stylesheets>
-            <URL value="@/Estilos/soporte_item.css" />
-         </stylesheets>
-         <children>
+      fx:controller="controladores.Soporte_ItemController"
+      spacing="10"
+      alignment="CENTER_LEFT"
+      AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
+      AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+  
+    <ImageView fx:id="iconoImagen"
+               fitWidth="28" fitHeight="28"
+               preserveRatio="true"
+               pickOnBounds="true">
+        <image>
+            <Image url="@../img/documento.png"/>
+        </image>
+    </ImageView>
 
-            <VBox layoutX="10.0" layoutY="15.0" prefWidth="50.0">
-               <children>
-                  <ImageView fx:id="iconoImagen"
-                             fitHeight="28.0" fitWidth="28.0"
-                             preserveRatio="true"
-                             pickOnBounds="true"
-                             layoutX="0.0" layoutY="0.0">
-                     <image>
-                        <Image url="@../img/documento.png"/>
-                     </image>
-                  </ImageView>
-               </children>
-            </VBox>
+    <VBox spacing="2" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+        <Label fx:id="etiquetaTitulo"
+               text="Título de la pregunta"
+               style="-fx-font-weight: bold;"
+               wrapText="true"
+               maxWidth="Infinity" />
+        <Label fx:id="etiquetaDescripcion"
+               text="Respuesta o explicación de la pregunta frecuente."
+               wrapText="true"
+               maxWidth="Infinity" />
+    </VBox>
 
-            <VBox layoutX="60.0" layoutY="10.0" prefWidth="640.0">
-               <children>
-                  <Label fx:id="etiquetaTitulo"
-                         text="Título de la pregunta">
-                     <font>
-                        <Font name="System Bold" size="13.0"/>
-                     </font>
-                  </Label>
-                  <Label fx:id="etiquetaDescripcion"
-                         text="Respuesta o explicación de la pregunta frecuente."
-                         wrapText="true"/>
-               </children>
-            </VBox>
-
-         </children>
-      </AnchorPane>
-   </children>
+    <Button fx:id="botonEliminar"
+            text="Eliminar"
+            onAction="#eliminarPregunta"
+            styleClass="table-button red"/>
 </HBox>

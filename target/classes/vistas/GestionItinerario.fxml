@@ -28,7 +28,7 @@
             <TextField fx:id="campoBuscarItinerario" promptText="Buscar itinerario..." prefWidth="940" />
             <ComboBox fx:id="comboFiltroPor" promptText="Selecciona filtro..." prefWidth="210.0" />
             <ComboBox fx:id="comboValorFiltro" prefWidth="200.0" disable="true" />
-            <Button fx:id="botonQuitarFiltro" text="Quitar Filtro" styleClass="secondary" />
+            <Button fx:id="botonQuitarFiltro" text="Quitar Filtro" styleClass="boton-quitar-filtro"  />
         </HBox>
 
         <TableView fx:id="tablaItinerario" VBox.vgrow="ALWAYS">

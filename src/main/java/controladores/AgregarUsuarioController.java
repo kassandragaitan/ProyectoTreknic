@@ -3,8 +3,10 @@ package controladores;
 import Utilidades.Alertas;
 import Utilidades.compruebaCampo;
 import Utilidades.validarEmail;
-import Utilidades.validarTelefonoGlobal;
+import Utilidades.validarTelefono;
 import bbdd.Conexion;
+import bbdd.ConsultasMovimientos;
+import bbdd.ConsultasNotificaciones;
 import bbdd.ConsultasUsuario;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -117,14 +119,17 @@ public class AgregarUsuarioController implements Initializable {
             Alertas.aviso("Campo vacío", "El nombre no puede estar vacío.");
         } else if (compruebaCampo.compruebaVacio(campoTelefono)) {
             Alertas.aviso("Campo vacío", "El teléfono no puede estar vacío.");
-        } else if (!validarTelefonoGlobal.esTelefonoValido(campoTelefono.getText())) {
-            Alertas.aviso("Teléfono inválido", "Ingrese un número válido (8-15 dígitos, con o sin '+').");
-        } else if (campoTelefono.getText().length() > 20) {
-            Alertas.aviso("Teléfono muy largo", "El número de teléfono no debe exceder los 20 caracteres.");
+        } else if (!Utilidades.validarTelefono.esSoloNumeros(campoTelefono.getText().trim())) {
+            Alertas.aviso("Teléfono inválido", "El teléfono solo debe contener números.");
+            campoTelefono.clear();
+        } else if (!Utilidades.validarTelefono.esTelefonoNicaraguenseValido(campoTelefono.getText().trim())) {
+            Alertas.aviso("Teléfono inválido", "El teléfono debe tener 8 dígitos y empezar por 2, 5, 7 u 8 (formato nicaragüense).");
+            campoTelefono.clear();
         } else if (compruebaCampo.compruebaVacio(campoEmail)) {
             Alertas.aviso("Campo vacío", "El email no puede estar vacío.");
         } else if (!validarEmail.esEmailValido(campoEmail.getText())) {
             Alertas.aviso("Email inválido", "Ingrese un correo electrónico válido.");
+            campoEmail.clear();
         } else if (compruebaCampo.compruebaVacio(campoContrasena)) {
             Alertas.aviso("Campo vacío", "La contraseña no puede estar vacía.");
         } else if (campoTipoCompania.getValue() == null || campoTipoCompania.getValue().equals("Seleccione")) {
@@ -134,12 +139,24 @@ public class AgregarUsuarioController implements Initializable {
         } else if (campoIdioma.getValue() == null || campoIdioma.getValue().equals("Seleccione")) {
             Alertas.aviso("Combo vacío", "Debe seleccionar un idioma.");
         } else {
-            String telefonoLimpio = campoTelefono.getText().replaceAll("[^+0-9]", "");
+            String emailLimpio = campoEmail.getText().trim().toLowerCase();
+            String telefonoLimpio = campoTelefono.getText().replaceAll("[^0-9]", "");
 
-            if (usuarioEnEdicion == null && ConsultasUsuario.existeEmail(campoEmail.getText())) {
-                Alertas.aviso("Email duplicado", "El correo ya está registrado. Use otro diferente.");
-                Conexion.cerrarConexion();
-                return;
+            if (usuarioEnEdicion == null) {
+                if (ConsultasUsuario.existeEmail(emailLimpio)) {
+                    Alertas.aviso("Email duplicado", "El correo ya está registrado. Use otro diferente.");
+                    campoEmail.clear();
+                    Conexion.cerrarConexion();
+                    return;
+                }
+            } else {
+                if (!emailLimpio.equalsIgnoreCase(usuarioEnEdicion.getEmail())
+                        && ConsultasUsuario.existeEmail(emailLimpio)) {
+                    Alertas.aviso("Email duplicado", "Este correo ya está registrado.");
+                    campoEmail.clear();
+                    Conexion.cerrarConexion();
+                    return;
+                }
             }
 
             Usuario usuario = new Usuario();
@@ -155,6 +172,20 @@ public class AgregarUsuarioController implements Initializable {
             if (usuarioEnEdicion == null) {
                 resultado = ConsultasUsuario.registrarUsuario(usuario);
                 if (resultado) {
+                    String mensaje = "Ha registrado el usuario \"" + usuario.getNombre() + "\"";
+                    int idUsuario = Usuario.getUsuarioActual() != null ? Usuario.getUsuarioActual().getIdUsuario() : 0;
+
+                    ConsultasMovimientos.registrarMovimiento(
+                            mensaje,
+                            new java.sql.Date(System.currentTimeMillis()),
+                            idUsuario
+                    );
+
+                    ConsultasNotificaciones.registrarNotificacion(
+                            mensaje,
+                            idUsuario
+                    );
+
                     Alertas.informacion("Usuario registrado exitosamente.");
                 } else {
                     Alertas.error("Error en el registro", "Ocurrió un error al registrar el usuario.");
@@ -163,6 +194,20 @@ public class AgregarUsuarioController implements Initializable {
                 usuario.setIdUsuario(usuarioEnEdicion.getIdUsuario());
                 resultado = ConsultasUsuario.actualizarUsuario(usuario);
                 if (resultado) {
+                    String mensaje = "Ha actualizado el usuario \"" + usuario.getNombre() + "\"";
+                    int idUsuario = Usuario.getUsuarioActual() != null ? Usuario.getUsuarioActual().getIdUsuario() : 0;
+
+                    ConsultasMovimientos.registrarMovimiento(
+                            mensaje,
+                            new java.sql.Date(System.currentTimeMillis()),
+                            idUsuario
+                    );
+
+                    ConsultasNotificaciones.registrarNotificacion(
+                            mensaje,
+                            idUsuario
+                    );
+
                     Alertas.informacion("Usuario actualizado correctamente.");
                 } else {
                     Alertas.error("Error al actualizar", "Ocurrió un error al actualizar el usuario.");

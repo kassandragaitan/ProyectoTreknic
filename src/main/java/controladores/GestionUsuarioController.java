@@ -115,8 +115,8 @@ public class GestionUsuarioController implements Initializable {
                 "Filtrar por tipo de compañía"
         );
         comboFiltroPor.setItems(filtros);
-        comboFiltroPor.getSelectionModel().selectFirst();
 
+        comboFiltroPor.getSelectionModel().selectFirst();
         comboValorFiltro.setDisable(true);
 
         comboFiltroPor.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
@@ -125,69 +125,79 @@ public class GestionUsuarioController implements Initializable {
             comboValorFiltro.setDisable(true);
 
             if (newVal == null || newVal.equals("Selecciona un tipo de filtro...")) {
-                tablaUsuarios.setItems(generarDatosUsuario());
+                campoBuscarUsuario.clear();
+                generarDatosYMostrar();
                 botonQuitarFiltro.setDisable(true);
                 return;
             }
 
             ObservableList<String> opciones = FXCollections.observableArrayList();
-            String placeholder = "Selecciona un valor...";
+            String textoPlaceholder = "";
 
             Conexion.conectar();
             switch (newVal) {
                 case "Filtrar por rol":
                     opciones = ConsultasUsuario.cargarRolesUsuarios();
-                    opciones.remove("Todos los roles");
+                    textoPlaceholder = "Seleccione un rol...";
                     break;
                 case "Filtrar por idioma":
-                    ConsultasUsuario.cargarComboIdioma(comboValorFiltro);
-                    Conexion.cerrarConexion();
-                    comboValorFiltro.setDisable(false);
-                    return;
+                    opciones = ConsultasUsuario.cargarIdiomasDisponibles();
+                    textoPlaceholder = "Seleccione un idioma...";
+                    break;
                 case "Filtrar por tipo de compañía":
-                    ConsultasUsuario.cargarComboTipoCompania(comboValorFiltro);
-                    Conexion.cerrarConexion();
-                    comboValorFiltro.setDisable(false);
-                    return;
+                    opciones = ConsultasUsuario.cargarTiposDeCompania();
+                    textoPlaceholder = "Seleccione un tipo de compañía...";
+                    break;
             }
             Conexion.cerrarConexion();
 
-            if (!opciones.contains(placeholder)) {
-                opciones.add(0, placeholder);
+            if (!textoPlaceholder.isEmpty() && !opciones.contains(textoPlaceholder)) {
+                opciones.add(0, textoPlaceholder);
             }
 
             comboValorFiltro.setItems(opciones);
             comboValorFiltro.getSelectionModel().selectFirst();
             comboValorFiltro.setDisable(false);
-
-            tablaUsuarios.setItems(generarDatosUsuario());
         });
 
-        comboValorFiltro.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal != null) {
-                ObservableList<Usuario> listaUsuarios = FXCollections.observableArrayList();
-                String filtro = comboFiltroPor.getValue();
-
-                if ("Filtrar por rol".equals(filtro)) {
-                    Conexion.conectar();
-                    ConsultasUsuario.cargarUsuariosPorRol(listaUsuarios, newVal);
-                    Conexion.cerrarConexion();
-                } else {
-                    String campo = "";
-                    if ("Filtrar por idioma".equals(filtro)) {
-                        campo = "idioma_preferido";
-                    } else if ("Filtrar por tipo de compañía".equals(filtro)) {
-                        campo = "tipo_viajero";
+/////////////////////////
+        comboValorFiltro.getSelectionModel()
+                .selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+                    if (newVal == null || newVal.equalsIgnoreCase("Seleccione un rol...")
+                            || newVal.equalsIgnoreCase("Seleccione un idioma...")
+                            || newVal.equalsIgnoreCase("Seleccione un tipo de compañía...")) {
+                        generarDatosYMostrar();
+                        botonQuitarFiltro.setDisable(true);
+                        return;
                     }
 
-                    ConsultasUsuario.cargarUsuariosPorCampo(listaUsuarios, campo, newVal);
-                }
-                tablaUsuarios.setItems(listaUsuarios);
-                botonQuitarFiltro.setDisable(false);
-            }
-        });
+                    ObservableList<Usuario> listaUsuarios = FXCollections.observableArrayList();
+                    String filtro = comboFiltroPor.getValue();
 
-        botonQuitarFiltro.setOnAction(e -> {
+                    if ("Filtrar por rol".equals(filtro)) {
+                        Conexion.conectar();
+                        ConsultasUsuario.cargarUsuariosPorRol(listaUsuarios, newVal);
+                        Conexion.cerrarConexion();
+                    } else {
+                        String campo = "";
+                        if ("Filtrar por idioma".equals(filtro)) {
+                            campo = "idioma_preferido";
+                        } else if ("Filtrar por tipo de compañía".equals(filtro)) {
+                            campo = "tipo_viajero";
+                        }
+
+                        Conexion.conectar();
+                        ConsultasUsuario.cargarUsuariosPorCampo(listaUsuarios, campo, newVal);
+                        Conexion.cerrarConexion();
+                    }
+
+                    tablaUsuarios.setItems(listaUsuarios);
+                    botonQuitarFiltro.setDisable(false);
+                }
+                );
+
+        botonQuitarFiltro.setOnAction(e
+                -> {
             comboFiltroPor.getSelectionModel().selectFirst();
             comboValorFiltro.getItems().clear();
             comboValorFiltro.getSelectionModel().clearSelection();
@@ -197,8 +207,14 @@ public class GestionUsuarioController implements Initializable {
             comboFiltroPor.setVisible(false);
             comboFiltroPor.setVisible(true);
             botonQuitarFiltro.setDisable(true);
-        });
+        }
+        );
 
+    }
+
+    public void generarDatosYMostrar() {
+        ObservableList<Usuario> listaUsuarios = generarDatosUsuario();
+        tablaUsuarios.setItems(listaUsuarios);
     }
 
     private void buscarUsuariosEnTiempoReal(String texto) {

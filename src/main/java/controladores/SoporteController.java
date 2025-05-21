@@ -16,7 +16,6 @@ import javafx.scene.control.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import modelo.PreguntaFrecuente;
-import modelo.PruebaFuncionalidad;
 import modelo.Sugerencia;
 
 import java.io.IOException;
@@ -89,6 +88,11 @@ public class SoporteController implements Initializable {
             }
         });
     }
+    private Runnable recargarPreguntas;
+
+    public void setRecargarPreguntas(Runnable recargarPreguntas) {
+        this.recargarPreguntas = recargarPreguntas;
+    }
 
     private void cargarPreguntas(String filtro) {
         listaPreguntas.getItems().clear();
@@ -115,6 +119,7 @@ public class SoporteController implements Initializable {
                         Node node = loader.load();
                         Soporte_ItemController controller = loader.getController();
                         controller.setItem(item);
+                        controller.setRecargarPreguntas(() -> cargarPreguntas(campoBuscarPreguntas.getText()));
                         setGraphic(node);
                     } catch (IOException e) {
                         e.printStackTrace();

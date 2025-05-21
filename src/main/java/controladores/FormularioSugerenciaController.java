@@ -7,6 +7,7 @@ package controladores;
 import Utilidades.Alertas;
 import Utilidades.compruebaCampo;
 import bbdd.ConsultasMovimientos;
+import bbdd.ConsultasNotificaciones;
 import bbdd.ConsultasSugerencias;
 import java.net.URL;
 import java.util.Date;
@@ -56,9 +57,16 @@ public class FormularioSugerenciaController implements Initializable {
 
             boolean exito = ConsultasSugerencias.insertarSugerencia(idUsuario, titulo, mensaje);
             if (exito) {
+                String mensajeRegistro = "El usuario ha enviado una sugerencia: " + (titulo.isEmpty() ? "(Sin título)" : titulo);
+
                 ConsultasMovimientos.registrarMovimiento(
-                        "El usuario ha enviado una sugerencia: " + (titulo.isEmpty() ? "(Sin título)" : titulo),
+                        mensajeRegistro,
                         new Date(),
+                        idUsuario
+                );
+
+                ConsultasNotificaciones.registrarNotificacion(
+                        mensajeRegistro,
                         idUsuario
                 );
 

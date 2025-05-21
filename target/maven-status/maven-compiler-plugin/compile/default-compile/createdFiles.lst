@@ -59,10 +59,10 @@ acciones\CeldaAccionesTipoAlojamiento.class
 modelo\PruebaFuncionalidad.class
 bbdd\ConsultasLogin.class
 controladores\PrincipalController$1.class
+Utilidades\validarTelefono.class
 controladores\GestionTipoDeAlojamientoController.class
 modelo\Alojamiento.class
 acciones\CeldaAccionesItinerario.class
-Utilidades\validarTelefonoGlobal.class
 controladores\GestionUsuarioController$1.class
 controladores\GestionUsuarioController.class
 controladores\GestionCategoriaController.class

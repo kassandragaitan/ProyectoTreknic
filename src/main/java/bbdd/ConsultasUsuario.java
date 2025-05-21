@@ -36,7 +36,7 @@ public class ConsultasUsuario {
 
     public static ObservableList<String> cargarRolesUsuarios() {
         ObservableList<String> roles = FXCollections.observableArrayList();
-        roles.add("Todos los roles");
+//        roles.add("Todos los roles");
         String consulta = "SELECT DISTINCT tipo_usuario FROM usuarios";
 
         try (Connection conn = Conexion.conectar(); PreparedStatement st = conn.prepareStatement(consulta); ResultSet rs = st.executeQuery()) {
@@ -133,6 +133,44 @@ public class ConsultasUsuario {
             System.err.println("Error al cargar usuarios filtrados:");
             e.printStackTrace();
         }
+    }
+
+    public static ObservableList<String> cargarIdiomasDisponibles() {
+        ObservableList<String> idiomas = FXCollections.observableArrayList();
+        String consulta = "SHOW COLUMNS FROM usuarios WHERE Field = 'idioma_preferido'";
+
+        try (Connection conn = Conexion.conectar(); Statement st = conn.createStatement(); ResultSet rs = st.executeQuery(consulta)) {
+
+            if (rs.next()) {
+                String values = rs.getString("Type").substring(5, rs.getString("Type").length() - 1).replace("'", "");
+                for (String valor : values.split(",")) {
+                    idiomas.add(valor.trim());
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return idiomas;
+    }
+
+    public static ObservableList<String> cargarTiposDeCompania() {
+        ObservableList<String> tipos = FXCollections.observableArrayList();
+        String consulta = "SHOW COLUMNS FROM usuarios WHERE Field = 'tipo_viajero'";
+
+        try (Connection conn = Conexion.conectar(); Statement st = conn.createStatement(); ResultSet rs = st.executeQuery(consulta)) {
+
+            if (rs.next()) {
+                String values = rs.getString("Type").substring(5, rs.getString("Type").length() - 1).replace("'", "");
+                for (String valor : values.split(",")) {
+                    tipos.add(valor.trim());
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return tipos;
     }
 
     public static void cargarComboTipoUsuario(ComboBox<String> comboTipoUsuario) {

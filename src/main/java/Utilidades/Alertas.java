@@ -5,6 +5,7 @@
 package Utilidades;
 
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 
 /**
  *
@@ -42,4 +43,15 @@ public class Alertas {
         alerta.setContentText(mensaje);
         alerta.showAndWait();
     }
+
+    public static boolean confirmacionSoporte(String titulo, String mensaje) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle(titulo);
+        alert.setHeaderText(null);
+        alert.setContentText(mensaje);
+
+        ButtonType result = alert.showAndWait().orElse(ButtonType.CANCEL);
+        return result == ButtonType.OK;
+    }
+
 }

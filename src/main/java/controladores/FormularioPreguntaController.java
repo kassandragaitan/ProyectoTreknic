@@ -8,6 +8,7 @@ import Utilidades.Alertas;
 import Utilidades.compruebaCampo;
 import bbdd.Conexion;
 import bbdd.ConsultasMovimientos;
+import bbdd.ConsultasNotificaciones;
 import bbdd.ConsultasPreguntasFrecuentes;
 import java.net.URL;
 import java.util.Date;
@@ -55,11 +56,22 @@ public class FormularioPreguntaController implements Initializable {
             boolean exito = ConsultasPreguntasFrecuentes.insertarPregunta(pregunta, respuesta);
             if (exito) {
                 Conexion.conectar();
+
+                String mensaje = "Ha registrado una nueva pregunta frecuente: " + pregunta;
+                int idUsuario = Usuario.getUsuarioActual().getIdUsuario();
+
                 ConsultasMovimientos.registrarMovimiento(
-                        "Ha registrado una nueva pregunta frecuente: " + pregunta,
+                        mensaje,
                         new Date(),
-                        Usuario.getUsuarioActual().getIdUsuario()
+                        idUsuario
                 );
+
+                ConsultasNotificaciones.registrarNotificacion(
+                        mensaje,
+                        idUsuario
+                );
+
+                Conexion.cerrarConexion();
 
                 Alertas.informacion("Pregunta guardada correctamente");
                 limpiarFormulario();

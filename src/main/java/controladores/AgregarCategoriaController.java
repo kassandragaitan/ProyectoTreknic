@@ -5,6 +5,7 @@ import Utilidades.compruebaCampo;
 import bbdd.Conexion;
 import bbdd.ConsultasCategoria;
 import bbdd.ConsultasMovimientos;
+import bbdd.ConsultasNotificaciones;
 import java.net.URL;
 import java.sql.Date;
 import java.time.LocalDate;
@@ -90,6 +91,7 @@ public class AgregarCategoriaController implements Initializable {
 
         if (!esEdicion && ConsultasCategoria.existeCategoria(nombre)) {
             Alertas.aviso("Duplicado", "Ya existe una categoría con ese nombre.");
+            campoNombre.clear();
             return;
         }
 
@@ -113,6 +115,11 @@ public class AgregarCategoriaController implements Initializable {
                     Date.valueOf(LocalDate.now()),
                     Usuario.getUsuarioActual().getIdUsuario()
             );
+            ConsultasNotificaciones.registrarNotificacion(
+                    accion,
+                    Usuario.getUsuarioActual().getIdUsuario()
+            );
+
             Conexion.cerrarConexion();
 
             Alertas.informacion(esEdicion

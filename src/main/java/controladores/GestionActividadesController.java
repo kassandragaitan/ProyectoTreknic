@@ -98,7 +98,8 @@ public class GestionActividadesController implements Initializable {
             comboValorFiltro.setDisable(true);
             botonQuitarFiltro.setDisable(true);
 
-            if (newVal == null) {
+            if (newVal == null || newVal.equals("Selecciona un tipo de filtro...")) {
+                cargarActividades();
                 return;
             }
 
@@ -123,6 +124,7 @@ public class GestionActividadesController implements Initializable {
 
         comboValorFiltro.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal == null || newVal.startsWith("Selecciona")) {
+                cargarActividades();
                 botonQuitarFiltro.setDisable(true);
                 return;
             }
@@ -175,7 +177,7 @@ public class GestionActividadesController implements Initializable {
             Parent root = loader.load();
 
             AgregarActividadController controlador = loader.getController();
-                    controlador.setTitulo("Agregar Actividad");
+            controlador.setTitulo("Agregar Actividad");
             controlador.setGestionActividadesController(this);
 
             Stage stage = new Stage();
