@@ -50,6 +50,34 @@ import modelo.Destino;
 import modelo.InformeActividadDestino;
 import modelo.Usuario;
 
+/**
+ * Controlador principal de la interfaz de usuario para el panel de bienvenida
+ * del sistema.
+ * <p>
+ * Esta clase administra la carga de datos iniciales como destinos populares,
+ * actividades recientes y alojamientos favoritos. También gestiona el inicio de
+ * sesión, temporizador de expiración de sesión, categorización de destinos y
+ * personalización de la apariencia.
+ * </p>
+ *
+ * Componentes principales gestionados:
+ * <ul>
+ * <li>Tabla de destinos populares con visitas y valoración</li>
+ * <li>Gráfico de barras para actividades recientes</li>
+ * <li>Tarjetas de destinos agrupados por categoría</li>
+ * <li>Alojamientos marcados como favoritos</li>
+ * </ul>
+ *
+ * Funcionalidades clave:
+ * <ul>
+ * <li>Carga inicial de datos</li>
+ * <li>Actualización de interfaz visual basada en preferencias de usuario</li>
+ * <li>Expiración de sesión por inactividad</li>
+ * <li>Adaptación al color de fondo personalizado</li>
+ * </ul>
+ *
+ * @author k0343
+ */
 public class PrincipalController implements Initializable {
 
     @FXML
@@ -87,6 +115,13 @@ public class PrincipalController implements Initializable {
     @FXML
     private FlowPane contenedorFavoritos;
 
+    /**
+     * Inicializa los componentes visuales y carga datos al iniciar la vista
+     * principal.
+     *
+     * @param url no se utiliza.
+     * @param rb no se utiliza.
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         columnaDestino.setCellValueFactory(new PropertyValueFactory<>("nombre"));
@@ -123,6 +158,12 @@ public class PrincipalController implements Initializable {
 
     private Timer temporizadorSesion;
 
+    /**
+     * Inicia un temporizador de sesión que cerrará automáticamente la sesión
+     * tras el tiempo indicado.
+     *
+     * @param minutos cantidad de minutos antes de expirar la sesión.
+     */
     public void iniciarTemporizadorSesion(int minutos) {
         if (temporizadorSesion != null) {
             temporizadorSesion.cancel();
@@ -139,6 +180,9 @@ public class PrincipalController implements Initializable {
         }, minutos * 60 * 1000);
     }
 
+    /**
+     * Cierra la sesión del usuario actual, redirigiendo al formulario de login.
+     */
     private void cerrarSesion() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/Login.fxml"));
@@ -159,13 +203,22 @@ public class PrincipalController implements Initializable {
 
     private Usuario usuarioActual;
 
+    /**
+     * Inicializa el panel con el nombre del usuario y lo guarda como usuario
+     * actual.
+     *
+     * @param usuario instancia del usuario autenticado.
+     */
     public void inicializarUsuario(Usuario usuario) {
         this.usuarioActual = usuario;
         Usuario.setUsuarioActual(usuario);
-
         labelNombre.setText(usuario.getNombre());
     }
 
+    /**
+     * Carga la lista de categorías en el ComboBox y configura la acción de
+     * filtrado por categoría.
+     */
     private void inicializarCategorias() {
         List<String> categorias = ConsultasDestinos.obtenerNombresCategorias();
         comboCategoria.getItems().addAll(categorias);
@@ -182,6 +235,9 @@ public class PrincipalController implements Initializable {
         });
     }
 
+    /**
+     * Muestra todos los destinos agrupados por categoría en la interfaz visual.
+     */
     private void mostrarTodosLosDestinosAgrupados() {
         contenedorCategorias.getChildren().clear();
         List<String> categorias = ConsultasDestinos.obtenerNombresCategorias();
@@ -201,7 +257,7 @@ public class PrincipalController implements Initializable {
                 flowDestinos.setVgap(15);
                 flowDestinos.setAlignment(Pos.CENTER);
 
-                flowDestinos.setPrefWrapLength(500); // o ajustable según ancho contenedor
+                flowDestinos.setPrefWrapLength(500);
 
                 for (Destino destino : destinos) {
                     VBox tarjeta = crearTarjetaDestino(destino);
@@ -214,6 +270,10 @@ public class PrincipalController implements Initializable {
         }
     }
 
+    /**
+     * Carga los alojamientos favoritos del usuario y los representa con
+     * tarjetas visuales.
+     */
     private void cargarAlojamientosFavoritos() {
         contenedorFavoritos.getChildren().clear();
         List<Alojamiento> favoritos = ConsultasAlojamientos.obtenerAlojamientosFavoritosPorUsuario(Usuario.getUsuarioActual().getIdUsuario());
@@ -236,6 +296,12 @@ public class PrincipalController implements Initializable {
         }
     }
 
+    /**
+     * Crea una tarjeta visual estilizada para un alojamiento.
+     *
+     * @param aloj objeto Alojamiento con los datos a mostrar.
+     * @return VBox que contiene el diseño del alojamiento.
+     */
     private VBox crearTarjetaAlojamiento(Alojamiento aloj) {
         VBox tarjeta = new VBox(6);
         tarjeta.setPrefWidth(200);
@@ -284,6 +350,10 @@ public class PrincipalController implements Initializable {
         return tarjeta;
     }
 
+    /**
+     * Carga y muestra los destinos correspondientes a la categoría
+     * seleccionada.
+     */
     private void cargarDestinosPorCategoria() {
         contenedorCategorias.getChildren().clear();
         String categoria = comboCategoria.getValue();
@@ -323,11 +393,20 @@ public class PrincipalController implements Initializable {
         }
     }
 
+    /**
+     * Aplica el color de fondo personalizado definido por el sistema.
+     */
     private void aplicarColorFondo() {
         String colorHex = Utilidades.EstiloSistema.getInstancia().getColorFondoHex();
         scrollPane.setStyle("-fx-background: " + colorHex + "; -fx-background-color: " + colorHex + ";");
     }
 
+    /**
+     * Carga y muestra un gráfico de barras con los 5 destinos que tienen más
+     * actividades registradas. Si hay menos de 5 destinos, se oculta el gráfico
+     * y se muestra un mensaje informativo. Se aplica animación y tooltips a
+     * cada barra del gráfico.
+     */
     private void cargarGraficoActividadReciente() {
         ObservableList<InformeActividadDestino> actividadesPorDestino;
 
@@ -392,6 +471,14 @@ public class PrincipalController implements Initializable {
         });
     }
 
+    /**
+     * Genera una representación visual en forma de estrellas basada en una
+     * puntuación numérica.
+     *
+     * @param valoracion Puntuación numérica (de 0 a 5).
+     * @return Una cadena de estrellas llenas (★) y vacías (☆) que representa la
+     * valoración.
+     */
     private String generarEstrellas(double valoracion) {
         StringBuilder estrellas = new StringBuilder();
         for (int i = 0; i < 5; i++) {
@@ -400,12 +487,22 @@ public class PrincipalController implements Initializable {
         return estrellas.toString();
     }
 
+    /**
+     * Carga todos los destinos disponibles desde la base de datos y los muestra
+     * en la tabla principal.
+     */
     private void cargarDatosDestinos() {
         ObservableList<Destino> listadoDestinos = FXCollections.observableArrayList();
         ConsultasDestinos.cargarDatosDestinos(listadoDestinos);
         tablaDestinos.setItems(listadoDestinos);
     }
 
+    /**
+     * Recupera y muestra las estadísticas globales del sistema como: usuarios
+     * registrados, itinerarios activos, destinos disponibles y actividades
+     * registradas. Los resultados se muestran en etiquetas correspondientes en
+     * el panel principal.
+     */
     private void cargarDatosPanel() {
         int totalUsuarios = Conexion.contar("usuarios");
         int totalItinerarios = Conexion.contar("itinerarios");
@@ -418,6 +515,16 @@ public class PrincipalController implements Initializable {
         labelActividadesMen.setText(totalActividadesMen + " Actividades");
     }
 
+    /**
+     * Crea una tarjeta visual (VBox) que representa un destino, incluyendo su
+     * imagen, nombre y descripción. Si la imagen no está disponible, se usa una
+     * imagen por defecto.
+     *
+     * @param destino Objeto {@link Destino} que contiene la información a
+     * mostrar.
+     * @return Un contenedor VBox estilizado que representa visualmente el
+     * destino.
+     */
     private VBox crearTarjetaDestino(Destino destino) {
         VBox tarjeta = new VBox(6);
         tarjeta.setPrefWidth(200);

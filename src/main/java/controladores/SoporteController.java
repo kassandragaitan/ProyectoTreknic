@@ -18,11 +18,23 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import modelo.PreguntaFrecuente;
 import modelo.Sugerencia;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+/**
+ * Controlador para la vista de Soporte, que gestiona dos pestañas: preguntas
+ * frecuentes y sugerencias enviadas por los usuarios.
+ *
+ * <p>
+ * Incluye funcionalidades para:</p>
+ * <ul>
+ * <li>Cargar y filtrar preguntas frecuentes en una ListView.</li>
+ * <li>Cargar, filtrar y mostrar sugerencias en una TableView con acciones
+ * asociadas.</li>
+ * <li>Abrir formularios para agregar nuevas preguntas o sugerencias.</li>
+ * </ul>
+ */
 public class SoporteController implements Initializable {
 
     @FXML
@@ -51,11 +63,18 @@ public class SoporteController implements Initializable {
     private Button botonAgregarPregunta;
     @FXML
     private Button botonNuevaSugerencia;
-
-    private final ObservableList<Sugerencia> datosSugerencias = FXCollections.observableArrayList();
     @FXML
     private TableColumn<Sugerencia, Void> columnaAccionesSugerencia;
+    private final ObservableList<Sugerencia> datosSugerencias = FXCollections.observableArrayList();
+    private Runnable recargarPreguntas;
 
+    /**
+     * Inicializa la vista, configurando eventos y cargando los datos para
+     * preguntas frecuentes y sugerencias.
+     *
+     * @param url ubicación del recurso FXML.
+     * @param rb bundle de recursos, no utilizado en este contexto.
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         columnaIDSugerencia.setVisible(false);
@@ -68,7 +87,6 @@ public class SoporteController implements Initializable {
         columnaFechaSugerencia.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getFechaEnvio()));
         columnaAccionesSugerencia.setCellFactory(col -> new CeldaAccionesSugerencia());
 
-        
         campoBuscarPreguntas.textProperty().addListener((obs, oldVal, newVal) -> cargarPreguntas(newVal));
         campoBuscarSugerencias.textProperty().addListener((obs, oldVal, newVal) -> cargarSugerencias(newVal));
 
@@ -93,12 +111,28 @@ public class SoporteController implements Initializable {
             }
         });
     }
-    private Runnable recargarPreguntas;
 
+    /**
+     * Establece una acción que puede ser ejecutada para recargar la lista de
+     * preguntas frecuentes.
+     *
+     * Este método permite inyectar una función externa (por ejemplo, desde otro
+     * controlador) que actualice dinámicamente la lista de preguntas al
+     * modificar o agregar una entrada.
+     *
+     * @param recargarPreguntas acción Runnable que recarga las preguntas
+     * frecuentes
+     */
     public void setRecargarPreguntas(Runnable recargarPreguntas) {
         this.recargarPreguntas = recargarPreguntas;
     }
 
+    /**
+     * Carga preguntas frecuentes desde la base de datos aplicando un filtro de
+     * texto.
+     *
+     * @param filtro texto de búsqueda para filtrar preguntas por contenido.
+     */
     private void cargarPreguntas(String filtro) {
         listaPreguntas.getItems().clear();
         ObservableList<PreguntaFrecuente> preguntas = FXCollections.observableArrayList(
@@ -134,6 +168,12 @@ public class SoporteController implements Initializable {
         });
     }
 
+    /**
+     * Carga sugerencias desde la base de datos y aplica un filtro por título o
+     * mensaje.
+     *
+     * @param filtro texto de búsqueda aplicado al contenido de la sugerencia.
+     */
     private void cargarSugerencias(String filtro) {
         datosSugerencias.clear();
         datosSugerencias.addAll(ConsultasSoporte.obtenerSugerenciasFiltradas(filtro));
@@ -146,6 +186,11 @@ public class SoporteController implements Initializable {
         }
     }
 
+    /**
+     * Abre el formulario modal para registrar una nueva sugerencia.
+     *
+     * @param event evento de acción al presionar el botón correspondiente.
+     */
     @FXML
     private void abrirFormularioSugerencia(ActionEvent event) {
         abrirFormulario("/vistas/FormularioSugerencia.fxml", "Nueva Sugerencia");
@@ -153,6 +198,9 @@ public class SoporteController implements Initializable {
         cargarSugerencias("");
     }
 
+    /**
+     * Abre el formulario modal para agregar una nueva pregunta frecuente.
+     */
     @FXML
     private void abrirFormularioPregunta() {
         abrirFormulario("/vistas/FormularioPregunta.fxml", "Agregar Pregunta Frecuente");
@@ -160,6 +208,12 @@ public class SoporteController implements Initializable {
         cargarPreguntas("");
     }
 
+    /**
+     * Método genérico para abrir formularios en ventanas modales.
+     *
+     * @param rutaFXML ruta del archivo FXML que define la vista.
+     * @param tituloVentana título de la ventana modal que se mostrará.
+     */
     private void abrirFormulario(String rutaFXML, String tituloVentana) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(rutaFXML));

@@ -30,9 +30,12 @@ import javafx.scene.control.Label;
 import javafx.stage.StageStyle;
 
 /**
- * FXML Controller class
+ * Controlador JavaFX para la gestión de actividades turísticas. Permite
+ * visualizar, buscar, filtrar, registrar y administrar las actividades
+ * disponibles en el sistema. Incluye funcionalidad para abrir el formulario de
+ * registro y para aplicar filtros dinámicos por nombre o destino.
  *
- * @author k0343
+ * Autor: k0343
  */
 public class GestionActividadesController implements Initializable {
 
@@ -60,7 +63,11 @@ public class GestionActividadesController implements Initializable {
     private Button botonNuevaActividad;
 
     /**
-     * Initializes the controller class.
+     * Inicializa el controlador configurando la tabla, los filtros y la
+     * búsqueda en tiempo real.
+     *
+     * @param url URL de inicialización.
+     * @param rb ResourceBundle para localización.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -140,10 +147,20 @@ public class GestionActividadesController implements Initializable {
 
     }
 
+    /**
+     * Inicializa la columna de acciones con botones personalizados para cada
+     * fila.
+     */
     private void inicializarAccionesColumna() {
         columnAcciones.setCellFactory(col -> new CeldaAccionesActividad(this));
     }
 
+    /**
+     * Realiza una búsqueda en tiempo real por texto ingresado en el campo de
+     * búsqueda.
+     *
+     * @param texto Texto a buscar en nombre o descripción de actividades.
+     */
     private void buscarActividadesEnTiempoReal(String texto) {
         ObservableList<Actividad> listaActividades = FXCollections.observableArrayList();
         Conexion.conectar();
@@ -152,6 +169,10 @@ public class GestionActividadesController implements Initializable {
         tablaActividades.setItems(listaActividades);
     }
 
+    /**
+     * Carga todas las actividades desde la base de datos y las muestra en la
+     * tabla.
+     */
     public void cargarActividades() {
         ObservableList<Actividad> listaActividades = FXCollections.observableArrayList();
         Conexion.conectar();
@@ -166,10 +187,19 @@ public class GestionActividadesController implements Initializable {
         columnaIdDestino.setCellValueFactory(new PropertyValueFactory<>("nombreDestino"));
     }
 
+    /**
+     * Recarga la tabla de actividades. Útil tras registrar, editar o eliminar
+     * una actividad.
+     */
     public void recargarTabla() {
         cargarActividades();
     }
 
+    /**
+     * Abre el formulario para registrar una nueva actividad.
+     *
+     * @param event Evento generado al presionar el botón "Nueva Actividad".
+     */
     @FXML
     private void RegistrarNuevaActividad(ActionEvent event) {
         try {
@@ -193,6 +223,12 @@ public class GestionActividadesController implements Initializable {
         }
     }
 
+    /**
+     * Restaura la tabla a su estado original quitando todos los filtros
+     * aplicados.
+     *
+     * @param event Evento del botón "Quitar Filtro".
+     */
     @FXML
     private void quitarFiltroActividad(ActionEvent event) {
         comboFiltroPor.getSelectionModel().selectFirst();

@@ -26,11 +26,12 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import modelo.Alojamiento;
 import modelo.TipoAlojamiento;
 
 /**
- * FXML Controller class
+ * Controlador encargado de gestionar la vista de administración de tipos de
+ * alojamiento. Permite realizar operaciones de búsqueda, listado y creación de
+ * nuevos tipos.
  *
  * @author k0343
  */
@@ -50,7 +51,8 @@ public class GestionTipoDeAlojamientoController implements Initializable {
     private TableColumn<TipoAlojamiento, Void> columnaAcciones;
 
     /**
-     * Initializes the controller class.
+     * Inicializa la vista y sus componentes. Carga los tipos de alojamiento
+     * existentes y configura los eventos para búsqueda y acciones.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -67,6 +69,10 @@ public class GestionTipoDeAlojamientoController implements Initializable {
         recargarTabla();
     }
 
+    /**
+     * Carga todos los tipos de alojamiento desde la base de datos y los muestra
+     * en la tabla.
+     */
     public void cargarDatosTiposAlojamiento() {
         ObservableList<TipoAlojamiento> listaTipos = FXCollections.observableArrayList();
         Conexion.conectar();
@@ -79,10 +85,20 @@ public class GestionTipoDeAlojamientoController implements Initializable {
         columnaTipo.setCellValueFactory(new PropertyValueFactory<>("tipo"));
     }
 
+    /**
+     * Recarga la tabla de tipos de alojamiento actualizando los datos desde la
+     * base de datos.
+     */
     public void recargarTabla() {
         cargarDatosTiposAlojamiento();
     }
 
+    /**
+     * Busca en tiempo real tipos de alojamiento que coincidan con el texto
+     * introducido.
+     *
+     * @param texto Texto a buscar.
+     */
     private void buscarTiposAlojamientoEnTiempoReal(String texto) {
         ObservableList<TipoAlojamiento> listaTipos = FXCollections.observableArrayList();
         Conexion.conectar();
@@ -91,6 +107,11 @@ public class GestionTipoDeAlojamientoController implements Initializable {
         tablaTipoAlojamiento.setItems(listaTipos);
     }
 
+    /**
+     * Abre la ventana para registrar un nuevo tipo de alojamiento.
+     *
+     * @param event Evento de acción del botón.
+     */
     @FXML
     private void nuevoTipoAlojamiento(ActionEvent event) {
         try {

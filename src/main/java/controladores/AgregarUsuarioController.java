@@ -20,6 +20,14 @@ import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import modelo.Usuario;
 
+/**
+ * Controlador JavaFX para el formulario de registro y edición de usuarios.
+ * Permite registrar nuevos usuarios o actualizar existentes, validando todos
+ * los campos, evitando duplicados y registrando las acciones en el sistema de
+ * notificaciones.
+ *
+ * Autor: k0343
+ */
 public class AgregarUsuarioController implements Initializable {
 
     @FXML
@@ -51,6 +59,13 @@ public class AgregarUsuarioController implements Initializable {
     private boolean modificado = false;
     private LoginController loginController;
 
+    /**
+     * Inicializa el formulario cargando las listas de idiomas, tipos de usuario
+     * y tipos de viajero. También carga la imagen del encabezado institucional.
+     *
+     * @param url URL de inicialización (no usada).
+     * @param rb ResourceBundle para localización (no usado).
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         Conexion.conectar();
@@ -63,27 +78,59 @@ public class AgregarUsuarioController implements Initializable {
         imagenTrekNic.setImage(imagen);
     }
 
+    /**
+     * Establece el título mostrado en el formulario.
+     *
+     * @param titulo Texto del título.
+     */
     public void setTitulo(String titulo) {
         labelTitulo.setText(titulo);
     }
 
+    /**
+     * Asocia el controlador principal de administración de usuarios para
+     * recargar la tabla.
+     *
+     * @param controller Controlador de gestión de usuarios.
+     */
     public void setAdministracionUsuarioController(GestionUsuarioController controller) {
         this.administracionUsuarioController = controller;
     }
 
+    /**
+     * Asocia el controlador de login para cerrar el formulario tras un registro
+     * desde el login.
+     *
+     * @param controller Controlador de login.
+     */
     public void setLoginController(LoginController controller) {
         this.loginController = controller;
     }
 
+    /**
+     * Indica si el formulario se ha abierto desde el login.
+     *
+     * @param valor true si se abrió desde el login.
+     */
     public void setAbiertoDesdeLogin(boolean valor) {
         this.abiertoDesdeLogin = valor;
     }
 
+    /**
+     * Activa o desactiva el modo edición.
+     *
+     * @param activo true para editar un usuario, false para registrar.
+     */
     public void setEdicionActiva(boolean activo) {
         this.edicionActiva = activo;
         botonRegistrar.setText(activo ? "Actualizar" : "Registrar");
     }
 
+    /**
+     * Carga los datos de un usuario existente para su visualización o edición.
+     *
+     * @param usuario Usuario a mostrar en el formulario.
+     */
     public void verUsuario(Usuario usuario) {
         this.usuarioActual = usuario;
         this.usuarioEnEdicion = usuario;
@@ -97,6 +144,12 @@ public class AgregarUsuarioController implements Initializable {
         campoTipoCompania.setValue(usuario.getTipoViajero());
     }
 
+    /**
+     * Habilita o deshabilita los campos del formulario según el contexto.
+     *
+     * @param editable true para permitir edición, false para solo
+     * visualización.
+     */
     public void EditarCamposUsuario(boolean editable) {
         campoNombre.setDisable(!editable);
         campoTelefono.setDisable(!editable);
@@ -108,6 +161,13 @@ public class AgregarUsuarioController implements Initializable {
         botonRegistrar.setDisable(!editable);
     }
 
+    /**
+     * Maneja el evento del botón Registrar o Actualizar. Valida todos los
+     * campos, verifica si el correo ya existe y guarda los datos. También
+     * registra la acción como notificación y actualiza la vista de usuarios.
+     *
+     * @param event Evento generado al presionar el botón.
+     */
     @FXML
     private void registrar(ActionEvent event) {
         Conexion.conectar();
@@ -224,10 +284,19 @@ public class AgregarUsuarioController implements Initializable {
         }
     }
 
+    /**
+     * Devuelve si se ha realizado una modificación (registro o actualización).
+     *
+     * @return true si se modificó, false en caso contrario.
+     */
     public boolean getModificado() {
         return modificado;
     }
 
+    /**
+     * Limpia todos los campos del formulario y restablece los ComboBox a sus
+     * valores por defecto.
+     */
     private void limpiarFormulario() {
         campoNombre.clear();
         campoTelefono.clear();

@@ -13,6 +13,24 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import modelo.EmailUtil;
 
+/**
+ * Controlador de la vista de recuperación de contraseña.
+ * <p>
+ * Permite al usuario recuperar su contraseña mediante el envío de un código de
+ * verificación por correo electrónico. Incluye validaciones de formato,
+ * verificación del código y restablecimiento seguro de la nueva contraseña.
+ * </p>
+ * <p>
+ * Funcionalidades principales:
+ * <ul>
+ * <li>Validación del correo electrónico y verificación de existencia en la base
+ * de datos.</li>
+ * <li>Generación y envío de un código de verificación vía email.</li>
+ * <li>Validación del código ingresado por el usuario.</li>
+ * <li>Actualización de la contraseña si el código es válido.</li>
+ * </ul>
+ * </p>
+ */
 public class RecuperarPasswordController implements Initializable {
 
     @FXML
@@ -35,6 +53,14 @@ public class RecuperarPasswordController implements Initializable {
     private String email;
     private boolean codigoVerificado = false;
 
+    /**
+     * Inicializa el controlador. Configura el comportamiento de los campos y
+     * botones según el flujo del proceso de recuperación. Se establecen
+     * validaciones y listeners para los campos de texto.
+     *
+     * @param url URL de inicialización (no utilizado).
+     * @param rb ResourceBundle de inicialización (no utilizado).
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         campoNuevaPass.setDisable(true);
@@ -75,6 +101,11 @@ public class RecuperarPasswordController implements Initializable {
         });
     }
 
+    /**
+     * Verifica si el código ingresado coincide con el registrado para el
+     * usuario. Si es correcto, habilita los campos de nueva contraseña. Si es
+     * incorrecto, muestra un mensaje de error y permite reenviar el código.
+     */
     private void verificarCodigo() {
         String codigoIngresado = campoCodigo.getText().trim();
 
@@ -105,6 +136,12 @@ public class RecuperarPasswordController implements Initializable {
         }
     }
 
+    /**
+     * Envía un código de verificación al correo ingresado, si este es válido y
+     * está registrado en la base de datos.
+     *
+     * @param event Evento de clic sobre el botón "Enviar código".
+     */
     @FXML
     private void enviarCodigo(ActionEvent event) {
         email = campoEmail.getText().trim();
@@ -133,6 +170,12 @@ public class RecuperarPasswordController implements Initializable {
         }
     }
 
+    /**
+     * Reenvía el código de verificación al correo si este fue ingresado
+     * correctamente.
+     *
+     * @param event Evento de clic sobre el botón "Reenviar código".
+     */
     @FXML
     private void reenviarCodigo(ActionEvent event) {
         email = campoEmail.getText().trim();
@@ -157,6 +200,12 @@ public class RecuperarPasswordController implements Initializable {
         }
     }
 
+    /**
+     * Ejecuta el cambio de contraseña si el código fue verificado y las
+     * contraseñas ingresadas coinciden y no están vacías.
+     *
+     * @param event Evento de clic sobre el botón "Restablecer".
+     */
     @FXML
     private void restablecerContrasena(ActionEvent event) {
         String contrasenaUno = campoNuevaPass.getText();
@@ -180,6 +229,11 @@ public class RecuperarPasswordController implements Initializable {
         }
     }
 
+    /**
+     * Cierra la ventana actual sin realizar cambios.
+     *
+     * @param event Evento de clic sobre el botón "Cancelar".
+     */
     @FXML
     private void cancelar(ActionEvent event) {
         ((Stage) campoEmail.getScene().getWindow()).close();

@@ -23,9 +23,11 @@ import javafx.scene.image.ImageView;
 import modelo.Usuario;
 
 /**
- * FXML Controller class
+ * Controlador JavaFX para el formulario de preguntas frecuentes. Permite
+ * ingresar una nueva pregunta y su respuesta asociada, guardarla en la base de
+ * datos y registrar la acción como notificación del sistema.
  *
- * @author k0343
+ * Autor: k0343
  */
 public class FormularioPreguntaController implements Initializable {
 
@@ -39,7 +41,10 @@ public class FormularioPreguntaController implements Initializable {
     private ImageView imagenTrekNic;
 
     /**
-     * Initializes the controller class.
+     * Inicializa el formulario cargando la imagen del encabezado institucional.
+     *
+     * @param url URL de inicialización (no utilizada directamente).
+     * @param rb ResourceBundle para internacionalización (no utilizado).
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -47,6 +52,13 @@ public class FormularioPreguntaController implements Initializable {
         imagenTrekNic.setImage(imagen);
     }
 
+    /**
+     * Maneja el evento del botón Guardar. Valida que los campos no estén
+     * vacíos, inserta la pregunta en la base de datos y registra una
+     * notificación de la operación. En caso de éxito, limpia el formulario.
+     *
+     * @param event Evento de acción disparado por el botón Guardar.
+     */
     @FXML
     private void guardarPregunta(ActionEvent event) {
         String pregunta = txtPregunta.getText().trim();
@@ -80,6 +92,10 @@ public class FormularioPreguntaController implements Initializable {
 
     }
 
+    /**
+     * Limpia los campos del formulario y restablece el texto del botón a
+     * "Guardar".
+     */
     private void limpiarFormulario() {
         txtPregunta.clear();
         txtRespuesta.clear();

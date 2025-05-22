@@ -22,6 +22,13 @@ import javafx.stage.Stage;
 import modelo.Categoria;
 import modelo.Usuario;
 
+/**
+ * Controlador JavaFX para el formulario de creación y edición de categorías.
+ * Permite registrar o actualizar categorías turísticas, validando los campos y
+ * registrando movimientos en el sistema.
+ *
+ * Autor: k0343
+ */
 public class AgregarCategoriaController implements Initializable {
 
     @FXML
@@ -40,24 +47,51 @@ public class AgregarCategoriaController implements Initializable {
     private boolean esEdicion = false;
     private boolean modificado = false;
 
+    /**
+     * Inicializa la vista cargando la imagen de encabezado.
+     *
+     * @param url URL utilizada para inicialización (no usada directamente).
+     * @param rb ResourceBundle para internacionalización (no utilizado).
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         Image imagen = new Image(getClass().getResourceAsStream("/img/Encabezado.png"));
         imagenTrekNic.setImage(imagen);
     }
 
+    /**
+     * Establece el título del formulario.
+     *
+     * @param titulo Título que se mostrará en el encabezado.
+     */
     public void setTitulo(String titulo) {
         labelTitulo.setText(titulo);
     }
 
+    /**
+     * Indica si se ha modificado (creado o editado) una categoría.
+     *
+     * @return true si hubo cambios, false si no.
+     */
     public boolean getModificado() {
         return modificado;
     }
 
+    /**
+     * Establece el controlador padre para permitir recargar la tabla al guardar
+     * cambios.
+     *
+     * @param controller Controlador de gestión de categorías.
+     */
     public void setGestionCategoriaController(GestionCategoriaController controller) {
         this.gestionCategoriaController = controller;
     }
 
+    /**
+     * Carga una categoría existente en el formulario para visualizar o editar.
+     *
+     * @param cat Categoría que se desea visualizar o actualizar.
+     */
     public void verCategoria(Categoria cat) {
         this.categoriaActual = cat;
         this.esEdicion = true;
@@ -66,6 +100,12 @@ public class AgregarCategoriaController implements Initializable {
         botonRegistrar.setText("Actualizar");
     }
 
+    /**
+     * Activa o desactiva la edición de campos del formulario.
+     *
+     * @param editable true para habilitar campos, false para solo
+     * visualización.
+     */
     public void setEdicionActiva(boolean editable) {
         campoNombre.setEditable(editable);
         campoDescripcion.setEditable(editable);
@@ -76,6 +116,12 @@ public class AgregarCategoriaController implements Initializable {
         campoDescripcion.setOpacity(op);
     }
 
+    /**
+     * Registra o actualiza una categoría, validando los campos. Guarda el
+     * registro en la base de datos y crea una notificación del movimiento.
+     *
+     * @param event Evento de acción del botón de registro o actualización.
+     */
     @FXML
     private void RegistrarCategoria(ActionEvent event) {
         if (compruebaCampo.compruebaVacio(campoNombre)) {

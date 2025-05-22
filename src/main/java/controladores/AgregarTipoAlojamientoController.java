@@ -25,9 +25,11 @@ import modelo.TipoAlojamiento;
 import modelo.Usuario;
 
 /**
- * FXML Controller class
+ * Controlador JavaFX para el formulario de registro y edición de tipos de
+ * alojamiento. Permite registrar un nuevo tipo o actualizar uno existente,
+ * validando el campo de texto y registrando el movimiento en la base de datos.
  *
- * @author k0343
+ * Autor: k0343
  */
 public class AgregarTipoAlojamientoController implements Initializable {
 
@@ -39,27 +41,47 @@ public class AgregarTipoAlojamientoController implements Initializable {
     private ImageView imagenTrekNic;
     @FXML
     private Label labelTitulo;
-    /**
-     * Initializes the controller class.
-     */
+
     private TipoAlojamiento tipoActual;
     private boolean esEdicion = false;
+    private GestionTipoDeAlojamientoController gestionTipoAlojamientoController;
 
+    /**
+     * Inicializa la interfaz cargando la imagen de encabezado.
+     *
+     * @param url URL de inicialización (no utilizada directamente).
+     * @param rb ResourceBundle para internacionalización (no utilizado).
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         Image imagen = new Image(getClass().getResourceAsStream("/img/Encabezado.png"));
         imagenTrekNic.setImage(imagen);
     }
 
+    /**
+     * Establece el título de la ventana en la etiqueta superior.
+     *
+     * @param titulo Texto que se mostrará como título del formulario.
+     */
     public void setTitulo(String titulo) {
         labelTitulo.setText(titulo);
     }
-    private GestionTipoDeAlojamientoController gestionTipoAlojamientoController;
 
+    /**
+     * Asocia el controlador de gestión de tipos de alojamiento para permitir
+     * recargar la tabla tras registrar o actualizar un tipo.
+     *
+     * @param controller Controlador padre que maneja la vista principal.
+     */
     public void setGestionTipoAlojamientoController(GestionTipoDeAlojamientoController controller) {
         this.gestionTipoAlojamientoController = controller;
     }
 
+    /**
+     * Carga los datos de un tipo de alojamiento existente para su edición.
+     *
+     * @param tipo Objeto TipoAlojamiento a editar.
+     */
     public void verTipoAlojamiento(TipoAlojamiento tipo) {
         this.tipoActual = tipo;
         campoTipo.setText(tipo.getTipo());
@@ -67,12 +89,25 @@ public class AgregarTipoAlojamientoController implements Initializable {
         botonRegistrar.setText("Actualizar");
     }
 
+    /**
+     * Activa o desactiva la edición del campo de texto y visibilidad del botón.
+     *
+     * @param editable true para permitir edición, false para solo
+     * visualización.
+     */
     public void setEdicionActiva(boolean editable) {
         campoTipo.setEditable(editable);
         botonRegistrar.setVisible(editable);
         campoTipo.setOpacity(editable ? 1.0 : 0.75);
     }
 
+    /**
+     * Maneja el evento del botón de registrar o actualizar tipo de alojamiento.
+     * Realiza validaciones, registra en la base de datos y notifica el
+     * movimiento.
+     *
+     * @param event Evento disparado por el botón de acción.
+     */
     @FXML
     private void RegistrarTipoAlojamiento(ActionEvent event) {
         if (compruebaCampo.compruebaVacio(campoTipo)) {
@@ -83,7 +118,7 @@ public class AgregarTipoAlojamientoController implements Initializable {
         String tipoTexto = campoTipo.getText().trim();
 
         if (!esEdicion && ConsultasTipoAlojamiento.existeTipoAlojamiento(tipoTexto)) {
-            Alertas.error("Tipo duplicado","Ya existe un tipo de alojamiento con ese nombre.");
+            Alertas.error("Tipo duplicado", "Ya existe un tipo de alojamiento con ese nombre.");
             campoTipo.clear();
             return;
         }
@@ -105,7 +140,7 @@ public class AgregarTipoAlojamientoController implements Initializable {
                         new Date(),
                         idUsuario
                 );
-            
+
                 Conexion.cerrarConexion();
                 Alertas.informacion("Tipo de Alojamiento actualizado exitosamente.");
                 recargarTabla();
@@ -140,12 +175,19 @@ public class AgregarTipoAlojamientoController implements Initializable {
         }
     }
 
+    /**
+     * Recarga la tabla de tipos de alojamiento si el controlador principal está
+     * asignado.
+     */
     private void recargarTabla() {
         if (gestionTipoAlojamientoController != null) {
             gestionTipoAlojamientoController.recargarTabla();
         }
     }
 
+    /**
+     * Cierra la ventana actual del formulario.
+     */
     private void cerrarVentana() {
         Stage stage = (Stage) botonRegistrar.getScene().getWindow();
         stage.close();

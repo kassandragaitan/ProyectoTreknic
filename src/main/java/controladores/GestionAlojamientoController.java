@@ -40,9 +40,11 @@ import modelo.ConexionFtp;
 import modelo.Usuario;
 
 /**
- * FXML Controller class
+ * Controlador JavaFX para la gestión de alojamientos turísticos. Permite
+ * visualizar, registrar, filtrar, buscar y eliminar alojamientos del sistema.
+ * También gestiona los alojamientos marcados como favoritos por el usuario.
  *
- * @author k0343
+ * Autor: k0343
  */
 public class GestionAlojamientoController implements Initializable {
 
@@ -76,7 +78,11 @@ public class GestionAlojamientoController implements Initializable {
     private FlowPane contenedorFavoritos;
 
     /**
-     * Initializes the controller class.
+     * Inicializa la interfaz cargando los alojamientos y configurando los
+     * filtros, búsqueda en tiempo real, acciones y tarjetas de favoritos.
+     *
+     * @param url URL de inicialización.
+     * @param rb Recurso de localización.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -175,92 +181,10 @@ public class GestionAlojamientoController implements Initializable {
         cargarAlojamientosFavoritos();
     }
 
-//    public void cargarAlojamientosFavoritos() {
-//        contenedorFavoritos.getChildren().clear();
-//
-//        List<Alojamiento> favoritos = ConsultasAlojamientos
-//                .obtenerAlojamientosFavoritosPorUsuario(
-//                        Usuario.getUsuarioActual().getIdUsuario()
-//                );
-//        if (favoritos.isEmpty()) {
-//            Label texto = new Label("No hay alojamientos en favoritos aún.");
-//            texto.setStyle("-fx-text-fill: #999999; -fx-font-size: 15px; -fx-font-weight: normal;");
-//            texto.setWrapText(true);
-//            texto.setMaxWidth(400);
-//            texto.setAlignment(Pos.CENTER);
-//
-//            VBox contenedorTexto = new VBox(texto);
-//            contenedorTexto.setAlignment(Pos.TOP_CENTER);
-//            contenedorTexto.setPrefHeight(260);
-//            contenedorTexto.setPadding(new javafx.geometry.Insets(40, 0, 0, 0));
-//
-//            contenedorFavoritos.setAlignment(Pos.TOP_CENTER);
-//            contenedorFavoritos.getChildren().add(contenedorTexto);
-//            return;
-//        }
-//
-//        contenedorFavoritos.setAlignment(Pos.TOP_LEFT);
-//        for (Alojamiento aloj : favoritos) {
-//            VBox tarjeta = new VBox(5);
-//            tarjeta.setStyle(
-//                    "-fx-background-color: white; -fx-padding: 10px; "
-//                    + "-fx-background-radius: 10px; "
-//                    + "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0.2, 0, 1);"
-//            );
-//            tarjeta.setAlignment(Pos.CENTER);
-//            tarjeta.setPrefWidth(200);
-//            tarjeta.setMaxWidth(200);
-//            tarjeta.setPrefHeight(260);
-//
-//            ImageView imagen = new ImageView();
-//            imagen.setFitWidth(180);
-//            imagen.setFitHeight(120);
-//            imagen.setPreserveRatio(true);
-//
-//            String nombreImg = aloj.getImagen();
-//            if (nombreImg != null && !nombreImg.isBlank()) {
-//                try {
-//                    ConexionFtp.cargarImagen(nombreImg, imagen);
-//                } catch (Exception ex) {
-//                    System.err.println("Error cargando imagen favorito: " + ex.getMessage());
-//                    imagen.setImage(new Image(
-//                            getClass().getResourceAsStream("/img/default-image.png")
-//                    ));
-//                }
-//            } else {
-//                imagen.setImage(new Image(
-//                        getClass().getResourceAsStream("/img/default-image.png")
-//                ));
-//            }
-//
-//            Label lblNombre = new Label(aloj.getNombre());
-//            lblNombre.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
-//
-//            Label lblDestino = new Label("Destino: " + aloj.getNombreDestino());
-//            lblDestino.setStyle("-fx-text-fill: gray; -fx-font-size: 12px;");
-//
-//            Button btnQuitar = new Button("Quitar de Favoritos");
-//            btnQuitar.setStyle("-fx-background-color: #3874b4; -fx-text-fill: white; -fx-background-radius: 6px;");
-//            btnQuitar.setOnAction(evt -> {
-//                boolean ok = ConsultasAlojamientos
-//                        .eliminarDeFavoritos(
-//                                aloj.getIdAlojamiento(),
-//                                Usuario.getUsuarioActual().getIdUsuario()
-//                        );
-//                if (ok) {
-//                    Alertas.informacion("El alojamiento ha sido eliminado de favoritos.");
-//                    cargarAlojamientosFavoritos();
-//                    cargarAlojamientos();
-//                    tablaAlojamientos.refresh();
-//                } else {
-//                    Alertas.error("Error", "No se pudo eliminar de favoritos.");
-//                }
-//            });
-//
-//            tarjeta.getChildren().addAll(imagen, lblNombre, lblDestino, btnQuitar);
-//            contenedorFavoritos.getChildren().add(tarjeta);
-//        }
-//    }
+    /**
+     * Carga todos los alojamientos registrados desde la base de datos y los
+     * muestra en el contenedor.
+     */
     public void cargarAlojamientosFavoritos() {
         contenedorFavoritos.getChildren().clear();
 
@@ -322,15 +246,12 @@ public class GestionAlojamientoController implements Initializable {
                 imagen.setImage(new Image(getClass().getResourceAsStream("/img/default-image.png")));
             }
 
-            // Nombre del alojamiento
             Label lblNombre = new Label(aloj.getNombre());
             lblNombre.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #222;");
 
-            // Destino
             Label lblDestino = new Label("Destino: " + aloj.getNombreDestino());
             lblDestino.setStyle("-fx-text-fill: #555; -fx-font-size: 12px;");
 
-            // Botón "Quitar de Favoritos"
             Button btnQuitar = new Button("Quitar de Favoritos");
             btnQuitar.setStyle(
                     "-fx-background-color: #3874b4;"
@@ -343,7 +264,6 @@ public class GestionAlojamientoController implements Initializable {
                     + "-fx-faint-focus-color: transparent;"
                     + "-fx-background-insets: 0;"
             );
-
 
             btnQuitar.setOnAction(evt -> {
                 boolean ok = ConsultasAlojamientos.eliminarDeFavoritos(
@@ -364,6 +284,12 @@ public class GestionAlojamientoController implements Initializable {
         }
     }
 
+    /**
+     * Ejecuta una búsqueda dinámica en la tabla de alojamientos según el texto
+     * ingresado.
+     *
+     * @param texto Texto a buscar por nombre o destino.
+     */
     private void buscarAlojamientosEnTiempoReal(String texto) {
         ObservableList<Alojamiento> lista = FXCollections.observableArrayList();
         Conexion.conectar();
@@ -372,6 +298,10 @@ public class GestionAlojamientoController implements Initializable {
         tablaAlojamientos.setItems(lista);
     }
 
+    /**
+     * Carga los alojamientos marcados como favoritos por el usuario actual y
+     * los muestra en forma de tarjetas dentro del FlowPane correspondiente.
+     */
     public void cargarAlojamientos() {
         ObservableList<Alojamiento> lista = FXCollections.observableArrayList();
         Conexion.conectar();
@@ -387,6 +317,11 @@ public class GestionAlojamientoController implements Initializable {
         columnaIdDestino.setCellValueFactory(new PropertyValueFactory<>("nombreDestino"));
     }
 
+    /**
+     * Abre el formulario de registro de un nuevo alojamiento.
+     *
+     * @param event Evento del botón "Nuevo Alojamiento".
+     */
     @FXML
     private void nuevoAlojamiento(ActionEvent event) {
         try {

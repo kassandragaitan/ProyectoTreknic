@@ -20,9 +20,11 @@ import javafx.scene.image.ImageView;
 import modelo.Usuario;
 
 /**
- * FXML Controller class
+ * Controlador JavaFX para el formulario de sugerencias. Permite a los usuarios
+ * autenticados enviar sugerencias con un título y un mensaje, las cuales se
+ * validan antes de almacenarse y se registra la operación como notificación.
  *
- * @author k0343
+ * Autor: k0343
  */
 public class FormularioSugerenciaController implements Initializable {
 
@@ -36,14 +38,25 @@ public class FormularioSugerenciaController implements Initializable {
     private ImageView imagenTrekNic;
 
     /**
-     * Initializes the controller class.
+     * Inicializa el formulario cargando la imagen de encabezado institucional.
+     *
+     * @param url URL de inicialización (no utilizada).
+     * @param rb ResourceBundle para localización (no utilizado).
      */
     @Override
+
     public void initialize(URL url, ResourceBundle rb) {
         Image imagen = new Image(getClass().getResourceAsStream("/img/Encabezado.png"));
         imagenTrekNic.setImage(imagen);
     }
 
+    /**
+     * Maneja el evento del botón "Guardar". Realiza la validación de campos,
+     * verifica duplicados, inserta la sugerencia en la base de datos y registra
+     * la acción como notificación.
+     *
+     * @param event Evento generado por el botón de acción.
+     */
     @FXML
     private void guardarSugerencia(ActionEvent event) {
 
@@ -89,6 +102,9 @@ public class FormularioSugerenciaController implements Initializable {
         }
     }
 
+    /**
+     * Limpia los campos del formulario y restablece el texto del botón.
+     */
     private void limpiarFormulario() {
         campoTitulo.clear();
         campoMensaje.clear();

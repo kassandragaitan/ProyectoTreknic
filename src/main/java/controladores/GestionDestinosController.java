@@ -28,6 +28,14 @@ import javafx.stage.StageStyle;
 import modelo.ConexionFtp;
 import modelo.Destino;
 
+/**
+ * Controlador JavaFX para la gestión visual de destinos turísticos. Permite
+ * registrar, visualizar, editar, eliminar y filtrar destinos cargados desde la
+ * base de datos. Incluye búsqueda en tiempo real y filtrado por fecha o
+ * categoría.
+ *
+ * Autor: k0343
+ */
 public class GestionDestinosController implements Initializable {
 
     @FXML
@@ -47,6 +55,13 @@ public class GestionDestinosController implements Initializable {
 
     private final SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
 
+    /**
+     * Inicializa la interfaz cargando los destinos, configurando la lógica de
+     * filtrado y búsqueda.
+     *
+     * @param url URL de inicialización.
+     * @param rb ResourceBundle de recursos (no utilizado).
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         cargarDestinos();
@@ -130,11 +145,19 @@ public class GestionDestinosController implements Initializable {
         });
     }
 
+    /**
+     * Carga todos los destinos disponibles desde la base de datos.
+     */
     private void cargarDestinos() {
         List<Destino> destinos = ConsultasDestinos.obtenerDestinos();
         mostrarDestinos(destinos);
     }
 
+    /**
+     * Aplica búsqueda por nombre a la lista de destinos.
+     *
+     * @param texto Texto a buscar.
+     */
     private void aplicarBusqueda(String texto) {
         if (texto == null || texto.isEmpty()) {
             cargarDestinos();
@@ -147,6 +170,11 @@ public class GestionDestinosController implements Initializable {
         mostrarDestinos(destinos);
     }
 
+    /**
+     * Muestra gráficamente los destinos en el contenedor `TilePane`.
+     *
+     * @param destinos Lista de destinos a mostrar.
+     */
     public void mostrarDestinos(List<Destino> destinos) {
         destinationsPane.getChildren().clear();
 
@@ -169,88 +197,17 @@ public class GestionDestinosController implements Initializable {
         }
     }
 
-//    private void crearTarjetaDestino(Destino destino) {
-//        VBox tarjetaDestino = new VBox(8);
-//        tarjetaDestino.getStyleClass().add("destination-card");
-//        tarjetaDestino.setAlignment(Pos.TOP_CENTER);
-//        Node vistaContenido;
-//        if (destino.getImagen() != null && !destino.getImagen().isBlank()) {
-//            ImageView vistaImagen = new ImageView();
-//            vistaImagen.setFitWidth(130);
-//            vistaImagen.setFitHeight(75);
-//            vistaImagen.setPreserveRatio(true);
-//            try {
-//                ConexionFtp.cargarImagen(destino.getImagen(), vistaImagen);
-//                vistaContenido = vistaImagen;
-//            } catch (Exception ex) {
-//                Label sinImagen = new Label("Error al cargar imagen");
-//                sinImagen.setStyle("-fx-text-fill: #999999; -fx-font-size: 12px;");
-//                vistaContenido = sinImagen;
-//            }
-//        } else {
-//            Label sinImagen = new Label("Sin imagen disponible");
-//            sinImagen.setStyle("-fx-text-fill: #999999; -fx-font-size: 12px;");
-//            vistaContenido = sinImagen;
-//        }
-//
-//        Label etiquetaNombre = new Label(destino.getNombre());
-//        etiquetaNombre.getStyleClass().add("destination-name");
-//
-//        Label etiquetaDescripcion = new Label(destino.getDescripcion());
-//        etiquetaDescripcion.getStyleClass().add("destination-desc");
-//        etiquetaDescripcion.setWrapText(true);
-//
-//        String fechaFormateada = formatoFecha.format(destino.getFecha_creacion());
-//        Label etiquetaFecha = new Label("Fecha: " + fechaFormateada);
-//        etiquetaFecha.getStyleClass().add("destination-date");
-//
-//        Button botonEditar = new Button("Editar");
-//        botonEditar.getStyleClass().add("button-edit");
-//        botonEditar.setOnAction(e -> abrirVentanaEditar(destino));
-//
-//        Button botonEliminar = new Button("Eliminar");
-//        botonEliminar.getStyleClass().add("button-delete");
-//        botonEliminar.setOnAction(e -> {
-//            Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
-//            confirm.setTitle("Confirmar eliminación");
-//            confirm.setHeaderText("¿Estás seguro que quieres borrar este destino?");
-//            confirm.setContentText("Destino: " + destino.getNombre());
-//
-//            Optional<ButtonType> resp = confirm.showAndWait();
-//            if (resp.isPresent() && resp.get() == ButtonType.OK) {
-//                boolean ok = ConsultasDestinos.eliminarDestino(destino.getId_destino());
-//                if (ok) {
-//                    String nombreImagen = destino.getImagen();
-//                    if (nombreImagen != null && !nombreImagen.isBlank()) {
-//                        ConexionFtp.eliminarArchivo(nombreImagen);
-//                    }
-//                    Alertas.informacion("Destino eliminado correctamente.");
-//                    recargarTabla();
-//                } else {
-//                    Alertas.error("Error", "No se pudo eliminar el destino.");
-//                }
-//            }
-//        });
-//
-//        HBox cajaBotones = new HBox(10, botonEditar, botonEliminar);
-//        cajaBotones.setAlignment(Pos.CENTER);
-//
-//        tarjetaDestino.getChildren().addAll(
-//                vistaContenido,
-//                etiquetaNombre,
-//                etiquetaDescripcion,
-//                etiquetaFecha,
-//                cajaBotones
-//        );
-//
-//        destinationsPane.getChildren().add(tarjetaDestino);
-//    }
+    /**
+     * Crea y agrega una tarjeta visual para un destino, incluyendo imagen,
+     * nombre, descripción y botones de edición y eliminación.
+     *
+     * @param destino El destino que se representará.
+     */
     private void crearTarjetaDestino(Destino destino) {
         VBox tarjetaDestino = new VBox(10);
         tarjetaDestino.getStyleClass().add("destination-card");
         tarjetaDestino.setAlignment(Pos.TOP_CENTER);
 
-        // Imagen del destino
         ImageView vistaImagen = new ImageView();
         vistaImagen.setFitWidth(240);
         vistaImagen.setFitHeight(135);
@@ -264,17 +221,14 @@ public class GestionDestinosController implements Initializable {
             vistaImagen.setImage(new javafx.scene.image.Image(getClass().getResourceAsStream("/img/no-image.png")));
         }
 
-        // Nombre
         Label etiquetaNombre = new Label(destino.getNombre());
         etiquetaNombre.setStyle("-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #222;");
 
-        // Descripción
         Label etiquetaDescripcion = new Label(destino.getDescripcion());
         etiquetaDescripcion.setWrapText(true);
         etiquetaDescripcion.setMaxWidth(220);
         etiquetaDescripcion.setStyle("-fx-text-fill: #555; -fx-font-size: 13px;");
 
-        // Botones
         Button botonEditar = new Button("Editar");
         botonEditar.setOnAction(e -> abrirVentanaEditar(destino));
         botonEditar.setStyle("-fx-background-color: #3874b4; -fx-text-fill: white; -fx-background-radius: 18; -fx-padding: 6 16;");
@@ -290,6 +244,11 @@ public class GestionDestinosController implements Initializable {
         destinationsPane.getChildren().add(tarjetaDestino);
     }
 
+    /**
+     * Abre el formulario de edición con los datos del destino seleccionado.
+     *
+     * @param destino Destino a editar.
+     */
     private void abrirVentanaEditar(Destino destino) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/AgregarDestino.fxml"));
@@ -312,6 +271,12 @@ public class GestionDestinosController implements Initializable {
         }
     }
 
+    /**
+     * Elimina el destino seleccionado y su imagen del servidor FTP, previa
+     * confirmación.
+     *
+     * @param destino Destino a eliminar.
+     */
     private void eliminarDestino(Destino destino) {
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Confirmar eliminación");
@@ -332,10 +297,18 @@ public class GestionDestinosController implements Initializable {
         }
     }
 
+    /**
+     * Recarga la tabla/galería de destinos.
+     */
     public void recargarTabla() {
         cargarDestinos();
     }
 
+    /**
+     * Abre la ventana para registrar un nuevo destino.
+     *
+     * @param event Evento generado al hacer clic en el botón "Nuevo destino".
+     */
     @FXML
     private void irANuevoDestino(ActionEvent event) {
         try {

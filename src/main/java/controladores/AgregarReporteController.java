@@ -23,9 +23,11 @@ import modelo.Reporte;
 import modelo.Usuario;
 
 /**
- * FXML Controller class
+ * Controlador JavaFX para el formulario de registro de reportes del sistema.
+ * Permite registrar un nuevo reporte con tipo y descripción, asociando la
+ * acción al usuario actual y registrando la notificación correspondiente.
  *
- * @author k0343
+ * Autor: k0343
  */
 public class AgregarReporteController implements Initializable {
 
@@ -41,6 +43,14 @@ public class AgregarReporteController implements Initializable {
     private String tipoReporteOriginal;
     private String tipoSeleccionado;
 
+    /**
+     * Inicializa el controlador cargando los tipos de reporte en el ComboBox y
+     * asignando la imagen del encabezado. Configura el evento de selección del
+     * tipo de reporte.
+     *
+     * @param url URL de inicialización (no utilizada directamente).
+     * @param rb ResourceBundle para internacionalización (no utilizado).
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         imagenTrekNic.setImage(new Image(
@@ -64,10 +74,16 @@ public class AgregarReporteController implements Initializable {
         });
     }
 
+    /**
+     * Registra un nuevo reporte en el sistema si los campos son válidos.
+     * También se registra una notificación con el movimiento realizado.
+     *
+     * @param event Evento de acción generado por el botón de registro.
+     */
     @FXML
     private void RegistrarReporte(ActionEvent event) {
         if (tipoSeleccionado == null) {
-               Alertas.error("Selección inválida", "Debe seleccionar un tipo de reporte.");
+            Alertas.error("Selección inválida", "Debe seleccionar un tipo de reporte.");
         } else if (compruebaCampo.compruebaVacio(campoDescripcion)) {
             Alertas.error("Campo vacío", "La descripción no puede estar vacía.");
         } else {
@@ -95,6 +111,10 @@ public class AgregarReporteController implements Initializable {
         }
     }
 
+    /**
+     * Limpia los campos del formulario, restableciendo los valores por defecto
+     * del ComboBox y vaciando la descripción.
+     */
     private void limpiarFormulario() {
         comboTipoReporte.getSelectionModel().selectFirst();
         tipoSeleccionado = null;

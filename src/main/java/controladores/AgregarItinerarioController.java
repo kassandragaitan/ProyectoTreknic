@@ -26,9 +26,12 @@ import modelo.Itinerario;
 import modelo.Usuario;
 
 /**
- * FXML Controller class
+ * Controlador JavaFX para el formulario de registro y edición de itinerarios
+ * turísticos. Permite crear o modificar itinerarios con nombre, descripción y
+ * duración. Registra movimientos en el sistema y actualiza la vista principal
+ * tras los cambios.
  *
- * @author k0343
+ * Autor: k0343
  */
 public class AgregarItinerarioController implements Initializable {
 
@@ -51,7 +54,11 @@ public class AgregarItinerarioController implements Initializable {
     private boolean esEdicion = false;
 
     /**
-     * Initializes the controller class.
+     * Inicializa la vista cargando las duraciones en el ComboBox y la imagen
+     * del encabezado.
+     *
+     * @param url URL de inicialización (no usada).
+     * @param rb ResourceBundle para localización (no utilizado).
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -63,18 +70,42 @@ public class AgregarItinerarioController implements Initializable {
         imagenTrekNic.setImage(imagen);
     }
 
+    /**
+     * Establece el título del formulario en la interfaz.
+     *
+     * @param titulo Texto a mostrar como título.
+     */
     public void setTitulo(String titulo) {
         labelTitulo.setText(titulo);
     }
 
+    /**
+     * Asocia el controlador de gestión de itinerarios para permitir la recarga
+     * de tabla.
+     *
+     * @param controller Controlador de la vista principal de itinerarios.
+     */
     public void setGestionItinerarioController(GestionItinerarioController controller) {
         this.gestionItinerarioController = controller;
     }
 
+    /**
+     * Indica si el formulario produjo una modificación (registro o
+     * actualización).
+     *
+     * @return true si hubo cambios, false en caso contrario.
+     */
     public boolean getModificado() {
         return modificado;
     }
 
+    /**
+     * Maneja el evento del botón "Registrar" o "Actualizar". Valida los campos,
+     * inserta o actualiza el itinerario en la base de datos, registra la
+     * notificación y actualiza la tabla de itinerarios si corresponde.
+     *
+     * @param event Evento disparado por la acción del botón.
+     */
     @FXML
     private void RegistrarItinerario(ActionEvent event) {
         if (compruebaCampo.compruebaVacio(campoNombre)) {
@@ -144,12 +175,12 @@ public class AgregarItinerarioController implements Initializable {
         }
     }
 
-    private void recargarTabla() {
-        if (gestionItinerarioController != null) {
-            gestionItinerarioController.recargarTablaGestionItinerario();
-        }
-    }
-
+    /**
+     * Carga los datos de un itinerario existente en los campos del formulario
+     * para su visualización o edición.
+     *
+     * @param it Objeto Itinerario que se desea visualizar o editar.
+     */
     public void verItinerario(Itinerario it) {
         this.itinerarioActual = it;
         campoNombre.setText(it.getNombre());
@@ -159,6 +190,12 @@ public class AgregarItinerarioController implements Initializable {
         botonRegistrar.setText("Actualizar");
     }
 
+    /**
+     * Activa o desactiva la edición de campos del formulario según el contexto.
+     *
+     * @param editable true para permitir edición, false para solo
+     * visualización.
+     */
     public void setEdicionActiva(boolean editable) {
         campoNombre.setEditable(editable);
         campoDescripcion.setEditable(editable);
@@ -171,6 +208,10 @@ public class AgregarItinerarioController implements Initializable {
         comboDuracion.setOpacity(opacidad);
     }
 
+    /**
+     * Limpia todos los campos del formulario y restablece el botón a
+     * "Registrar".
+     */
     private void limpiarFormulario() {
         campoNombre.clear();
         campoDescripcion.clear();

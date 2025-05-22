@@ -40,6 +40,17 @@ import java.text.SimpleDateFormat;
 import javafx.scene.control.ComboBox;
 import javafx.stage.StageStyle;
 
+/**
+ * Controlador de la vista de gestión de usuarios dentro del panel principal.
+ * Permite registrar, filtrar, buscar, editar y eliminar usuarios. Incluye
+ * opciones de filtro por rol, idioma y tipo de compañía.
+ *
+ * Componentes de UI: - Tabla de usuarios con columnas personalizadas (nombre,
+ * email, rol, etc.) - Campo de búsqueda con actualización en tiempo real -
+ * Combos de filtro por atributo - Botón para añadir un nuevo usuario
+ *
+ * Estilo visual personalizado según tipo de usuario y avatar textual.
+ */
 public class GestionUsuarioController implements Initializable {
 
     @FXML
@@ -73,6 +84,37 @@ public class GestionUsuarioController implements Initializable {
     @FXML
     private Button botonQuitarFiltro;
 
+    /**
+     * Método que se ejecuta automáticamente al inicializar el controlador de la
+     * vista de gestión de usuarios.
+     * <p>
+     * Realiza las siguientes acciones:
+     * <ul>
+     * <li>Recarga los datos de la tabla de usuarios desde la base de
+     * datos.</li>
+     * <li>Asocia cada columna de la tabla con las propiedades correspondientes
+     * del modelo {@code Usuario}.</li>
+     * <li>Oculta las columnas de correo y contraseña por motivos de
+     * privacidad.</li>
+     * <li>Establece celdas personalizadas para mostrar el nombre del usuario
+     * con formato enriquecido, así como estilos visuales para roles e
+     * iconos.</li>
+     * <li>Configura el buscador en tiempo real, que filtra usuarios al escribir
+     * en el campo de búsqueda.</li>
+     * <li>Inicializa los ComboBox de filtros con opciones para filtrar por rol,
+     * idioma o tipo de compañía.</li>
+     * <li>Gestiona dinámicamente los valores disponibles en los ComboBox de
+     * filtro en función del filtro seleccionado.</li>
+     * <li>Actualiza la tabla según los valores seleccionados en los filtros o
+     * el buscador.</li>
+     * <li>Ofrece un botón para quitar los filtros y restaurar la lista completa
+     * de usuarios.</li>
+     * </ul>
+     *
+     * @param url No utilizado. Parte del ciclo de vida de JavaFX.
+     * @param rb No utilizado. Representa recursos internacionalizados si se
+     * usan.
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         recargarTabla();
@@ -160,7 +202,6 @@ public class GestionUsuarioController implements Initializable {
             comboValorFiltro.setDisable(false);
         });
 
-/////////////////////////
         comboValorFiltro.getSelectionModel()
                 .selectedItemProperty().addListener((obs, oldVal, newVal) -> {
                     if (newVal == null || newVal.equalsIgnoreCase("Seleccione un rol...")
@@ -212,11 +253,21 @@ public class GestionUsuarioController implements Initializable {
 
     }
 
+    /**
+     * Carga y asigna a la tabla los datos de los usuarios, ya sea al iniciar o
+     * tras quitar filtros.
+     */
     public void generarDatosYMostrar() {
         ObservableList<Usuario> listaUsuarios = generarDatosUsuario();
         tablaUsuarios.setItems(listaUsuarios);
     }
 
+    /**
+     * Realiza una búsqueda en tiempo real sobre los usuarios en función del
+     * texto proporcionado.
+     *
+     * @param texto Texto ingresado por el usuario para filtrar resultados.
+     */
     private void buscarUsuariosEnTiempoReal(String texto) {
         ObservableList<Usuario> listaUsuarios = FXCollections.observableArrayList();
         Conexion.conectar();
@@ -225,6 +276,13 @@ public class GestionUsuarioController implements Initializable {
         tablaUsuarios.setItems(listaUsuarios);
     }
 
+    /**
+     * Consulta la base de datos y obtiene una lista completa de usuarios
+     * registrados.
+     *
+     * @return Una lista observable de objetos Usuario con los datos extraídos
+     * de la base de datos.
+     */
     public ObservableList<Usuario> generarDatosUsuario() {
         ObservableList<Usuario> listaUsuarios = FXCollections.observableArrayList();
         try (Connection conn = Conexion.conectar()) {
@@ -252,12 +310,21 @@ public class GestionUsuarioController implements Initializable {
         return listaUsuarios;
     }
 
+    /**
+     * Recarga por completo la tabla de usuarios desde la base de datos. Se
+     * utiliza tras agregar, editar o eliminar registros.
+     */
     public void recargarTabla() {
         ObservableList<Usuario> listaUsuarios = generarDatosUsuario();
         tablaUsuarios.setItems(listaUsuarios);
         tablaUsuarios.setPlaceholder(new Label("No hay usuarios registrados."));
     }
 
+    /**
+     * Personaliza las celdas de la tabla para mostrar columnas con formato
+     * enriquecido: - Columna usuario con avatar y correo. - Columna rol con
+     * estilo visual distintivo. - Columna fecha con formato de fecha simple.
+     */
     private void initializeCustomCells() {
         columnAcciones.setCellFactory(col -> new CeldaAccionesUsuario(this));
 
@@ -316,6 +383,12 @@ public class GestionUsuarioController implements Initializable {
         });
     }
 
+    /**
+     * Abre una ventana modal para registrar un nuevo usuario. Si se realiza un
+     * registro exitoso, se recarga la tabla principal.
+     *
+     * @param event Evento que dispara la apertura del formulario.
+     */
     @FXML
     private void irAnuevoUsuario(ActionEvent event) {
         try {

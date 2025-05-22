@@ -32,9 +32,12 @@ import modelo.Usuario;
 import bbdd.ConsultasNotificaciones;
 
 /**
- * FXML Controller class
+ * Controlador JavaFX para el formulario de registro y edición de alojamientos.
+ * Gestiona la validación de campos, carga de datos, selección de imagen y
+ * conexión con la base de datos y servidor FTP para el manejo de imágenes.
+ * También registra notificaciones al sistema tras cada operación.
  *
- * @author k0343
+ * Autor: k0343
  */
 public class AgregarAlojamientoController implements Initializable {
 
@@ -57,9 +60,7 @@ public class AgregarAlojamientoController implements Initializable {
     @FXML
     private Label labelTitulo;
 
-    /**
-     * Initializes the controller class.
-     */
+    // Variables de lógica de control
     private Alojamiento alojamientoActual;
     private boolean esEdicion = false;
     private File archivoImagenSeleccionado;
@@ -67,6 +68,14 @@ public class AgregarAlojamientoController implements Initializable {
     private Destino destinoSeleccionado;
     private GestionAlojamientoController gestionAlojamientoController;
 
+    /**
+     * Método de inicialización del controlador. Carga los datos en los
+     * ComboBox, establece valores por defecto, define eventos de selección y
+     * carga la imagen de encabezado.
+     *
+     * @param url URL de inicialización.
+     * @param rb ResourceBundle de recursos internacionales.
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         campoImagen.setEditable(false);
@@ -107,14 +116,32 @@ public class AgregarAlojamientoController implements Initializable {
         });
     }
 
+    /**
+     * Establece el título de la vista en el Label superior.
+     *
+     * @param titulo Texto que se mostrará como título.
+     */
     public void setTitulo(String titulo) {
         labelTitulo.setText(titulo);
     }
 
+    /**
+     * Asigna el controlador padre de gestión de alojamientos para recarga
+     * posterior.
+     *
+     * @param controller Controlador de la vista principal de alojamientos.
+     */
     public void setGestionAlojamientoController(GestionAlojamientoController controller) {
         this.gestionAlojamientoController = controller;
     }
 
+    /**
+     * Valida los campos del formulario, sube la imagen al FTP si es nueva y
+     * guarda o actualiza el alojamiento en la base de datos. También registra
+     * una notificación del movimiento.
+     *
+     * @param event Evento de acción asociado al botón de registro.
+     */
     @FXML
     private void RegistrarAlojamiento(ActionEvent event) {
         if (compruebaCampo.compruebaVacio(campoNombre)) {
@@ -241,6 +268,12 @@ public class AgregarAlojamientoController implements Initializable {
         }
     }
 
+    /**
+     * Carga los datos de un alojamiento existente en los campos para su edición
+     * o visualización.
+     *
+     * @param a Objeto Alojamiento a visualizar o editar.
+     */
     public void verAlojamiento(Alojamiento a) {
         this.alojamientoActual = a;
         campoNombre.setText(a.getNombre());
@@ -267,6 +300,12 @@ public class AgregarAlojamientoController implements Initializable {
         esEdicion = true;
     }
 
+    /**
+     * Habilita o deshabilita la edición de los campos del formulario.
+     *
+     * @param editable true para activar la edición, false para modo
+     * visualización.
+     */
     public void setEdicionActiva(boolean editable) {
         campoNombre.setEditable(editable);
         campoContacto.setEditable(editable);
@@ -287,11 +326,21 @@ public class AgregarAlojamientoController implements Initializable {
         comboTipo.setOpacity(opacidad);
     }
 
+    /**
+     * Cierra la ventana actual del formulario.
+     */
     private void cerrarVentana() {
         Stage stage = (Stage) botonRegistrar.getScene().getWindow();
         stage.close();
     }
 
+    /**
+     * Abre un selector de archivos para elegir una imagen desde el sistema de
+     * archivos. La imagen seleccionada se guarda temporalmente para su
+     * posterior carga al FTP.
+     *
+     * @param event Evento de acción del botón de seleccionar imagen.
+     */
     @FXML
     private void seleccionarImagen(ActionEvent event) {
         FileChooser chooser = new FileChooser();
@@ -304,5 +353,5 @@ public class AgregarAlojamientoController implements Initializable {
             campoImagen.setText(fichero.getName());
         }
     }
- 
+
 }

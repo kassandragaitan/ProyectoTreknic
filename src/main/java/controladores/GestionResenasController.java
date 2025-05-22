@@ -30,9 +30,10 @@ import javafx.stage.Stage;
 import modelo.Resena;
 
 /**
- * FXML Controller class
- *
- * @author k0343
+ * Controlador JavaFX para la vista de gestión de reseñas. Administra las
+ * reseñas de destinos y de usuarios, incluyendo la búsqueda en tiempo real y la
+ * posibilidad de agregar nuevas reseñas a través de un formulario. Se carga la
+ * información en dos tablas diferentes dentro de un TabPane.
  */
 public class GestionResenasController implements Initializable {
 
@@ -67,6 +68,11 @@ public class GestionResenasController implements Initializable {
     @FXML
     private TableColumn<Resena, Void> accionesUsuarioColumn;
 
+    /**
+     * Inicializa la vista, cargando las reseñas desde la base de datos y
+     * configurando listeners para la búsqueda en tiempo real por destino y por
+     * usuario.
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         destinoColumn.setCellValueFactory(new PropertyValueFactory<>("nombreDestino"));
@@ -78,7 +84,7 @@ public class GestionResenasController implements Initializable {
         comentarioUsuarioColumn.setCellValueFactory(new PropertyValueFactory<>("comentario"));
         clasificacionUsuarioColumn.setCellValueFactory(new PropertyValueFactory<>("clasificacion"));
         accionesUsuarioColumn.setCellFactory(col -> new CeldaAccionesResena());
-        
+
         List<Resena> resenas = ConsultasResenas.obtenerResenas();
         destinosTable.setItems(FXCollections.observableArrayList(resenas));
         usuariosTable.setItems(FXCollections.observableArrayList(resenas));
@@ -94,6 +100,12 @@ public class GestionResenasController implements Initializable {
 
     }
 
+    /**
+     * Busca reseñas filtradas por nombre de destino y actualiza la tabla
+     * correspondiente.
+     *
+     * @param texto texto ingresado para filtrar por destino
+     */
     private void buscarResenasPorDestino(String texto) {
         ObservableList<Resena> listaResenas = FXCollections.observableArrayList();
         Conexion.conectar();
@@ -102,6 +114,12 @@ public class GestionResenasController implements Initializable {
         destinosTable.setItems(listaResenas);
     }
 
+    /**
+     * Busca reseñas filtradas por nombre de usuario y actualiza la tabla
+     * correspondiente.
+     *
+     * @param texto texto ingresado para filtrar por usuario
+     */
     private void buscarResenasPorUsuario(String texto) {
         ObservableList<Resena> listaResenas = FXCollections.observableArrayList();
         Conexion.conectar();
@@ -110,6 +128,12 @@ public class GestionResenasController implements Initializable {
         usuariosTable.setItems(listaResenas);
     }
 
+    /**
+     * Abre la ventana para registrar una nueva reseña. Tras cerrarse, recarga
+     * las tablas para reflejar cualquier nueva reseña ingresada.
+     *
+     * @param event evento de acción generado al pulsar el botón
+     */
     @FXML
     private void abrirFormularioResena(ActionEvent event) {
         try {

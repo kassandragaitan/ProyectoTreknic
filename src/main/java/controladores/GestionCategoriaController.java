@@ -24,6 +24,14 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import modelo.Categoria;
 
+/**
+ * Controlador JavaFX para la gestión de categorías turísticas. Permite
+ * registrar, visualizar, buscar y administrar las categorías disponibles en el
+ * sistema. Incluye un sistema de búsqueda en tiempo real y una columna de
+ * acciones.
+ *
+ * Autor: k0343
+ */
 public class GestionCategoriaController implements Initializable {
 
     @FXML
@@ -43,6 +51,13 @@ public class GestionCategoriaController implements Initializable {
     @FXML
     private Button botonNuevaCategoria;
 
+    /**
+     * Inicializa la vista cargando las categorías y configurando la tabla,
+     * acciones y búsqueda.
+     *
+     * @param url URL de inicialización.
+     * @param rb ResourceBundle de recursos de localización (no utilizado).
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         tablaCategoria.setPlaceholder(new Label(""));
@@ -52,6 +67,11 @@ public class GestionCategoriaController implements Initializable {
         recargarTabla();
     }
 
+    /**
+     * Recarga los datos de la tabla de categorías desde la base de datos. Se
+     * utiliza tanto al iniciar como tras registrar/editar/eliminar una
+     * categoría.
+     */
     public void recargarTabla() {
         ObservableList<Categoria> lista = FXCollections.observableArrayList();
         Conexion.conectar();
@@ -65,6 +85,12 @@ public class GestionCategoriaController implements Initializable {
         columnaDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
     }
 
+    /**
+     * Filtra en tiempo real las categorías mostradas en la tabla según el texto
+     * introducido en el campo de búsqueda.
+     *
+     * @param texto Texto a buscar por nombre o descripción.
+     */
     private void buscarCategoriasEnTiempoReal(String texto) {
         ObservableList<Categoria> lista = FXCollections.observableArrayList();
         Conexion.conectar();
@@ -73,6 +99,12 @@ public class GestionCategoriaController implements Initializable {
         tablaCategoria.setItems(lista);
     }
 
+    /**
+     * Abre el formulario de registro de nueva categoría en una ventana modal.
+     * Al cerrarse, actualiza la tabla con los posibles cambios.
+     *
+     * @param event Evento generado al presionar el botón "Nueva Categoría".
+     */
     @FXML
     private void nuevaCategoria(ActionEvent event) {
         try {

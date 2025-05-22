@@ -23,7 +23,20 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import modelo.Notificacion;
 
 /**
- * FXML Controller class
+ * Controlador de la vista de notificaciones en la aplicación.
+ * <p>
+ * Se encarga de cargar, mostrar y filtrar las notificaciones almacenadas en el
+ * sistema, así como de marcar notificaciones como leídas cuando son
+ * seleccionadas. Ofrece filtros por usuario, fecha y estado de lectura.
+ * </p>
+ *
+ * Componentes incluidos:
+ * <ul>
+ * <li>Tabla de notificaciones con columnas de descripción, usuario, fecha y
+ * estado leído.</li>
+ * <li>ComboBoxes para aplicar filtros dinámicos.</li>
+ * <li>Acciones como eliminar o gestionar la notificación seleccionada.</li>
+ * </ul>
  *
  * @author k0343
  */
@@ -51,7 +64,15 @@ public class NotificacionesController implements Initializable {
     private Button botonFiltrar;
 
     /**
-     * Initializes the controller class.
+     * Inicializa la vista de notificaciones.
+     * <p>
+     * Configura la tabla de notificaciones, carga los datos desde la base de
+     * datos, establece los valores iniciales de los ComboBoxes de filtro y
+     * define los eventos para marcar notificaciones como leídas.
+     * </p>
+     *
+     * @param url URL de localización (no se utiliza).
+     * @param rb Recursos de internacionalización (no se utiliza).
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -96,6 +117,11 @@ public class NotificacionesController implements Initializable {
         });
     }
 
+    /**
+     * Establece las propiedades de mapeo para las columnas de la tabla de
+     * notificaciones, permitiendo que se visualicen correctamente los datos de
+     * cada notificación.
+     */
     private void initializeTableView() {
         columnaDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
         columnaUsuario.setCellValueFactory(new PropertyValueFactory<>("nombreUsuario"));
@@ -103,6 +129,10 @@ public class NotificacionesController implements Initializable {
         columnaLeido.setCellValueFactory(new PropertyValueFactory<>("leido"));
     }
 
+    /**
+     * Carga todas las notificaciones desde la base de datos y las muestra en la
+     * tabla. Si no hay registros, se muestra un mensaje de aviso en la tabla.
+     */
     private void cargarNotificaciones() {
         ObservableList<Notificacion> listaNotificaciones = FXCollections.observableArrayList();
         ConsultasNotificaciones.cargarDatosNotificaciones(listaNotificaciones);
@@ -110,6 +140,12 @@ public class NotificacionesController implements Initializable {
         tablaNotificaciones.setPlaceholder(new Label("No hay notificaciones disponibles."));
     }
 
+    /**
+     * Aplica filtros a la lista de notificaciones mostradas en la tabla, en
+     * función del usuario, la fecha y el estado de lectura seleccionados.
+     *
+     * @param event Evento generado al hacer clic en el botón "Filtrar".
+     */
     @FXML
     private void filtrar(ActionEvent event) {
         String usuario = comboFiltro1.getValue();

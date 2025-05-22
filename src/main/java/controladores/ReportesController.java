@@ -23,12 +23,46 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
-import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import modelo.InformeTipoAlojamiento;
 
+/**
+ * Controlador de la vista de reportes.
+ * <p>
+ * Este módulo permite visualizar reportes estadísticos interactivos en la
+ * aplicación. Incluye gráficos de pastel y de líneas para analizar datos como
+ * usuarios registrados por idioma o distribución de tipos de alojamiento.
+ * Proporciona estadísticas resumidas como total, promedio, máximo y
+ * crecimiento.
+ * </p>
+ * <p>
+ * <b>Proyecto a futuro:</b> Se planea implementar la funcionalidad de
+ * generación de PDF desde esta vista, permitiendo exportar los gráficos y
+ * estadísticas con estilo profesional.</p>
+ *
+ * Funciones principales:
+ * <ul>
+ * <li>Visualización de gráficos interactivos de usuarios y alojamientos.</li>
+ * <li>Filtrado de reportes por idioma o tipo.</li>
+ * <li>Animación de datos al cargarse.</li>
+ * <li>Resumen estadístico de los datos mostrados.</li>
+ * <li>Apertura de ventana para creación de nuevos reportes.</li>
+ * <li>(Futuro) Exportación de gráficos y estadísticas a PDF.</li>
+ * </ul>
+ *
+ * Componentes clave:
+ * <ul>
+ * <li>{@link javafx.scene.chart.PieChart}</li>
+ * <li>{@link javafx.scene.chart.LineChart}</li>
+ * <li>{@link javafx.scene.control.ComboBox}</li>
+ * <li>{@link javafx.scene.control.Label}</li>
+ * <li>{@link javafx.stage.FileChooser} (comentado para PDF)</li>
+ * </ul>
+ *
+ * @author k0343
+ */
 public class ReportesController implements Initializable {
 
     @FXML
@@ -56,6 +90,18 @@ public class ReportesController implements Initializable {
     @FXML
     private Button botonGenerarPdf;
 
+    /**
+     * Inicializa la vista de reportes.
+     * <p>
+     * Configura la animación del panel, inicializa los ComboBox con las
+     * opciones de reporte disponibles y oculta los elementos estadísticos hasta
+     * que se seleccione un tipo de reporte. Asocia también los eventos de
+     * cambio de selección en los combos para reaccionar dinámicamente.
+     * </p>
+     *
+     * @param url URL de inicialización (no utilizado).
+     * @param rb Recursos de internacionalización (no utilizado).
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         Animacion.aparecer2000(panel);
@@ -76,6 +122,11 @@ public class ReportesController implements Initializable {
         comboFiltro.setOnAction(e -> cargarGrafico());
     }
 
+    /**
+     * Cambia el tipo de reporte seleccionado y actualiza dinámicamente las
+     * opciones de filtro, etiquetas y componentes visibles según el contexto
+     * (usuarios o tipos de alojamiento).
+     */
     private void cambiarTipoReporte() {
         String seleccion = comboTipoReporte.getValue();
 
@@ -108,6 +159,14 @@ public class ReportesController implements Initializable {
         }
     }
 
+    /**
+     * Carga y muestra el gráfico correspondiente según el tipo de reporte y el
+     * filtro seleccionados.
+     * <p>
+     * Puede mostrar un gráfico de línea para usuarios o un gráfico circular
+     * para tipos de alojamiento.
+     * </p>
+     */
     private void cargarGrafico() {
         String seleccionReporte = comboTipoReporte.getValue();
         String filtroSeleccionado = comboFiltro.getValue();
@@ -128,6 +187,13 @@ public class ReportesController implements Initializable {
         }
     }
 
+    /**
+     * Carga un gráfico de líneas que representa la evolución mensual de
+     * usuarios registrados para un idioma específico. Calcula y actualiza
+     * métricas como total, promedio, máximo y crecimiento.
+     *
+     * @param idioma Idioma seleccionado como filtro.
+     */
     private void cargarGraficoUsuarios(String idioma) {
         Map<String, Integer> datos = ConsultasReportes.obtenerUsuariosPorMesYIdioma(idioma);
         lineChart.getData().clear();
@@ -175,6 +241,13 @@ public class ReportesController implements Initializable {
         actualizarEstadisticas(total, promedio, maximo, crecimiento);
     }
 
+    /**
+     * Carga un gráfico de sectores que representa la distribución de tipos de
+     * alojamiento. Calcula y actualiza métricas como total, promedio y valor
+     * máximo.
+     *
+     * @param tipo Tipo de alojamiento seleccionado como filtro.
+     */
     private void cargarGraficoTiposAlojamiento(String tipo) {
         ObservableList<InformeTipoAlojamiento> datos;
 
@@ -210,7 +283,7 @@ public class ReportesController implements Initializable {
 
         double promedio = (double) total / datos.size();
 
-        graficoTipos.setTitle(""); 
+        graficoTipos.setTitle("");
         graficoTipos.setLegendVisible(true);
         graficoTipos.setLabelsVisible(true);
         graficoTipos.setClockwise(true);
@@ -228,6 +301,17 @@ public class ReportesController implements Initializable {
         actualizarEstadisticas(total, promedio, maximo, 0);
     }
 
+    /**
+     * Actualiza los indicadores estadísticos mostrados en pantalla: total,
+     * promedio, valor máximo y crecimiento porcentual respecto al período
+     * anterior.
+     *
+     * @param total Total acumulado de registros.
+     * @param promedio Promedio calculado sobre el total.
+     * @param maximo Valor máximo registrado en los datos.
+     * @param crecimiento Porcentaje de variación respecto al valor anterior
+     * (puede ser positivo o negativo).
+     */
     private void actualizarEstadisticas(int total, double promedio, int maximo, int crecimiento) {
         labelTotal.setText(String.valueOf(total));
         labelPromedio.setText(String.format("%.1f", promedio));
@@ -242,6 +326,15 @@ public class ReportesController implements Initializable {
         }
     }
 
+    /**
+     * Abre una ventana modal para registrar manualmente un nuevo reporte.
+     * <p>
+     * La ventana se muestra con estilo decorado, sin maximizar ni permitir
+     * redimensionamiento.
+     * </p>
+     *
+     * @param event Evento generado al hacer clic en el botón "Nuevo Reporte".
+     */
     @FXML
     private void abrirVentanaNuevoReporte(ActionEvent event) {
         try {
@@ -262,6 +355,15 @@ public class ReportesController implements Initializable {
         }
     }
 
+    /**
+     * Genera un archivo PDF con el resumen estadístico del reporte actual.
+     * <p>
+     * Este método está comentado actualmente, y su funcionalidad se considera
+     * como parte de un proyecto futuro para exportar los datos generados.
+     * </p>
+     *
+     * @param event Evento generado al hacer clic en el botón "Generar PDF".
+     */
     @FXML
     private void generarPdf(ActionEvent event) {
 //        try {

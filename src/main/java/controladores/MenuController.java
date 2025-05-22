@@ -23,10 +23,15 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import modelo.Usuario;
-//
 
 /**
- * FXML Controller class
+ * Controlador para el menú principal de la aplicación Treknic.
+ * <p>
+ * Gestiona la navegación entre diferentes módulos del sistema, como usuarios,
+ * itinerarios, destinos, actividades, configuraciones, soporte, y más. Utiliza
+ * animaciones al cargar nuevas vistas y conserva el usuario activo para su uso
+ * en distintas pantallas.
+ * </p>
  *
  * @author k0343
  */
@@ -68,7 +73,11 @@ public class MenuController implements Initializable {
     private MenuItem menuCategoria;
 
     /**
-     * Initializes the controller class.
+     * Inicializa los componentes del menú. Este método es llamado
+     * automáticamente tras la carga del archivo FXML asociado.
+     *
+     * @param url No utilizado.
+     * @param rb Recursos internacionalizados (no utilizados).
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -76,11 +85,26 @@ public class MenuController implements Initializable {
     }
     private Usuario usuarioActual;
 
+    /**
+     * Establece el usuario actual en sesión y carga la vista principal
+     * personalizada para ese usuario.
+     *
+     * @param usuario El objeto {@link Usuario} que ha iniciado sesión.
+     */
     public void setUsuarioActual(Usuario usuario) {
         this.usuarioActual = usuario;
         cargarPrincipalConUsuario();
     }
 
+    /**
+     * Carga y muestra una nueva escena FXML dentro del panel central del menú.
+     * <p>
+     * Si la escena es {@code Principal.fxml}, se le pasa el usuario actual para
+     * inicializarla. Aplica animación de entrada a la nueva vista.
+     *
+     * @param escena Ruta del archivo FXML a cargar (ej.
+     * "/vistas/GestionUsuario.fxml").
+     */
     public void cargarEcena(String escena) {
         try {
             FXMLLoader cargador = new FXMLLoader();
@@ -100,6 +124,10 @@ public class MenuController implements Initializable {
         }
     }
 
+    /**
+     * Carga la vista principal ({@code Principal.fxml}) y le pasa el usuario
+     * actual. La vista se muestra en el panel central con animación.
+     */
     private void cargarPrincipalConUsuario() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/Principal.fxml"));
@@ -116,55 +144,148 @@ public class MenuController implements Initializable {
         }
     }
 
+    /**
+     * Navega al módulo de gestión de itinerarios.
+     *
+     * @param event Evento del botón "Itinerarios".
+     */
     @FXML
     private void irAItinerarios(ActionEvent event) {
         cargarEcena("/vistas/GestionItinerario.fxml");
     }
 
+    /**
+     * Navega al módulo de gestión de destinos.
+     *
+     * @param event Evento del botón "Destinos".
+     */
     @FXML
     private void irADestinos(ActionEvent event) {
         cargarEcena("/vistas/GestionDestinos.fxml");
     }
 
+    /**
+     * Navega al módulo de gestión de GestionUsuarios.
+     *
+     * @param event Evento del botón "GestionUsuarios".
+     */
     @FXML
     private void irAGestionUsuarios(ActionEvent event) {
         cargarEcena("/vistas/GestionUsuario.fxml");
     }
 
+    /**
+     * Navega al módulo de gestión de reportes.
+     *
+     * @param event Evento del botón "Reportes".
+     */
     @FXML
     private void irAReportes(ActionEvent event) {
         cargarEcena("/vistas/Reportes.fxml");
     }
 
+    /**
+     * Navega al módulo de gestión de principal.
+     *
+     * @param event Evento del botón "Principal".
+     */
     @FXML
     private void irAPrincipal(ActionEvent event) {
         cargarPrincipalConUsuario();
 
     }
 
+    /**
+     * Navega al módulo de gestión de notificaciones.
+     *
+     * @param event Evento del botón "Notificaciones".
+     */
     @FXML
     private void irANotificaciones(ActionEvent event) {
         cargarEcena("/vistas/Notificaciones.fxml");
 
     }
 
+    /**
+     * Navega al módulo de gestión de soporte.
+     *
+     * @param event Evento del botón "Soporte".
+     */
     @FXML
     private void irASoporte(ActionEvent event) {
         cargarEcena("/vistas/Soporte.fxml");
 
     }
 
+    /**
+     * Navega al módulo de gestión de configuracion.
+     *
+     * @param event Evento del botón "Configuracion".
+     */
     @FXML
     private void irAConfiguracion(ActionEvent event) {
         cargarEcena("/vistas/Configuracion.fxml");
 
     }
 
+    /**
+     * Navega al módulo de gestión de resenas.
+     *
+     * @param event Evento del botón "Resenas".
+     */
     @FXML
     private void irAResenas(ActionEvent event) {
         cargarEcena("/vistas/GestionResenas.fxml");
     }
 
+    /**
+     * Navega al módulo de gestión de actividades.
+     *
+     * @param event Evento del botón "Actividades".
+     */
+    @FXML
+    private void irA_Actividades(ActionEvent event) {
+        cargarEcena("/vistas/GestionActividades.fxml");
+    }
+
+    /**
+     * Navega al módulo de gestión de alojamiento.
+     *
+     * @param event Evento del botón "Alojamiento".
+     */
+    @FXML
+    private void irA_Alojamiento(ActionEvent event) {
+        cargarEcena("/vistas/GestionAlojamiento.fxml");
+    }
+
+    /**
+     * Navega al módulo de gestión de tipodeAlojamiento.
+     *
+     * @param event Evento del botón "TipodeAlojamiento".
+     */
+    @FXML
+    private void irATipodeAlojamiento(ActionEvent event) {
+        cargarEcena("/vistas/GestionTipoDeAlojamiento.fxml");
+    }
+
+    /**
+     * Navega al módulo de gestión de categoria.
+     *
+     * @param event Evento del botón "Categoria".
+     */
+    @FXML
+    private void irACategoria(ActionEvent event) {
+        cargarEcena("/vistas/GestionCategoria.fxml");
+
+    }
+
+    /**
+     * Cierra la sesión actual y redirige al usuario a la pantalla de login.
+     * <p>
+     * Cierra la ventana actual y abre nuevamente {@code Login.fxml}.
+     *
+     * @param event Evento del botón "Cerrar Sesión".
+     */
     @FXML
     private void CerrarSesion(ActionEvent event) {
         try {
@@ -184,24 +305,4 @@ public class MenuController implements Initializable {
         }
     }
 
-    @FXML
-    private void irA_Actividades(ActionEvent event) {
-        cargarEcena("/vistas/GestionActividades.fxml");
-    }
-
-    @FXML
-    private void irA_Alojamiento(ActionEvent event) {
-        cargarEcena("/vistas/GestionAlojamiento.fxml");
-    }
-
-    @FXML
-    private void irATipodeAlojamiento(ActionEvent event) {
-        cargarEcena("/vistas/GestionTipoDeAlojamiento.fxml");
-    }
-
-    @FXML
-    private void irACategoria(ActionEvent event) {
-        cargarEcena("/vistas/GestionCategoria.fxml");
-
-    }
 }

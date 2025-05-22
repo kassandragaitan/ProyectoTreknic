@@ -2,7 +2,6 @@ package controladores;
 
 import Utilidades.Alertas;
 import bbdd.Conexion;
-import bbdd.ConsultasNotificaciones;
 import bbdd.ConsultasSoporte;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -11,11 +10,21 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import modelo.PreguntaFrecuente;
-import modelo.PruebaFuncionalidad;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.scene.layout.AnchorPane;
 
+/**
+ * Controlador para el ítem visual de una pregunta frecuente en la interfaz de
+ * soporte. Se encarga de mostrar la información de una pregunta, permitir su
+ * eliminación, y actualizar la vista si se realiza alguna acción.
+ *
+ * Este controlador se utiliza en listas o paneles donde se muestran múltiples
+ * preguntas frecuentes, generalmente como parte de un sistema de ayuda o
+ * soporte dentro de la aplicación.
+ *
+ * @author k0343
+ */
 public class Soporte_ItemController implements Initializable {
 
     @FXML
@@ -32,34 +41,47 @@ public class Soporte_ItemController implements Initializable {
     @FXML
     private AnchorPane itemContainer;
 
+    /**
+     * Inicializa el controlador. Asigna la acción del botón de eliminación.
+     *
+     * @param url ubicación del archivo FXML (no utilizado)
+     * @param rb recursos de internacionalización (no utilizado)
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         botonEliminar.setOnAction(e -> eliminarPregunta());
     }
 
+    /**
+     * Establece la acción que se ejecutará después de eliminar una pregunta,
+     * como por ejemplo recargar la lista de ítems.
+     *
+     * @param recargarPreguntas Runnable con la lógica de recarga
+     */
     public void setRecargarPreguntas(Runnable recargarPreguntas) {
         this.recargarPreguntas = recargarPreguntas;
     }
 
-    public void setItem(Object item) {
+    /**
+     * Asigna la pregunta frecuente que se mostrará en el ítem visual. También
+     * actualiza el contenido de las etiquetas y el icono.
+     *
+     * @param pregunta objeto de tipo PreguntaFrecuente a mostrar
+     */
+    public void setItem(PreguntaFrecuente pregunta) {
+        this.preguntaActual = pregunta;
+        etiquetaTitulo.setText(pregunta.getPregunta());
+        etiquetaDescripcion.setText(pregunta.getRespuesta());
+
         String icono = "/img/documento.png";
-
-        if (item instanceof PreguntaFrecuente) {
-            preguntaActual = (PreguntaFrecuente) item;
-            etiquetaTitulo.setText(preguntaActual.getPregunta());
-            etiquetaDescripcion.setText(preguntaActual.getRespuesta());
-        } else if (item instanceof PruebaFuncionalidad) {
-            PruebaFuncionalidad funcionalidad = (PruebaFuncionalidad) item;
-            etiquetaTitulo.setText(funcionalidad.getTitulo());
-            etiquetaDescripcion.setText(funcionalidad.getDescripcion());
-        } else {
-            etiquetaTitulo.setText("Elemento desconocido");
-            etiquetaDescripcion.setText("No se pudo mostrar información.");
-        }
-
         iconoImagen.setImage(new Image(getClass().getResourceAsStream(icono)));
     }
 
+    /**
+     * Elimina la pregunta actual tras una confirmación del usuario. Si se
+     * elimina correctamente, se registra la acción en el sistema y se actualiza
+     * la interfaz mediante la función de recarga.
+     */
     @FXML
     private void eliminarPregunta() {
         if (preguntaActual != null) {

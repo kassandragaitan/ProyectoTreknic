@@ -32,15 +32,14 @@ import javafx.stage.StageStyle;
 import modelo.Itinerario;
 
 /**
- * FXML Controller class
+ * Controlador para la gestión de itinerarios. Permite registrar, visualizar,
+ * filtrar, buscar y editar itinerarios de viaje. Gestiona la tabla principal de
+ * itinerarios y sus filtros.
  *
- * @author k0343
+ * Autor: k0343
  */
 public class GestionItinerarioController implements Initializable {
 
-    /**
-     * Initializes the controller class.
-     */
     @FXML
     private TableColumn<Itinerario, Void> columnAcciones;
     @FXML
@@ -178,6 +177,11 @@ public class GestionItinerarioController implements Initializable {
         });
     }
 
+    /**
+     * Busca itinerarios en tiempo real según el texto proporcionado.
+     *
+     * @param texto Texto a buscar.
+     */
     private void buscarItinerariosEnTiempoReal(String texto) {
         ObservableList<Itinerario> listaItinerarios = FXCollections.observableArrayList();
         Conexion.conectar();
@@ -189,6 +193,9 @@ public class GestionItinerarioController implements Initializable {
         }
     }
 
+    /**
+     * Carga todos los itinerarios en la tabla.
+     */
     public void cargarItinerarios() {
         ObservableList<Itinerario> listaItinerarios = FXCollections.observableArrayList();
         Conexion.conectar();
@@ -205,6 +212,9 @@ public class GestionItinerarioController implements Initializable {
         columnaUsuario.setCellValueFactory(new PropertyValueFactory<>("nombreUsuario"));
     }
 
+    /**
+     * Recarga la tabla de itinerarios manteniendo el filtro actual si existe.
+     */
     public void recargarTablaGestionItinerario() {
         ObservableList<Itinerario> lista = FXCollections.observableArrayList();
         String filtro = comboFiltroPor.getValue();
@@ -224,11 +234,19 @@ public class GestionItinerarioController implements Initializable {
         tablaItinerario.setItems(lista);
     }
 
+    /**
+     * Inicializa la columna de acciones (ver/editar).
+     */
     private void inicializarAccionesColumna() {
         columnAcciones.setCellFactory(col -> new CeldaAccionesItinerario(this));
 
     }
 
+    /**
+     * Abre la ventana de registro de nuevo itinerario.
+     *
+     * @param event Evento de acción.
+     */
     @FXML
     private void NuevoItinerario(ActionEvent event) {
         try {

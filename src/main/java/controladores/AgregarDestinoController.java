@@ -27,6 +27,14 @@ import modelo.ConexionFtp;
 import modelo.Destino;
 import modelo.Usuario;
 
+/**
+ * Controlador JavaFX para el formulario de registro y edición de destinos
+ * turísticos. Permite ingresar o modificar la información de un destino,
+ * incluyendo su nombre, descripción, categoría e imagen. Gestiona la carga de
+ * la imagen al servidor FTP y registra notificaciones.
+ *
+ * Autor: k0343
+ */
 public class AgregarDestinoController implements Initializable {
 
     @FXML
@@ -50,6 +58,14 @@ public class AgregarDestinoController implements Initializable {
     private boolean edicionActiva = false;
     private Destino destinoEditando;
 
+    /**
+     * Controlador JavaFX para el formulario de registro y edición de destinos
+     * turísticos. Permite ingresar o modificar la información de un destino,
+     * incluyendo su nombre, descripción, categoría e imagen. Gestiona la carga
+     * de la imagen al servidor FTP y registra notificaciones.
+     *
+     * Autor: k0343
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         campoRutaArchivo.setEditable(false);
@@ -78,15 +94,32 @@ public class AgregarDestinoController implements Initializable {
         });
     }
 
+    /**
+     * Asocia el controlador de gestión de destinos para permitir recargar la
+     * tabla al registrar o editar.
+     *
+     * @param controller Controlador padre de la vista de destinos.
+     */
     public void setGestionDestinosController(GestionDestinosController controller) {
         this.gestionDestinosController = controller;
     }
 
+    /**
+     * Activa el modo de edición y actualiza el texto del botón a "Actualizar".
+     *
+     * @param estado true si se está editando un destino, false si se está
+     * creando uno nuevo.
+     */
     public void setEdicionActiva(boolean estado) {
         this.edicionActiva = estado;
         botonRegistrar.setText(estado ? "Actualizar" : "Registrar");
     }
 
+    /**
+     * Carga los datos de un destino existente en los campos del formulario.
+     *
+     * @param destino Objeto destino que se va a editar.
+     */
     public void cargarDestino(Destino destino) {
         this.destinoEditando = destino;
         campoNombre.setText(destino.getNombre());
@@ -102,6 +135,12 @@ public class AgregarDestinoController implements Initializable {
         }
     }
 
+    /**
+     * Abre un selector de archivos para que el usuario seleccione una imagen
+     * desde el sistema local.
+     *
+     * @param event Evento del botón "Seleccionar imagen".
+     */
     @FXML
     private void seleccionarImagen(ActionEvent event) {
         FileChooser selector = new FileChooser();
@@ -115,6 +154,13 @@ public class AgregarDestinoController implements Initializable {
         }
     }
 
+    /**
+     * Sube la imagen seleccionada al servidor FTP y devuelve el nombre remoto
+     * generado.
+     *
+     * @param localFile Archivo local a subir.
+     * @return Nombre de archivo en el servidor o null si hubo error.
+     */
     private String subirImagenAlFTP(File localFile) {
         String ext = localFile.getName()
                 .substring(localFile.getName().lastIndexOf('.'));
@@ -133,6 +179,13 @@ public class AgregarDestinoController implements Initializable {
         return remoteName;
     }
 
+    /**
+     * Maneja el proceso de registro o actualización de un destino. Valida los
+     * campos, sube la imagen si es necesario, guarda los datos y registra una
+     * notificación del movimiento.
+     *
+     * @param event Evento del botón "Registrar" o "Actualizar".
+     */
     @FXML
     private void RegistrarDestino(ActionEvent event) {
         if (compruebaCampo.compruebaVacio(campoNombre)) {
