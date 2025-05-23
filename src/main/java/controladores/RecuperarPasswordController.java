@@ -20,16 +20,14 @@ import modelo.EmailUtil;
  * verificación por correo electrónico. Incluye validaciones de formato,
  * verificación del código y restablecimiento seguro de la nueva contraseña.
  * </p>
- * <p>
  * Funcionalidades principales:
  * <ul>
- * <li>Validación del correo electrónico y verificación de existencia en la base
- * de datos.</li>
- * <li>Generación y envío de un código de verificación vía email.</li>
- * <li>Validación del código ingresado por el usuario.</li>
- * <li>Actualización de la contraseña si el código es válido.</li>
+ *   <li>Validación del correo electrónico y verificación de existencia en la base
+ *       de datos.</li>
+ *   <li>Generación y envío de un código de verificación vía email.</li>
+ *   <li>Validación del código ingresado por el usuario.</li>
+ *   <li>Actualización de la contraseña si el código es válido.</li>
  * </ul>
- * </p>
  */
 public class RecuperarPasswordController implements Initializable {
 

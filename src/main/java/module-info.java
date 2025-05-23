@@ -13,7 +13,10 @@ module com.kgr.proyectotreknic {
     exports controladores;
     opens bbdd to javafx.fxml;
     exports bbdd;
-     opens modelo to javafx.fxml;
+    opens modelo to javafx.fxml;
     exports modelo;
-    
+    opens Utilidades to javafx.fxml;
+    exports Utilidades;
+    opens acciones to javafx.fxml;
+    exports acciones;
 }

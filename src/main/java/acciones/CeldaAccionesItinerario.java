@@ -14,6 +14,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableCell;
+import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -140,6 +141,7 @@ public class CeldaAccionesItinerario extends TableCell<Itinerario, Void> {
             stage.initStyle(StageStyle.DECORATED);
             stage.setResizable(false);
             stage.setMaximized(false);
+            stage.getIcons().add(new Image("/img/montanita.png"));
             stage.showAndWait();
 
             return editable && controller.getModificado();

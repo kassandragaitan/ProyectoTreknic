@@ -23,46 +23,31 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import modelo.InformeTipoAlojamiento;
 
 /**
- * Controlador de la vista de reportes.
+ * Controlador de la vista de reportes estadísticos en la aplicación Treknic.
  * <p>
- * Este módulo permite visualizar reportes estadísticos interactivos en la
- * aplicación. Incluye gráficos de pastel y de líneas para analizar datos como
- * usuarios registrados por idioma o distribución de tipos de alojamiento.
- * Proporciona estadísticas resumidas como total, promedio, máximo y
- * crecimiento.
+ * Permite seleccionar entre diferentes tipos de reporte, aplicar filtros
+ * dinámicos (como idioma o tipo de alojamiento) y visualizar resultados en
+ * gráficos interactivos. También proporciona métricas estadísticas como total,
+ * promedio y máximo.
  * </p>
+ *
  * <p>
- * <b>Proyecto a futuro:</b> Se planea implementar la funcionalidad de
- * generación de PDF desde esta vista, permitiendo exportar los gráficos y
- * estadísticas con estilo profesional.</p>
- *
- * Funciones principales:
+ * Características principales:
  * <ul>
- * <li>Visualización de gráficos interactivos de usuarios y alojamientos.</li>
- * <li>Filtrado de reportes por idioma o tipo.</li>
- * <li>Animación de datos al cargarse.</li>
- * <li>Resumen estadístico de los datos mostrados.</li>
- * <li>Apertura de ventana para creación de nuevos reportes.</li>
- * <li>(Futuro) Exportación de gráficos y estadísticas a PDF.</li>
+ * <li>Gráficos actualizados dinámicamente según selección.</li>
+ * <li>Ocultamiento de componentes si no hay selección válida.</li>
+ * <li>Texto explicativo asociado a cada tipo de reporte para mayor comprensión
+ * del usuario.</li>
  * </ul>
- *
- * Componentes clave:
- * <ul>
- * <li>{@link javafx.scene.chart.PieChart}</li>
- * <li>{@link javafx.scene.chart.LineChart}</li>
- * <li>{@link javafx.scene.control.ComboBox}</li>
- * <li>{@link javafx.scene.control.Label}</li>
- * <li>{@link javafx.stage.FileChooser} (comentado para PDF)</li>
- * </ul>
- *
- * @author k0343
  */
+
 public class ReportesController implements Initializable {
 
     @FXML
@@ -78,29 +63,28 @@ public class ReportesController implements Initializable {
     @FXML
     private Label labelMaximo;
     @FXML
-    private Label labelCrecimiento;
-    @FXML
     private Label labelFiltro;
     @FXML
     private ComboBox<String> comboFiltro;
     @FXML
     private ComboBox<String> comboTipoReporte;
     @FXML
-    private Button botonNuevoReporte;
+    private Label labelDescripcionGrafico;
     @FXML
     private Button botonGenerarPdf;
+    @FXML
+    private VBox cardTotal;
+    @FXML
+    private VBox cardPromedio;
+    @FXML
+    private VBox cardMaximo;
 
     /**
-     * Inicializa la vista de reportes.
-     * <p>
-     * Configura la animación del panel, inicializa los ComboBox con las
-     * opciones de reporte disponibles y oculta los elementos estadísticos hasta
-     * que se seleccione un tipo de reporte. Asocia también los eventos de
-     * cambio de selección en los combos para reaccionar dinámicamente.
-     * </p>
+     * Inicializa la interfaz de reportes y configura los ComboBox y elementos
+     * visibles.
      *
-     * @param url URL de inicialización (no utilizado).
-     * @param rb Recursos de internacionalización (no utilizado).
+     * @param url ruta del recurso.
+     * @param rb recursos internacionalizados.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -111,69 +95,91 @@ public class ReportesController implements Initializable {
         ));
         comboTipoReporte.setPromptText("Seleccione tipo de reporte");
 
+        cardTotal.setVisible(false);
+        cardPromedio.setVisible(false);
+        cardMaximo.setVisible(false);
         comboFiltro.setVisible(false);
         labelFiltro.setVisible(false);
         labelTotal.setVisible(false);
         labelPromedio.setVisible(false);
         labelMaximo.setVisible(false);
-        labelCrecimiento.setVisible(false);
+        graficoTipos.setVisible(false);
+        lineChart.setVisible(false);
+        labelDescripcionGrafico.setText("Seleccione un tipo de reporte y un filtro para visualizar los datos disponibles.");
 
         comboTipoReporte.setOnAction(e -> cambiarTipoReporte());
         comboFiltro.setOnAction(e -> cargarGrafico());
     }
 
     /**
-     * Cambia el tipo de reporte seleccionado y actualiza dinámicamente las
-     * opciones de filtro, etiquetas y componentes visibles según el contexto
-     * (usuarios o tipos de alojamiento).
+     * Cambia el contenido del filtro y actualiza el texto explicativo
+     * dependiendo del tipo de reporte seleccionado.
      */
     private void cambiarTipoReporte() {
         String seleccion = comboTipoReporte.getValue();
 
         comboFiltro.getItems().clear();
-        comboFiltro.setPromptText("Seleccione filtro");
+        comboFiltro.setVisible(false);
+        labelFiltro.setVisible(false);
+        labelTotal.setVisible(false);
+        labelPromedio.setVisible(false);
+        labelMaximo.setVisible(false);
+        cardTotal.setVisible(false);
+        cardPromedio.setVisible(false);
+        cardMaximo.setVisible(false);
+        graficoTipos.setVisible(false);
+        lineChart.setVisible(false);
 
         if (seleccion == null || seleccion.isEmpty()) {
-            comboFiltro.setVisible(false);
-            labelFiltro.setVisible(false);
-            labelTotal.setVisible(false);
-            labelPromedio.setVisible(false);
-            labelMaximo.setVisible(false);
-            labelCrecimiento.setVisible(false);
+            labelDescripcionGrafico.setText("Seleccione un tipo de reporte y un filtro para visualizar los datos disponibles.");
             return;
         }
 
         comboFiltro.setVisible(true);
         labelFiltro.setVisible(true);
-        labelTotal.setVisible(true);
-        labelPromedio.setVisible(true);
-        labelMaximo.setVisible(true);
-        labelCrecimiento.setVisible(true);
+        comboFiltro.getItems().add("Seleccione " + (seleccion.equals("Usuarios registrados") ? "un idioma" : "un tipo"));
 
         if (seleccion.equals("Usuarios registrados")) {
             labelFiltro.setText("Idioma");
-            comboFiltro.setItems(ConsultasReportes.obtenerIdiomasUsuarios());
+            comboFiltro.getItems().addAll(ConsultasReportes.obtenerIdiomasUsuarios());
+            labelDescripcionGrafico.setText("Este gráfico muestra la evolución mensual de usuarios registrados según el idioma seleccionado.");
         } else if (seleccion.equals("Tipos de alojamiento")) {
             labelFiltro.setText("Tipo de alojamiento");
-            comboFiltro.setItems(ConsultasReportes.obtenerTiposAlojamiento());
+            comboFiltro.getItems().addAll(ConsultasReportes.obtenerTiposAlojamiento());
+            labelDescripcionGrafico.setText("Este gráfico representa la distribución de los tipos de alojamiento registrados.");
         }
+
+        comboFiltro.getSelectionModel().select(0);
     }
 
     /**
-     * Carga y muestra el gráfico correspondiente según el tipo de reporte y el
-     * filtro seleccionados.
-     * <p>
-     * Puede mostrar un gráfico de línea para usuarios o un gráfico circular
-     * para tipos de alojamiento.
-     * </p>
+     * Carga el gráfico correspondiente según el reporte y filtro seleccionados.
      */
     private void cargarGrafico() {
         String seleccionReporte = comboTipoReporte.getValue();
         String filtroSeleccionado = comboFiltro.getValue();
 
-        if (seleccionReporte == null || filtroSeleccionado == null) {
+        if (seleccionReporte == null || filtroSeleccionado == null || filtroSeleccionado.startsWith("Seleccione")) {
+            graficoTipos.setVisible(false);
+            lineChart.setVisible(false);
+
+            labelTotal.setVisible(false);
+            labelPromedio.setVisible(false);
+            labelMaximo.setVisible(false);
+
+            cardTotal.setVisible(false);
+            cardPromedio.setVisible(false);
+            cardMaximo.setVisible(false);
             return;
         }
+
+        labelTotal.setVisible(true);
+        labelPromedio.setVisible(true);
+        labelMaximo.setVisible(true);
+
+        cardTotal.setVisible(true);
+        cardPromedio.setVisible(true);
+        cardMaximo.setVisible(true);
 
         lineChart.setVisible(false);
         graficoTipos.setVisible(false);
@@ -188,11 +194,9 @@ public class ReportesController implements Initializable {
     }
 
     /**
-     * Carga un gráfico de líneas que representa la evolución mensual de
-     * usuarios registrados para un idioma específico. Calcula y actualiza
-     * métricas como total, promedio, máximo y crecimiento.
+     * Genera un gráfico de línea con usuarios por mes para el idioma dado.
      *
-     * @param idioma Idioma seleccionado como filtro.
+     * @param idioma Idioma seleccionado por el usuario.
      */
     private void cargarGraficoUsuarios(String idioma) {
         Map<String, Integer> datos = ConsultasReportes.obtenerUsuariosPorMesYIdioma(idioma);
@@ -200,10 +204,7 @@ public class ReportesController implements Initializable {
 
         if (datos == null || datos.isEmpty()) {
             lineChart.setTitle("No hay datos para mostrar");
-            labelTotal.setText("0");
-            labelPromedio.setText("0");
-            labelMaximo.setText("0");
-            labelCrecimiento.setText("0%");
+            actualizarEstadisticas(0, 0, 0, 0);
             return;
         }
 
@@ -219,9 +220,7 @@ public class ReportesController implements Initializable {
             int valor = entry.getValue();
             serie.getData().add(new XYChart.Data<>(entry.getKey(), valor));
             total += valor;
-            if (valor > maximo) {
-                maximo = valor;
-            }
+            maximo = Math.max(maximo, valor);
             if (anterior != -1) {
                 crecimiento = valor - anterior;
             }
@@ -242,11 +241,9 @@ public class ReportesController implements Initializable {
     }
 
     /**
-     * Carga un gráfico de sectores que representa la distribución de tipos de
-     * alojamiento. Calcula y actualiza métricas como total, promedio y valor
-     * máximo.
+     * Carga gráfico circular con datos de tipos de alojamiento.
      *
-     * @param tipo Tipo de alojamiento seleccionado como filtro.
+     * @param tipo Tipo de alojamiento seleccionado por el usuario.
      */
     private void cargarGraficoTiposAlojamiento(String tipo) {
         ObservableList<InformeTipoAlojamiento> datos;
@@ -261,10 +258,7 @@ public class ReportesController implements Initializable {
 
         if (datos == null || datos.isEmpty()) {
             graficoTipos.setTitle("No hay datos para mostrar");
-            labelTotal.setText("0");
-            labelPromedio.setText("0");
-            labelMaximo.setText("0");
-            labelCrecimiento.setText("0%");
+            actualizarEstadisticas(0, 0, 0, 0);
             return;
         }
 
@@ -276,9 +270,7 @@ public class ReportesController implements Initializable {
             PieChart.Data data = new PieChart.Data(item.getTipo(), item.getCantidad());
             pieData.add(data);
             total += item.getCantidad();
-            if (item.getCantidad() > maximo) {
-                maximo = item.getCantidad();
-            }
+            maximo = Math.max(maximo, item.getCantidad());
         }
 
         double promedio = (double) total / datos.size();
@@ -290,11 +282,12 @@ public class ReportesController implements Initializable {
         graficoTipos.setStartAngle(90);
         graficoTipos.setData(pieData);
 
+        graficoTipos.setLabelsVisible(false);
         for (PieChart.Data data : pieData) {
             double porcentaje = (data.getPieValue() / total) * 100;
-            Tooltip tooltip = new Tooltip(data.getName() + ": " + (int) data.getPieValue() + " (" + String.format("%.1f", porcentaje) + "%)");
+            Tooltip tooltip = new Tooltip(
+                    data.getName() + ": " + (int) data.getPieValue() + " (" + String.format("%.1f", porcentaje) + "%)");
             Tooltip.install(data.getNode(), tooltip);
-            Animacion.animarDatosGrafico(data.getNode());
         }
 
         Animacion.transicionGrafico(graficoTipos);
@@ -302,57 +295,17 @@ public class ReportesController implements Initializable {
     }
 
     /**
-     * Actualiza los indicadores estadísticos mostrados en pantalla: total,
-     * promedio, valor máximo y crecimiento porcentual respecto al período
-     * anterior.
+     * Actualiza las etiquetas de resumen estadístico.
      *
-     * @param total Total acumulado de registros.
-     * @param promedio Promedio calculado sobre el total.
-     * @param maximo Valor máximo registrado en los datos.
-     * @param crecimiento Porcentaje de variación respecto al valor anterior
-     * (puede ser positivo o negativo).
+     * @param total Total general.
+     * @param promedio Promedio calculado.
+     * @param maximo Valor máximo.
+     * @param crecimiento Crecimiento respecto al mes anterior (solo usuarios).
      */
     private void actualizarEstadisticas(int total, double promedio, int maximo, int crecimiento) {
         labelTotal.setText(String.valueOf(total));
         labelPromedio.setText(String.format("%.1f", promedio));
         labelMaximo.setText(String.valueOf(maximo));
-
-        if (crecimiento >= 0) {
-            labelCrecimiento.setText("+" + crecimiento + "%");
-            labelCrecimiento.setStyle("-fx-text-fill: green; -fx-font-weight: bold;");
-        } else {
-            labelCrecimiento.setText(crecimiento + "%");
-            labelCrecimiento.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
-        }
-    }
-
-    /**
-     * Abre una ventana modal para registrar manualmente un nuevo reporte.
-     * <p>
-     * La ventana se muestra con estilo decorado, sin maximizar ni permitir
-     * redimensionamiento.
-     * </p>
-     *
-     * @param event Evento generado al hacer clic en el botón "Nuevo Reporte".
-     */
-    @FXML
-    private void abrirVentanaNuevoReporte(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/AgregarReporte.fxml"));
-            Parent root = loader.load();
-
-            Stage stage = new Stage();
-            stage.setTitle("Nuevo Reporte");
-            stage.setScene(new Scene(root));
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.initStyle(StageStyle.DECORATED);
-            stage.setResizable(false);
-            stage.setMaximized(false);
-            stage.showAndWait();
-        } catch (IOException e) {
-            e.printStackTrace();
-            Alertas.error("Error", "No se pudo abrir la ventana de nuevo reporte.");
-        }
     }
 
     /**

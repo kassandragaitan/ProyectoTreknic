@@ -38,6 +38,7 @@ import java.io.IOException;
 import modelo.Usuario;
 import java.text.SimpleDateFormat;
 import javafx.scene.control.ComboBox;
+import javafx.scene.image.Image;
 import javafx.stage.StageStyle;
 
 /**
@@ -407,6 +408,7 @@ public class GestionUsuarioController implements Initializable {
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.initStyle(StageStyle.DECORATED);
             stage.setResizable(false);
+            stage.getIcons().add(new Image("/img/montanita.png"));
             stage.showAndWait();
 
             if (controlador.getModificado()) {

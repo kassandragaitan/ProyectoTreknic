@@ -16,6 +16,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -148,6 +149,7 @@ public class CeldaAccionesUsuario extends TableCell<Usuario, Void> {
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setResizable(false);
             stage.initStyle(StageStyle.DECORATED);
+            stage.getIcons().add(new Image("/img/montanita.png"));
             stage.showAndWait();
 
             return editable && agregarController.getModificado();

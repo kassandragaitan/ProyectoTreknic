@@ -23,6 +23,7 @@ import modelo.TipoAlojamiento;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.Date;
+import javafx.scene.image.Image;
 import javafx.stage.StageStyle;
 import modelo.Usuario;
 
@@ -123,6 +124,7 @@ public class CeldaAccionesTipoAlojamiento extends TableCell<TipoAlojamiento, Voi
             stage.setMaximized(false);
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.initStyle(StageStyle.DECORATED);
+            stage.getIcons().add(new Image("/img/montanita.png"));
             stage.showAndWait();
         } catch (Exception ex) {
             ex.printStackTrace();

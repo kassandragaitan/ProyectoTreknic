@@ -15,8 +15,10 @@ import bbdd.ConsultasDestinos;
 import Utilidades.Alertas;
 import bbdd.Conexion;
 import bbdd.ConsultasNotificaciones;
+import java.time.LocalDate;
 import java.util.Date;
 import javafx.scene.control.ButtonType;
+import javafx.scene.image.Image;
 import modelo.Usuario;
 
 /**
@@ -74,19 +76,18 @@ public class CeldaAccionesDestino {
                             : ConsultasDestinos.eliminarDestino(destino.getId_destino());
                     if (eliminado) {
                         Conexion.conectar();
+                        System.out.println("no");
                         String mensaje = "Ha eliminado el destino: " + destino.getNombre();
                         int idUsuario = Usuario.getUsuarioActual().getIdUsuario();
+                        System.out.println("si");
                         Conexion.conectar();
+
                         ConsultasNotificaciones.registrarMovimiento(
                                 mensaje,
                                 new Date(),
                                 idUsuario
                         );
 
-                        ConsultasNotificaciones.registrarNotificacion(
-                                mensaje,
-                                idUsuario
-                        );
                         Conexion.cerrarConexion();
                         Alertas.informacion("Destino eliminado correctamente.");
                         controlador.recargarTabla();
@@ -122,6 +123,7 @@ public class CeldaAccionesDestino {
             stage.setScene(new Scene(root));
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setResizable(false);
+            stage.getIcons().add(new Image("/img/montanita.png"));
             stage.showAndWait();
         } catch (Exception ex) {
             ex.printStackTrace();

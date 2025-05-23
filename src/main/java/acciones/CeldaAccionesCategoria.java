@@ -11,6 +11,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableCell;
+import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -124,6 +125,7 @@ public class CeldaAccionesCategoria extends TableCell<Categoria, Void> {
             st.initModality(Modality.APPLICATION_MODAL);
             st.setMaximized(false);
             st.setResizable(false);
+            st.getIcons().add(new Image("/img/montanita.png"));
             st.showAndWait();
 
             return editable && c.getModificado();

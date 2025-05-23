@@ -25,7 +25,6 @@ modelo\Usuario.class
 controladores\MenuController.class
 modelo\Actividad.class
 bbdd\ConsultasAlojamientos.class
-controladores\AgregarReporteController.class
 Utilidades\Animacion.class
 controladores\SoporteController$1.class
 module-info.class
@@ -45,7 +44,6 @@ bbdd\ConsultasSoporte.class
 acciones\CeldaAccionesUsuario.class
 controladores\FormularioPreguntaController.class
 bbdd\ConsultasItinerario.class
-modelo\Reporte.class
 modelo\ConexionFtp.class
 Utilidades\EstiloSistema.class
 controladores\GestionUsuarioController$3.class
@@ -57,7 +55,6 @@ controladores\FormularioResenaController.class
 modelo\InformeActividadDestino.class
 acciones\CeldaAccionesAlojamiento.class
 acciones\CeldaAccionesTipoAlojamiento.class
-modelo\PruebaFuncionalidad.class
 bbdd\ConsultasLogin.class
 controladores\PrincipalController$1.class
 Utilidades\validarTelefono.class

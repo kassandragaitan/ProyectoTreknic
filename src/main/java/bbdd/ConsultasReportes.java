@@ -14,40 +14,18 @@ import java.util.Map;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import modelo.InformeTipoAlojamiento;
-import modelo.Reporte;
 
 /**
  * Clase que contiene métodos para manejar la lógica de reportes y consultas
  * estadísticas relacionadas con alojamientos, usuarios y sus preferencias.
  *
  * Utiliza la clase {@link Conexion} para establecer conexiones con la base de
- * datos. Proporciona métodos para registrar reportes, obtener datos para
+ * datos. Proporciona métodos para obtener datos para
  * gráficos, y filtrar estadísticas según idioma o tipo de alojamiento.
  *
  * @author k0343
  */
 public class ConsultasReportes {
-
-    /**
-     * Registra un nuevo reporte en la base de datos.
-     *
-     * @param reporte Objeto {@link Reporte} con los datos del reporte.
-     * @return {@code true} si se insertó correctamente, {@code false} en caso
-     * de error.
-     */
-    public static boolean registrarReporte(Reporte reporte) {
-        String sql = "INSERT INTO reportes (tipo, descripcion, fecha, id_usuario) VALUES (?, ?, ?, ?)";
-        try (Connection conn = Conexion.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, reporte.getTipo());
-            stmt.setString(2, reporte.getDescripcion());
-            stmt.setTimestamp(3, new Timestamp(reporte.getFecha().getTime()));
-            stmt.setInt(4, reporte.getIdUsuario());
-            return stmt.executeUpdate() > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
 
     /**
      * Obtiene una lista con la cantidad de alojamientos por tipo.

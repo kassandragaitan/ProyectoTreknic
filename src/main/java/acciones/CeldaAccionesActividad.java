@@ -28,6 +28,7 @@ import modelo.Actividad;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import javafx.scene.image.Image;
 
 /**
  * Clase personalizada para la columna de acciones en la tabla de actividades.
@@ -129,6 +130,7 @@ public class CeldaAccionesActividad extends TableCell<Actividad, Void> {
             stage.setMaximized(false);
             stage.setResizable(false);
             stage.initModality(Modality.APPLICATION_MODAL);
+            stage.getIcons().add(new Image("/img/montanita.png"));
             stage.showAndWait();
 
         } catch (Exception ex) {

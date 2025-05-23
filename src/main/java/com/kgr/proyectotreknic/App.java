@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.io.IOException;
+import javafx.scene.image.Image;
 
 public class App extends Application {
 
@@ -17,18 +18,15 @@ public class App extends Application {
         Parent root = cargador.load();
         scene = new Scene(root);
         stage.setScene(scene);
-
         stage.setTitle("Treknic");
-
         stage.setResizable(false);
         stage.setMaximized(false);
 
         stage.setWidth(900);
         stage.setHeight(650);
         stage.centerOnScreen();
-
+        stage.getIcons().add(new Image("/img/montanita.png"));
         stage.show();
-
     }
 
 }

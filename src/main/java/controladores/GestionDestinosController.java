@@ -18,6 +18,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
@@ -264,6 +265,7 @@ public class GestionDestinosController implements Initializable {
             stage.setScene(new Scene(root));
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setResizable(false);
+            stage.getIcons().add(new Image("/img/montanita.png"));
             stage.showAndWait();
         } catch (Exception e) {
             e.printStackTrace();
@@ -325,6 +327,7 @@ public class GestionDestinosController implements Initializable {
             stage.setTitle("Agregar Destino");
             stage.setScene(new Scene(root));
             stage.initModality(Modality.APPLICATION_MODAL);
+            stage.getIcons().add(new Image("/img/montanita.png"));
             stage.showAndWait();
         } catch (Exception e) {
             e.printStackTrace();

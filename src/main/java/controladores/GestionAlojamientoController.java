@@ -336,6 +336,7 @@ public class GestionAlojamientoController implements Initializable {
             stage.setTitle("Agregar Alojamiento");
             stage.setScene(new Scene(root));
             stage.initModality(Modality.APPLICATION_MODAL);
+            stage.getIcons().add(new Image("/img/montanita.png"));
             stage.showAndWait();
             cargarAlojamientos();
             cargarAlojamientosFavoritos();

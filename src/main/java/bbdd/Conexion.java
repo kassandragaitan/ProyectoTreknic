@@ -26,12 +26,12 @@ import modelo.InformeActividadDestino;
  * @author k0343
  */
 public class Conexion {
-
+//
 //    static Connection conn;
 //    public static final String URL = "jdbc:mysql://145.14.151.1/u812167471_kassandra";
 //    public static final String USERNAME = "u812167471_kassandra";
 //    public static final String PASSWORD = "2025-Kassandra";
-//    public static Connection conn;
+
     /**
      * Objeto de conexión a la base de datos.
      */
@@ -40,7 +40,7 @@ public class Conexion {
     /**
      * URL de conexión a la base de datos local o remota.
      */
-    public static final String URL = "jdbc:mysql://localhost:3306/kgr_reknic";
+    public static final String URL = "jdbc:mysql://localhost:3306/Treknic";
 
     /**
      * Usuario de la base de datos.
@@ -131,7 +131,5 @@ public class Conexion {
         }
         return listado;
     }
-
-
 
 }

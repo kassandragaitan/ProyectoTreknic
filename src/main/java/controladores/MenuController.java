@@ -19,6 +19,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitMenuButton;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
@@ -295,6 +296,7 @@ public class MenuController implements Initializable {
             Stage loginStage = new Stage();
             loginStage.setTitle("Inicio de Sesión");
             loginStage.setScene(new Scene(root));
+            loginStage.getIcons().add(new Image("/img/montanita.png"));
             loginStage.show();
 
             Stage stageActual = (Stage) botonCerrarSesion.getScene().getWindow();

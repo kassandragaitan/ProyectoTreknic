@@ -21,6 +21,7 @@ import modelo.Sugerencia;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.scene.image.Image;
 
 /**
  * Controlador para la vista de Soporte, que gestiona dos pestañas: preguntas
@@ -223,6 +224,7 @@ public class SoporteController implements Initializable {
             stage.setScene(new Scene(root));
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setResizable(false);
+            stage.getIcons().add(new Image("/img/montanita.png"));
             stage.showAndWait();
         } catch (IOException e) {
             e.printStackTrace();

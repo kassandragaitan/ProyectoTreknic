@@ -26,6 +26,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -268,6 +269,7 @@ public class GestionItinerarioController implements Initializable {
             stage.setScene(new Scene(root));
             stage.getScene().setUserData(this);
             stage.initModality(Modality.APPLICATION_MODAL);
+            stage.getIcons().add(new Image("/img/montanita.png"));
             stage.showAndWait();
             if (controlador.getModificado()) {
                 recargarTablaGestionItinerario();

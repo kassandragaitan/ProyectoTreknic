@@ -27,6 +27,7 @@ import javafx.stage.Stage;
 import modelo.Actividad;
 import acciones.CeldaAccionesActividad;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.stage.StageStyle;
 
 /**
@@ -217,6 +218,7 @@ public class GestionActividadesController implements Initializable {
             stage.setTitle("Agregar Actividad");
             stage.setScene(new Scene(root));
             stage.initModality(Modality.APPLICATION_MODAL);
+            stage.getIcons().add(new Image("/img/montanita.png"));
             stage.showAndWait();
         } catch (Exception e) {
             e.printStackTrace();

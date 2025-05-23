@@ -18,6 +18,7 @@ import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
+import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import modelo.Usuario;
 
@@ -79,9 +80,9 @@ public class LoginController implements Initializable {
         String password = campoContrasena.getText();
 
         if (compruebaCampo.compruebaVacio(campoUsuario)) {
-            Alertas.aviso("Campo vacío", "El campo de correo no puede estar vacío.");
+            Alertas.error("Campo vacío", "El campo de correo no puede estar vacío.");
         } else if (!compruebaCampo.emailValido(campoUsuario)) {
-            Alertas.aviso("Formato inválido", "El correo electrónico no es válido.");
+            Alertas.error("Formato inválido", "El correo electrónico no es válido.");
             campoUsuario.clear();
         } else if (compruebaCampo.compruebaVacio(campoContrasena)) {
             Alertas.aviso("Campo vacío", "El campo de contraseña no puede estar vacío.");
@@ -112,6 +113,7 @@ public class LoginController implements Initializable {
                         stage.setMinWidth(1400);
                         stage.setMinHeight(700);
                         stage.setMaximized(true);
+                        stage.getIcons().add(new Image("/img/montanita.png"));
                         stage.show();
 
                         Stage loginStage = (Stage) campoUsuario.getScene().getWindow();
@@ -164,6 +166,7 @@ public class LoginController implements Initializable {
             stage.setResizable(false);
             stage.setMaximized(false);
             stage.centerOnScreen();
+            stage.getIcons().add(new Image("/img/montanita.png"));
             stage.showAndWait();
 
         } catch (IOException e) {
@@ -197,6 +200,7 @@ public class LoginController implements Initializable {
             stage.setTitle("Registro de Usuario");
             stage.setScene(new Scene(root));
             stage.initModality(Modality.APPLICATION_MODAL);
+            stage.getIcons().add(new Image("/img/montanita.png"));
             stage.showAndWait();
 
         } catch (IOException e) {

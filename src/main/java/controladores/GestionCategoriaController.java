@@ -19,6 +19,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -120,6 +121,7 @@ public class GestionCategoriaController implements Initializable {
             st.setScene(new Scene(root));
             st.initModality(Modality.APPLICATION_MODAL);
             st.setResizable(false);
+            st.getIcons().add(new Image("/img/montanita.png"));
             st.showAndWait();
             recargarTabla();
         } catch (Exception e) {

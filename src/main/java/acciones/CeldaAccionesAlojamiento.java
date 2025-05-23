@@ -13,6 +13,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableCell;
+import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -118,20 +119,23 @@ public class CeldaAccionesAlojamiento extends TableCell<Alojamiento, Void> {
             int idUsr = usuario.getIdUsuario();
             boolean yaEsFavorito = alojamiento.isFavorito();
             boolean exito;
-            if (yaEsFavorito) {
-                exito = ConsultasAlojamientos.eliminarDeFavoritos(idAloj, idUsr);
-                if (exito) {
-                    alojamiento.setFavorito(false);
-                    botonFavorito.setText("♡");
-                    botonFavorito.setStyle("-fx-font-size: 16px; -fx-text-fill: gray;");
-                    Alertas.informacion("Alojamiento eliminado de favoritos.");
+            exito = ConsultasAlojamientos.eliminarDeFavoritos(idAloj, idUsr);
+            System.out.println("¿Se eliminó de favoritos? " + exito);
 
-                    bbdd.Conexion.conectar();
-                    String mensaje = "Ha eliminado de favoritos el alojamiento: " + alojamiento.getNombre();
-                    bbdd.ConsultasNotificaciones.registrarMovimiento(mensaje, new java.util.Date(), idUsr);
+            if (exito) {
+                alojamiento.setFavorito(false);
+                botonFavorito.setText("♡");
+                botonFavorito.setStyle("-fx-font-size: 16px; -fx-text-fill: gray;");
+                Alertas.informacion("Alojamiento eliminado de favoritos.");
 
-                    bbdd.Conexion.cerrarConexion();
-                }
+                bbdd.Conexion.conectar();
+                     System.out.println("no desde alojamiento");
+                String mensaje = "Ha eliminado de favoritos el alojamiento: " + alojamiento.getNombre();
+                bbdd.ConsultasNotificaciones.registrarMovimiento(mensaje, new java.util.Date(), idUsr);
+                System.out.println("Movimiento registrado correctamente");
+                  System.out.println("tampoco desde alojamiento");
+                bbdd.Conexion.cerrarConexion();
+
             } else {
                 exito = ConsultasAlojamientos.agregarAFavoritos(idAloj, idUsr);
                 if (exito) {
@@ -208,6 +212,7 @@ public class CeldaAccionesAlojamiento extends TableCell<Alojamiento, Void> {
             stage.setMaximized(false);
             stage.setResizable(false);
             stage.initModality(Modality.APPLICATION_MODAL);
+            stage.getIcons().add(new Image("/img/montanita.png"));
             stage.showAndWait();
         } catch (Exception ex) {
             mostrarError("Error al abrir la ventana: " + ex.getMessage());
